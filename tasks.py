@@ -15,7 +15,7 @@ def build(c):
 
 @task
 def debug(c):
-    c.run('./__main__ 2> debug.txt')
+    c.run('./__main__ 2> debug.log')
 
 @task
 def install(c):

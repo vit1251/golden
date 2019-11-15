@@ -38,7 +38,7 @@ You MAY use Golden in debug mode:
     # cd /srv/golden-1.0.0
     # inv debug
 
-and you MAY watching about application processing in console now ;)
+and you MAY watching about application processing in ```debug.log```.
 
 You MAY open browser and navigate address http://127.0.0.1:8080/ and
 watch you Fido squish messages.
