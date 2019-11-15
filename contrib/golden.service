@@ -1,0 +1,9 @@
+[Unit]
+Description=Golden Service
+
+[Service]
+ExecStart=/srv/golden/__main__
+WorkingDirectory=/srv/golden
+
+[Install]
+WantedBy=multi-user.target

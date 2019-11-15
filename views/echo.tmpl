@@ -1,0 +1,50 @@
+
+{{ define "content" }}
+
+<style type="text/css">
+a.message-item-wrap:hover {
+    color: #FFFFFF;
+}
+a.message-item-wrap:visited {
+    color: #555555;
+}
+a.message-item-wrap {
+    color: #AAAAAA;
+}
+.message-item-wrap {
+}
+.message-item {
+    display: flex;
+}
+.message-item:hover {
+    background-color: #0000AA;
+
+}
+.message-header-netaddr {
+    flex-basis: 256px;
+    flex-shrink: 0;
+}
+.message-header-subject {
+    flex-grow: 1;
+    flex-basis: 256px;
+}
+</style>
+
+<h1>{{ .Area.Name }}</h1>
+
+<hr>
+
+{{ range $msgHeader := .Headers }}
+<a class="message-item-wrap" href="/echo/{{ $.Area.Name }}/view/{{ $msgHeader.ID }}" data-hash="{{ $msgHeader.Hash }}">
+    <div class="message-item" data-msgid="{{ $msgHeader.ID }}">
+        <div class="message-header-netaddr">{{ $msgHeader.From }}</div>
+        <div class="message-header-netaddr">{{ $msgHeader.To }}</div>
+        <div class="message-header-subject">{{ $msgHeader.Subject }}</div>
+        <div>{{ $msgHeader.DateWritten }}</div>
+    </div>
+</a>
+{{ end }}
+
+<hr>
+
+{{ end }}

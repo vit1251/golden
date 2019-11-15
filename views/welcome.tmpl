@@ -1,0 +1,84 @@
+
+{{ define "content" }}
+
+<style type="text/css">
+.arealist-item-wrap {
+    display: block;
+}
+.arealist-item:hover {
+    background-color: #0000AA;
+}
+.arealist-header {
+    display: flex;
+    color: #AAAA00;
+    flex-basis: 100%;
+}
+.arealist-header-index {
+    flex-basis: 64px;
+}
+.arealist-header-summary {
+    flex-grow: 1;
+}
+.arealist-header-count {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-header-new {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-header-echoid {
+    flex-basis: 256px;
+}
+.arealist-item {
+    display: flex;
+    color: #AAAAAA;
+    flex-basis: 100%;
+}
+.arealist-item-index {
+    flex-basis: 64px;
+}
+.arealist-item-summary {
+    flex-grow: 1;
+}
+.arealist-item-count {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-item-new {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-item-echoid {
+    flex-basis: 256px;
+}
+</style>
+
+<h1>Golden 1.0.0</h1>
+
+<hr>
+
+<div class="arealist">
+    <div class="arealist-header">
+        <div class="arealist-header-index">#</div>
+        <div class="arealist-header-summary">Описание</div>
+        <div class="arealist-header-count">Число</div>
+        <div class="arealist-header-count">Новое</div>
+        <div class="arealist-header-echoid">EchoID</div>
+    </div>
+{{ range .Areas }}
+<a class="arealist-item-wrap" href="/echo/{{ .Name }}">
+    <div class="arealist-item">
+        <div class="arealist-item-index">-</div>
+        <div class="arealist-item-summary">{{ .Path }}</div>
+        <div class="arealist-item-count">{{ .MessageCount }}</div>
+        <div class="arealist-item-new">-</div>
+        <div class="arealist-item-echoid">{{ .Name }}</div>
+    </div>
+</a>
+{{ end }}
+</div>
+
+<hr>
+
+{{ end }}

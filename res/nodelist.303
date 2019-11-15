@@ -1,0 +1,1958 @@
+;A FidoNet Nodelist for Wednesday, October 30, 2019 -- Day number 303 : 08356
+;A The FidoNet DAILYLST, a listing of the systems within FidoNet.
+;A
+;A  This is the DAILYLST produced at 2:2/0
+;A
+;A  .. All rights reserved except for the following:
+;A
+;A  .. The FidoNet DAILYLST is compiled so that computer systems within
+;A     FidoNet may communicate with each other.  Use and intra-FidoNet
+;A     distribution rights are granted to all FidoNet system operators
+;A     for the purposes of communication within FidoNet or applying for
+;A     a FidoNet node number.
+;A
+;A  .. This is a compilation of individual nodelist segments contributed
+;A     by the drafters and compilers of those segments.  Contribution of
+;A     these segments to this compilation does not diminish the rights
+;A     of the contributors.
+;A
+;A  .. The DAILYLST is published every day and may even be published
+;A     multiple times on a single day
+;A
+;A  .. Please address all issues relating to the status of this document
+;A     to the ZC/2 (ZONE2 Coordinator) of Fidonet at the Fido-address
+;A     2:2/0, the email-address wd-at-skynet-dot-be or write snailmail
+;A     to: Ward Dossche - Drabstraat 142 - 2640 Mortsel - Belgium
+;A
+;S
+;S                      +-------------------------------+
+;S                      |   PROLOG-DATE : 19 JAN 2019   |
+;S                      +-------------------------------+
+;S
+;S        +------------------------------------------------------------+
+;S        *       THIS LIST HAS BEEN COMPILED IN AND FOR ZONE-2        *
+;S        +------------------------------------------------------------+
+;S
+;S        +============================================================+
+;S        |                         WARNING !!                         |
+;S        +============================================================+
+;S        |    A NUMBER OF SYSOPS HAVE FOR YEARS BEEN DE-COMPILING THE |
+;S        |    DIFFERENT NODELIST FILES AND RE-ASSEMBLING A PRODUCT,   |
+;S        |    WHICH IS BEING CALLED "THE NODELIST", ACCORDING TO      |
+;S        |    THEIR OWN FLAVOUR AND TASTE.                            |
+;S        |    IT NEEDS TO BE SAID THAT SUCH NODELIST-TYPE FILES,      |
+;S        |    WHILE CONTAINING TECHNICALLY CORRECT INFORMATION, ARE   |
+;S        |    NOT APPROVED NODELISTS WITHIN THE DEFINITION OF POLICY. |
+;S        |    THE SINGLE EXCEPTION TO THIS WARNING IS KEES VAN EETEN  |
+;S        |    OF 2:280/5003.                                          |
+;S        |    ANY SYSOP USING SUCH A NON-APPROVED DISTRUTED NODELIST  |
+;S        |    IS SOLELY RESPONSIBLE FOR WHATEVER MAY ARISE FROM SUCH  |
+;S        |    A USAGE.                                                |
+;S        +============================================================+
+;S
+;S     +---------------------------------------------------------------+
+;S     |                Announcement about the GDPR                    |
+;S     +---------------------------------------------------------------+
+;S     | The General Data Protection Regulation (GDPR) (EU) 2016/679   |
+;S     | is a regulation in EU law on data protection and privacy for  |
+;S     | all individuals within the European Union and the European    |
+;S     | Economic Area.  The GDPR aims primarily to give control to    |
+;S     | citizens and residents over their personal data.              |
+;S     |                                                               |
+;S     | It became enforceable on 25 May 2018. Because the GDPR is     |
+;S     | a regulation, not a directive, it does not require national   |
+;S     | governments to pass any enabling legislation and is directly  |
+;S     | binding and applicable.                                       |
+;S     |                                                               |
+;S     | After May 25, 2018 companies and organisations can only       |
+;S     | communicate withpeople who have given their explicit consent. |
+;S     |                                                               |
+;S     | Every sysop in the past has requested to be listed in the     |
+;S     | nodelist, otherwise he/she would not be a Fidonet sysop, so   |
+;S     | the permission of each individual sysop in regions within the |
+;S     | European Union as well as the EEA has already been obtained.  |
+;S     | Should any of these sysops feel that his/her privacy is       |
+;S     | compromised by being listed in the nodelist, please get in    |
+;S     | touch with the appropriate Hub/Net/Region-administrator and   |
+;S     | either have the entry removed or updated.                     |
+;S     |                                                               |
+;S     | As the Fidonet-organisation is non-commercial and does not    |
+;S     | compile, store nor process sensitive information, the bulk    |
+;S     | of the GDPR-regulation does not apply to us.                  |
+;S     |                                                               |
+;S     | The Fidonet-regions concerned are:                            |
+;S     |                                                               |
+;S     | R20 Sweden Norway Finland Denmark                             |
+;S     | R24 Germany                                                   |
+;S     | R25 UK Ireland                                                |
+;S     | R28 Netherlands                                               |
+;S     | R29 Belgium                                                   |
+;S     | R30 Switzerland                                               |
+;S     | R31 Austria                                                   |
+;S     | R33 Italy                                                     |
+;S     | R34 Spain                                                     |
+;S     | R41 Greece                                                    |
+;S     | R42 Czech Republik Slovakia                                   |
+;S     | R48 Poland                                                    |
+;S     +---------------------------------------------------------------+
+;S
+;S        **************************************************************
+;S        *                                                            *
+;S        *     2:2/0 2:292/80 and 2:292/854 are now IMI-capable.      *
+;S        *          Send netmail to get connection details.           *
+;S        *                                                            *
+;S        **************************************************************
+;S
+;S        +------------------------------------------------------------+
+;S        |  REMINDER TO ZONE-2 RC'S ABOUT DELIVERY OF REGION-SEGMENTS |
+;S        +------------------------------------------------------------+
+;S        |    REGION-SEGMENTS OF ZONE-2'S REGIONS MAY BE DELIVERED    |
+;S        |    AT ANY TIME AS WELL AS MULTIPLE TIMES PER DAY. THEIR    |
+;S        |    VALIDITY WILL BE CHECKED SOON AFTER AND AN ERROR-REPORT |
+;S        |    ISSUED TO THE RC.                                       |
+;S        |                                                            |
+;S        |    IN ORDER TO GET A REGION-SEGMENT ALSO IN THE CURRENT    |
+;S        |    WEEK's PRODUCTION OF THE NODELIST IN ZONE 3, IT MUST BE |
+;S        |    DELIVERED BEFORE MIDNIGHT ON WEDNESDAY NIGHT "MY TIME"  |
+;S        |    DUE TO THE DIFFERENCE IN TIME ZONE.                     |
+;S        +------------------------------------------------------------+
+;S
+;S        +------------------------------------------------------------+
+;S        |  INFORMATION RE: THE WEEKLY NODELIST.jjj AND NODEDIFF.jjj  |
+;S        +------------------------------------------------------------+
+;S        |    THE REGULAR WEEKLY NODELIST IS PRODUCED ON FRIDAY.      |
+;S        |                                                            |
+;S        |    SYSOPS FROM OUTSIDE ZONE-2 BUT NEVERTHELESS USING THE   |
+;S        |    ZONE-2 VERSION OF THE WORLD-NODELIST, PLEASE CHECK THAT |
+;S        |    YOU UPDATE IT WITH THE CORRESPONDING DIFF ORIGINATING   |
+;S        |    IN ZONE-2.                                              |
+;S        |                                                            |
+;S        |    SYSOPS INSIDE ZONE-2 PLEASE MAKE CERTAIN YOU DO "NOT"   |
+;S        |    UPDATE IT WITH A DIFF ORIGINATING IN ANOTHER ZONE.      |
+;S        +------------------------------------------------------------+
+;S
+;S        +------------------------------------------------------------+
+;S        |          INFORMATION RE: THE DAILY "Z2DAILY.jjj"           |
+;S        +------------------------------------------------------------+
+;S        |    SOON AFTER MIDNIGHT "Z2DAILY", "DAILYUTF" AS WELL AS    |
+;S        |    THE "ZONE2" NODELIST-TYPE FILES ARE PRODUCED, THE       |
+;S        |    LATTER OF WHICH IS SENT TO THE ZCs OF THE OTHER ZONES.  |
+;S        |                                                            |
+;S        |    ZONE1 AND ZONE3 ALSO PRODUCE A DAILYLST-TYPE FILE AS    |
+;S        |    WELL AS A DAILY ZONE-FILE OF THEIR ZONE WHICH THEN GETS |
+;S        |    DISTRIBUTED TO THE OTHER ZONES TOO. AS A RESULT THE     |
+;S        |    Z2DAILY IS PRETTY WELL UP-TO-DATE WITH A GRAND DELAY    |
+;S        |    OF UP TO 24HRS .... GLOBALLY. THERE IS NO Z2DAILY.DIF.  |
+;S        |                                                            |
+;S        |    Z2DAILY, DAILYUTF as well as ZONE2 may be issued        |
+;S        |    several times a day.                                    |
+;S        +------------------------------------------------------------+
+;S
+;S        +============================================================+
+;S        |                        ANNOUNCEMENT                        |
+;S        +============================================================+
+;S        |    ZONE-2'S NODELIST PRODUCTION SETUP NOW HAS A FALL-BACK  |
+;S        |    OPTION IN CASE THE REGULAR SYSTEM IS INCAPACITATED FOR  |
+;S        |    WHATEVER REASON. THIS FALL-BACK OPTION IS MAINTAINED BY |
+;S        |    KEES VAN EETEN AT 2:280/5003. TO FACILITATE HIS WORK,   |
+;S        |    EVERY RC IS REQUESTED TO ALSO DELIVER A COPY OF HIS     |
+;S        |    REGION FILE TO 2:280/5003 IN ORDER TO HAVE A SMOOTH     |
+;S        |    TRANSITION SHOULD CIRCUMSTANCES REQUIRE IT.             |
+;S        +------------------------------------------------------------+
+;S        |    "AllowUnpub 1" IS NOW ACTIVE.                           |
+;S        +------------------------------------------------------------+
+;S
+;S        +------------------------------------------------------------+
+;S        |                Heartbeat of 2:292/854 AKA 2:2/0            |
+;S        +------------------------------------------------------------+
+;S        |    2:292/854 offers a dedicated heartbeat echo in which    |
+;S        |    the system will place a single daily dummy message      |
+;S        |    indicating the node 2:292/854 and its AKAs 2:292/80 as  |
+;S        |    well as 2:2/0 are "UP".                                 |
+;S        |                                                            |
+;S        |    So even if/when you do not receive mail and/or files    |
+;S        |    from this node, but you do get the heartbeat-message,   |
+;S        |    then you know the system's mailer, tosser, binkd and    |
+;S        |    the scheduler are functioning. Most likely there just   |
+;S        |    was nothing else waiting for you during that poll.      |
+;S        |                                                            |
+;S        |    Send areafix for HEARTBEAT to 2:292/854.                |
+;S        +------------------------------------------------------------+
+;S
+;S        +------------------------------------------------------------+
+;S        |   Files available for file-request at 2:2/0 : 01 JUN 2008  |
+;S        +------------------------------------------------------------+
+;S        |     Nodelist element       Available at     Obsolete at    |
+;S        | Magic-name > Results in    (day - UTC+1)   (day - UTC+1)   |
+;S        | ---------------------------------------------------------  |
+;S        | NODELIST     NODELIST.Zcc Friday 00:30     Friday 00:07    |
+;S        | NODEDIFF     NODEDIFF.Zcc Friday 00:30     Friday 00:07    |
+;S        |* Note: cc  = Righthand 2 digits of the Julian-date         |
+;S        |                                                            |
+;S        |  A specific NODEDIFF can be file-requested with the true   |
+;S        |    archived name or with the fully qualified name          |
+;S        |    (i.e. unarchived).                                      |
+;S        |                                                            |
+;S        |  Only the current version of the NODELIST-file is kept     |
+;S        |    on file. Other than via the magic-names it can be file- |
+;S        |    requested as well with the true archived name or with   |
+;S        |    the fully qualified name (i.e. unarchived).             |
+;S        |                                                            |
+;S        |  A daily nodelist is also issued which contains all new    |
+;S        |   versions of any REGION-segment received. Zone-2 therefor |
+;S        |   is always current. Please ask the ZC/2 to be linked.     |
+;S        +============================================================+
+;S        |         LIST- and DIFF-files via file-distribution         |
+;S        +------------------------------------------------------------+
+;S        | Immediately after generating the NODELIST on Fridaymorning |
+;S        |  these file-distribution echoes will become available for  |
+;S        |  interested parties:                                       |
+;S        | ---------------------------------------------------------- |
+;S        |    File     >     Compression     >     File-echo          |
+;S        | ---------------------------------------------------------- |
+;S        |   NODEDIFF             ARC               NODEDIFA          |
+;S        |   NODEDIFF             ZIP               NODEDIFZ          |
+;S        |   NODELIST             ARC               NODELISA          |
+;S        |   NODELIST             ZIP               NODELISZ          |
+;S        |                                                            |
+;S        |  Any other type of nodediff- or nodelist-distribution will |
+;S        |   not have originated on 2:2/0.                            |
+;S        +============================================================+
+;S        |                          FTP - HTTP                        |
+;S        +------------------------------------------------------------+
+;S        | NODEDIFF.Zjj, NODEDIFF.Ajj, NODELIST.Zjj and NODELIST.Ajj  |
+;S        |   are available via anonymous-ftp immediately after        |
+;S        |   creation on Friday approximately 00h15 Brussels time :   |
+;S        |                                                            |
+;S        |           --->> ftp://many-glacier.dyndns.org              |
+;S        |                                                            |
+;S        |   as well as via the http-protocol at                      |
+;S        |                                                            |
+;S        |           --->> http://many-glacier.dyndns.org             |
+;S        |                                                            |
+;S        +============================================================+
+;S        |   Nodelist Tools                                           |
+;S        | Magic    Results in   Size   Available   <vsn - date>      |
+;S        | ---------------------------------------------------------  |
+;S        | ERRFLAGS <to be updated>                                   |
+;S        |* Note: Freq ERRFLAGS.ZC2 to get the current ZC2-flag-file *|
+;S        | MAKENLNG MN345W32.ZIP 176078 Permanent <V3.4.5>            |
+;S        | OT       OT_266B.RAR  625552 Permanent <2.66b May.31,1997> |
+;S        | ROBO     ROBO_037.ARJ  57094 Permanent <V0.37 Nov.19,1988> |
+;S        +============================================================+
+;S        |   Nodelist-segments freqable by magic-name                 |
+;S        | Magic-name   Results in      Available                     |
+;S        | ---------------------------------------------------------  |
+;S        | REGIONxx     REGIONxx.jjj    Always                        |
+;S        | ZONEy        ZONEx.jjj       Always                        |
+;S        |* Note: xx =  Region-number                                 |
+;S        |        y  =  Zone-number                                   |
+;S        |        jjj = Julian-date when the segment was last pro-    |
+;S        |              cessed or going to be processed               |
+;S        |                                                            |
+;S        |     Special files freqable with magic-name                 |
+;S        | Magic-name   Results in   Available at (UTC+1) <version>   |
+;S        | ---------------------------------------------------------  |
+;S        | ECHOPOL      ECHOPOL.ARJ  Permanent   <V1    Feb.01, 1989> |
+;S        | ERRFLAGS.ZC2 ERRFLAGS.ZC2 Permanent   <      Oct 05, 2014> |
+;S        | NCELECT      NC_ELECT.ZIP Permanent   <V1.00 Mar.05, 1995> |
+;S        | POLICY       POLICY4.ZIP  Permanent   <V4.07 Jun 09, 1989> |
+;S        | REGPOL24     REGP100.ENG  Permanent   <      Apr.04, 1996> |
+;S        +============================================================+
+;S        |                          FIDONEWS                          |
+;S        | Magic-name   Results in   Available at (UTC+1) <version>   |
+;S        | ---------------------------------------------------------  |
+;S        | FIDONEWS     FNEWSyzz.ZIP Permanent                        |
+;S        |    Previous versions of Fidonews can always be file-       |
+;S        |     requested with their true name, i.e. FNEWSxyy.ZIP.     |
+;S        +============================================================+
+;S        |    All of these files can be freqqed or will, if           |
+;S        |     this was requested, be put on hold when a new-one      |
+;S        |     becomes available.                                     |
+;S        +------------------------------------------------------------+
+;S
+;S        +------------------------------------------------------------+
+;S        |                      Useful websites                       |
+;S        +------------------------------------------------------------+
+;S        |                      http://ftsc.org/                      |
+;S        +------------------------------------------------------------+
+;S
+;S        **************************************************************
+;S        * --> Check your routing to the ZC by sending netmail to     *
+;S        *      "ping" at 2:292/854. "Pong" should be the answer!     *
+;S        *                                                            *
+;S        * --> Inbound mail- and filebundles are accepted via IP with *
+;S        *     Binkp-protocol at 'many-glacier.dyndns.org             *
+;S        *                                                            *
+;S        * --> Non-passworded communications will get a hand-job at   *
+;S        *      sysop's discretion, meaning "no-time = no-processing" *
+;S        *                                                            *
+;S        * --> Z2C can now be reached in real-time by "whatsapp"      *
+;S        *      on smartphone. Send private mail to get more details. *
+;S        *                                                            *
+;S        **************************************************************
+;S
+;S   Please check the END of the nodelist for permanent technical and
+;S   administrative information.
+;
+Zone,2,Eur_(303),B,Ward_Dossche,-Unpublished-,300,CM,MO,INA:many-glacier.dyndns.org,IBN,IFT,PING,IMI,U,ENC
+,2,Fidonews_Editor,Sweden,Bjorn_Felten,46-31-960447,33600,CM,XA,V34,INA:eljaco.se,IBN
+,222,BBBS_Help,Turku_Finland,Kim_Heino,-Unpublished-,300,CM,XX,INA:bbbs.net,IBN,ITN
+,1000,International_Coordinator,Belgium,Ward_Dossche,-Unpublished-,300,CM,MO,INA:many-glacier.dyndns.org,IBN,IFT,IMI,PING,U,ENC
+,1002,fidonet.org,B,Ward_Dossche,-Unpublished-,300,CM,MO,INA:many-glacier.dyndns.org,IBN,IFT,IMI,PING,U,ENC
+,1003,Zone_Pointlist_Keeper,Germany,Ulrich_Schroeter,49-7331-9861042,9600,CM,XA,MO,INA:AMBROSIA60.dd-dns.de,IBN,X75,V32B,V42B,U,ENC
+;
+Region,20,Scandinavia,Saeve,Bjorn_Felten,46-31-960447,9600,CM,XA,V34,IBN:24555,INA:eljaco.se
+,228,HAM-BOX,Mariehamn_Aland,Holger_Granholm,358-18-23168,9600,V32B,V34,VFC,V42B,CM
+,4609,Future_Hacker_Central,Stockholm_Sweden,Joaquim_Homrighausen,-Unpublished-,300,MO,CM,XA,ITN:2030,IMI:ftnimi@defsol.se,INA:fhc.d.defsol.com
+;
+Host,201,Capital_Net,Haninge,Christer_Jonson,46-8-53043088,9600,V90C,CM,XX,MO,INA:bejo.dyndns.org,IBN:9090
+,111,Capital_City,Haninge,Christer_Jonson,46-8-53043088,9600,V90C,CM,XX,INA:bejo.dyndns.org,IBN
+,121,Modema_Tider_BBS,Lindome,Andreas_Selstam,-Unpublished-,300,CM,INA:modematider.selstam.nu,IBN
+Pvt,148,www.fidoreader.com,Goteborg,Mathias_Hermansson,-Unpublished-,300,MO,IBN
+,420,NiKom_BBS,Sunnyvale_CA,Niklas_Lindholm,-Unpublished-,300,CM,IBN,INA:bbs.nikom.org
+;
+Host,203,West_Net,Sweden,Bjorn_Felten,46-31-960447,9600,CM,XA,V34,IBN:24555,INA:eljaco.se
+,2,JamNMTPd,Sweden,Bjorn_Felten,-Unpublished-,300,CM,IBN:24555,INA:eljaco.se
+,124,pepzi.eu,Goteborg,Fredrik_Eidelind,-Unpublished-,300,CM,XA,IBN
+,208,-=P=I=X=-,S?ve,Bj?rn_Felten,46-31-960447,9600,CM,XA,V34
+,412,Jamten-TCL,Ostersund,Michael_Cronsten,46-63-133330,9600,CM,XA,V32B,V34,VFC,IBN,INA:p.itu.se
+;
+Host,211,Norway,Bergen,Torbjorn_Mohn,-Unpublished-,300,CM,XX,INA:cop.bbbs.no,IBN,ITN
+,1,Internet,Norway,Torbjorn_Mohn,-Unpublished-,300,CM,XX,INA:cop.bbbs.no,IBN,ITN
+,37,Circle_Of_Protection_BBS,Bergen,Torbjorn_Mohn,-Unpublished-,300,CM,XX,INA:cop.bbbs.no,IBN,ITN
+;
+Host,221,Finland_(298),Ylojarvi,Tommi_Koivula,-Unpublished-,9600,CM,XA,IBN,INA:rbb.fidonet.fi,PING,U,ENC
+Hub,1,RBB,Ylojarvi,Tommi_Koivula,-Unpublished-,9600,CM,IBN,INA:f1.n221.z2.rbb.fidonet.fi,GUUCP,PING,U,ENC
+,6,MXO,Ylojarvi,Tommi_Koivula,-Unpublished-,9600,CM,IBN,INA:mail.fidonet.fi,U,ENC
+,242,New_Detroit,Vallentuna,Joacim_Melin,-Unpublished-,9600,CM,XA,ITN:32,IBN,INA:deltacity.se
+,360,RBB,Ylojarvi,Tommi_Koivula,-Unpublished-,9600,CM,XA,IBN,ITN:32,INA:rbb.fidonet.fi,PING,U,ENC,NPK,RPK
+;
+Host,222,Southwest_Finland,Turku,Kim_Heino,-Unpublished-,300,CM,XX,INA:bbbs.net,IBN,ITN
+,2,BCG-Box,Turku,Kim_Heino,-Unpublished-,300,CM,XX,INA:bbbs.net,IBN,ITN
+;
+Host,230,Denmark,Jersore_DK,Benny_Pedersen,-Unpublished-,300,IBN,INA:themultixpoint.junc.eu,XA,MO,CM,U,NPK,NEC
+,38,Xpoint_Linode,London_UK,Benny_Pedersen,-Unpublished-,300,IBN,INA:themultixpoint.junc.eu,XA,MO,CM
+,150,The_KOFO_BBS,Broendby_DK,Gert_Andersen,-Unpublished-,300,CM,MO,XA,IBN,INA:fido0.kofobbs.net
+,152,The_Kofo_System_II_BBS,Broendby,Gert_Andersen,-Unpublished-,300,CM,XA,IBN,IFT,ITN,INA:fido2.kofobbs.net
+;
+Region,24,Germany,RC_Germany,Torsten_Bamberg,49-40-98670308,9600,CM,XA,VFC,V34,X75,IMI,IUC,U,ENC
+,901,R24_Backbone_Ring-0,Altenholz,Christian_von_Busse,49-431-3288765,300,CM,XA,X75,V110L,V110H
+,902,R24_Backbone_Ring-0,Bamberg,Harald_Kamm,49-951-21554,9600,XX,CM,VFC,V32T,H16,X2C,X75
+;
+Host,240,Host_Nordnetz,Hamburg,Torsten_Bamberg,49-40-98670308,9600,CM,XA,VFC,V34,H16,X75,IBN,INA:datenbahn.dd-dns.de,U,ENC,NC
+,77,Monobox,Moerfelden-Walldorf,Kai_Richter,-Unpublished-,300,CM,MO,IBN,INA:monobox.spdns.org
+Down,493,Aroundos2,Hofheim,Herbert_Rosenau,-Unpublished-,9600,CM,XA,IBN,INA:aroundos2.selfhost.eu
+Down,400,Weissenhorn,Weissenhorn,Alto_Speckhardt,49-7309-425136,9600,CM,XA,V34,X75
+Hub,2100,Kruemel_Boks!,Boeblingen,Christian_von_Busse,-Unpublished-,300,IBN,CM,XA,INA:binkd.kruemel.org,U,ENC
+,2120,R.D.S,Guetersloh,Ralf_Wimmelbuecker,49-5250-995633,9600,CM,XA,V32B,V42B,X75
+,2188,Kruemel_Boks!,Boeblingen,Christian_von_Busse,-Unpublished-,300,CM,XA,IBN,INA:binkd.kruemel.org,U,ENC,CDP
+Pvt,2189,binkd.kruemel.org,Boeblingen,Christian_von_Busse,-Unpublished-,300,CM,XA,MO,IUC:mailtunnel@kruemel.org,IBN,IFT,U,ENC,CDP
+Pvt,2198,outpost.kruemel.org,Altenholz,Christian_von_Busse,-Unpublished-,300,CM,XA,MO,IBN,IFT,U,ENC,CDP
+,2199,Kruemel_Boks!_North,Altenholz,Christian_von_Busse,49-431-3292929,9600,CM,XA,H16,V32T,X2S,V90S,X75,V110L,V110H,V120L,V120H,U,ENC
+,3025,RAKOB,Polch,Ralf_Hoerner,49-2654-8809857,300,XA,X75,MO,LO
+Hub,4000,NordNetz_Hub_4000,Grossenaspe,Olav_Rogall,49-4327-205461,9600,CM,XA,IBN
+Pvt,4014,bagge.dyndns.org,Henstedt-Ulzburg,Arved_Baggendorf,-Unpublished-,300,CM,MO,IBN
+,4030,HOLO-BBS_I,Hohenlockstedt,Kuno_Kunhardt,49-4826-3941,9600,CM,XA,MO,V34
+,4031,HOLO-BBS_II_*ISDN*,Hohenlockstedt,Kuno_Kunhardt,49-4826-850123,300,CM,XA,MO,V110H,X75
+,4032,HOLO-BBS_III_*ISDN*,Hohenlockstedt,Kuno_Kunhardt,49-4826-850122,300,CM,XA,MO,V110H,X75
+Pvt,4037,olav.selfhost.eu,Grossenaspe,Olav_Rogall,-Unpublished-,300,CM,XA,IBN
+Pvt,4038,olav.selfhost.eu,Grossenaspe,Olav_Rogall,-Unpublished-,300,CM,XA,IBN
+Pvt,4099,olav.selfhost.eu,Grossenaspe,Olav_Rogall,-Unpublished-,300,CM,XA,IBN
+Pvt,5138,olav.selfhost.eu,Grossenaspe,Olav_Rogall,-Unpublished-,300,CM,XA,IBN
+Hub,5700,HUB_Hamburg,Hamburg,Torsten_Bamberg,49-40-98670308,9600,CM,XA,V34,VFC,H16,IBN,INA:datenbahn.dd-dns.de,U,ENC,CDP
+,5832,DatenBahn_BBS_1,Hamburg,Torsten_Bamberg,49-40-98670307,9600,CM,XA,VFC,V34,H16,IBN,INA:datenbahn.dd-dns.de,U,ENC,CDP
+,5833,DatenBahn_BBS_2,Hamburg,Torsten_Bamberg,49-40-98670308,300,CM,XA,X75,IBN,INA:datenbahn.dd-dns.de,U,ENC,CDP
+,5834,DatenBahn_BBS_3,Hamburg,Torsten_Bamberg,49-40-98670307,300,CM,XA,IBN,INA:bamberg-ot.de,U,ENC,CDP
+,5853,Kuehlbox,Ranstadt,Philipp_Giebel,-Unpublished-,300,CM,MO,XA,IBN,ITN,INA:bbs.kennmer.net
+,5890,Herbies_BBS_II,Weil_am_Rhein,Thorsten_Herb,-Unpublished-,300,CM,MO,XA,IBN,ITN,INA:herbies-bbs.ddns.net
+,6309,Shadow_Corner,Luebeck,Joachim_Probst,-Unpublished-,300,CM,MO,XA,IBN,ITN,INA:shadowcorner.synology.me
+Hub,1200,Hub_Sued,Bad_Ueberkingen,Ulrich_Schroeter,49-7331-9861042,9600,CM,XA,MO,IBN,INA:ambrosia60.dd-dns.de,V32B,V42B,U,ENC,CDP
+,12,stts.no-ip.org,Bad_Muender,Gerrit_Kuehn,-Unpublished-,300,MO,IBN,INA:stts.no-ip.org
+,100,ftn.arno-klein.eu,Bensheim,Arno_Klein,-Unpublished-,300,MO,IBN,INA:ftn.arno-klein.eu
+,1120,AMBROSIA60.dd-dns.de,Bad_Ueberkingen,Ulrich_Schroeter,49-7331-9861042,9600,CM,XA,MO,INA:ambrosia60.ddnss.org,IBN,V32B,V42B,U,RPK,NPK,ENC,CDP
+,1181,ROEDELHEIM_1,Oberhausen,Juergen_Wolpers,49-208-63539129,9600,CM,XA,V34
+,1183,roedeldns.dyndns.org,Oberhausen,Juergen_Wolpers,-Unpublished-,300,CM,XA,MO,IBN,IUC,INA:roedeldns.dyndns.org
+,1254,sirius.dynvpn.de,Frankfurt,Harald_Wuensch,-Unpublished-,300,CM,MO,IBN
+,1512,The.Geek2-Grotto.de,Neu-Isenburg,Hiro_Dudani,49-6102-320703,9600,CM,MO,XA,V90C,X2C,X75,IBN,IFC,ITN:60177,U,ENC
+,1634,pbbbs.pill-box.de,Ostheim,Hugo_Andriessen,-Unpublished-,300,CM,XA,MO,IBN,INA:andriessen.p7.de
+,8001,BlackICE_BBS,Duesseldorf,Vitus_Zeel,-Unpublished-,300,CM,XA,MO,IBN,INA:BlackICE.BBSIndex.de
+,1895,BashBox,Duesseldorf,Niels_Haedecke,-Unpublished-,300,CM,XA,MO,IBN,INA:bashbox.ufud.org
+,8002,Wintermute,Duesseldorf,Niels_Haedecke,-Unpublished-,300,CM,XA,MO,IBN,INA:wintermute.spdns.eu
+,8004,4-U_BBS,Duesseldorf,Vitus_Zeel,-Unpublished-,300,CM,XA,MO,IBN,INA:BlackICE.BBSIndex.de
+Hub,9000,Hub_OL_HB,Oldenburg,Bernhard_Thoben,49-441-9849979,9600,CM,XA,V34,U,ENC
+,9190,Berni's_Box,Oldenburg,Bernhard_Thoben,49-441-9849979,9600,CM,XA,V34,U,ENC
+,9191,Berni's_Box,Oldenburg,Bernhard_Thoben,-Unpublished-,300,CM,MO,IBN,INA:bernibox-ol.dd-dns.de
+;
+Host,246,binkd.kleinmann-haigerloch.de,Germany,Armin_Kleinmann,-Unpublished-,300,CM,XX,IBN,IFC,ITN:60177,U,NC,NPK
+Hub,2000,binkd.kleinmann-haigerloch.de,Haigerloch,Armin_Kleinmann,-Unpublished-,300,CM,XX,IBN,IFC,ITN:60177
+,1020,joschi1.nsupdate.info,Stuttgart,Jochen_Weihgold,49-711-1386927,9600,CM,XA,MO,V34,X75,IBN,U,ENC
+,1305,wieslauf.sub.de,Rudersberg,Emil_Schuster,-Unpublished-,300,CM,XX,IBN,IFC
+,2027,binkd.kleinmann-haigerloch.de,Haigerloch,Armin_Kleinmann,-Unpublished-,300,CM,XX,IBN,IFC,ITN:60177
+;
+Host,2432,Ostwestfalen-Lippe-Net,Enger/Westf.,Stephan_Heitbrink,49-5224-790447,9600,CM,MN,XA,V34,VFC,V32T,H16,V110H,U,NC,NEC,NPK
+Hub,300,HUB_2432/300,Enger/Westf.,Stephan_Heitbrink,49-5224-790447,9600,CM,MN,XA,V34,VFC,V32T,H16,V110H
+Pvt,307,Duenner-Box,Buende,Michael_Taenzer,-Unpublished-,9600,CM,XX,MO,V32B,H16,V34
+Pvt,318,DREAMWEB.BBS,Wolfsburg,Mike_Borrmann,-Unpublished-,300,XX,X75
+Pvt,327,Mic,Herford,Mareile_Bender,-Unpublished-,300,MO,X75
+Pvt,333,salze.dyns.cx,Herford,Stefan_Sarzio,-Unpublished-,300,MO,IBN
+Pvt,337,the_quod_(x75/v34),Halle/Saale,Daniel_Hahler,-Unpublished-,9600,XA,V34,VFC,X75
+,344,graybeast.linkpc.net,Borgholzhausen,Juergen_Peters,-Unpublished-,300,CM,XX,MO,IBN:24555,ITN,IFC
+,348,graybeast.linkpc.net,Borgholzhausen,Juergen_Peters,-Unpublished-,300,CM,XX,MO,IBN:24555,ITN,IFC
+,349,graybeast.dyns.cx,Borgholzhausen,Juergen_Peters,-Unpublished-,300,CM,XX,MO,IBN
+Pvt,356,POWERBOX_I,Herford,Steve_Simpson,-Unpublished-,300,CM,XA,X75
+Pvt,357,POWERBOX_II,Herford,Steve_Simpson,-Unpublished-,9600,CM,XA,V32B
+,360,DANCE-SYSTEM_I,Hennef,Maik_Schaefers,49-2248-9098248,9600,CM,XA,V32B,V90C,X2C,X75
+,361,DANCE-SYSTEM_II,Hennef,Maik_Schaefers,49-2248-9098249,300,CM,XA,X75
+,362,DANCE-SYSTEM_III,Hennef,Maik_Schaefers,49-2248-9098245,9600,CM,XA,Z19,V90S,X75,V120H,V110H
+Pvt,363,dance-system.dyndns.org,Hennef,Maik_Schaefers,-Unpublished-,300,CM,MO,IBN
+,370,HANSE,Rostock,Michael_Behrens,49-381-6865817,9600,CM,XA,V34,VFC
+,371,HANSE,Rostock,Michael_Behrens,49-381-6865817,300,CM,XA,X75
+,390,OWL-Server_(Ringdown),Enger/Westf.,Stephan_Heitbrink,49-5224-790447,9600,CM,MN,XA,V34,VFC,V32T,H16,V110H
+,391,OWL-Server_(Ringdown),Enger/Westf.,Stephan_Heitbrink,49-5224-790440,9600,CM,MN,XA,Z19,V110H
+,392,OWL-Server_(X2&V90),Enger/Westf.,Stephan_Heitbrink,49-5224-790411,9600,CM,MN,XA,VFC,V32T,H16,V90S,X2S,V120H,V110H
+,393,OWL-Server_(ZyX&V90),Enger/Westf.,Stephan_Heitbrink,49-5224-790438,9600,CM,MN,XA,Z19,V90S,V120H,V110H
+Pvt,394,ftn.owlserver.de,Enger/Westf.,Stephan_Heitbrink,-Unpublished-,300,CM,MN,XA,ITN,IVM,IEM:spool@owlserver.de
+Pvt,395,binkd.owlserver.de,Enger/Westf.,Stephan_Heitbrink,-Unpublished-,300,CM,MN,XW,MO,IBN,IEM:spool@owlserver.de
+Pvt,200,pbbs.darktech.org,Porta_Westfalica,Sven_Dueker,-Unpublished-,300,CM,MO,XX,PING,IBN,ITX:pbbs@gmx.net,IMI,IUC
+Pvt,900,T-BBS,Lippstadt,Torsten_Wenck,-Unpublished-,300,X75,IBN
+,920,binkd.darkwhole.de,Herford,Thomas_Freitag,49-5221-996752,300,CM,MO,XX,X75,PING,IBN,ITX:tf@darkwhole.de,IMI,IUC
+;
+Host,2448,Ruhr-West,Bochum,Armin_Schaefer,49-234-9620318,9600,CM,XA,V32B,V42B,V34,X75,INA:schnickschnack.spdns.de,IBN,U,NEC
+,1021,BLUP_BBS,Gelsenkirchen,Oliver_Rapp,49-209-38143,9600,CM,XA,V34,V42B,X75,INA:box.blup-bbs.de,IBN,PING,U,NC,ENC
+,200,Gero's-Castle,Essen,Gero_Dirk_Lachner,49-201-2806856,9600,CM,MO,V34,Z19,XA,V110H,X75,INA:geros-castle.homeip.net,IBN,U,ENC
+,222,geros-castle.homeip.net,*Gero's-Castle-IP*,Gero_Dirk_Lachner,-Unpublished-,300,MO,XA,IBN,U,ENC
+,823,Tupel,Wuppertal,Juergen_Loh,49-202-2423551,9600,XA,CM,MN,V32B,V42B,X75,INA:fido.jloh.de,IBN,U,ENC
+Down,600,SchnickSchnack_BBS,Bochum,Armin_Schaefer,49-234-9620318,9600,CM,XA,V32B,V42B,V34,X75,INA:schnickschnack.spdns.de,IBN
+Down,614,schnickschnack.spdns.de,Bochum,Armin_Schaefer,49-234-9620318,9600,CM,MO,V90S,Z19,X75,IBN
+Down,615,SchnickSchnack_BBS,Bochum,Armin_Schaefer,49-234-9620318,9600,CM,XA,V32B,V42B,V34,X75,INA:schnickschnack.spdns.de,IBN
+Hub,3000,fido.second.de,Essen,Rainer_Boesner,49-201-303026,300,CM,XA,V110H,X75,ITN,IBN,IFC,EMA:rb@second.de,U,ENC
+,30,UUCP_Gateway_Second_System,Essen,Rainer_Boesner,49-201-303026,300,XA,CM,V110H,X75,EMA:rb@second.de,GUUCP
+,300,SECOND_SYSTEM_LINE_1+2(ISDN),Essen,Rainer_Boesner,49-201-303026,300,CM,XA,V110H,X75,EMA:rb@second.de
+Hub,4000,HUB_WALTROP,Greven,Tobias_Burchhardt,-Unpublished-,300,CM,XA,INA:fido.softeq.org,IBN,IFC,ITN:60177
+,400,WayForward_BBS_*_FastEcho_HQ,Greven,Tobias_Burchhardt,-Unpublished-,300,CM,XA,INA:fido.softeq.org,IBN,IFC,ITN:60177
+,401,fido.softeq.org,Greven,Tobias_Burchhardt,-Unpublished-,300,CM,XA,IBN,IFC,ITN:60177
+;
+Host,2452,Host_Altiplex,Merzenich,Dieter_Schauf,49-2421-981017,9600,CM,MO,XA,V34,V32B,V42B,HST,IBN,INA:ftn.doene.de
+,202,strickeranderl.org,Furth_im_Wald,Karl_Vogl,-Unpublished-,300,CM,MO,IBN,INA:strickeranderl.org
+,250,ftn.doene.de,Doene_Merzenich,Dieter_Schauf,49-2421-981017,9600,CM,MO,XA,V34,V32B,V42B,HST,IBN,INA:ftn.doene.de,U,NPK,ENC,NC
+,280,Lucy,Merzenich,Dieter_Schauf,-Unpublished-,300,MO,CM,IBN:24556,INA:lucy.doene.de
+,285,Dudiddel,Merzenich,Dieter_Schauf,-Unpublished-,300,MO,CM,IBN:24558,INA:dudiddel.doene.de
+,290,Wueppel,Merzenich,Doris_Schauf,-Unpublished-,300,MO,CM,IBN:24555,INA:wueppel.doene.de
+,413,AmigaXess,Georgsmarienhuette,Ingo_Juergensmann,49-5401-460094,9600,CM,XW,ZYX,IBN,INA:ftn.amigaxess.de
+,502,scara2,Prien,Ludwig_Bernhartzeder,-Unpublished-,300,MO,CM,IBN,INA:scara2.fidonetz.de
+;
+Host,2454,Temp_Host_2454,Daun,Joerg_Stadelhoff,-Unpublished-,300,IBN,CM,INA:binkd.prometheus-home.de
+,2,NEC_MR-Netz,Daun,Joerg_Stadelhoff,-Unpublished-,300,IBN,CM,INA:binkd.prometheus-home.de
+,119,Prometheus_Systems,Daun,Joerg_Stadelhoff,-Unpublished-,300,IBN,CM,INA:binkd.prometheus-home.de
+,919,binkd.prometheus-home.de,Daun,Joerg_Stadelhoff,-Unpublished-,300,IBN,CM,INA:binkd.prometheus-home.de
+;
+Host,2490,Franken_Network,Bamberg,Harald_Kamm,49-951-21554,9600,XX,CM,VFC,V32T,H16,X2C,X75
+,1,NC_2490,Bamberg,Harald_Kamm,49-951-21554,9600,XX,CM,VFC,V32T,H16,X2C,X75
+,2,NEC_2490,Bamberg,Harald_Kamm,49-951-21554,9600,XX,CM,VFC,V32T,H16,X2C,X75
+,3,NPK_2490,Oberfranken,Peter_Bernhardt,49-9281-75106,9600,CM,XX,X75
+Hub,3000,HUB_Bamberg,Bamberg,Harald_Kamm,49-951-21554,9600,XX,CM,VFC,V32T,H16,X2C
+,3045,Cyberia/2,Bamberg,Harald_Kamm,49-951-21554,9600,XX,CM,VFC,V32T,H16,X2C
+,3046,Cyberia/2,Bamberg,Harald_Kamm,-Unpublished-,300,CM,MO,INA:cyberia.dnsalias.com,IBN,IVM,IFT
+Pvt,3050,srv1.nrw1de.ksit.de,Leichlingen,Karlheinz_Schmidthaus,-Unpublished-,300,CM,MO,IBN,IVM,IFT
+;
+Region,25,United_Kingdom_&_Ireland,United_Kingdom_&_Ireland,Vince_Coen,-Unpublished-,300,XA,CM,IBN,IFT,INA:applewoodbbs.linkpc.net,INA:80.229.38.173,U,REC
+;
+Host,250,British_Net,United_Kingdom_&_Ireland,Vince_Coen,-Unpublished-,300,CM,XA,IBN,IFT,INA:applewood.linkpc.net,INA:80.229.38.173
+,1,Air_Applewood,Hatfield_Hertfordshire,Vince_Coen,-Unpublished-,300,XA,CM,IUC,IFC,IFT,ITN,IBN,INA:applewoodbbs.linkpc.net,INA:80.229.38.173,U,SDS,REC,ENC
+,2,The_Killing_Ground,Wrexham,Neil_Williams,-Unpublished-,300,MO,XX,IUC,IBN,INA:bbs.zeusdev.co.uk
+,4,Unicyber_BBS,Hitchin_Hertfordshire,Gonzalo_Ordas,-Unpublished-,300,XX,CM,IBN,ITN,IVM,INA:bbs.unicyber.co.uk
+,5,The_Quantum_Wormhole,Ramsgate_Kent,Christian_Sacks,-Unpublished-,300,XX,CM,IBN,INA:bbs.erb.pw
+,6,Winchester_BBS,Winchester,Charlie_Camilleri,-Unpublished-,300,XX,CM,ITN:6666,IFT:6621,IBN,INA:cvdcamilleri.dns05.com
+,8,Sonic_BBS,Beverley_E.Yorkshire,Louis_Northmore,-Unpublished-,300,XX,CM,IBN,INA:sonicbbs.ddns.net
+,10,Air_Applewood-Parallel-Backup,Hatfield_Hertfordshire,Vince_Coen,-Unpublished-,300,XA,CM,IUC,IFC,IFT,ITN,IBN,INA:applewoodbbs.linkpc.net,INA:80.229.38.173,U,SDS,REC,ENC
+,25,pavelreich.org,London,Pavel_Reich,-Unpublished-,300,CM,IBN,INA:fido.pavelreich.org
+;
+Host,263,Ireland_Net,Hatfield_Hertfordshire_UK,Vince_Coen,-Unpublished-,300,XA,IBN,ICM,IFT,INA:applewood.linkpc.net,INA:80.229.38.173
+,1,TCOB1,Connemara_EIRE,Sean_Rima,-Unpublished-,300,CM,XX,IBN,INA:bbbs.mooo.com
+;
+Region,28,Nederland,NL,Michiel_van_der_Vlist,-Unpublished-,300,MN,MO,CM,XW,IBN:fido.vlist.eu,IBN:fido4to6.vlist.eu,PING,U,ENC
+;
+Host,280,Nederland(303),Heerhugowaard,Kees_van_Eeten,-Unpublished-,300,CM,MO,XW,IBN:fido.ddutch.nl,U,ENC
+,311,MASH_BBS,NL,Ramond_de_Vrede,-Unpublished-,300,CM,MO,IBN:mash4077.ddns.net
+,464,FMail_DEV_fka_AOBL,Lisse,Wilfred_van_Velzen,-Unpublished-,300,CM,MO,IBN:fido.vlzn.nl,PING,U,ENC
+,1049,The_Coast,NL,Simon_Voortman,-Unpublished-,300,CM,MO,XA,IBN:thecoastbbs.nl
+,1203,Randstad,NL,Frank_de_Bruijn,-Unpublished-,300,CM,MO,XX,IBN:randstad.aconet.org
+,1208,UniCorn_BBS,Arnhem,Henri_Derksen,-Unpublished-,300,CM,MO,IBN:unicornbbs.demon.nl,U,ENC
+,2000,Alcatrash,Apeldoorn,Michael_Trip,-Unpublished-,300,CM,IBN:fido.alcatrash.org
+,5003,Double_Dutch,Heerhugowaard,Kees_van_Eeten,-Unpublished-,300,CM,MO,XW,IBN:fido.ddutch.nl,U,ENC
+,5006,Raspberry_Fido,Heerhugowaard,Kees_van_Eeten,-Unpublished-,300,CM,MO,IBN:fido6.ddutch.nl,INO4,U,ENC
+,5555,Nieuw_Schnoord,Driebergen,Michiel_van_der_Vlist,-Unpublished-,300,MN,MO,CM,XW,IBN:fido.vlist.eu,IBN:fido4to6.vlist.eu,PING,U,ENC,RPK,NPK,NC
+;
+Region,29,Belgium,Lier,Tom_De_Puysseleyr,-Unpublished-,300,CM,MO,INA:fido.braindeath.be,IBN
+;
+Host,291,Belgium,Koksijde,Bart_Verhaeghe,-Unpublished-,300,CM,MO,INA:fido.tsoh.be,INA:tsoh.fidonode.be,IBN,IFC,U,ENC
+Hub,1,West-Flemish_Hub,Koksijde,Bart_Verhaeghe,-Unpublished-,300,CM,MO,INA:fido.tsoh.be,INA:tsoh.fidonode.be,IBN,IFC,U,ENC,NC
+,100,The_Sources_Of_Hell_BBS,Koksijde,Bart_Verhaeghe,-Unpublished-,300,CM,INA:bbs.tsoh.be,IBN,IFC,U,ENC
+,111,CL_Fidonode,Bredene,Christoph_Lowagie,-Unpublished-,300,CM,MO,INA:cl.fidonode.be,IBN,IFC,U,ENC,NPK
+;
+Host,292,Belgie,Lennik,Niels_Joncheere,-Unpublished-,300,CM,MO,INA:fido.joncheere.be,IBN
+,789,The_Millennium_BBS,Lennik,Niels_Joncheere,-Unpublished-,300,CM,MO,INA:fido.joncheere.be,IBN,U,RPK,NPK
+Hub,80,Hub_80_(302),Belgie,Ward_Dossche,-Unpublished-,300,CM,MO,INA:many-glacier.dyndns.org,IBN,IFT,IMI,PING,U,ENC
+,854,Many-Glacier_(302),Mortsel,Ward_Dossche,-Unpublished-,300,CM,MO,INA:many-glacier.dyndns.org,IBN,IFT,IMI,PING,U,ENC
+Hold,140,AfterShock_Beta_Test_Site,Leuven,Rudi_Timmermans,-Unpublished-,300
+,610,Cabdrivers_BBS,Leuven,Eddy_Missoul,-Unpublished-,300,CM,MO,INA:cabdrivers.ddns.net,IBN
+,8125,BrainDeath_BBS,Lier,Tom_De_Puysseleyr,-Unpublished-,300,CM,MO,INA:fido.braindeath.be,IBN
+;
+Region,31,Region_Austria,A,Helmut_Renner,43-2282-79472,9600,XA,CM,V34,H16,V32T,VFC,IBN,INA:donhelmi.homeip.net,V110L,V110H,X75
+,2,DonHelmi's_Datendienst,A,Helmut_Renner,43-2282-79472,9600,XA,CM,V34,H16,V32T,VFC,IBN,INA:donhelmi.homeip.net,V110L,V110H,X75
+;
+Host,310,Vienna_Net,Vienna_A,Helmut_Renner,43-2282-79472,9600,XA,CM,V34,H16,V32T,VFC,IBN,INA:donhelmi.homeip.net,V110L,V110H,X75
+,31,fido.ricsi.priv.at,Vienna_A,Richard_Menedetter,-Unpublished-,300,CM,MO,XW,IBN,INA:fido.ricsi.priv.at,U,ENC
+,999,VIENNA-MATRIX,Vienna_A,Alexander_Payer,43-1-9221559,300,CM,XA,V90C,IBN,ITN,INA:viennamatrix.at
+;
+Host,313,Lower-Austria_Net,Gaenserndorf_A,Helmut_Renner,43-2282-79472,9600,XA,CM,V34,H16,V32T,VFC,IBN,INA:donhelmi.homeip.net,V110L,V110H,X75
+,41,DonHelmi's_Datendienst,Gaenserndorf_A,Helmut_Renner,43-2282-79472,9600,XA,CM,V34,H16,V32T,VFC,IBN,INA:donhelmi.homeip.net,V110L,V110H,X75,U,REC,RPK
+;
+Region,33,Italy,I,Fabio_Bizzi,-Unpublished-,300,CM,XA,MO,IBN,INA:mimac.bizzi.org
+;
+Host,331,Nord_Italia,Milano,Fabio_Bizzi,-Unpublished-,300,CM,XA,MO,IBN,INA:mimac.bizzi.org
+,51,bbs.bofh.it,Milano,Marco_d'Itri,-Unpublished-,300,ICM,XA,MO,IBN,IFC,ITN:60177,U,ENC
+;
+Host,335,Italia_Centro_Sud,Roma,Fabio_Bizzi,-Unpublished-,300,CM,XA,MO,IBN,INA:mimac.bizzi.org
+,206,MaxBBS,Salerno,Felice_Murolo,-Unpublished-,300,CM,XA,MO,IBN,INA:bbs.maxbbs.ml
+,364,Mimac_Rebirth,Roma,Fabio_Bizzi,-Unpublished-,300,CM,XA,MO,IBN,INA:mimac.bizzi.org,U,RPK,NPK,REC,NEC
+;
+Host,333,Triveneto_IT,Rovereto_Trento,Thomas_Bampi,-Unpublished-,300,CM,XA,MO,IBN,INA:velenobbs.net
+,808,VeleNo_BBs,Rovereto_Trento,Thomas_Bampi,-Unpublished-,300,CM,XA,MO,IBN,INA:velenobbs.net
+;
+Region,34,RC34,Spain,Angel_Ripoll,34-91-0000000,300,CM,IBN,ITN,IVM,INA:bbs.zruspas.org
+,888,filegate_Spain,Spain,File_Gate,91-0000000,300,CM,IBN,ITN,IVM,INA:bbs.zruspas.org
+,999,netechogate_Spain,Spain,Net_Echo_Gate,91-00000000,300,CM,IBN,ITN,IVM,INA:bbs.zruspas.org
+;
+Host,341,Castilla_Centro,Madrid,Angel_Ripoll,34-91-0000000,300,IBN,ITN,IFT,INA:bbs.zruspas.org
+Pvt,66,Zruspa's_BBS,Madrid,Angel_Ripoll,-Unpublished-,300,IBN,ITN,IFT,INA:bbs.zruspas.org
+Pvt,111,HispaMSX_BBS,Madrid,Carlos_Milan_Figueredo,-Unpublished-,300,IBN,ITN,IFT,INA:bbs.hispamsx.org
+Pvt,202,Vampire_BBS,Madrid,Antonio_Hernandez_Lopez,-Unpublished-,300,IBN,ITN,IVM,INA:bbs.vampirebbs.org
+Pvt,203,Bits_Lair_BBS,Madrid,Yeray_Arroitajauregui,-Unpublished-,300,IBN,ITN,IVM,INA:bitslair.voidlabs.com
+;
+Host,343,Xarxa_Catalana,Catalunya,Enric_Lleal_Serra,34-93-000000,300,ICM,IBN,ITN,IFT,INA:fido.beholderbbs.org
+Pvt,107,fido.beholderbbs.org,Badalona,Enric_Lleal_Serra,-Unpublished-,300,IBN,IFC,ITN,INA:fido.beholderbbs.org
+;
+Region,40,Israel,IL,Avshalom_Donskoi,-Unpublished-,300,CM,MO,IBN,INA:fido.vbd.su,INA:2992.mooo.com
+;
+Host,400,Medinat_Israel,IL,Avshalom_Donskoi,-Unpublished-,300,CM,MO,IBN,INA:fido.vbd.su,INA:2992.mooo.com
+,55,Nepilim_BBS,Tel-Aviv,David_Abutbul,-Unpublished-,300,CM,IBN,INA:nephilim.abutbul.com
+,333,Zero_Point_Station_#3,Netanya,Wadim_A._Sigalov,-Unpublished-,300,MO,CM,IBN:wasilij.no-ip.info
+,2992,AD,Haifa,Avshalom_Donskoi,-Unpublished-,300,CM,MO,IBN,INA:fido.vbd.su,INA:2992.mooo.com
+Hub,814,Gurman_IP_Station,Bat-Yam,Roman_Gurevitch,-Unpublished-,300,MO,CM,IBN,INA:gurman814.no-ip.info
+Pvt,813,Gurman_Station,Bat-Yam,Roman_Gurevitch,-Unpublished-,300,MO
+;
+Region,41,Greece,GR,Petros_Argyrakis,-Unpublished-,300,CM,MO,XX,INA:pargyrak.dyndns.org,IBN
+;
+Host,410,Hellas_Net,GR,Petros_Argyrakis,-Unpublished-,300,CM,MO,XX,INA:pargyrak.dyndns.org,IBN
+,9,VM/SP,Thessaloniki,Petros_Argyrakis,-Unpublished-,300,CM,MO,XX,INA:pargyrak.dyndns.org,IBN
+,303,The_Music_Ace,Amaliada,Christos_Athanasopoulos,-Unpublished-,300,CM,MO,XX,INA:fkamaliada.mooo.com,IBN
+;
+Region,42,Czech_Republic_and_Slovakia,CZ_SK,Viktor_Cizek,420-549211494,9600,XX,MO,CM,V32T,H16,X2S,V90S,X75,V110H,V110L,V120H,V120L,IFC,IBN,INA:fido.m19.cz
+;
+Host,420,Prague_Net,Praha,Robin_Karel_Popper,00-00-0000000,300,XA,CM,ITN,INA:popper.tone.cz
+,33,POPPER_Univerzal_BBS,Praha,Robin_Karel_Popper,00-00-0000000,300,XA,CM,ITN,INA:popper.tone.cz
+;
+Host,421,Morava_Net,Brno,Viktor_Cizek,420-549211494,9600,XX,MO,CM,V32T,H16,X2S,V90S,X75,V110H,V110L,V120H,V120L,IFC,IBN,INA:fido.m19.cz
+Hub,79,M19,Brno,Viktor_Cizek,420-549211494,9600,XX,MO,CM,V32T,H16,X2S,V90S,X75,V110H,V110L,V120H,V120L,IFC,IBN,INA:fido.m19.cz,U,NC
+,21,Monty's_Dept.,Brno,Stepan_Gabriel,-Unpublished-,300,XX,MO,CM,IFC,IBN,INA:fido.i-1.cz
+,790,M19,Brno,Viktor_Cizek,420-549211960,9600,XX,MO,CM,V32T,H16,X2C,V90C,IFC,IBN,INA:fido.m19.cz,U,NC
+,83,Nightside_of_Eden,Brno,Tomas_Nehybka,-Unpublished-,300,XX,CM,IBN,IFC,ITN:60177,INA:bbs.lan255.net
+,84,Texxar_Labs,Brno,Martin_Suchomel,-Unpublished-,300,XX,MO,CM,IFC,IBN,INA:fido.texxar.cz
+,840,Texxar_Labs,Brno,Martin_Suchomel,-Unpublished-,300,XX,MO,CM,IFC,IBN,INA:fido.texxar.cz
+;
+Host,423,Czech_NET,Chrudim,Martin_Arnost,420-469-638528,9600,XA,CM,H16,V32T,V34,VFC
+Hub,36,QA_Software_BBS,Chrudim,Martin_Arnost,420-469-638528,9600,XA,CM,H16,V32T,V34,VFC
+Down,112,Vampire_BBS,Mlada_Boleslav,Davor_Siklic,420-326-723632,9600,V32B,V42B,XA,CM
+Hub,81,GURU,Praha,Milos_Bajer,420-233341039,9600,INA:fido.bajer.cz,IBN,IFC,ITN:2030,IVM,V110L,V110H,V120L,V120H,X75,V90S,X2S,VFC,V32T,H16,XX,CM,U,NEC,REC
+,39,Plast_DATA,Tachov,Karel_Kral,-Unpublished-,300,XW,MO,CM,IBN,INA:f39.n423.z2.binkp.net
+,41,First_West_BBS,Marianske_Lazne,Jaromir_Zachata,-Unpublished-,300,CM,XX,IBN,ITN:6400,INA:fido.intell.net
+Pvt,80,fido.bajer.cz,Praha,Milos_Bajer,-Unpublished-,300,MO
+,120,Aleco_Experience_BBS,Praha,Martin_Ruzicka,420-222360199,9600,V34,VFC,V32,V42B,CM,XX,IFC,IBN,INA:bbs.alecoexp.cz
+,121,Pinkolinov,Tlucna,Jan_Pinkas,-Unpublished-,300,CM,XX,IBN,ITN:6400,INA:fido.pinkol.in
+;
+Region,45,Belarus,Mogilev,Alexey_Korotkov,375-222-634894,9600,CM,V90C,V42B,IBN,INA:82.209.239.18
+;
+Host,450,Sub_Zero,Minsk,Mitry_Matyushkov,-Unpublished-,300,CM,MO,IBN,IFC,INA:f1024.n450.z2.binkp.net
+Pvt,68,Gold_Fox_BBS,Minsk,Aliaksandr_Ilyin,-Unpublished-,9600,MO
+,102,X-Files_System,Minsk,Alex_Blagoveschensky,-Unpublished-,300,CM,MO,IBN,IFC,INA:f102.n450.z2.binkp.net
+Pvt,143,The_LazyEst_Mail_St,Minsk,Aliaksandr_Dzeshchanka,-Unpublished-,9600,ZYX,XX
+,1024,Sub_Zero,Minsk,Mitry_Matyushkov,-Unpublished-,300,CM,MO,IBN,IFC,INA:f1024.n450.z2.binkp.net
+;
+Host,4500,f1.n4500.z2.fidonet.by,Minsk,Evgeniy_Kozhuhovskiy,-Unpublished-,9600,CM,MO,IBN,INA:f1.n4500.z2.fidonet.by
+,1,f1.n4500.z2.fidonet.by,Minsk,Evgeniy_Kozhuhovskiy,-Unpublished-,9600,CM,MO,IBN,INA:f1.n4500.z2.fidonet.by
+;
+Host,451,Smoke_On_The_Water,Minsk,Victor_Pashkevich,-Unpublished-,9600,CM,MO,IBN,INA:f30.n451.z2.binkp.net
+,30,Smoke_On_The_Water,Minsk,Victor_Pashkevich,-Unpublished-,9600,CM,MO,IBN,INA:f30.n451.z2.binkp.net
+,31,Val's_Station,Grodno,Valera_Kolesnik,-Unpublished-,300,MO,CM,IBN,EMA:valkoles@gmail.com
+;
+Host,452,Gomel_Net,Mogilev_Belarus,Alexey_Korotkov,375-222-634894,9600,CM,V90C,V42B,IBN,INA:82.209.239.18
+Pvt,28,Fractal,Gomel,Anatoly_Ewseenko,-Unpublished-,300,MO
+Pvt,166,KozhedubLand,Gomel,Oleg_Kozhedub,-Unpublished-,300,MO
+;
+Host,453,Novopolotsk_Net,Mogilev_Belarus,Alexey_Korotkov,375-222-634894,9600,CM,V90C,V42B,IBN,INA:82.209.239.18
+Pvt,19,Crazy_Rocker,Novopolotsk,Nikolay_Staver,-Unpublished-,9600,MO,V34,H16,IBN,U,NEC
+;
+Host,455,Mogilev_Net,Mogilev_Belarus,Alexey_Korotkov,375-222-634894,9600,CM,V90C,V42B,IBN,INA:82.209.239.18,INA:f19.n455.z2.binkp.net
+,19,Unnamed,Mogilev,Alexey_Korotkov,375-222-634894,9600,CM,V90C,V42B,IBN,INA:82.209.239.18,INA:f19.n455.z2.binkp.net,U,NPK,RPK
+;
+Region,46,Ukraine_and_Moldova[305],Nikolaev_Ukraine,Yury_Roschupkin,380-512-374472,9600,V42B,IBN,IFC,XX,MO,ICM,INA:fido.mksat.net,TSG,U,DO4:binkp.net
+,12,Silver_Ghost,Donetsk,Dmitriy_Lyalyuev,00-00-000000,300,CM,MO,XA,IBN,INA:fido.lyalyuev.info
+,42,PRGStation,Kramatorsk,Vladimir_Fursov,00-00-000000,300,MO,IBN,INA:92.242.120.242,THP
+,49,EEStation,Tallinn_Estonia,Henri_Laan,-Unpublished-,300,CM,IBN,INA:fidotallinn.ddns.net
+,128,R46_Fidonet<->UUCP_gate,Kiev_Ukraine,Pavel_Gulchouck,00-00-000000,300,CM,MO,IBN,INA:fido.happy.kiev.ua,GUUCP
+,200,R46_Pointlist_Keeper,Kiev_Ukraine,Dmitriy_Polyakov,00-00-000000,300,CM,MO,IBN,INA:f200.n46.z2.binkp.net,XX,PING,U,RPK
+,5555,XStation,Dniepr,Oleg_Pevzner,-Unpublished-,300,MO,LO,IBN,IMI:fido@omp.dp.ua
+;
+Host,460,Crimea_Net,Simferopol_Crimea,Stas_Mishchenkov,7-3652-517638,300,CM,MO,IBN,INA:brorabbit.g0x.ru
+,58,Lame_Users_Breeding,Simferopol_Crimea,Stas_Mishchenkov,7-3652-517638,300,CM,IBN,INA:brorabbit.g0x.ru,PING,U,NPK,ENC
+,777,188.17.156.216,Krasnokamsk_Russia,Yaroslav_Primenko,-Unpublished-,300,CM,XA,IBN,INA:f777.n460.z2.binkp.net
+,1124,Sevas,Sevastopol_Crimea,Igor_Vinogradoff,-Unpublished-,9600,CM,XA,IBN,INA:sevas.xyz,U,ENC
+Pvt,5858,For_Technical_Perposes,Simferopol_Crimea,Brother_Rabbit,-Unpublished-,300,MO
+;
+Host,4600,Sebastopol_Net,Sebastopol_Crimea,Eugene_Glotov,00-00-000000,300,CM,MO,XA,IBN,INA:fidonet.glotych.com
+,140,White-Eagle_System,Sebastopol_Crimea,Eugene_Glotov,00-00-000000,300,CM,MO,XA,IBN,INA:fidonet.glotych.com
+;
+Host,461,Kharkov_Net,Kharkov,Jeff_MacLoue,380-57-7075333,9600,CM,MO,MN,IBN
+Hold,2,Anya_Lover,Kharkov,Vadim_Vasilenko,380-57-3435172,9600,V32B,V42B,XX,TWE
+,73,Old_Cook,Kharkov,Vadim_Marcus,380-57-3403907,9600,V32B,V42B,MO,TUF
+Down,76,NightWare,Kharkov,Vlad_Bakaev,380-57-7174020,9600,V32,V42B,XA,TWe
+,79,Maverick,Kharkov,Dmitry_Liman,00-00-000000,300,CM,IBN,IFC,PING,INA:leemon.no-ip.org
+,88,The_Thing,Kharkov,Anton_Serenko,380-57-7730219,9600,V32,V42B,XX,MO
+Hold,106,83.117.241.231,Kharkov,Vladimir_Lazarenko,00-00-000000,300,CM,IBN
+,116,Star_System,Kharkov,Vladislav_Vasilenko,380-572-972532,9600,V32B,TWE
+,122,SparkNet_Node,Kharkov,Slava_Chernov,380-57-3433857,9600,V32B,MO,XA,TWE
+,136,Greek,Kharkov,Maxim_Golovashevich,380-57-3362217,9600,V32B,V42B,XX,TAF
+,1024,PI_Station,Kharkov,Alexander_Grinevich,380-57-7125310,9600,V32B,V42B,CM,XX,IBN
+Hold,1100,Alcarinque,Kharkov,Mihail_Levandowsky,380-57-7242575,9600,V32B,V42B,XX,TUg
+Hub,43,f43.n461.z2.fidonet.net,Kharkov,Jeff_MacLoue,380-57-7075333,9600,CM,MO,MN,IBN
+,125,GV,Kharkov,Roman_Tyzhnenko,380-57-7412393,9600,V32B,V42B,VFC,XX,TSG
+,169,MustDie'98,Kharkov,Jeff_MacLoue,380-57-7006412,2400,XA,MO,IBN,INA:home.macloue.com,U,NC
+,800,GeoEngineer,Kharkov,Oleg_Tsebenko,380-57-7175393,33600,V34,MO,MN,TTF
+,1148,Diamond_Station,Kharkov,Eugene_Belogurov,380-572-927036,14400,V32B,TWE
+,1313,Technojoke_division_Postoffice,Kharkov,Ivan_A_Ufimtsev,380-572-650248,33600,HST,VFC,V32T,V34,V42B,MO,LO,Txe
+Hub,48,Big_Worm_station,Kharkov,Maxim_Beloivanenko,380-57-7153419,28800,ICM,V34,V32B,IBN,IFC,TUF,U,NPK
+,299,TAG_McLaren_Team,Kharkov,Vadim_Pudovkin,380-57-7140446,33600,V34,V32B,V42B,XA,MO,TVX
+Hub,58,FaxStuff,Kharkov,Oleg_Kapustenko,380-57-7519930,9600,V32B,V42B,V34,MO,LO,TRF
+,9,ENTER,Kharkov,Leonid_Mehanikov,380-57-7060315,9600,V32B,V42B,MO,LO,XA,TUF
+,66,Click-Clack,Kharkov,Vadim_Yavorovich,380-572-938641,9600,V32B,V42B,XA,TWF
+,141,Oleg_Nadtochy,Kharkov,Oleg_Kapustenko,380-57-7141641,9600,V32B,V42B,MO,XA,TSF
+,777,Stiv,Kharkov,Igor_Stezenko,380-57-7149687,9600,V32B,V42B,MO,LO,Tce
+Hub,145,Uni.Com.UA,Kharkov,Alex_Seluyanov,00-00-000000,300,MO,XA,IFC,IBN,CM
+Pvt,7,minya.mine.nu,Kharkiv,Minas_Narazyan,-Unpublished-,300,MO,IFC,TSe
+,32,xL_Station,Kharkov,Alexander_Gerasimov,380-57-3379456,33600,V42B,V32B,V34,XA,TUF
+,67,f67.n461.z2.fidonet.net,Kharkov,Igor_Evdokimov,00-00-000000,9600,CM,MO,IBN
+,112,ES_Mail_System,Kharkov,Eugene_Sodin,00-00-000000,300,MO,CM,IBN,INA:sodin.homeip.net
+,144,Alex44.Uni.Com.UA,Kharkov,Alex_Seluyanov,00-00-000000,33600,V34,MO,IFC,IBN,CM
+,207,Shadow_Station,Kharkov,Anatoly_Balanovsky,380-57-7459344,9600,V34,V42B,XA,TVF
+,416,The_Plain_Vanilla_BBS,Kharkov,Sergey_Goudzenko,380-57-7050448,9600,V32B,V42B,LO,XX,TUF
+Hub,444,Black_Star_MS,Kharkov,Alex_Krasnyansky,380-57-7599618,33600,V34,V42B,IBN,IFC,MO,LO,MN,CM
+,16,LRnI,Kharkov,Roman_Litvinov,380-572-523034,9600,V42B,XA,TVE
+,68,Jne_Station,Kharkov,Eugene_Bludov,380-572-681534,9600,V32B,V42B,XA,TVG
+,69,Juzy,Kharkov,Sergiy_Frolov,00-00-000000,300,MO,CM,IBN,INA:juzy.no-ip.org
+,117,Little_Mermaid,Kharkov,Eugene_Borisovets,380-66-1345853,9600,V32B,V42B,V34,MO,XA
+Pvt,132,Intellect_Group,Kharkov,Vitaly_Polikarpov,-Unpublished-,300,MO,LO
+,155,Fit_Station,Kharkov,Alexey_Korop,00-00-000000,300,CM,IBN:443,INA:avkorop.dyndns.org
+,230,Damage_Inc,Kharkov,Roman_Gorbunov,380-572-630827,33600,V34,MO,XA,Tde
+,333,Manastyr_Station,Kharkov,Sergey_Sosnovsky,380-572-929032,9600,V32B,V42B,MO,XA,TWF
+,430,Grono,Kharkov,Yurik_Goncharenko,380-572-689282,9600,V32,V34,V42B,XA,TWF
+,435,f435.n461.z2.fidonet.net,Kharkov,Alex_Krasnyansky,380-57-7329333,33600,V34,V42B,IBN,IFC,ICM,MN,IEM:fido@scana.net.ua
+,512,Space_Shuttle,Merefa,Michael_Antonov,380-57-7483219,33600,V34,V32B,V42B,XX,TVB
+,520,SVix_System,Kharkov,Victor_Seredenko,380-572-512887,33600,V90C,V32B,V42B,TVd
+,525,Chairwarmer,Kharkov,Vladimir_Epifanov,380-57-7328315,9600,V34,V32B,V42B,MO,XX,TWF
+,605,f605.n461.z2.fidonet.net,Kharkov,Nickolas_Hirgiy,00-00-000000,33600,MO,LO,CM,IBN
+,613,Panther_Pillow,Kharkov,Alexander_Veprik,380-572-972783,33600,V32B,V34,XX,TVX
+,2100,Solange,Kharkov,Serge_Boshchenko,380-57-7101978,9600,V32B,TCE
+Hub,640,f640.n461.z2.fidonet.net,Izyum,Alex_Semenyaka,380-5743-28599,9600,V32,MO,MN,IBN,IFC,ITN:60177
+,13,CompASS_BBS,Izyum,Oleg_Deribas,380-5743-24288,9600,V32B,V34,V42B,VFC,XX,TVH
+,28,altor.sytes.net,Kharkov,Alexander_Torres,00-00-000000,300,MO,CM,IBN
+,33,f33.n461.z2.fidonet.net,Kharkov,Andrey_Gerasimov,00-00-000000,300,CM,IFC,IBN,IVM
+,47,4F_Group,Kharkov,Stas_Filshtinskiy,00-00-000000,300,MO,CM,IBN,INA:f47.n461.z2.fidonet.net
+,139,Rony_System,Izyum,Roman_Kirilko,380-5743-24467,9600,V32B,V34,V42B,VFC,TWF
+;
+Host,4614,Sumy_Net,Sumy_Ukraine,Vladimir_Sklyar,00-00-000000,300,MO,CM,IBN,IFC
+Hub,20,cservice.dlinkddns.com,Konotop_Ukraine,Vladimir_Sklyar,00-00-000000,300,MO,CM,IBN,IFC,INA:cservice.ddns.ukrtel.net
+,12,JZ_Sumy,Sumy_Ukraine,Jan_Zalavski,00-00-000000,300,MO,CM,IBN,INA:77.120.199.195
+;
+Host,4616,Severodonetsk/Lisitchansk/Rubezhnoje,Severodonetsk,Sergey_Sryvkin,380-6452-36724,9600,CM,MO,V34,VFC
+,65,Siba,Severodonetsk,Sergey_Sryvkin,380-6452-36724,9600,MO,V34,V42B,TUW,U,NC
+;
+Host,4623,Precarpathian,Ivano-Frankivsk_Ukraine,Victor_Kakhnych,00-00-000000,9600,MO,CM,IBN,INA:tim.net.ua
+,178,Precarpathian,Ivano-Frankivsk_Ukraine,Victor_Kakhnych,00-00-000000,9600,MO,CM,IBN,INA:tim.net.ua,U,NC,NEC,NPK
+;
+Host,4624,Khmelnitsky_Net,Khmelnitsky_Ukraine,Vyacheslav_Vovk,380-38-2-765313,9600,ZYX,XX,V34
+Hub,8,Digital_Flower,Khmelnitsky_Ukraine,Vyacheslav_Vovk,00-00-000000,300,XX,CM,MO,INA:fido.km.ua,IBN,IFC,U,NEC
+,18,TAX_Station,Khmelnitsky_Ukraine,Gennadiy_Serdjuk,380-38-2-720791,9600,ZYX,XX,MO
+,34,Home_Station,Khmelnitsky_Ukraine,Jhenya_Belous,380-38-2-765991,9600,V34,MO,XX
+,666,PlanStation,Khmelnitsky,Vova_Dmitrishin,00-00-000000,300,ICM,IBN,INA:46.63.89.115
+Hub,4624,Virtual_NetMail_HUB,Khmelnitsky_Ukraine,Vyacheslav_Vovk,380-38-2-720705,9600,MO,LO,V34
+;
+Host,463,Ukraine_Capital_[196],Kiev,Alexander_Yakusha,-Unpublished-,300,CM,IBN,INA:fido.porteq.com.ua
+,1104,Rosa_Station,Kiev,Yuriy_Dionizov,-Unpublished-,300,CM,MO,IBN,IFC,IFT,INA:rosastation.ddns.net
+,1331,Hugayda_Station,Kiev,Andrei_Dzedolik,-Unpublished-,300,CM,IBN,INA:hugayda.aid.in.ua
+,3232,Luna_Station,Kiev,Vitaliy_Aksyonov,-Unpublished-,300,IBN,INA:f3232.n463.z2.binkp.net
+Hub,68,Lucky_Carrier,Kiev,Pavel_Gulchouck,-Unpublished-,300,IBN,INA:fido.happy.kiev.ua,IMI:fnet@gul.kiev.ua,MO,XA,CM,PING
+,407,Green_Hell,Kiev,Andrey_Elperin,-Unpublished-,300,MO,CM,IBN
+,877,bbs.ncc.org.ua,Kiev,Alex_Shuman,380-44-5705780,33600,V90C,V42B,ICM,XX,IBN,IFC,ITN,Tse
+Down,1963,IPMS_IT,Kiev,Nicolas_Minakov,-Unpublished-,300,MO,IBN,INA:boss.materials.kiev.ua
+Hub,94,Just_The_Pooh,Kiev,Sergii_Babych,-Unpublished-,300,MO,CM,IBN,INA:fido.babitch.com
+,532,Mobile_Station,Kiev,Tolik_Piskov,-Unpublished-,300,MO,CM,IBN,IFC,INA:212.26.144.6
+,1919,Magnum_Station,Kiev,Alexander_Yakusha,-Unpublished-,300,CM,IBN,INA:fido.porteq.com.ua
+Pvt,587,Dark_Dragons'_Citadel,Kiev,Shannar_de_Kassal,-Unpublished-,300,MO,U,NEC
+Hub,2223,GraveyarD,Kiev,Dmitriy_Polyakov,00-00-000000,300,MO,CM,IBN,INA:f2223.n463.z2.binkp.net,XX,PING,U,NPK
+,416,Atlantida,Kiev,Alexander_Pedin,380-44-4432476,19200,V32T,V42B,XX,MO,Tvd
+;
+Host,4634,ChernigoNet,Chernigov&Bakhmach,Xander_Plaunoff,380-4622-59684,33600,V34,V42,TUF
+Down,1,Jura_BBS,Bakhmach_Chernigov,Jura_Lagno,380-4635-21133,33600,V34,XX,CM
+,2,Link,Bakhmach_Chernigov,Vitaliy_Semerenko,380-4635-52755,33600,V90C,V32B,V42B,XX,IP
+,3,Xander25ua,Chernigov,Xander_Plaunov,380-4622-59684,33600,XX,MO,V34,V42B,TUF,U,NEC,NPK
+,4,Vurd&AX_BBS,Chernigov,Sergo_Stecenko,380-462-174516,14400,XX,V34,IP
+Down,5,BrahMa_Station,Chernigov,Yaroslav_Mudriy,380-462-954371,14400,XX,MO,V34,V42B
+Down,13,Cloud_Station,Chernigov,Nickolas_Olexienko,380-4622-27196,33600,V34,V42B,XX,MO
+;
+Host,4635,Cherkassy_Net,Cherkassy_Ukraine,Vitaliy_Aksyonov,00-00-000000,300,MO,CM,IBN,U,DO4:binkp.net
+,32,Luna_Station,Cherkassy_Ukraine,Vitaliy_Aksyonov,00-00-000000,300,MO,CM,IBN,INA:f32.n4635.z2.binkp.net,U,NC
+,69,Sexaginta_novem,Cherkassy_Ukraine,Eugene_Diatlov,00-00-000000,300,MO,IBN,INA:fido.partizan.ua
+;
+Host,4641,Zaporozhye_Net,Zaporozhye_UA,Andy_Karimov,00-00-000000,300,IBN,XX,MO,CM,INA:ftn.nictasoft.com
+,222,Nicta_Lab,Gulaypole,Andy_Karimov,00-00-000000,300,CM,MO,XA,IBN,INA:ftn.nictasoft.com,U,NC
+,265,Pilot_BBS,Pology_UA,Vlad_Lagoda,380-6165-23470,33600,V34,MO,IP,CM
+;
+Host,4642,Krivbass_Net,Kriviy_Rih_Ukraine,Alexander_Gribanov,380-564-280395,9600,XX,MO,V32B,V42B,IBN,TVe
+Pvt,4,KGGMK,Kriviy_Rih,Yuriy_Temnyuk,-Unpublished-,33600,V34,V42B,XW,MO,IUC:yuka@ua.fm,IMI
+,7,EduNet,Kriviy_Rih,Sergey_Semerikov,00-00-000000,33600,IBN,INA:213.227.223.148,PING,TKC,U,ENC,SMH
+,8,Private_Problems_BBS,Kriviy_Rih,Sergey_Paradeev,00-00-000000,19200,XX,MO,IBN,CM
+,29,Small_Station,Kriviy_Rih,Alexandr_Arkhipenko,380-564-952510,33600,XX,MO,V34,V42B,TUd
+,48,VH,Kriviy_Rih,Igor_Urdin,00-00-000000,9600,CM,MO,IBN
+,49,Programming_Group_Station,Kriviy_Rih,Alexander_Gribanov,380-564-280395,9600,XX,MO,V32B,V42B,IBN,TVe,U,NC
+Pvt,92,Chronos,Kriviy_Rih,Igor_Smagliuk,-Unpublished-,9600,XW,MO,V32B,V42B
+Down,1111,NIK_STATION,Kriviy_Rih,Nikolay_Mikolenko,380-564-907019,9600,XX,MO,V34
+Down,2213,Red_Miner,Kriviy_Rih,Alexander_Grinjuk,380-564-740951,9600,XX,CM,V32B,V42B,U,NEC
+;
+Host,4647,West_Donbass_Net,Pavlograd_Ukraine,Mike_Rumyantsev,00-00-000000,9600,MO,IBN
+,13,RENIXA,Pershotravensk_UA,Mike_Rumyantsev,00-00-000000,9600,MO,TTX,IBN,IEM:renixa-1959@mail.ru,U,NC,NEC,NPK
+Down,34,PromInvestBank,Pavlograd,Igor_Zhuchiy,380-5632-44145,9600,V32B,V42B,MO,XA,TVe
+Down,1959,RENIXA-1959,Pershotravensk_UA,Mike_Rumyantsev,-Unpublished-,9600,V34,V42B
+;
+Host,466,Nikolaev_Net,Nikolaev_Ukraine,Yury_Roschupkin,380-512-374472,9600,V42B,IBN,IFC,XX,MO,ICM,INA:fido.mksat.net,TSG
+Hub,50,Ivory_Place,Nikolaev,Yury_Roschupkin,380-512-374472,9600,V42B,IBN,IFC,XX,MO,ICM,INA:fido.mksat.net,TSG
+,4,Snakes_Lair,Nikolaev,Igor_Goroun,00-00-000000,300,MO,CM,IBN,INA:fido.snake.mk.ua
+Pvt,5,KCIC,Nikolaev,Maxim_Virshubsky,-Unpublished-,300,MO
+Pvt,55,Equilibrium,Nikolaev,Yury_Roschupkin,-Unpublished-,300,MO,LO
+,65,Astra,Nikolaev,Yuri_Protsyuk,00-00-000000,300,MO,CM,IBN,INA:procsys.ddns.mksat.net
+,81,FQC,Nikolaev,Yuri_Chudnovsky,00-00-000000,300,MO,CM,IBN,INA:fqc.pp.ua
+Pvt,88,Pulp_Fictions,Nikolaev,Boxa_Vasilyev,-Unpublished-,9600,MO,V42B
+,466,Fidonet_Online_BBS,Nikolaev,Yury_Roschupkin,00-00-000000,300,MO,CM,IBN,INA:fidonet-online.org
+;
+Host,467,Spenta_Armaiti,Odessa,Igor_Polischuk,00-00-000000,300,CM,MO,IBN,IFC,INA:f70n467.asuscomm.com
+Pvt,26,Kaggi_Karr,Odessa,Leonid_Karpichev,-Unpublished-,300,XX,MO
+,64,RndHome_Line#2,Odessa,Alexander_Nemchenko,380-482-633162,33600,V34,V32B,V42B,XX,TWE
+Pvt,69,GOLTA_BBS,Odessa,Alexander_Banketov,-Unpublished-,300,XX,MO
+,70,Spenta_Armaiti,Odessa,Igor_Polischuk,00-00-000000,300,CM,MO,IBN,IFC,INA:f70n467.asuscomm.com,U,NEC
+Pvt,99,Miracle_Source,Odessa,Slavik_Gnatenko,-Unpublished-,300,XX,MO
+,239,Xoomoh,Odessa,Mykhailo_Kapitanov,-Unpublished-,300,CM,IBN,INA:fido.redcat.link,U,NPK
+,1313,Sly_Station,Odessa,Vladimir_Kravets,00-00-000000,300,CM,MO,IBN,INA:f1313n467.no-ip.org
+;
+Host,469,Moldova_Net,Moldova,Dimmy_Timchenko,373-22-271982,9600,MO,XA,V34,V42B,IBN,IFC,TEI,U,ENC,SMH
+,15,Dimmy's_Tation,Chisinau,Dimmy_Timchenko,373-22-271982,9600,MO,XA,V34,V42B,IBN,TNS,U,ENC,SMH
+,43,HoMo_Connecticus,Chisinau,Victor_Korjan,373-22-525939,9600,V34,VFC,V32B,V42B,XA,MO
+,75,Leisure,Chisinau,Sergey_Semenyuk,373-22-245467,9600,V32B,V42B,CM,MO
+,76,Damage_Inc.,Chisinau,Serg_Railyan,373-22-739812,9600,V32B,XA,MO
+,83,KAA_Work,Chisinau,Andrew_Kant,373-22-544386,9600,V32B,V42B,CM,MO,XX,IFC
+Pvt,100,Express,Chisinau,Andrew_Barcari,-Unpublished-,9600,MO,ZYX,XA
+,106,ER1HH,Chisinau,Vadim_V._Kiisvik,373-22-274020,9600,V34,V42B,MO,TXd
+,122,UnderWorld,Chisinau,Sergey_Zabolotny,-Unpublished-,300,CM,MO,IBN,INA:fidonet.zuram.net
+,136,Hyper_Station,Chisinau,Gennadiy_Galmezianov,373-22-223284,9600,MO,XA,V34,V42B,TTd
+,137,Big_Man,Chisinau,Andrei_Racila,373-22-792335,9600,MO,XA,V34,V42B
+,147,Riscom,Chisinau,Andrei_Barcari,373-22-200200,9600,V90S,MO,XA,CM,ISDN
+,175,UNIGLOBAL,Chisinau,Sergey_Semenyuk,373-22-753610,9600,V32B,V42B,MO,TWE
+,192,South_MailSystem,Cahul,Alexandr_Casianov,373-299-24731,9600,XX,MO,V34,V42B,TRu
+,335,Silver_Dream,Chisinau,Andrei_Mihailov,-Unpublished-,9600,IBN,INA:f335.n469.z2.dyn.binkp.net,CM
+,418,fido.causeni.com,Kaushany,Gregory_Motruk,373-243-23977,33600,V34,V42B,MO,XA,IBN,IMI:fido@causeni.com,IUC,U,CDP
+Hub,142,Dragon's_Node,Tiraspol,MaxiM_Basunov,373-533-62040,9600,MO,CM,XX,V90S,V42B,IFC,IBN,U,NEC
+,1,Hunter,Chisinau,Pavel_Alexey,373-22-500286,9600,V34,MO,XA,TUG
+,123,HardSoft,Tiraspol,Andy_Mirkin,373-533-72793,9600,V32B,V42B,MO,XX,TTG
+;
+Region,48,RC_Poland,PL,Lukasz_Jachowicz,-Unpublished-,300,CM,MO,IBN,INA:fido.bajtek.org,U,ENC
+;
+Host,480,Mazovia_Net,Warsaw_PL,Lukasz_Jachowicz,-Unpublished-,300,CM,MO,IBN,INA:fido.bajtek.org,U,ENC
+,25,Top_Secret_BBS,Warszawa,Lukasz_Jachowicz,-Unpublished-,300,CM,MO,IBN,INA:bbs.bajtek.org,U,ENC
+Hold,33,HoA/2,Warszawa,rafal_wiosna,-Unpublished-,300,CM,MO,IBN,INA:fido.orfika.net
+,66,Go@LAB,Warszawa,Mateusz_Golab,-Unpublished-,300
+,70,NEC-REC-i-BUC,Warszawa,maciej_grzeszczuk,-Unpublished-,300,CM,INA:fido.krap.pl,IBN,IFC,U,REC
+,78,Endemic_Zone,Warszawa,Tomasz_Andrzej_Nidecki,-Unpublished-,300
+Hold,124,uucp.freebsd.lublin.pl,Lublin,Przemyslaw_Frasunek,-Unpublished-,300,CM,MO,IBN,INA:uucp.freebsd.lublin.pl
+Hold,138,fido.chmurka.net,Warszawa,Adam_Wysocki,-Unpublished-,1200,CM,MN,V22,IBN,ITN,INA:fido.chmurka.net
+;
+Host,484,Silesia_Net,Warsaw_PL,Lukasz_Jachowicz,-Unpublished-,300,CM,MO,IBN,INA:fido.bajtek.org,U,ENC
+,43,BroneCk_BBS,Opole,Marek_Bronowicki,-Unpublished-,300,CM,MO,IBN,INA:bbs.bookroom.pl
+;
+Host,4800,Poland_Net,Warsaw_PL,Lukasz_Jachowicz,-Unpublished-,300,CM,MO,IBN,INA:fido.bajtek.org,U,ENC
+,1,honey_at_home,Warszawa,Lukasz_Jachowicz,-Unpublished-,300,CM,MO,IBN,INA:fido.bajtek.org,U,ENC
+Hold,2,leafnode,Warszawa,Leszek_Krupinski,-Unpublished-,300,CM,MO,IBN,INA:ame.leafnode.pl
+Hold,7,wpk,Warszawa,Witold_Krecicki,-Unpublished-,300,CM,MO,IBN,INA:fido.culm.net
+Hold,32,MHKI_BBS,Katowice,robert_jakub,-Unpublished-,300,CM,MO,IBN,XA,INA:mhki.project2.pl
+,42,q,Warszawa,robert_jakub,-Unpublished-,300,CM,MO,IBN,IFC,XA,INA:fido.project2.pl,U,RPK
+,80,Z80,Warszawa,Adam_Nojszewski,-Unpublished-,300,CM,MO,IBN,INA:bbs.z80.pl
+;
+Region,50,Russia,Moscow,Alex_Barinov,-Unpublished-,300,CM,IBN,INA:fido.hubahuba.su
+,1,R50EC,Moscow,Alex_Barinov,-Unpublished-,300,MO,MN,CM,IBN,INA:fido.hubahuba.su
+,2,R50FEC,Moscow,Oleg_Blashuck,-Unpublished-,300,XA,CM,IBN,INA:1200.metal.ru
+,4,Regional_Pointlist_Keeper,Stary_Oscol,Evgeny_Vetrov,-Unpublished-,300,CM,IBN,INA:wayfarer.no-ip.info,U,RPK
+,5,Moon-Station,Kirov,Anton_Farafonov,-Unpublished-,300,EMA:suminia@mail.ru
+,6,GRF_State_System,New-Urgal,Pavel_Sizykh,-Unpublished-,300,CM,MO,XX,IBN,INA:f6.n50.z2.binkp.net
+,15,Esquire_Station,Zheleznogorsk,Vladimir_Fyodorov,-Unpublished-,300,CM,MO,IBN,INA:46.22.251.138,IEM:fido6035@list.ru,PING,IMI,U,ENC
+,16,Cactus3D,Okha,Serge_Antoshkin,-Unpublished-,300,CM,IBN,INA:fido.okhahome.com
+,72,s.system.pvt,Vladivostok,Sergey_Lazaretov,-Unpublished-,300,CM,IBN,INA:fido72.shad.su
+,101,Abrachass_Station,Krasnodar,Vladimir_Zykov,-Unpublished-,300,CM,MO,IMI,IEM:vladimirst@yandex.ru
+,109,Deforestation,Irkutsk,Anatoly_Gerasimov,-Unpublished-,300,MO,CM,IBN,INA:tortuga.angarsk.su
+,279,ETALAN_BBS,Irkutsk,vadim_s._sabinich,-Unpublished-,300,CM,IBN,INA:fidonet.sabini.ch
+,361,Avia_Station,Ahtubinsk,Igor_Bovdy,-Unpublished-,300,CM,IFC,INA:fido.ahtubinsk.ru
+,448,Elinora_Station,Shchyolkovo,Sergey_Dorozhkin,7-496-250-25-03,9600,HST,V32T,V34,VFC,CM,MO,XX,ITN:60177,IFC:60179,IBN:24554,INA:642e051d207d.sn.mynetname.net
+,9999,R50_Hold,Moscow,Alex_Barinov,-Unpublished-,300,MO,IEM:huba715@yandex.ru,IMI,ICM
+;
+Host,5000,West_Siberian_Net(224),Novosibirsk_Russia,Oleg_Redut,-Unpublished-,300,MO,#20,IBN,ICM,INA:n5000.fidoweb.ru
+Pvt,10,The_Court_of_the_Crimson_King,Novosibirsk,Eric_Fletcher,-Unpublished-,300,MO
+,14,Fox_Tracks,Novosibirsk,Eugene_Muzychenko,-Unpublished-,300,ICM,IMI:fido@muzychenko.net
+,22,f22.n5000.z2.binkp.net,Abakan,Evgeny_Larionov,-Unpublished-,300,CM,MO,IBN,INA:f22.n5000.z2.binkp.net
+,28,AmxHome,Novosibirsk_Russia,Sergei_Podstrigailo,-Unpublished-,300,CM,IBN,INA:f28.dxsoft.com
+,32,Twin_Father,Novosibirsk,Victor_Cheblukov,-Unpublished-,300,CM,MO,IBN,INA:n5000.fidoweb.ru
+,63,The_Walking_Station,Novosibirsk,Igor_Logvinov,-Unpublished-,300,CM,MO,EMA:fido.2.5000.63@gmail.com
+Pvt,72,HELIUM,Novosibirsk,Konstantin_Gilyov,-Unpublished-,300,MO
+,77,Qwerty_BBS,Novosibirsk_Russia,Igor_Qwerty,-Unpublished-,300,ICM,IMI:qwerty@telecom.kz
+Down,81,Shark,Novosibirsk_Russia,Ivan_Sharov,-Unpublished-,300,CM,IBN,IFC,INA:shark.nnet.ru
+,83,Advance_Guard,Novosibirsk,Alexey_Petrovich,-Unpublished-,300,CM,IBN,INA:fido.a-petrovich.ru
+,85,SuperNova,novosibirsk,ilia_chabourov,-Unpublished-,300,CM,IMI,IEM:nim-mo@bk.ru
+,94,IVAn,Novosibirsk,Igor_Anohin,-Unpublished-,300,CM,MO,IBN,INA:f94.n5000.z2.binkp.net
+,99,Jester's_Station,Novosibirsk,Dmitry_Kazantsev,-Unpublished-,300,CM,MO,IMI:fido@jester.ru
+,111,Byte_Ltd,Novosibirsk,Oleg_Redut,-Unpublished-,300,XA,MO,CM,#20,IBN,IFC,INA:byte.nsk.su,U,NC
+,133,Aragorn_Station,Novosibirsk,Mikhail_Zanger,-Unpublished-,300,U,MOB
+,151,Cluster_One,Novosibirsk,Ivan_Lebedev,-Unpublished-,300,CM,IBN,INA:fido.ivan-lebedev.ru,U,NPK
+Hold,196,pseudoRADIO,Novosibirsk,Eugene_Sharov,-Unpublished-,300,CM,IBN,INA:fido.pseudoradio.ru
+,200,SHUMWAY_SYSTEMS,Novosibirsk,Alexey_Shevchenko,-Unpublished-,300,CM,MO,IBN,INA:fido.iccw.ru
+,222,Mascot_Station,Novosibirsk,Kostya_Geniatulin,-Unpublished-,300,CM,#20,IBN,INA:n5000.fidoweb.ru
+Down,245,ArtMonsterBBS,Novosibirsk,Artem_Moiseev,-Unpublished-,300,CM,MO,IBN,INA:n5000.fidoweb.ru
+,280,Arsenal_FS,Novosibirsk,Artem_Butorin,-Unpublished-,300,CM,#20,IBN,INA:n5000.fidoweb.ru
+,283,fido,Novosibirsk,Pavel_Zhdanov,-Unpublished-,300,CM,MO,IBN,INA:n5000.fidoweb.ru
+,363,Nodelist_Mistake,Novosibirsk,Alexander_Anistratenko,-Unpublished-,300,CM,IBN,INA:scw.anistratenko.net
+,444,Pupkin_Labs,Novosibirsk,Peter_Khanin,-Unpublished-,300,XX,MO,ICM,IFC,IBN:24555,INA:f444.n5000.z2.homelabs.org
+;
+Host,5001,Kuzbass_Net,Kemerovo_West_Siberia_Russia,Pasha_Zakharov,7-384-261-3047,9600,XA,#20,V32B,V42B,TQx
+,3,MicroMagic,Kemerovo,Pasha_Zakharov,7-384-261-3047,9600,MO,XA,V32B,V42B,#20,TQx
+,74,Nail`s_Station,Kemerovo,Nail_Akhmetgaleev,-Unpublished-,300,CM,IBN,INA:94.251.61.202
+Hub,100,Postmortem,Kemerovo,Dmitry_Protasoff,-Unpublished-,300,CM,IBN,INA:f100.5001.ru
+,5001,fido5001,Kemerovo,Dmitry_Protasoff,-Unpublished-,300,CM,IBN,INA:f100.5001.ru
+;
+Host,5003,Komi_Net,Vorkuta,Den_Gusev,-Unpublished-,300,CM,IBN,INA:vorkuta.net
+,16,Crazy_Programmer,Inta,Sergey_Potashev,-Unpublished-,300,CM,IBN,INA:176.113.52.121
+,17,Virtual_Node,Vorkuta,Den_Gusev,-Unpublished-,300,CM,IBN,INA:vorkuta.net
+,47,Lion_Station,Vorkuta,Yuri_Kislitsyn,-Unpublished-,300,CM,IBN,INA:83.234.158.64
+,74,DarkBBS,Inta,Andrey_Semenov,-Unpublished-,300,CM,IBN,INA:188.94.172.154
+;
+Host,5005,Tomsk_Net,Tomsk_Russia,Victor_Sudakov,-Unpublished-,300,CM,MO,IBN,INA:fido.sibptus.ru
+Hold,14,Gates_of_Babylon,Tomsk,Pavel_Gubin,-Unpublished-,300,CM,MO,IBN,INA:fido14.2lazy.ru
+,33,Sigma_BBS,Tomsk,Evgeny_Zyatkov,-Unpublished-,300,CM,MO,IBN,INA:fido.evg33.ru
+,49,Ulthar,Tomsk,Victor_Sudakov,-Unpublished-,300,CM,MO,IBN,INA:fido.sibptus.ru
+,53,Seversk_BBS,Tomsk,Sergey_Grigoryev,-Unpublished-,300,CM,MO,IBN,INA:fido.sib.tom.ru
+,61,Inferno_Station,Tomsk,Pavel_Zinoviev,-Unpublished-,300,CM,MO,IBN,INA:fido.gnomus.ru
+Hold,67,Solwo,Tomsk_SPb,Alexey_Varlamov,-Unpublished-,300,ICM,XA,MO,INA:solwo.ru,IBN,IFC
+,77,pLutonia,Tomsk,Valery_Lutoshkin,-Unpublished-,300,CM,MO,IBN,INA:fido.pluto.pw
+,82,Alltsk,Tomsk,Maxim_Trophimov,7-382-2760092,9600,CM,MO,V34,V42B,XA,IBN,INA:fido.alltsk.ru
+,93,QWAS,Tomsk,Alexandr_Gotovtsev,-Unpublished-,300,CM,MO,IBN,INA:f93.n5005.z2.binkp.net
+,106,Razor_BBS,Tomsk,Alexey_Osiyuk,-Unpublished-,300,CM,MO,IBN,INA:fido.osiyuk.ru
+,149,Ulthar,Tomsk,Victor_Sudakov,-Unpublished-,300,CM,MO,IBN,INA:fido.sibptus.ru
+;
+Host,5006,Nkz_Net,Novokuznetsk_Russia,Vladimir_Kurtukov,-Unpublished-,300,CM,MO,IFC,IBN,INA:fido.vk.pp.ru
+Hub,1,LongLink,Novokuznetsk,Eugene_Grosbein,-Unpublished-,300,CM,MO,IFC,IBN,INA:62.231.161.129
+,9,DALLAS,Novokuznetsk,Vladimir_Kurtukov,-Unpublished-,300,CM,MO,IFC,IBN,INA:fido.vk.pp.ru
+,26,necrophilie,Novokuznetsk,Denis_Suhanov,-Unpublished-,300,CM,MO,IBN,INA:109.111.160.100
+;
+Host,5010,South_Ural_20190814,Chelyabinsk_Russia,Dmitriy_Smirnov,-Unpublished-,300,MO,CM,IBN,INA:f352.sage.su
+,224,Xeon_Station,Chelyabinsk,Eugeny_Karamishev,-Unpublished-,300,CM,ITN:60179,INA:alpina-group.ru
+,272,ftn.v-as.net,Chelyabinsk,Oleg_Lisovsky,-Unpublished-,300,CM,ITN:24554,INA:ftn.v-as.net
+,275,ec,Chelyabinsk,Evgeny_Chevtaev,-Unpublished-,300,CM,IBN,INA:fido.chevtaev.ru
+,324,Xeon_Station,Chelyabinsk,Eugeny_Karamishev,-Unpublished-,300,CM,ITN:60179,INA:814407b1f8f8.sn.mynetname.net
+,352,f352.sage.su,Chelyabinsk,Dmitriy_Smirnov,-Unpublished-,300,CM,IBN,INA:f352.sage.su,U,NC,NPK
+;
+Host,5015,NiNoNet,Nizhny_Novgorod_(xGorky)_Russia,Dmitry_Radishev,-Unpublished-,300,CM,MO,IBN,INA:dibr.nnov.ru
+,35,Rex's_Lair,Nizhny_Novgorod,Alexey_Tsaryov,-Unpublished-,300,CM,IMI:alex.rex@gmail.com
+,42,\\dibris,Nizhny_Novgorod,Dmitry_Radishev,-Unpublished-,300,CM,MO,IBN,INA:dibr.nnov.ru
+,46,NIL_BBS,Nizhny_Novgorod,Nil_Alexandrov,-Unpublished-,300,ICM,IBN,INA:f46n5015z2.ddns.net
+,61,RooDZ!Soft_BBS,Nizhny_Novgorod,Anton_Poletayev,-Unpublished-,300,CM,IMI:f61n5015z2@softart.ru
+,120,Yurik_Station,Nizhny_Novgorod,Yuriy_Hashev,-Unpublished-,300,CM,IBN,INA:craft-city.org
+,147,Zevs_Station,Nizhny_Novgorod,Yevgeny_Zolotnitsky,-Unpublished-,300,CM,IEM:f147n5015z2@mail.ru
+,227,ShadowStar,Nizhny_Novgorod,Aleksey_Kuznetsov,-Unpublished-,300,CM,IBN,INA:fido.aleks-k.ru
+,228,GmindStation,Nizhny_Novgorod,Alexey_Lvov,-Unpublished-,33600,CM,MO,IBN,INA:fido.lvov.in
+,255,Yuniks_station,Dzerzhinsk,Dmitry_Bakhrov,-Unpublished-,300,ICM,IBN,INA:s.s-mc.net,U,ENC
+,8818,Forest_station,Nizhny_Novgorod,Andrey_Volkov,-Unpublished-,300,CM,IEM:f8818n5015z2@mail.ru
+;
+Host,5019,SkifNet,Smolensk_Russia,Konstantin_Kuzov,7-481-238-0575,9600,CM,MO,V34,V42B,IBN,IFC,INA:fido.ganjanetwork.ru,PING,U,SMH
+Hub,40,GaNJaNET_STaTi0N,Smolensk,Konstantin_Kuzov,7-481-238-0575,9600,CM,MO,V34,V42B,IBN,IFC,INA:fido.ganjanetwork.ru,PING,U,SMH
+,42,gsom_networks,Smolensk,alexey_sivakoff,-Unpublished-,300,CM,IBN,INA:fido.sivakoff.org
+,400,GaNJaNET_STaTi0N_II,Smolensk,Konstantin_Kuzov,-Unpublished-,300,CM,IBN,INA:fido.g0x.ru
+;
+Host,5020,NET_Moscow_Russia_(23/10/2019),Moscow_Russia,Andrey_Frolov,7-498-483-3338,33600,CM,XX,HST,V34,IBN,INA:n5020.ru
+Hub,101,Akf,Zhukovsky,Andrey_Frolov,7-498-483-3338,300,MO,CM,HST,V34,IBN,IFC,ITN,INA:n5020.ru,U,NC
+,274,Q_Soft_Underground_System,Moscow,Garry_Tomkin,7-499-780-1186,9600,MO,LO,MN,XW,CM,IBN,IFC,ITN:60177,INA:274.no-ip.com
+,601,Legion_BBS,Moscow,Jura_Bogoyavlensky,-Unpublished-,300,IBN,INA:legionbbs.duckdns.org,INA:f601.n5020.z2.binkp.net,PING,U,NPK
+,1146,Merlin,Pyatnitsa_MO,Denis_Dubodil,-Unpublished-,300,CM,MO,IBN,INA:89.46.70.10
+,2332,Felinas,Moscow,Andrey_Ignatov,-Unpublished-,300,CM,IBN,INA:fido.feliksaslion.ru,U,ENC
+,2613,NoZDR,Moscow,Ruslan_Marchenko,7-499-611-3250,9600,XX,MO,CM,IBN,INA:2613.ru
+,2880,Flipper_Mail_Station,Moscow,Alexander_Morozov,-Unpublished-,300,CM,MO,EMA:asm82ru@gmail.com
+,3389,DarkStation,Moscow,Nikolay_Rubanov,-Unpublished-,300,CM,IBN,INA:fidonet.darksa.us,U,ENC
+,8912,Kalach_station,Golicino,Aleksey_Matyuk,7-495-597-4300,9600,MO,CM,XX,HST,V32B,V34,V42B
+Hub,545,Gremlin_from_Kremlin,Moscow,Alexey_Vissarionov,-Unpublished-,300,ICM,IBN,INA:fido.gremlin.ru,PING,U,ENC
+,329,Roshosting,Moscow,Oleg_Lukashin,-Unpublished-,300,CM,IBN,INA:fido.roshosting.net
+,736,kaman,Moscow,Egor_Glukhov,-Unpublished-,300,MO,CM,IBN,INA:fido.kaman.me
+,843,Piggies_Home,Moscow,Petr_Antonov,-Unpublished-,300,CM,MO,IBN,INA:fido.fuzzypigs.com
+,1477,m0d3m's_station,Moscow,Dmitriy_Sapronov,-Unpublished-,300,CM,IBN,INA:msk.mimo.net.ru,EMA:du.sapronov@mail.ru
+,1960,Count_Varg_Dipsysh,Moscow,Sergey_Zemsky,-Unpublished-,300,MO,CM,EMA:sergey.zemsky@gmail.com
+,4441,195.24.225.1,Moscow,Yuri_Myakotin,-Unpublished-,300,CM,IBN,INA:fido.ym-com.net
+,5410,-=Autopilot_HOST=-,Vidnoe,Dmitry_Rodin,7-495-541-5490,9600,MO,XA,V32T,V42B,TUe
+,5411,-=External_System=-,Moscow,Dmitry_Rodin,7-495-699-6700,9600,MO,XW,V32,V42B
+Pvt,5545,Development_snapshot,Moscow,Alexey_Vissarionov,-Unpublished-,300,MO
+Hub,715,New_World,Zheleznodorozhny,Alex_Barinov,-Unpublished-,300,MO,MN,CM,IBN,INA:fido.hubahuba.su,IEM:hubahuba@infoline.su,ITX,IMI,U,REC
+,290,Ultima_Thule,Moscow,Andrew_Kolchoogin,-Unpublished-,300,CM,IBN,IFC,ITN,IVM,INA:f290.bbsystem.org,IEM:f290@bbsystem.org,IMI,ISE,IUC
+,378,klug,Moscow,Mikhail_Markovskiy,-Unpublished-,300,EMA:klug@mail.ru
+,400,Demos_Plus,Moscow,Gatekeeper,-Unpublished-,300,ICM,IBN,IFC,INA:ddt.demos.su
+,540,binkd.piafi.ru,Moscow,Alexander_Vedjakin,-Unpublished-,300,MO,CM,IBN,INA:binkd.piafi.ru
+,556,Diatlo_station,Moscow,Max_Lushnikov,-Unpublished-,300,MO,CM,IBN,INA:fido.lushnikov.net
+,561,GEEK_Station,Moscow,Anton_Belitsky,-Unpublished-,300,IEM:fidoworld@mail.ru,IMI,ICM
+,570,Altyn,Moscow,Dima_Bargamov,-Unpublished-,300,MO,CM,IBN,INA:altynclub.ru
+,723,NCC1701_station,Balashiha,Sergey_Chumakov,-Unpublished-,300,CM,MO,IBN,INA:195.133.48.10
+,738,Lone_Programmer's_House,Moscow,Dmitrey_Ivaniuk,-Unpublished-,300,CM,MO,IBN,INA:25020738.ddns.net
+,806,Elinora_Station,Moscow,Sergey_Dorozhkin,7-495-194-36-86,9600,HST,V32T,V34,VFC,CM,MO,XX,ITN:60177,IFC:60179,IBN:24554,INA:95da09639422.sn.mynetname.net
+,837,Night_BBS,Moscow,Kirill_Kaplin,-Unpublished-,300,CM,MO,IBN,INA:nightbbs.ru
+,921,fido.nln.ru,Moscow,Andrew_Savin,-Unpublished-,300,CM,IBN,INA:fido.nln.ru
+,932,INS,Moscow,Mikhail_Stakhanov,7-495-655-6175,9600,MO,TUF,V34,HST,IBN,IFC,INA:fido.amo.ms
+,961,cemehob,Moscow,Denis_Semenov,-Unpublished-,300,CM,EMA:mehob@yandex.ru
+,1200,MSX_Vision,Moscow,Oleg_Blashuck,7-495-604-1642,9600,XA,CM,V32T,V34,H16,IBN,INA:f1200.metal.ru
+,1313,fido.stabilis.ru,Moscow,Sergey_V._Efimoff,-Unpublished-,300,ICM,IBN,INA:fido.stabilis.ru
+,1519,Relic_station,Moscow,Max_Lushnikov,-Unpublished-,300,MO,CM,IBN,INA:vds.lushnikov.net
+,1556,AMD_Line,Moscow,Kirill_Demidov,-Unpublished-,300,MO,CM,IEM:1.fido.1@bk.ru
+,1657,Lulu's_Home,Moscow,Irina_Smirnova,-Unpublished-,300,MO,IEM:irina_smirnova@yahoo.com,IMI,CM
+,1668,First_Encounters,Moscow,Viktor_Nozhnov,7-499-173-1494,9600,XA,MN,V34,TUd
+,2142,fido.axi.ru,Moscow,Vadim_Petrakovsky,-Unpublished-,300,MO,CM,IBN,INA:fido.axi.ru
+,2179,CITODell,Moscow,Pavel_Rodionov,7-495-394-2868,9600,XX,V34,H16,TVE,INA:f2179.ru
+,2992,DVB,Moscow,Vladimir_Donskoy,-Unpublished-,300,MO,CM,IEM:vbd1@yandex.ru
+,3452,Panzer_station,Moscow,Andrey_Oreshin,-Unpublished-,300,MO,CM,IBN,INA:fido.babon.ru
+,4096,4k_System,Moscow,Kirill_Rudnev,-Unpublished-,300,MO,CM,IBN,INA:fido.pochek.net
+,5452,New_World#2,Zheleznodorozhny,Alex_Barinov,-Unpublished-,300,CM,IBN:24555,INA:fido.hubahuba.su
+,7486,Queen,Moscow,Elizaveta_Koroleva,-Unpublished-,300,MO,CM,EMA:lizka7486@mail.ru
+,9696,SDS,Moscow,Alexander_N_Skovpen,-Unpublished-,300,XX,ICM,IBN,INA:skovpen.org
+,11200,f11200.metal.ru,Moscow,Oleg_Blashuck,-Unpublished-,300,CM,IBN,INA:f11200.metal.ru
+Hub,1042,f1042.ru,Moscow,Michael_Dukelsky,-Unpublished-,300,CM,IBN,INA:f1042.ru,INA:fido.delin.ru,INA:f1042.n5020.z2.binkp.net
+,113,Minas_Anor,Moscow,Boris_Paleev,7-495-688-3940,9600,V32T,VFC,V34,H16,TVF,IBN,INA:horris.now.im,INA:horris.privatedns.org,EMA:horris77@mail.ru
+,313,lleo.me/fido,Moscow,Leonid_Kaganov,-Unpublished-,300,CM,IEM:fido@lleo.me
+,620,Thunder_Bird,Moscow,Rinat_Sadretdinow,-Unpublished-,300,MO,CM,IBN,INA:89.222.128.163
+,814,Misantropolis,Lubertsy,Gregory_Leonov,-Unpublished-,300,MO,IBN,TAG,INA:f814.ddns.net
+,828,f828.n5020.z2.binkp.net,Moscow,Kirill_Temnenkov,-Unpublished-,300,ICM,IBN,INA:f828.n5020.z2.binkp.net,U,ENC
+,830,TITANIC_Station_IP,Moscow,Denis_Nikolayev,-Unpublished-,300,MO,CM,IBN,IFC,INA:830.ru
+,846,Topinambur,Moscow,Denis_Chebyshev,-Unpublished-,300,CM,EMA:tpnmbr@mail.ru
+,1067,SerZ_Soft,Moscow,Serge_Zakharov,-Unpublished-,300,MO,CM,EMA:zss1067@yandex.ru
+,2038,DKsoft,Moscow,Dmitry_Kanidev,-Unpublished-,300,CM,MO,IBN,INA:f2038.fido.be
+,2047,ae-nest.com,Moscow,Anton_Velichko,-Unpublished-,300,MO,CM,IBN,IFC,INA:ftn.ae-nest.com
+,2140,Pushkins_station,Moscow,Sergey_Poziturin,-Unpublished-,300,MO,CM,IBN,INA:vp.propush.ru
+,2141,Pushkins_F2141,Moscow,Sergey_Poziturin,-Unpublished-,300,MO,CM,IBN:24555,INA:vp.propush.ru
+,2160,Vol,Moscow,Vladimir_Fonarev,7-495-731-4442,9600,MO,V32T,V34,H16,TAb
+Pvt,4042,Testing,Moscow,Michael_Dukelsky,-Unpublished-,300,MO
+,5480,Galaktika,Moscow,Anton_Barabanov,-Unpublished-,300,MO,LO,CM,IBN,INA:fido.impgl.ru
+,8086,Z80_Station,Moscow,Pavel_Osipov,-Unpublished-,300,MO,IBN,ICM,INA:f8086.no-ip.org
+Hub,5020,Freezer,Moscow,Alex_Barinov,-Unpublished-,300,MO,ICM,IBN,INA:fido.hubahuba.su,IEM:hubahuba@infoline.su,ITX,IMI
+,1906,binkp.nauchi.ru,Moscow,Alexander_Lobachev,-Unpublished-,300,MO,CM,IBN,INA:binkp.nauchi.ru
+Hub,12000,Fluid,Vidnoe,Sergey_Dorofeev,-Unpublished-,300,IBN,IFC,INA:fluid.fidoman.ru
+,14,Hell-hole,Moscow,Sasha_Gromov,-Unpublished-,300,CM,MO,IMI,EMA:skrester@gmail.com
+,81,Conea_Software,Moscow,Andrew_Belov,7-499-728-5217,9600,XX,V34,V42B
+,181,Micro_Hard_Master_Co,Moscow,Viatcheslav_Odintsov,7-499-197-9731,9600,XX,MO,LO,V34,VFC,V32T,H16,TWC
+,614,Pirates,Moscow,Slawa_Alexeew,-Unpublished-,300,CM,MO,IMI,EMA:P-Mail01@mail.ru
+,730,Tri_Rublya_Enterprises,Moscow,Dmitry_the_Zuryanovich,-Unpublished-,300,MO,CM,IBN,INA:node.xepb.org
+,848,NodeX_Station,Moscow,Ivan_Agarkov,-Unpublished-,300,MO,CM,IBN,INA:jnode.in
+,1453,Network,Moscow,Serge_Arhipkin,-Unpublished-,300,CM,IBN,INA:94.79.54.28
+,1721,Gateway_of_Last_Resort,Moscow,Mihail_Kabanov,-Unpublished-,300,MO,CM,IBN,INA:fido.tdto.ru
+,2065,f2065.no-ip.org,Moscow,Eugene_Palenock,-Unpublished-,300,XW,MO,MN,LO,CM,PING,IBN,IFC,INA:f2065.no-ip.org
+,2123,TeleMOST,Moscow,Anton_Samsonov,7-495-346-1472,9600,XX,MO,V34,V42B,TVF,INA:fido.zxlab.ru,IBN,ICM
+,4040,Blackfire,Moscow,Valerij_Kozhevnikoff,-Unpublished-,300,CM,MO,EMA:jason2000@yandex.ru
+;
+Host,5021,Tver_Net,Tver,Dmitry_Komissarov,-Unpublished-,300,MO,ICM,IFC,IBN,INA:candlekeep.tk,PING,U,NC
+Hub,29,All-Privet,Tver,Yuri_Kosivtsov,-Unpublished-,300,MO,ICM,IBN,INA:kosivtsov.ru,U,ENC
+Pvt,4,Programmer's_Shelter,Tver_Russia,Ilya_Elstin,-Unpublished-,300,MO,U,ENC
+Pvt,19,CaveMan,Tver,Vlad_Pluzhnikov,-Unpublished-,9600,XX,MO,V34,V32B,H16
+,5021,Net5021_Netmail_Gate,Tver,Yuri_Kosivtsov,-Unpublished-,300,MO,ICM,IBN,INA:kosivtsov.ru
+Hub,46,Candlekeep,Tver,Dmitry_Komissarov,-Unpublished-,300,MO,ICM,IFC,IBN,INA:candlekeep.tk,PING,U,NC
+;
+Host,5022,Tula_Net,Tula_Russia,Roman_Trunov,-Unpublished-,300,XX,CM,IBN,INA:proxyma.dyndns.org
+,2,Peak_Power,Tula,Roman_Trunov,-Unpublished-,300,XX,CM,IBN,INA:proxyma.dyndns.org,U,NPK
+Hold,32,R-Station,Tula,Dmitry_Zavalskov,7-487-220-5455,9600,XX,V34,H16,V32T,VFC,Tvd
+Hold,49,Ventorderan,Tula,Makc_K_Petrov,-Unpublished-,300,XX,CM,IBN,INA:k-113.ru
+,77,Formula1_Station,Tula,Serge_Zaitsev,-Unpublished-,300,XX,CM,IBN,INA:f77.n5022.z2.binkp.net
+,177,pitline,Tula,Serge_Zaitsev,-Unpublished-,300,XX,CM,IBN,INA:f177.n5022.z2.binkp.net
+Hold,28,The_Dark_Eagle,Tula,Vadim_Evteev,7-487-227-9496,9600,XX,V34,V32B,V42B,TRd
+Hold,68,HeavenW00D_Station,Tula,Leonid_Kilasoniya,7-487-237-83-78,9600,XA,V34,V32B,V42B,IBN,TUd,INA:f68.n5022.z2.binkp.net
+Hold,43,Alice_forever,Tula,Alexander_Safronov,7-487-230-8387,9600,XX,CM,V34,H16,V32T,VFC
+Hub,128,Solaris_station,Tula,Oleg_Smirnov,-Unpublished-,300,XX,CM,IBN,INA:f128.n5022.z2.binkp.net
+Hold,66,StrongHold,Tula,Eugene_Gusev,7-487-235-64-58,9600,XX,V32B,V42B,TVd
+;
+Host,5023,Kaluga_Net,Kaluga,Igor_Zakharov,7-484-2-561760,9600,V34,CM,LO,XA,IBN,INA:elecs.kaluga.com
+Hub,11,ZIV_&_Co,Kaluga,Igor_Zakharov,7-484-2-561760,9600,V34,CM,LO,XA,IBN,INA:elecs.kaluga.com
+Pvt,2,Dark_Half,Kaluga,Igor_Koltsov,-Unpublished-,300,MO
+,12,T-Station,Kaluga,Alexander_Fyodorov,-Unpublished-,300,ICM,IFC,IBN,INA:62.148.154.95
+,19,UNIVERSAL_PRITE,Kaluga,Evgeny_Belichenko,7-484-2-516843,9600,V34,CM,IBN,INA:109.225.42.32
+,24,Hobbit_Station,Kaluga,Dmitri_Kamenski,7-484-2-517046,9600,V34,CM,XX,MO,IBN,IFC,INA:wfido.ru,IEM:fido@wfido.ru
+,43,Gimet_Station,Kaluga,Nicolai_Naimushin,7-484-2-522424,9600,V32B,V42B,LO,XX,TWe
+;
+Host,5024,Vladimir_Net,Vladimir_Russia,Victor_Smirnov,-Unpublished-,9600,ICM,IBN,INA:n3.net5024.ru
+,3,Shadow_bbs,Vladimir,Victor_Smirnov,-Unpublished-,300,ICM,IBN,INA:n3.net5024.ru,U,NC
+Pvt,12,GlobAL_VPL_HOST,Vladimir,Grigoriy_Lyubishev,-Unpublished-,9600,ZYX,XA
+,1024,NEWLEO,Vladimir,Leonid_Novikov,-Unpublished-,300,CM,IMI,EMA:f1024@inbox.ru
+;
+Host,5025,Chernozem_Net,Voronezh_Russia,Michailo_Bachtin,-Unpublished-,300,CM,IBN,INA:fido.lordmb.ru
+,75,Lord,Voronezh,Michailo_Bachtin,-Unpublished-,300,CM,IBN,INA:fido.lordmb.ru
+,14,Default_Error,Voronezh,Pavel_Makarenko,-Unpublished-,300,CM,IBN,INA:f14.n5025.z2.binkp.net,IEM:pavel@makarenko.vrn.ru
+,121,IceLAN,Voronezh,Semen_Panevin,7-473-221-2805,9600,CM,MO,H16,V32T,VFC,V90C,X2C,XX,IBN,IFC,INA:fido.icelan.ru
+,69,PROF-Home,Voronezh,Oleg_Kravets,-Unpublished-,300,IBN,CM,INA:80.82.59.168
+Hub,2,Temporarily_Frozen_BBS,Voronezh,Sergey_Bartenev,7-473-269-7134,9600,HST,XW,IBN,IVM,IFC,ITN,ITN:60177,INA:bbs.marcepan.ru
+Hold,88,M0rda,Voronezh,Vitaly_Didkovsky,7-473-239-3077,9600,V32B,V42B,XA,TSE
+,2275,RaveChannel,Voronezh,Vladimir_Zabolotsky,-Unpublished-,300,CM,IBN,INA:195.46.187.212,IEM:zabol@ravechannel.vrn.ru
+Hub,38,TV&S_Night,Voronezh,Sergei_Tuchinski,7-473-246-2858,9600,V32T,VFC,V34,V42B,XX,MO,TQd,U,NEC
+Hub,12,Friend,Voronezh,Petr_Grushin,-Unpublished-,300,CM,IBN,IFC,INA:f12.n5025.ru,U,NC
+,150,TYAX,Voronezh,Petr_Grushin,7-473-255-8978,9600,ZYX,V34,XA,ICM,IBN,IFC,INA:f150.n5025.ru,TWh
+;
+Host,5026,Ivanovo_NET,Ivanovo_Russia,Alexey_Vtorov,-Unpublished-,300,CM,IBN,INA:www.ispu.ru
+,1,MicroBug's_Station,Ivanovo,Max_Grushansky,-Unpublished-,300,CM,IBN,INA:riat.indi.ru
+Hub,10,Army_of_lovers,Ivanovo,Max_Grushansky,-Unpublished-,300,CM,IBN,INA:riat-group.ru
+Pvt,9,Sit'n'OFF,Ivanovo,Andrey_Sitnoff,-Unpublished-,9600,V32B,V42B,XA
+,15,15,Ivanovo,Alexandr_Strelnikov,-Unpublished-,300,CM,IFC,IBN,INA:109.60.151.138
+Hub,49,HardwareBBS,Ivanovo,Alexey_Vtorov,-Unpublished-,300,CM,IBN,INA:www.ispu.ru
+,99,TwilightFido,Ivanovo,Ivan_Levchenko,-Unpublished-,300,MO,CM,IBN,INA:f99.n5026.z2.binkp.net
+;
+Host,5027,Orel_Net,Orel_Russia,Kostya_Krivonogov,7-486-241-1705,9600,V34,XA,MO
+,12,MS-[GAME]-BBS,Orel,Kostya_Krivonogov,7-486-241-1705,9600,V34,XA,MO,U,NPK
+,14,MSBBS,Orel,Nick_Nozdrunov,-Unpublished-,300,CM,IBN,INA:194.226.186.10
+;
+Host,5028,Yaroslavl_Net,Yaroslavl,Sergey_Lukyanenko,-Unpublished-,300,MO,CM,IBN,INA:63.5028.net.ru
+,63,YarStTec_Station,Yaroslavl,Sergey_Lukyanenko,-Unpublished-,300,MO,CM,IBN,INA:63.5028.net.ru
+,68,OneMoreStation,Yaroslavl,Wasiliy_Besedin,-Unpublished-,300,MO,CM,IBN,INA:68.5028.net.ru
+;
+Host,5029,Ryazan_Net,Ryazan,Alexey_Bugrov,-Unpublished-,300,ICM,IBN,INA:ftn.avblabs.ru
+,9,The_Power_of_Music_2,Ryazan,Ilya_Katargin,-Unpublished-,300,ICM,IBN,INA:ftn.astcrg.ru
+,25,BLOWN_station,Ryazan,Andrej_Popov,-Unpublished-,300,ICM,IBN,INA:ipnode.servebeer.com
+,32,AVB_Labs_BBS,Ryazan,Alexey_Bugrov,-Unpublished-,300,ICM,IBN,INA:ftn.avblabs.ru,U,NC
+,55,Novel_BBS,Ryazan,Roman_Balduev,7-491-245-1208,9600,XX,V34,V42B,TTc
+;
+Host,5030,NorthWest_Net,St.Petersburg,Alex_Gleys,7-812-640-3392,9600,XX,CM,V32B,V42B,IBN,INA:fido.stpeteclub.ru
+,231,HTS-IP,St.Petersburg,Michael_Likhachev,-Unpublished-,300,CM,MO,LO,IBN,INA:binkd.hts-spb.com
+,500,Underconstruction,St.Petersburg,Slawa_Olhovchenkov,-Unpublished-,300,CM,IBN,INA:f500.zxy.spb.ru
+,1103,Shurale,St.Petersburg,Alexander_A_Vorobyov,-Unpublished-,300,CM,IBN,INA:shurale.net
+,1462,LPI_Station,St.Petersburg,Pavel_Ivanov,-Unpublished-,300,CM,IMI,IEM:node_13@mail.ru
+Hub,87,Virtual_Mobile_/2,St.Petersburg,Tony_Feldman,-Unpublished-,300,CM,IBN,IFC,INA:nvm2.spb.ru
+,312,Slayer,St.Petersburg,Alexey_Pantileenko,-Unpublished-,300,CM,IMI,IEM:greatpav@mail.ru
+Hold,1332,Darkstar,St.Petersburg,Dmitry_Tigrov,7-812-348-3427,9600,XX,V32B,V42B,V34,TVd
+,1520,Fallout_Station,St.Petersburg,Andrey_Geyko,-Unpublished-,300,CM,IBN,INA:fido.falloutbbs.net
+,1543,Kitten_in_Rainshire,St.Petersburg,Alexey_Subbotin,-Unpublished-,300,MO,CM,EMA:AlexSubbotin@mail.ru
+Hub,115,EdgeCity,St.Petersburg,Andrey_Podkolzin,-Unpublished-,300,CM,IBN,IFC,INA:f115.spb.ru
+,731,s0t,Peterhof,Alexey_Antonyuk,-Unpublished-,300,CM,MO,LO,IBN,INA:s0t.ru,PING
+Hub,920,Opera_Home,St.Petersburg,Eugene_Barbashin,7-812-326-4111,9600,XX,V32B,V42B,V34,MO,CM,IBN,ITN,INA:fido.mariinsky.ru
+Hold,78,Zero_Divide,St.Petersburg,Anatoly_Skoblov,-Unpublished-,300,CM,IMI,IEM:fidomail@skoblov.pp.ru
+,189,Badisoft,St.Petersburg,Dima_Badisov,-Unpublished-,300,CM,IMI,IEM:dima@badisoft.ru
+Hold,675,TMG_RHQ,St.Petersburg,Vladimir_Larkov,7-812-446-2851,9600,XX,V32T,H16,Tvd
+,907,Equuleus_Station,St.Petersburg,Oleg_Ivanilov,-Unpublished-,300,MO,LO,CM,IBN,INA:fidonet.equuleus.ru
+,1322,StrayLight,St.Petersburg,Max_Chirkov,-Unpublished-,300,CM,IMI,IEM:straylight@bk.ru
+Hub,1115,EdgeCity_II,St.Petersburg,Dmitriy_Yermakov,-Unpublished-,300,CM,IBN,IFC,INA:f1115.spb.ru
+,25,Dirty_Deeds,St.Petersburg,Nicolas_Rodionov,-Unpublished-,300,CM,MO,LO,IBN,INA:77.239.253.115
+,73,VRADs_FidoNode,St.Petersburg,Vladimir_Radushevskiy,-Unpublished-,300,CM,MO,IBN,INA:fido.vrad.spb.ru
+,133,Lonely_Dale's_Nest,St.Petersburg,Igor_Belyakov,-Unpublished-,300,CM,IMI,IEM:dalenest@inbox.ru
+,350,undead,St.Petersburg,Klim_Arbuzov,-Unpublished-,300,CM,MO,LO,IBN,INA:fido.undead.ru
+,535,Grey_Lensman_Workstation,St.Petersburg,Vladimir_Bakhvaloff,-Unpublished-,300,CM,IMI,IEM:zirra1969@gmail.com
+,671,Install_BBS,St.Petersburg,Konstantin_Rogushin,-Unpublished-,300,CM,IMI,IEM:node671@gmail.com
+,722,Raspberry_Pi_Station,Lekhtusi,Ivan_Konyshev,-Unpublished-,300,CM,MO,IBN,INA:fido.lekhtusi.ru
+,778,Wood_Box,St.Petersburg,Vlad_Lesnikov,-Unpublished-,300,CM,IMI,IEM:woody@li.ru
+,786,G.Style_BBS,St.Petersburg,Pavel_A._Pribitkin,-Unpublished-,300,CM,XA,IBN,INA:elvete.com
+,827,Dark_Dragon_Station,St.Petersburg,Igor_Gruzdev,-Unpublished-,300,CM,IBN,INA:ig73.spb.ru
+,830,SMith_Station,St.Petersburg,Dmitry_Ananitch,-Unpublished-,300,MO,CM,IBN,INA:fido.fiona.spb.ru,IMI,ISE,ITX,IUC,EMA:fido@fiona.ru
+,911,Venta,St.Petersburg,Leonides_Kluev,-Unpublished-,300,CM,IMI,IEM:nh3@gmx.com
+,976,Revolting_Station,St.Petersburg,Nikolay_Skomorov,-Unpublished-,300,CM,IBN,IFC,INA:37.28.169.140
+Down,999,ALF_Station,St.Petersburg,Kirill_Petrov,-Unpublished-,300,CM,MO,IBN,INA:77.239.253.138,EMA:kirill.a.petrov@gmail.com
+,1048,Fat_Bottomed_Girls,St.Petersburg,Stas_Arkhipov,-Unpublished-,300,MO,LO,IBN,CM,INA:stanley.winlink.ru
+,1081,Crow's_nest,St.Petersburg,Anton_Ryzhkov,-Unpublished-,300,CM,IBN,INA:f1081.n5030.ru
+,1237,Gluck's_Station,St.Petersburg,Alexander_Belousov,-Unpublished-,300,MO,XX,ICM,IBN,IFC,INA:home.glk.spb.ru
+,1340,KOT_MATPOCKuH,St.Petersburg,Dmitry_Afanasiev,-Unpublished-,300,MO,LO,IBN,CM,INA:kot.spb.ru
+,1374,MEGAnet,St.Petersburg,Viktor_Kudlak,-Unpublished-,300,MO,LO,IBN,CM,INA:meganet.kentos.ru
+,1375,Shu's_station,St.Petersburg,Anatoly_Shuravin,-Unpublished-,300,CM,IMI,IEM:panatamann@gmail.com
+,1404,Ropsha_village,St.Petersburg,Alexey_Valyaev,-Unpublished-,300,CM,IMI,IEM:windows-95@mail.ru
+,1474,Thunder_Station,St.Petersburg,Evgeny_Mikheev,-Unpublished-,300,CM,IBN,INA:ts.fido.spb.ru
+,1499,Orbital_Cosmic_Station_MIR,St.Petersburg,Alex_Gleys,-Unpublished-,300,CM,IFC,INA:f1499.spb.ru,U,NC
+,1899,Kupchino_Station,St.Petersburg,Konstantin_Korolev,-Unpublished-,300,CM,MO,EMA:korolevk1899@gmail.com
+,1997,Music_Station,St.Petersburg,Alexey_Fayans,7-812-684-9830,9600,V90C,H16,TVF,ICM,IBN,INA:fido.bsrealm.net
+Down,2104,SOLOVYEVKA_2,St.Petersburg,Alexandr_Solov'yev,-Unpublished-,300,CM,IBN,ITN,IFC,IFT,INA:solovyevka.ddns.net
+,2237,AB_at_work,St.Petersburg,Alexander_Belousov,-Unpublished-,300,MO,CM,IBN,INA:glk.spb.ru
+Hold,2906,Zaraza_Station,St.Petersburg,George_Kurkin,-Unpublished-,300,CM,IBN,INA:f2906.n5030.z2.binkp.net
+,3012,Vasilyevsky_Island,St.Petersburg,Igor_Yundikov,-Unpublished-,300,CM,IBN,INA:91.242.163.26
+Hold,4441,Northwest_News_Server,St.Petersburg,dmitry_a._frolov,-Unpublished-,300,MO,LO,IBN,CM,INA:artpaint.spb.ru
+Hub,1900,D.J._BoaRD,St.Petersburg,Eugeny_Davidov,-Unpublished-,300,CM,MO,XX,IBN,INA:ftn.kawai.spb.ru
+,1215,Rough_Riders,St.Petersburg,Artem_Guschin,-Unpublished-,300,CM,IMI,IEM:f1215n5030z2@roangris.org
+,1243,Reanimation_Station,St.Petersburg,Vadim_Sorokin,-Unpublished-,300,CM,IMI,IEM:reanny@yandex.ru
+,1321,Black_Cat_Station,St.Petersburg,Michael_Nagibin,-Unpublished-,300,MO,IBN,INA:78.37.191.72
+,1495,BEER_BAR_Station,St.Petersburg,Alexander_Nazarov,7-812-347-3293,9600,V34,V32B,V42,XX,MO,TVE
+Hub,1957,fido.stpeteclub.ru,St.Petersburg,Andrey_Ostanovsky,7-812-640-3392,9600,XX,CM,V32B,V42B,IBN,INA:fido.stpeteclub.ru
+,74,Cat's_Shadow,St.Petersburg,Michael_Skolsky,-Unpublished-,300,CM,MO,IBN,IFC,INA:cats-home.net
+,129,Alex_Telecom,St.Petersburg,Alex_Sergushev,-Unpublished-,300,CM,IMI,IEM:alex.sergushev@gmail.com
+,257,Crankly_dad,St.Petersburg,Vova_Uralsky,-Unpublished-,300,CM,MO,LO,IBN,INA:f257.edv.ragtime.ru
+,367,Artifact_station,St.Petersburg,Sergey_Leonovich,-Unpublished-,300,CM,IMI,IEM:artifact.station@gmail.com
+,553,TSRGP,St.Petersburg,Vladimir_Ignatov,-Unpublished-,300,CM,IMI,IEM:vl-ignatov@yandex.ru
+,600,Grey_bollocks,St.Petersburg,Pavel_Tereshchenko,-Unpublished-,300,CM,IBN,INA:tereshchenko.spb.ru
+,777,ParmaSoft_2,St.Petersburg,Serge_Koghin,-Unpublished-,300,CM,IBN,INA:fido.parmasoft.spb.ru
+,957,AOST_Station,St.Petersburg,Andrey_Ostanovsky,-Unpublished-,300,CM,IBN,INA:f957.ostanovsky.spb.ru
+,1111,tochlab_bbs,St.Petersburg,Dmitriy_Tochansky,-Unpublished-,300,MO,CM,IBN,INA:bbs.tochlab.net
+,1254,Green_World,St.Petersburg,Sergey_G.Kovalchuk,-Unpublished-,300,CM,IMI,IEM:green_1254@pisem.net
+,1269,Piece_of_Cake_Station,St.Petersburg,Dmitriy_Kudriavcev,7-812-744-1776,9600,XA,V34,V42B,TVE
+Hold,1446,Katran_Station,St.Petersburg,Alexey_Galichskiy,7-812-366-3595,9600,XW,MO,V32B,V42B,V34,Tve
+;
+Host,5031,Murmansk_Net,Murmansk_Russia,Roman_Stepanyants,-Unpublished-,300,CM,MO,IBN,INA:n5031.o2ide.pw
+Hold,8,North_Navy_Base,Murmansk,Oleg_Mazurenko,-Unpublished-,300,CM,IMI,IEM:allbeauty@narod.ru
+,21,Trantor's_Machine,Murmansk,Sergey_Kostin,-Unpublished-,300,CM,IMI,IEM:ksgksgksg@mail.ru
+,25,BBBBs,Murmansk,Alex_Kazankov,-Unpublished-,300,CM,IBN,INA:ktotam.pw,U,NEC
+Hold,29,Gjallarhorn,Murmansk,Max_Koryakin,-Unpublished-,300,CM,MO,IBN,INA:78.36.1.194
+,43,Forester_XIII_station,Murmansk,Anatoly_Vesnin,-Unpublished-,300,CM,IMI,IEM:fido@avesnin.ru
+,52,REACTOR_[mail]_station,Murmansk,Roman_Ivanuk,-Unpublished-,300,CM,IMI,IEM:r.romanii@gmail.com
+,71,other2ide,Murmansk,Roman_Stepanyants,-Unpublished-,300,CM,MO,IBN,INA:fido.o2ide.pw,U,NC
+,77,G.FREEMAN,Murmansk,Artem_Streltsov,-Unpublished-,300,CM,MO,IBN,INA:188.166.66.123
+,78,Black_Splash_Station,Murmansk,Jaroslav_Bespalov,-Unpublished-,300,CM,MO,IBN,INA:blacksplash.tk
+;
+Host,5033,Pskov_Net,Pskov,Sasha_Shost,-Unpublished-,300,CM,IBN,INA:109.229.69.29
+,11,SWEET_LORANE,Pskov,Sasha_Shost,-Unpublished-,300,CM,IBN,INA:109.229.69.29,U,NC
+Pvt,21,TaxService,Pskov,Sergey_Golovkin,-Unpublished-,300,CM,IBN,INA:213.24.60.25
+,39,Fancy_House,Pskov,Alexander_Grigoryev,-Unpublished-,300,CM,IBN,INA:195.239.139.14,U,NEC
+;
+Host,5034,KosNet,Kostroma,Vladimir_Bobarykin,-Unpublished-,300,CM,IBN,INA:fido.cryptonets.ru
+Hub,13,Last_Station,Kostroma,Vladimir_Bobarykin,-Unpublished-,300,CM,IBN,INA:fido.cryptonets.ru,U,NPK
+,10,FUN_Station,Kostroma,Sergey_Anohin,-Unpublished-,300,XW,CM,IBN,INA:85.113.221.175
+;
+Host,5036,Lipetsk_Net,Lipetsk_Russia,Sergey_Strukov,-Unpublished-,300,CM,IBN,INA:f0.n5036.z2.node.binkp.net
+,2,Baken,Elets_Russia,Pavel_Zolotarev,-Unpublished-,300,EVY:hoz48@yandex.ru
+,3,Dusty_Pillar,Elets_Russia,Gennadiy_Fateev,7-474-67-23047,9600,ZYX,XA,CM
+,4,MasterLess_Warrior,Lipetsk,Leonid_Matsak,-Unpublished-,300,EVY:mleo@bk.ru
+,26,Zomby,Gryazi_Russia,Gennadij_Pastuhov,-Unpublished-,300,EVY:pastuhovgena@yandex.ru
+,32,NoName,Lipetsk_Russia,Stas_Kornienko,-Unpublished-,300,EVY:stkorn@mail.ru
+,33,Beer_Wave,Lipetsk_Russia,DeN_Tatyanin,-Unpublished-,300,EVY:den.tatyanin@gmail.com
+,37,--==REACTOR==--,Lipetsk_Russia,Andrey_Hudiakov,-Unpublished-,300,CM,IBN,INA:node.fido.hexanet.ru
+,44,SSV,Lipetsk_Russia,Sergey_Strukov,-Unpublished-,300,EVY:stalex@mail.ru,U,NC
+;
+Host,5037,Belgorod_Net,Belgorod_Russia,Alek_Mochaloff,-Unpublished-,300,CM,IBN,INA:fido.heleas.net
+Hub,28,Master_Inc_Station,Belgorod,Alek_Mochaloff,-Unpublished-,300,CM,IBN,INA:fido.heleas.net
+,7,Wayfarer,Stary_Oscol,Evgeny_Vetrov,-Unpublished-,300,ICM,IBN,INA:smekal.ru,U,NPK
+;
+Host,5038,Karelia_Net,Petrozavodsk,Alexey_Lomazin,7-8142-534300,9600,XX,MO,H16,V32T,VFC,TTd
+Hold,5,ECS_station,Segezha,Vadim_Krasikov,7-81431-23555,9600,XA,MO,H16,V32T,VFC,V34,TTE
+Hold,6,North_Rangers,Kondopoga,Andrei_Chikulaeff,7-81451-22247,9600,XA,MO,V42B,V32B,TVF
+Hold,10,Big_Bobby,Kondopoga,Sergey_Nemchuk,-Unpublished-,300,CM,IBN,INA:82.140.98.42
+Hold,11,The_LiON_BBS,Petrozavodsk,Serg_Klimenko,7-8142-768740,9600,XX,V42B,V32B,TUE
+Hold,12,The_MOON_CAT_Station,Petrozavodsk,Timofey_Yakushev,7-8142-764312,9600,XX,MO,V32B,V42B,V34,TTE
+,13,MILKer,Petrozavodsk,Alexey_Lomazin,7-8142-534300,9600,XX,MO,H16,V32T,VFC,TTd
+Hold,2906,Mining_Station,Tuloma,George_Kurkin,-Unpublished-,300,MO,CM,IBN:24555,INA:78.36.18.73
+Hold,16,Atomic_Station,Petrozavodsk,Igor_Ogienko,7-8142-751453,9600,XX,MO,V42B,V32B,V34,TTG
+;
+Host,5049,Tartar_Net,Kazan_Russia,Marat_Iakoupov,-Unpublished-,300,CM,IBN,INA:188.93.108.203
+,1,Orphan's_Memorial,Kazan,Igor_Shishkin,-Unpublished-,300,CM,IBN,INA:188.93.108.202
+,162,sniper,Kazan,Marat_Iakoupov,-Unpublished-,300,CM,IBN,INA:188.93.108.203,U,NC
+Hub,6,NT_Station,Kazan,Niaz_Tavabilov,-Unpublished-,300,CM,MO,IBN,INA:niaz.noip.me
+Pvt,82,Apocalipsis,Kazan,Mikael_Tikhonov,-Unpublished-,300,U,MOB
+Pvt,87,Sunny_Station,Kazan,Dmitriy_Shubin,-Unpublished-,300,U,MOB
+,167,Chelny.Online,Naberezhnye_Chelny,Aleksey_Kuzin,-Unpublished-,300,CM,IBN,INA:fido.chelny.online
+;
+Host,5050,Kama_river_net,Izhevsk_Russia,Rafis_Khayrullin,-Unpublished-,300,CM,IBN,MO,MN,INA:fido.italks.ru
+,9,-=RKhCraft=-,Izhevsk,Rafis_Khayrullin,7-3412-403647,9600,XX,V32B,V42B,MO,LO,IBN,ICM,INA:fido.italks.ru,TTD
+,55,March_Bunny_BBS,Izhevsk,Alexander_Soklakov,-Unpublished-,300,CM,IBN,MO,MN,INA:say.noip.me,U,NEC,NC,NPK
+,57,-=The_Door_Into_Summer=-,Izhevsk,Michael_Mamaev,-Unpublished-,300,CM,IBN,INA:f57.n5050.z2.binkp.net
+,151,City_of_a_Yellow_Fish,Sarapul,Oleg_Gubanov,-Unpublished-,300,CM,IBN,INA:sarfido.ddns.net
+;
+Host,5053,Saratov_Net,Saratov_Russia,Alexander_Tsaplin,-Unpublished-,300,CM,IBN,INA:n5053c.dlinkddns.com
+Hub,55,TAVSAR_Co.,Saratov_Russia,Alexander_Tsaplin,-Unpublished-,300,CM,IBN,INA:n5053c.dlinkddns.com,U,NC,NEC,NPK
+,42,ALT(r)_Co.,Saratov_Russia,Aleksey_Tolmatsky,-Unpublished-,300,CM,IBN,INA:altrco.hopto.org
+,44,System_Daemon,Saratov_Russia,Nickolay_Parfenov,-Unpublished-,300,CM,IBN,INA:213.80.249.14
+,51,CONCORD_BBS,Saratov_Russia,Valentin_Kuznetsov,7-845-296-6120,9600,V34,V42B,TUd
+,57,Behind_Mirror,Saratov_Russia,Aleksey_Tarasow,-Unpublished-,300,CM,IBN,INA:89.179.70.208
+Hub,58,AroundFamilyNode,Saratov_Russia,Alexander_Kruglikov,-Unpublished-,300,ICM,IBN,INA:fido.kruglikov.info,PING,U,ENC
+,54,Zombie_system,Saratov_Russia,Denis_Mikhlevich,-Unpublished-,300,CM,IBN,INA:ftpserver.org.ru
+,56,Lone_Star_Station,Saratov_Russia,Oleg_Levkin,-Unpublished-,300,CM,MO,IBN,IFC,INA:lone-star-station.dynamic-dns.net
+,400,UseNet_FidoGate,Saratov_Russia,Denis_Mikhlevich,-Unpublished-,300,CM,IBN,INA:fidogate.ru
+;
+Host,5054,West_Ural_Net,Perm,Max_Bagaev,-Unpublished-,300,IBN,INA:fido.maxiol.com
+Hub,8,MAXIOL,Perm,Max_Bagayev,-Unpublished-,300,IBN,INA:fido.maxiol.com
+,3,Anri,Perm,Andrey_Popov,-Unpublished-,300,IBN,INA:homeuser77.43.189.21.ccl.perm.ru
+,30,ICMM_UB_RAS,Perm,Alexey_Masich,-Unpublished-,300,IBN,INA:apps1.icmm.ru,IEM:mag@icmm.ru
+,89,Keu,Perm,Dmitry_Kolvakh,-Unpublished-,300,CM,IBN,INA:fido.keu.pstu.ru
+;
+Host,5055,Volga_River_Net,Volgograd,Denis_Lyzhenko,-Unpublished-,300,CM,IBN,INA:node73.daemony.ru
+,73,Last_Day_Station,Volgograd,Denis_Lyzhenko,-Unpublished-,300,CM,IBN,INA:node73.daemony.ru
+Hold,55,Sartan_BBS,Volgograd,Pavel_Scherbinin,-Unpublished-,300,CM,IBN,INA:ntvolga.ru
+Pvt,29,DVB,Volgograd,Vladimir_Donskoy,-Unpublished-,300,MO,IBN,INA:vbd.no-ip.biz
+,37,DiAl,Volgograd,Alex_Zyuzin,-Unpublished-,300,CM,IEM:azyuzin@hotbox.ru,IMI
+,85,lmdlmd,Volgograd,Andy_Ogol,-Unpublished-,300,CM,IEM:lmdlmdlmd@inbox.ru,IMI
+,182,hs_sergey_station,Volgograd,Sergey_Kaluzhskiy,-Unpublished-,300,CM,IBN,INA:fido.ortoped.org.ru
+;
+Host,5057,Samara_Net,Samara_Russia,Max_Vasilyev,-Unpublished-,300,CM,IBN,INA:fido.fligel.org
+,19,Pioneer's_Palace,Samara,Max_Vasilyev,-Unpublished-,300,CM,IBN,INA:fido.fligel.org,U,NC,NPK
+,53,Area_51,Samara,Ivan_Kovalenko,-Unpublished-,300,ICM,IBN,INA:fido.roswell.systems
+,70,Yoga,Samara,Igor_Shishkin,-Unpublished-,300,CM,IMI:fido5057@gmail.com
+,71,Yuriy,Samara,Yuriy_Vasilyev,-Unpublished-,300,CM,IMI:yuriy.vasilyev@gmail.com
+,76,MSII_Station,Samara,Sergey_Mironenkov,-Unpublished-,300,CM,IMI:srgmironenkov@gmail.com
+,77,Max,Samara,Max_Vasilyev,-Unpublished-,300,CM,IMI:vasilyevmax@gmail.com
+,78,Cenzor_Station,Samara,Ilya_Krestin,-Unpublished-,300,CM,IMI:krestinie@gmail.com
+;
+Host,5058,Orenburg_Area,Orsk,Yurik_Tolokonnikov,-Unpublished-,300,CM,IBN,INA:dioxyde.no-ip.info
+,108,Home_Station,Orsk,Yurik_Tolokonnikov,-Unpublished-,300,CM,IBN,INA:dioxyde.no-ip.info
+;
+Host,5059,Stalker,Penza,Anton_Gorlov,-Unpublished-,300,ICM,IBN,INA:ftn.stlk.name
+,37,Stalker,Penza,Anton_Gorlov,-Unpublished-,300,ICM,IBN,INA:ftn.stlk.name
+,38,PCLovers,Penza,Andrey_Mundirov,-Unpublished-,300,ICM,IBN,INA:fido.pclovers.ru
+,39,Crazy_Diamond_Station,Penza,Artem_Rybalchenko,-Unpublished-,300,ICM,IBN,INA:ftn.arcdhome.ru
+;
+Host,5060,Taganrog_Net,Taganrog,Andrey_Kharchenko,-Unpublished-,300,CM,IBN,INA:fido.siriusnet.ru
+Pvt,7,WillyStation,Taganrog,Willy_Stingy,-Unpublished-,300,MO
+Pvt,8,ZenithStation,Taganrog,Yuri_Kurenkov,-Unpublished-,300,CM
+Pvt,17,OlegNode,Taganrog,Oleg_Lukonin,-Unpublished-,300,CM
+Pvt,88,YuriStation,Taganrog,Yuri_Kurenkov,-Unpublished-,300,CM
+,90,Sirius,Taganrog,Andrey_Kharchenko,-Unpublished-,300,CM,IBN,INA:f90.siriusnet.ru,U,NC
+,900,Sirius-IP,Taganrog,Andrey_Kharchenko,-Unpublished-,300,CM,IBN,INA:fido.siriusnet.ru
+;
+Host,5061,Rostov_Net,Rostov-on-Don,Eugene_Gladchenko,-Unpublished-,300,MO,ICM,IBN,INA:f15.n5061.z2.binkp.net
+,7,f7.n5061.z2.binkp.net,Rostov-on-Don,Eugene_Lepin,-Unpublished-,300,MO,CM,IBN,INA:samael.chimfak.rsu.ru,U,NEC
+,15,Cops'_Station,Rostov-on-Don,Eugene_Gladchenko,-Unpublished-,300,MO,CM,IBN,INA:f15.n5061.z2.binkp.net,U,NPK
+,58,f58.n5061.z2.binkp.net,Rostov-on-Don,Andrew_Ilchenko,-Unpublished-,300,MO,CM,IBN,INA:f58.n5061.z2.binkp.net
+Down,94,Woland's_Station,Rostov-on-Don,Alexey_Skripalev,-Unpublished-,300,CM,IBN,INA:f94.n5061.z2.binkp.net
+;
+Host,5064,StavNet,Stavropol_Region,Vitaliy_Geydeko,-Unpublished-,9600,CM,XX,MO,IBN,INA:fido.geydeko.ru
+,54,Wit,Stavropol,Vitaliy_Geydeko,-Unpublished-,9600,CM,XX,MO,IBN,INA:fido.geydeko.ru,U,NPK
+,56,GOD_Station,Stavropol,Maxim_Gribanov,-Unpublished-,9600,XX,MO,V34,IBN,IFC,INA:gribmax.sytes.net,CM,U,NEC
+;
+Host,5066,Chuvashia_Net,Cheboksary,Oleg_Kuznetsov,-Unpublished-,300,CM,IBN,INA:ftn.megaputer.net
+,18,The_JJMs_HardWork_BBS,Cheboksary,Yuriy_Haritonov,-Unpublished-,300,CM,IBN,INA:fido.cbx.ru
+,35,TaT_Station,Novocheboksarsk,Eugene_Vasilyev,-Unpublished-,300,CM,IBN,INA:fido.djel.ru
+,71,Blues_Box,Cheboksary,Oleg_Kuznetsov,-Unpublished-,300,CM,IBN,INA:ftn.megaputer.net,U,NC
+,198,Meteo_Station,Novocheboksarsk,Viktor_Smirnov,-Unpublished-,300,CM,IBN,INA:METEOVIKTOR.PP.RU
+Pvt,128,Goro's_Gate,Cheboksary,Yuriy_Haritonov,-Unpublished-,300,MO
+;
+Host,5068,VologdaNet,Vologda_region_Russia,Alexey_Karachev,-Unpublished-,300,CM,IBN,INA:178.64.190.6
+,45,KiotStation,Veliky_Ustug_Russia,Alexey_Karachev,-Unpublished-,300,CM,IBN,INA:178.64.190.6
+,350,MadxStation,Tcherepovets_Russia,Maksim_Ivanov,-Unpublished-,300,CM,IBN,INA:madx.ddns.net
+;
+Host,5076,YaNAO_Net,Noviy_Urengoy,Andrew_Rogov,-Unpublished-,300,MO,IBN,ICM,INA:178.216.154.110,#20
+Pvt,13,KSK_BBS,Yamburg,Yura_Dosch,-Unpublished-,300,MO,#20
+,207,SevES_TE,Noviy_Urengoy,Andrew_Rogov,-Unpublished-,300,MO,IBN,ICM,INA:207.grumbler.org,#20
+;
+Host,5080,Middle_Ural_NET,Ekaterinburg_Russia,Alexei_Kuklin,7-343-3783899,9600,XW,CM,MO,LO,V32T,VFC,V34,IBN,INA:fido.imp.uran.ru,U,NEC
+Hold,36,Forever,Ekaterinburg,Michael_Chetverikov,7-343-3912657,9600,XA,LO,MO,!20
+Hub,68,Academ,Ekaterinburg,Alexei_Kuklin,7-343-3783899,9600,XW,CM,MO,LO,V32T,VFC,V34,IBN,INA:fido.imp.uran.ru,U,NEC
+,31,Tresor_Night,Ekaterinburg,Ivan_Novikov,-Unpublished-,300,MO,IBN,INA:sentosa.e-burg.su,U,NC,NPK
+,108,SON_OF_BOG,Ekaterinburg,Oleg_Kroogloff,7-343-3742161,9600,XA,V32B,V34,V42B
+Hold,112,Lotsman,Ekaterinburg,Yury_Nikitin,7-343-3106025,9600,XX,MO,V34,V42B,V32T,VFC,TSE
+Pvt,135,ZZ,Ekaterinburg,Evgeniy_Zagainov,-Unpublished-,300,MO
+Pvt,205,Mishail's_Home_Station,Kamensk-Uralsky,Mishail_Ovcharenko,-Unpublished-,300,MO
+Pvt,206,Mishail's_Work_Station,Kamensk-Uralsky,Mishail_Ovcharenko,-Unpublished-,300,MO
+Pvt,225,AnaeStation,Ekaterinburg,Dmitry_Shapovalenko,-Unpublished-,300,MO
+Pvt,244,8BBS,Ekaterinburg,John_Zaicev,-Unpublished-,300,MO
+Hub,102,nodelist.grumbler.org,Ekaterinburg,Stas_Degteff,-Unpublished-,300,MO,MN,IBN,IBN:443,INA:binkd.node.grumbler.org,INA:binkp.vashadmin.su,PING
+,172,The_Access_Denied,Ekaterinburg,Stas_Vlasov,-Unpublished-,300,MO,MN,IBN,INA:ftn.vlnet.ml
+,245,Sakura_Tree_Station,Ekaterinburg,Petr_Alexeevskiy,-Unpublished-,300,MO,MN,IBN,INA:f245.n5080.z2.binkp.net
+;
+Host,5083,Kazakhstan_NET,Almaty_Kazakhstan,Peter_Khanin,-Unpublished-,300,XX,MO,ICM,IBN,INA:f444.n5083.z2.homelabs.org
+,1,Wyse_Decision,Almaty_Kazakhstan,Andrey_Kislov,-Unpublished-,9600,XA,MO,V32B,V90C,!20,IBN,INA:89.107.98.241,TSC
+Pvt,79,Cat_Behemoth,Almaty_Kazakhstan,Alexey_Petrunya,-Unpublished-,9600,V34,VFC,MO,U,NC
+,85,Jazz_Station,Almaty_Kazakhstan,Eugene_Erokhin,-Unpublished-,300,MO,ICM,IBN,INA:uncleeugene.dlinkddns.com
+,87,Vitos_station,Astana_Kazakhstan,Vitaliy_Byalik,-Unpublished-,300,XX,MO,IBN,INA:srv.bark.kz
+,89,ImPressed.31,Almaty_Kazakhstan,Viktor_Sychev,-Unpublished-,300,XX,MO,IBN,INA:vsa1987.no-ip.info
+,90,UFO777_Station,Almaty_Kazakhstan,Mikhail_Matveyev,-Unpublished-,300,CM,IMI:fido5083@zoho.com
+,444,Pupkin_Labs,Almaty_Kazakhstan,Peter_Khanin,-Unpublished-,300,XX,MO,ICM,IBN,INA:f444.n5083.z2.homelabs.org
+;
+Host,5090,SiberianNet,Krasnoyarsk_Russia,Maksim_Medvedev,-Unpublished-,300,CM,IBN,INA:n5090.krnet.ru
+,138,KrNet,Krasnoyarsk_Russia,Maksim_Medvedev,-Unpublished-,300,CM,IBN,INA:f138.n5090.krnet.ru
+,139,Line_GT-R,Krasnoyarsk_Russia,Oleg_Pletnev,-Unpublished-,300,CM,IBN,INA:scope-1.g-service.ru
+,958,Ridi,Norilsk,Dmitriy_Ksenchak,-Unpublished-,300,CM,IBN,INA:fido.ridi24.ru,INA:f958.n5090.z2.binkp.net
+;
+Host,5095,Podolsk_Net,Podolsk_Russia,Sergey_V._Efimoff,-Unpublished-,300,MO,ICM,IBN,INA:n5095.stabilis.ru
+,20,Stabilis_Systems,Podolsk_Russia,Sergey_V._Efimoff,-Unpublished-,300,CM,MO,IFC,IBN,INA:fido.stabilis.ru,U,NPK
+;
+Host,5097,Night_Flame,Ukhta,Tema_Zelikin,-Unpublished-,300,ICM,IBN,INA:nightflame.info
+,24,Orgasmu$,Ukhta,Dema_Kozin,-Unpublished-,300,IBN,INA:optimusprime.mykeenetic.com
+,31,Night_Flame,Ukhta,Tema_Zelikin,-Unpublished-,300,ICM,IBN,INA:nightflame.info
+;
+Host,5099,Zhukovsky-Ramenskoe_Net,Zhukovsky_Russia,Andrey_Frolov,-Unpublished-,300,CM,IBN,INA:94.79.47.242
+,4,Akf,BackFire_Station,Andrey_Frolov,-Unpublished-,300,CM,IBN,INA:94.79.47.242,U,NC
+;
+Host,6035,Fe-City_Net_(07-08-19),Zheleznogorsk,Oleg_W._Levchenko,7-471-487-9674,9600,V32B,V42B,V34,MN,MO,IBN,ICM,INA:f0.n6035.z2.binkp.net,TUd
+,1,Fe-City_Site_One,Zheleznogorsk,Oleg_W._Levchenko,7-471-487-9674,9600,V32B,V42B,V34,MN,MO,IBN,ICM,INA:f1.n6035.z2.binkp.net,TUd
+,4,Nostromo,Zheleznogorsk,Vladimir_Glushko,-Unpublished-,300,MO,CM,IBN,INA:f4.n6035.z2.binkp.net
+,5,f5.n6035.z2.binkp.net,Zheleznogorsk,Vitaliy_Poluhin,-Unpublished-,300,MO,CM,IBN,INA:f5.n6035.z2.binkp.net
+Hold,11,Dream,Zheleznogorsk_Kursk,Victor_Tihiy,7-471-484-6354,9600,XX,V34,V42B,TXd
+;
+Host,6055,Akhtuba_River_Net,Volzhsky,Yurij_Djatlov,7-8443-250771,9600,ICM,XX,V34,V32B,V42B,TTE,IBN,INA:92.39.108.76
+,4,Last_Day_Station,Volzhsky,Denis_Lyzhenko,-Unpublished-,300,CM,IBN,INA:mail.daemony.ru
+,7,COBA_C_COBEHKOM,Volzhsky,Yurij_Djatlov,7-8443-250771,9600,ICM,XX,V34,V32B,V42B,TTE,IBN,INA:92.39.108.76
+;
+Host,6056,Kamyshin_Net,Kamyshin,Serg_Ageev,-Unpublished-,300,MO,IBN,INA:fido6056.ddns.net
+,1,1.fido6056.int.ru,Kamyshin,Serg_Ageev,-Unpublished-,300,MO,IBN,INA:1.fido6056.int.ru
+,8,KES,Kamyshin,Alexsandr_Khromov,-Unpublished-,300,MO,IBN,INA:8.fido6056.int.ru
+,32,II,Volgograd,Ilya_Ivanov,-Unpublished-,300,EMA:32@fido6056.int.ru
+,51,Terminal_Uranix,Kamyshin,Evgeniy_Yudin,-Unpublished-,300,EMA:51@fido6056.int.ru
+,99,Vic,Kamyshin,Victor_Talanin,-Unpublished-,300,EMA:99@fido6056.int.ru
+,207,Vadevil_Station,Kamyshin,Vadim_Tabolin,-Unpublished-,300,EMA:207@fido6056.int.ru
+;
+Host,6078,Kaliningrad_region,Kaliningrad,Dmitriy_Romanov,-Unpublished-,9600,MO,ITN,IBN,IFC,CM,INA:83.219.134.127
+,1,Techno_Music_BBS,Kaliningrad,Dmitriy_Romanov,-Unpublished-,9600,MO,ITN,IBN,IFC,CM,INA:83.219.134.127
+Pvt,2,Neman_OnLine,Neman,Kostya_Udelov,-Unpublished-,300,MO
+Pvt,3,RADIO-86RK,Kaliningrad,Oleg_Ageev,-Unpublished-,9600,MO
+Pvt,4,SilenceBBS,Kaliningrad,Roman_Filippov,-Unpublished-,300,MO
+Down,5,COMRADE_ARTYOM,Kaliningrad,Artem_Kulchenko,-Unpublished-,300,MO,IBN,INA:ua2fga.homelinux.com
+Down,6,AndrewF1,Kaliningrad,Andrew_Zherebyatiev,-Unpublished-,9600,XX,MO,IBN,INA:andreyf1.homelinux.org
+Down,7,Maxim_Pedchenko,Kaliningrad,Maxim_Pedchenko,-Unpublished-,9600,MO
+,80,YES,Chernyahovsk,Cheslav_Osanadze,-Unpublished-,300,IBN,CM,INA:cheslav.no-ip.info
+;
+Host,6090,AtomNet,Krasnoyarsk-26_Russia,Michael_Vorobyov,-Unpublished-,300,CM,MO,IBN,INA:fido.mic6090.pp.ru
+,1,Clarion,Krasnoyarsk-26,Michael_Vorobyov,-Unpublished-,300,CM,MO,IBN,INA:fido.mic6090.pp.ru
+,14,dmklkv313,Krasnoyarsk-26,Dmitriy_Kulikov,-Unpublished-,300,CM,MO,IMI,IEM:2.6090.14@gmail.com
+;
+Region,56,Catch_All_Z2,Bad_Ueberkingen,Ulrich_Schroeter,49-7331-9861042,9600,CM,XA,MO,IBN,INA:ambrosia60.dd-dns.de,X75,V32B,V42B,U,ENC
+;
+Host,362,NC-362,Torres_Vedras_PT,Luis_Silva,351-261-402918,33600,V32,V42B,CM,XA,IBN,INA:msmacbbs.com
+Hold,6,MSmac,Torres_Vedras_PT,Luis_Silva,351-261-402918,33600,V32,V42B,CM,XA,IBN,ITN,INA:msmacbbs.maletazul.pt
+;
+Host,382,NC-Serbia,Bad_Ueberkingen,Ulrich_Schroeter,49-7331-9861042,9600,CM,XA,MO,IBN,INA:ambrosia60.dtdns.net,X75,V32B,V42B,U,ENC,CDP
+,147,Vortex,Novi_Sad,Strahinja_Bojovic,-Unpublished-,300,CM,ITN:3777,INA:vortex.redirectme.net
+;
+Host,530,NC-Romania,Bad_Ueberkingen,Ulrich_Schroeter,49-7331-9861042,9600,CM,XA,MO,IBN,INA:ambrosia60.dd-dns.de,X75,V32B,V42B,U,ENC,CDP
+,306,pufa,Chiajna_RO,Andrei_Rachita,-Unpublished-,300,U,MOB
+;
+Zone,1,North_America_(302),Toronto,Nick_Andre,1-647-847-2083,9600,CM,XX,INA:bbs.darkrealms.ca,IBN
+,19,FTSC_Administrator,Pawcatuck_CT,Andrew_Leary,-Unpublished-,300,CM,XX,INA:phoenix.bnbbbs.net,IBN:24555,IFC,ITN:60177,PING
+Pvt,21,The_NAB_Echolist,TBD,TBD,-Unpublished-,300
+,120,RemoteAccess_Help_USA,central_NC_USA,mark_lewis,-Unpublished-,300,XA,CM,INA:sestar.synchro.net,IBN,PING
+,123,PCBoard_Help,Crestview_FL,Ozz_Nixon,-Unpublished-,300,XX,MN,INA:saltairbbs.com,IBN,ITN
+,130,D'Bridge_Help,Toronto,Nick_Andre,1-647-847-2083,9600,CM,XX,INA:bbs.darkrealms.ca,IBN
+,133,InterMail_Help,Chicago_IL,Dale_Barnes,-Unpublished-,300,CM,XX,INA:im.ifidonet.com,IBN
+;
+Region,10,Calif-Nevada,Aptos_CA,Kurt_Weiske,-Unpublished-,300,CM,XX,INA:realitycheckbbs.org,IBN
+,1,Region_10_Echomail_Coordinator_Calif_Nevada,Aptos_CA,Kurt_Weiske,-Unpublished-,300,CM,XX,INA:realitycheckbbs.org,IBN
+;
+Host,102,SoCalNet,Los_Angeles_CA,Lee_Green,-Unpublished-,300,CM,XA,INA:techware.dynip.com,IBN
+,401,Techware_BBS,Los_Angeles_CA,Lee_Green,-Unpublished-,300,CM,XA,INA:techware.dynip.com,IBN
+;
+Host,103,Orange_County_CA,Aptos_CA,Kurt_Weiske,-Unpublished-,300,CM,XX,INA:realitycheckbbs.org,IBN
+,1,bbsdev.net,Lake_Forest_CA,Stephen_Hurd,-Unpublished-,300,CM,XW,IBN
+Pvt,13,Whiskey_Lovers_BBS,Lake_Forest_CA,Stephen_Hurd,-Unpublished-,300,INA:wd1cks.org,IBN
+,17,nix.synchro.net,Lake_Forest_CA,Stephen_Hurd,-Unpublished-,300,CM,INA:nix.synchro.net,IBN,ITN
+,705,Vertrauen,Fullerton_CA,Rob_Swindell,-Unpublished-,300,CM,INA:vert.synchro.net,IBN
+;
+Host,214,San_Joaquin_Valley_Net,Visalia_CA,Ray_Quinn,1-559-429-8280,9600,CM,XX,V32b,IBN,INA:bbs.quinnnet.org
+,22,US_99_BBS,Visalia_CA,Ray_Quinn,1-559-429-8280,9600,CM,XX,V32b,IBN,INA:bbs.quinnnet.org
+Pvt,23,US_99_Road_Node,Visalia_CA,Ray_Quinn,-Unpublished-,9600,MO,IBN
+,559,Techienet_BBS,Fresno_CA,Ted_Freitas,-Unpublished-,9600,CM,XX,IBN,INA:bbs.techienet.com
+;
+Host,218,CalNev_IPNet,Aptos_CA,Kurt_Weiske,-Unpublished-,300,CM,XX,INA:realitycheckbbs.org,IBN
+,1,Net_218_NEC,Aptos_CA,Kurt_Weiske,-Unpublished-,300,CM,XX,INA:realitycheckbbs.org,IBN,IFC
+Pvt,109,Inland_Utopia,Ontario_CA,Matt_Munson,-Unpublished-,300,CM,MO,IBN
+,210,The_Board,La_Verne_CA,Darren_Braun,-Unpublished-,300,CM,INA:theboard.synchro.net,IBN
+,215,The_Horizon_BBS,Huntington_Beach_CA,Chris_Wilson,-Unpublished-,300,CM,INA:bbs.horizonbbs.net,IBN
+,220,Mystic_Island_BBS,Fountain_Valley_CA,Mickey_Frklic,-Unpublished-,300,CM,INA:mysticisland.strangled.net.net,IBN
+,401,The_Lounge,San_Francisco_CA,James_Downs,-Unpublished-,300,CM,XX,INA:lounge.egontech.com,IBN
+,410,Strontium_90,Berkeley_CA,Robbie_Whiting,-Unpublished-,300,CM,XX,INA:strontium90.servebbs.com,IBN
+,501,iNK_tWO,Covina_CA,Lawrence_Manuel,-Unpublished-,300,CM,XA,INA:bbs.inktwo.com,IBN
+,510,Bit_Sunrise,Los_Angeles_CA,Waylon_Jennings,-Unpublished-,300,CM,XX,INA:bitsunrise.com,IBN
+,520,Success_BBS,Los_Angeles_CA,Christopher_Taylor,-Unpublished-,300,CM,XX,INA:bbs.kiwi.net,IBN
+,530,Dreamland_BBS,Los_Angeles_CA,Tony_Master,-Unpublished-,300,CM,XX,INA:bbs.dreamlandbbs.org,IBN
+,600,Shodan's_Core,Prunedale_CA,Andy_O'Brien,-Unpublished-,300,CM,XX,INA:shodan.synchro.net,IBN
+,601,The_Wastelands_BBS,Copperopolis_CA,Donald_Price,1-209-785-4189,9600,V34,VFC,V42b,CM,XX,INA:wastelands-bbs.net,IBN
+,640,The_Vista_BBS,Vallejo_CA,Jason_Pasalis,-Unpublished-,300,CM,XX,INA:vistabbs.ianthurston.com,IBN
+,700,realitycheckBBS,Aptos_CA,Kurt_Weiske,-Unpublished-,300,CM,XX,INA:realitycheckbbs.org,IBN
+,720,Rail_City,Reno_NV,Ken_Johnson,-Unpublished-,300,CM,INA:binkp.rail-city.net,IBN
+,802,The_Phunc_BBS,Mountain_View_CA,Kevin_Elliot,-Unpublished-,300,CM,XX,INA:bbs.phunc.com,IBN
+,810,Storm_BBS,Los_Altos_CA,April_Monoceros,-Unpublished-,300,CM,XX,INA:stormbbs.moo.com,IBN
+;
+Region,11,R11C,IL_IN_KY_MI_OH_WI,RJ_Clay,000-198-144-184-12,300,XX,CM,MO,INA:ftn.rocasa.net,IBN,IFC,ITN:60177
+,11,Region_11_Mail_Hub,Region_11,RJ_Clay,000-198-144-184-12,300,XX,CM,MO,INA:ftn.rocasa.net,IBN,IFC,ITN:60177,PING
+Down,14,Region_11_IRex_Hub,Lansing_MI,RJ_Clay,-Unpublished-,300,XA,MO,INA:ftn.rocasa.us,IBN,ISE:ftnirex@rocasa.us,ITX:ftnirex@rocasa.us
+,201,Gulliver's_Travels,Dublin_IN,Steve_&_Sarah_Read,1-765-478-3850,9600,V32b,V42b,XA
+,202,Hard_Drive_Cafe,Beavercreek_OH,Darrell_Pelan,1-937-320-9283,9600,H16,XA,CM,V34
+,203,Jim's_FlyInn,Chicago_IL,James_Williams,1-773-881-1142,9600,CM,XA,V34
+,304,Cyber_Space_Cafe,Madisonville_KY,Clay_Thomas,1-270-821-6130,9600,CM,V32b,V42b,HST
+,331,Emergency_Scene,Ypsilanti_MI,Richard_Landskroener,-Unpublished-,300,CM,XA,IBN:ftn.emergencyscene.net
+,600,Swiss_Bull,Monroe_WI,David_Blum,1-608-325-7994,9600,HST,V42b,CM,XA
+;
+Host,120,Michigan_MetroNets,Lansing_MI,RJ_Clay,000-198-144-184-12,300,XX,CM,MO,INA:ftn.rocasa.net,IBN,ITN:60177,PING
+,302,Mojos_World_BBS,Jackson_MI,Jay_Allshire,-Unpublished-,300,XX,CM,INA:bbs.mojosworld.net,IBN:mojo.synchro.net
+,310,Ghost_Opera_BBS,Ann_Arbor_MI,Lori_Holden,-Unpublished-,300,XX,CM,INA:bbs.ghostopera.org,IBN:bbs.ghostopera.org
+,331,Emergency_Scene,Ypsilanti_MI,Richard_Landskroener,-Unpublished-,300,CM,XA,IBN:ftn.emergencyscene.net
+,340,Echo_Base_BBS,Perry_MI,Jeff_Jun,-Unpublished-,300,CM,IBN:binkp.echo-base-bbs.com
+Pvt,419,RJC_PC,Lansing_MI,RJ_Clay,-Unpublished-,300,XA,MO,IBN,PING,U,IPv6
+,544,ftn.rocasa.net,Lansing_MI,RJ_Clay,000-198-144-184-12,300,XX,CM,MO,INA:ftn.rocasa.net,IBN,IFC,ITN:60177,PING
+Down,545,Rocasa_FTNGate,Lansing_MI,RJ_Clay,-Unpublished-,300,XA,CM,INA:ftn.rocasa.us,IBN,IFC,ITN:60177,PING,U,IPv6
+,546,Rocasa_BBBS,Lansing_MI,Robert_Clay,000-192-210-236-220,300,XX,CM,INA:bbbs.rocasa.biz,IBN,IUC:filebot@rocasa.biz
+,601,Two_Dudes_BBS,Grand_Rapids_MI,Peter_Spalding,-Unpublished-,300,CM,INA:TwoDudesBBS.com,IBN
+,602,Land_of_the_Lounge_Lizards,Kalamazoo_MI,Michael_Capp,-Unpublished-,300,CM,INA:landoftheloungelizards.com,IBN
+,640,The_Twisted_Tower,Cold_Water_MI,Joddie_Noblit,-Unpublished-,300,CM,INA:twstdt.synchro.net,IBN
+Pvt,999,New_Node,MetroNet_MI,New_Sysop,-Unpublished-,2400,MO
+;
+Host,154,Wisconsin,Pewaukee_WI,Nicholas_Boel,-Unpublished-,300,CM,INA:binkp.pharcyde.org,IBN
+,10,The_Pharcyde_HUB,Pewaukee_WI,Nicholas_Boel,-Unpublished-,300,CM,INA:binkp.pharcyde.org,IBN
+,30,War_Ensemble_BBS,Appleton_WI,Mike_Miller,-Unpublished-,300,CM,INA:binkp.warensemble.com,IBN
+,40,The_Universal_JoiNT,Germantown_WI,John_Hiemenz,-Unpublished-,300,CM,INA:bbs.ujoint.org,IBN
+,50,Reign_Of_Fire_BBS,Franklin_WI,Gary_McCulloch,-Unpublished-,300,CM,INA:rofbbs.ddns.net,IBN
+,60,8-Bit_Classics,Wautoma_WI,Corey_Koltz,-Unpublished-,300,CM,INA:bbs.8bitclassics.com,IBN
+,140,Haunting_The_Chapel,Chicago_IL,Michael_Griffin,-Unpublished-,300,INA:htc.zapto.org,IBN
+Pvt,700,The_Pharcyde_BBS,Pewaukee_WI,Nicholas_Boel,-Unpublished-,300
+;
+Host,220,Illinois_Net,Temp_IL_NC,RJ_Clay,-Unpublished-,300,CM,XX,MO,INA:ftn.rocasa.net,IBN,ITN:60177,PING
+Pvt,14,mpcug.com,Madison_WI,Jim_Wargula,-Unpublished-,300,CM,IBN
+,20,Beck's_BBS,Abbott_Park_IL,Paul_Becker,-Unpublished-,300,CM,XA,ITN:becksbbs.synchro.net
+,30,Second_Coming_BBS,Kankakee_IL,Jonathan_Hodges,-Unpublished-,300,CM,XA,IFT:scbbs.ddns.net
+,40,Dali's_Cat,Chicago_IL,Ismar_Hasanbegovic,000-216-80-116-211,300,CM,XA,INA:daliscat.synchro.net,IBN
+,50,Eggy_BBS,Chicago_IL,Matt_Richards,000-0-0-0-0,300,CM,XA,INA:bbs.eggy.cc,IBN
+,60,Home_of_InterMail,Chicago_IL,Dale_Barnes,-Unpublished-,300,CM,XX,INA:im.ifidonet.com,IBN
+,70,Kernel_Error_BBS,Belleville_IL,Joseph_Werle,-Unpublished-,300,CM,XX,INA:bbs.kernelerror.com,IBN
+;
+Host,226,Ohio_Net,Kent_Ohio_USA,Bill_Burton,-Unpublished-,300,CM,INA:fidonet.wabusa.com,IBN
+,16,The_Amiga_Frontier_BBS,Akron_Ohio_USA,Charles_Stephenson,-Unpublished-,300,XA,ICM,INA:newfrontier.net,IBN
+,17,The_New_Frontier_][_BBS,Akron_Ohio_USA,Charles_Stephenson,-Unpublished-,300,XA,ICM,ITN,INA:frontierbbs.net,IBN:24556
+,20,The_VOID,Troy_Ohio_USA,Mitch_Greive,-Unpublished-,300,ICM,ITN,XA,INA:thevoid.servebbs.org,IBN
+,30,Freeside_BBS,Monroe_Ohio_USA,Marty_Taylor,-Unpublished-,300,ICM,XA,INA:freeside.bbs.io,IBN
+,50,Nitemare_Cafe,Columbus_OH,Rod_Barnhart,-Unpublished-,300,CM,INA:bbs.nitemarecafe.com,IBN,ITN:60177
+,70,Basement_Theory,Sciotoville_OH,Josh_Ramsey,-Unpublished-,300,CM,XX,INA:basement.synchro.net,IBN
+,100,Error404bbs,Perrysburg_OH,Todd_Zieman,-Unpublished-,300,CM,INA:Error404bbs.DDns.net,IBN
+,350,Fireball_Express!!!_BBS,Findlay_OH,Jay_Talbot,-Unpublished-,300,CM,XA,INA:fireballex.com,IBN
+Hold,9999,New_Fido_Applicant,Somewhere_OH,New_Sysop,-Unpublished-,300,MO
+;
+Host,227,Indiana_Net,Goshen_IN,Michael_Batts,-Unpublished-,300,CM,XA,INA:therockbbs.net,IBN
+,60,Bufkin_Ridge_Ranch,Mount_Vernon_IN,Michael_Deig,-Unpublished-,300,CM,XA,INA:bbs.br-ranchbbs.com,IBN
+Down,70,The_Search_BBS,Goshen_IN,Karl_Harris,000-199-21-199-227,300,CM,XA,INA:bbs.thehomesteadinghippy.com,IBN
+,114,The_ROCK_BBS_III,Goshen_IN,Michael_Batts,-Unpublished-,300,CM,XA,INA:therockbbs.net,IBN
+,201,Electronic_Warfare_BBS,Vincennes_IN,Nicholas_Loch,-Unpublished-,300,CM,XA,INA:ewbbs.synchro.net,IBN
+,301,Leisure_Time_BBS,New_Baden_IL,Robert_Riddell,-Unpublished-,300,CM,XA,INA:bbs.riddells.net,IBN
+Down,400,Deep_Space_94_BBS,Evansville_IN,Tony_Toon,-Unpublished-,300,CM,XA,INA:deepspace94.com,IBN
+,701,The_Magic_Lantern_BBS,Whiting_IN,Thomas_Smith,-Unpublished-,300,CM,XA,INA:tmlbbs.com,IBN
+;
+Host,2215,Northeast_Ohio,Kent_Ohio_USA,Bill_Burton,-Unpublished-,33600,CM,MO,XX,V34,V42b,INA:fidonet.wabusa.com,IBN
+,1,Northeast_Ohio_NEC,Kent_Ohio_USA,Bill_Burton,-Unpublished-,33600,CM,MO,XX,V34,V42b,INA:fidonet.wabusa.com,IBN
+,10,WABUSA_VADV_BBS,Cameron_NC,Bill_Burton,-Unpublished-,33600,ICM,ITN:3141,XX,INA:ftn.wabusa.com,IBN:24555,IFC,IP
+,15,wabusa,Kent_Ohio_USA,Bill_Burton,-Unpublished-,33600,CM,MO,XX,V34,V42b,INA:fidonet.wabusa.com,IBN
+,111,Sinner's_Haven,Medina_Ohio_USA,Karl_Kunc,-Unpublished-,300,CM,XA,INA:fido.sinnershaven.com,IBN
+,300,Never_Never_land,Toledo_Ohio,Ronald_Coon,-Unpublished-,300,CM,XA,INA:nnl.darktech.org,IBN
+,1701,STarFleet_HQ,Cuyahoga_Falls_OH,Drew_Klenotic,-Unpublished-,300,ICM,ITN:5983,XA,INA:bbs.sfhqbbs.org,IP
+Hold,999,new_fido_applicant,Somewhere_NEO_USA,new_sysop,-Unpublished-,300,MO
+Hold,9999,new_fido_applicant,Somewhere_NEO_USA,new_sysop,-Unpublished-,300,MO
+;
+Host,2320,Kentucky_Net,Temp_NC_KY,RJ_Clay,-Unpublished-,9600,CM,XA,INA:ftn.rocasa.net,IBN
+,105,Capitol_City_Online,Frankfort_KY,Mike_Powell,1-502-875-8938,9600,CM,XA,V34,V32T,INA:capcity2.synchro.net,IBN
+Pvt,107,Capitol_City_Online_2,Frankfort_KY,Mike_Powell,-Unpublished-,300,MO
+,200,Slasho.me_BBS,Pikeville_KY,Christopher_Hall,-Unpublished-,9600,CM,XA,INA:slasho.me,IBN
+,304,Manic_Modem_BBS,Union_KY,John_Cameron,000-104-219-52-88,300,MO,CM,TCP,IFC,TEL,VMP,BND,ITN:Manic-modem.com
+Hold,999,new_fido_applicant,Somewhere_NEO_USA,new_sysop,-Unpublished-,300,MO
+;
+Region,12,RC_Eastern_Canada,ON_PQ_NB_PE_NS_NF,Frank_Linhares,-Unpublished-,9600,CM,XX,INA:bbs.diskshop.ca,IBN,XW,PING
+,1,REC_Eastern_Canada,ON_PQ_NB_PE_NS_NF,Frank_Linhares,-Unpublished-,9600,CM,XX,INA:bbs.diskshop.ca,IBN,XW,PING,U,REC
+;
+Host,229,Greater_Toronto_Area_Network,GTA,Nick_Andre,1-647-847-2083,9600,CM,XX,INA:bbs.darkrealms.ca,IBN
+,100,Hysteria_BBS,Toronto_ON,Frank_Linhares,-Unpublished-,9600,CM,XX,INA:hysteriabbs.com,IBN
+Hub,101,Diskshop_BBS,Toronto_ON,Frank_Linhares,-Unpublished-,9600,CM,XX,INA:bbs.diskshop.ca,IBN
+Pvt,105,The_Cube_BBS,Ottawa_ON,Wayne_Robinson,-Unpublished-,9600
+Pvt,200,Electronic_Chicken,Toronto_ON,Derek_Mullin,-Unpublished-,300
+,275,IDBBS,Chatham_ON,Dave_Vandermeer,-Unpublished-,9600,CM,INA:idbbs.dlinkddns.com,IBN:24560,XX
+,312,The_Dark_Zone,Toronto_ON,Alex_Coates,-Unpublished-,9600,CM,INA:bbs.lightuniverse.org,IBN
+,374,Cyber_Board,Toronto_ON,Jennifer_Marlin,-Unpublished-,9600,CM,INA:cboard.ddns.net,IBN
+,354,Thunder_Storm,Toronto_ON,Darryl_Wood,-Unpublished-,9600,CM,XX,INA:thunder-storm.ca,IBN
+,426,Darkrealms,Toronto_ON,Nick_Andre,1-647-847-2083,9600,CM,XX,INA:bbs.darkrealms.ca,IBN
+,452,Tiny's_BBS,Oshawa_ON,Shawn_Highfield,-Unpublished-,9600,CM,INA:tinysbbs.com,IBN
+,616,Moose,Toronto_ON,Vasily_Losev,-Unpublished-,9600,CM,INA:fido.gostco.in,IBN
+Pvt,720,The_BBS_Enterprise,Orillia_ON,Jason_Kendall,-Unpublished-,9600
+,728,Digital_Legacy_BBS,Chatham-Kent_ON,Kent_Timm,-Unpublished-,9600,CM,INA:kentsoftware.com,IBN,ITN:44888
+,981,bbs.digitalgatehouse.com,Hockley_Valley_ON,John_Riley,-Unpublished-,9600,CM,INA:bbs.digitalgatehouse.com,IBN
+,1014,t311net,Trenton_ON,Rex_Gibson,-Unpublished-,9600,CM,INA:t311net.ddns.net,IBN
+;
+Host,249,ON/PQ/PE/NB/NS/NF,Ottawa_ON,Troy_Tuttle,-Unpublished-,300,CM,INA:reasonablyinteresting.com,ITN:6502
+,1,Net_249_NEC,Ottawa_ON,Troy_Tuttle,-Unpublished-,300,CM,INA:reasonablyinteresting.com,ITN:6502
+,109,Dark_Side_Of_The_Moon,Ottawa_ON,Troy_Tuttle,-Unpublished-,300,CM,INA:reasonablyinteresting.com,ITN:6502
+,317,The_Bottomless_Abyss_BBS,Quebec_City,Dave_Cloutier,-Unpublished-,300,CM,INA:bbs.bottomlessabyss.net,IBN
+,206,mccarragher.org,Montreal_Quebec,Luc_Mccarragher,-Unpublished-,300,CM,INA:mccarragher.org,IBN
+Down,207,bbs.jonwatson.ca,Windsor_NS,Jon_Watson,-Unpublished-,300,CM,INA:bbs.jonwatson.ca,IBN
+,307,Central_Ontario_Remote,Campbellford_ON,Mike_Manning,-Unpublished-,300,CM,INA:manning.webhop.net,IBN
+,400,Subcarrier_BBS,Ottawa_ON,John_McCoy,-Unpublished-,9600,CM,INA:subcarrier.darktech.org,ITN:2323,XX
+;
+Region,13,RC_-_Mid_Atlantic,DC_DE_MD_NJ_NY_PA_VA_WV,Michael_Luko,1-856-933-7096,33600,CM,V34,V32b,INA:cfbbs.no-ip.com,IBN,ITN,IFT
+,2,Election_Coodinator,Buffalo_NY,Robert_Wolfe,-Unpublished-,9600,CM,INA:wc4.winserver.org,IBN,IFT
+,3,REGION_13_POTS_NETMAIL_GATE,Mt._Ephraim_NJ,Michael_Luko,1-856-933-7096,33600,CM,V34,V32b
+;
+Host,109,National_Capital_Area_Net_109,Washington_DC,Frank_Reid,1-757-481-6611,9600,CM,XA,V32b,V42b,V34,IBN:bbsdoors.com
+,41,Internet_Email_Gateway,Wheaton_MD,Andrew_Miller,1-301-949-5764,9600,CM,XR,V32b,V42
+,42,Usenet_News_Gateway,Wheaton_MD,Andrew_Miller,1-301-949-5764,9600,CM,XR,V32b,V42
+,201,bbs.cyberchatnet.com,Vienna_VA,Phillip_Taylor,-Unpublished-,9600,CM,INA:bbs.cyberchatnet.com,IBN,IFC
+,202,bbs.cyberchatnet.com,Vienna_VA,Phillip_Taylor,1-703-310-7439,9600,XR,V32b,V42
+Pvt,264,www.TheLitterBox.org,Bluemont_VA,Tony_Campbell,-Unpublished-,300,CM,IP
+,432,The_Idea_Link,Wheaton_MD,Andrew_Miller,1-301-949-5764,9600,CM,XR,V32b,V42
+Hub,500,Greater_PG_Co_Lcl_Hub,Laurel,Frank_Reid,1-757-481-6611,9600,CM,XA,V32b,V42b,V34
+Pvt,560,The_Play_Pen,Upper_Marlboro_MD,Jeffrey_Estevez,-Unpublished-,300,IP
+,567,www.bbsdoors.com,Laurel_MD,Frank_Reid,-Unpublished-,300,CM,IBN:bbsdoors.com
+,568,Eagle's_Dare,Upper_Marlboro_MD,Frank_Reid,1-757-481-6611,9600,CM,XA,V32b,V42b,V34
+,909,Lincoln_Legacy,Leesburg_VA,John_Covici,1-703-777-8383,9600,CM,HST,V42B,V32B
+;
+Host,129,Pennsylvania_Net,Temp_NC,Michael_Luko,1-856-933-7096,33600,CM,V34,V32b,INA:cfbbs.no-ip.com,IBN,ITN,IFT
+,12,TCS_online,Pittsburgh_PA,Christopher_Schoppy,-Unpublished-,300,CM,IBN:gs1.trianglecloud.xyz
+,14,Pioneer's_Station,Coatesville_PA,Alex_Galiyev,-Unpublished-,300,CM,MO,INA:home.itc77.com,IBN,IFC,ITN
+,102,Convolution_BBS,Macungie_PA,Jonathan_Schreiter,-Unpublished-,300,CM,IBN:convolution.us
+,125,Blackfair's_Manor,Lancaster_PA,Keith_Cunningham,-Unpublished-,300,CM,INA:blackf.synchro.net,IBN,ITN,IFT
+,160,Mystic_Dreams,Warminster_PA,Mark_Iezzi,-Unpublished-,300,CM,INA:mysticdreams.dyndns.org,IBN:24555,ITN:24
+,165,Battle_Star_BBS,Doylestown_PA,Mark_Iezzi,-Unpublished-,300,CM,INA:battlestarbbs.dyndns.org,IBN,ITN
+,215,Mystic_BBS_Support,Philadelphia_PA,James_Coyle,-Unpublished-,9600,CM,INA:mysticbbs.pwnz.org,IBN,IFT
+;
+Host,261,Maryland_Central_Net,NC,Mark_Hofmann,-Unpublished-,300,CM,XX,INA:bbs.weather-station.org,IBN:24555
+,1,Weather_Station_Hub,Bel_Air_MD,Mark_Hofmann,-Unpublished-,300,CM,XX,INA:bbs.weather-station.org,IBN:24555
+,20,Omicron_Theta,Memphis_TN,Robert_Wolfe,-Unpublished-,9600,CM,INA:wc4.winserver.org,IBN,IFT
+,38,<<PRISM_BBS,Slaterville_Springs_NY,Janis_Kracht,1-607-200-4076,9600,CM,XX,H16,V32b,V42b,V34,V32t,X2C,INA:filegate.net,IBN
+,100,<<PRISM_BBS,Slaterville_Springs_NY,Janis_Kracht,-Unpublished-,300,CM,INA:filegate.net,IBN:24555,IFT,ITN
+,220,The_Realms_of_Blue,Westminster_MD,Scott_Brown,-Unpublished-,300,CM,INA:blues.zapto.org,IBN
+,1300,Weather_Station_BBS_(Mystic),Bel_Air_MD,Mark_Hofmann,-Unpublished-,300,CM,XX,INA:bbs.weather-station.org,IBN:24557
+,1304,Weather_Station_BBS,Bel_Air_MD,Mark_Hofmann,-Unpublished-,300,CM,XX,INA:bbs.weather-station.org,IBN
+,1305,Technoquarry,Towson_MD,Patrick_McGuire,-Unpublished-,300,CM,XX,INA:technoquarry.com,IBN
+,1306,The_Dragons_Den,Forest_Hill_MD,Al_Miller,-Unpublished-,300,CM,XX,INA:merlock.org,IBN:34554
+Pvt,1466,Owls_Anchor,Columbia_MD,Dale_Shipp,-Unpublished-,9600,XX,MO
+;
+Host,266,NJ_Delaware_Net,Mt._Ephraim_NJ,Michael_Luko,1-856-933-7096,33600,CM,V34,V32b,INA:cfbbs.no-ip.com,IBN,ITN,IFT
+,32,Eldritch_Clockwork,Riverside_NJ,David_Collins,-Unpublished-,300,CM,INA:eldritch.darktech.org,IBN
+,75,ASCIIattic,Old_Bridge_NJ,Chris_Costanzo,1-201-601-4011,9600,CM,INA:asciiattic.com,IBN,ITN,IFT
+,215,MPrah_BBS,Harrison_NJ,Michael_Prah,-Unpublished-,300,CM,INA:mprah.net,ITN,IBN
+,404,TequilaMockingbird_Online,Toms_River_NJ,Bill_McGarrity,-Unpublished-,300,CM,XR,INA:ftn.tequilamockingbirdonline.net,IBN
+,512,Christian_Fellowship,Mt._Ephraim_NJ,Michael_Luko,1-856-933-7096,33600,CM,V34,V32b,INA:cfbbs.no-ip.com,IBN,ITN,IFT
+,550,The_Hub_BBS,New_Brunswick_NJ,Derek_PIazza,-Unpublished-,300,CM,INA:100.8.195.123,IBN,IFT
+,618,Section_One,Williamstown_NJ,Ken_Albert,-Unpublished-,300,CM,INA:sectiononebbs.com,IBN
+;
+Host,267,NYNet-Empire_State_Net_NC,New_York,Gregory_Deyss,-Unpublished-,300,CM,INA:net267.dyndns.org,IBN:24555,ITN,IFT
+,1,Sound-BBS,Brooklyn_NY,Yury_Kalinin,-Unpublished-,300,CM,MO,LO,INA:yurykalinin.servemp3.com,IBN,IFC,ITN
+,67,Thiaramus'Den,Brooklyn_NY,Roman_Litvinenko,-Unpublished-,300,CM,INA:ftn.thiaramus.com,IBN
+,69,Andrew's_new_nest,Brooklyn_NY,Andrew_Doilidov,-Unpublished-,300,CM,INA:bbs.doilidov.com,IBN
+,118,LostCause_Halfway_House,Alden_NY,Ernest_J_Gainey_III,-Unpublished-,300,CM,INA:bbs.lostcause.house,IBN,ITN
+,150,Capital_Station_BBS,Schodack_NY,Gregory_Deyss,-Unpublished-,300,CM,INA:csbbs.dyndns.org,IBN,ITN,IFT
+,151,Ocean_Dreaming_BBS,White_Plains_NY,Ben_Macaulay,-Unpublished-,300,CM,INA:oceanbbs.dyndns.org,IBN
+,152,The_Nut_Asylum,Brooklyn_NY,Antonio_Rico,-Unpublished-,300,CM,INA:tnabbs.org,IBN
+,154,Solar_Pi,Buffalo_NY,Corey_Reichle,-Unpublished-,300,CM,INA:bbs.solarpi.net,IBN
+,155,Hidden_Paradise_BBS,Batavia_NY,Dean_Brooks,-Unpublished-,300,CM,INA:hpbbs.dyndns.org,ITN
+,156,Cosmik_Debris_BBS,Little_Falls_NY,Andrew_Pepper,-Unpublished-,300,CM,INA:cosmikdebris.ddns.net,IBN
+,157,The_Wrong_Number_][_BBS,Yorktown_Heights_NY,Al_DeRosa,-Unpublished-,300,CM,INA:wn2.duckdns.org,IBN
+,158,Ecstasy,Brookyln_NY,Antonio_Rico,-Unpublished-,300,CM,INA:xtcbox.org,IBN:2323
+Pvt,300,Lucid_Dreams_BBS,Batavia_NY,Bryan_Hamilton,-Unpublished-,9600,CM,XX,V32b,V42b
+,310,SiliconUnderground,Rochester_NY,Jason_Bock,-Unpublished-,300,CM,MO,LO,INA:siliconu.synchro.net,IBN
+Pvt,408,Theoretically_BBS,Endicott_NY,Andy_Avery,-Unpublished-,300,MO
+,518,Radio_Freqs_&_Geeks_BBS,East_Greenbush_NY,Rich_Gattie,-Unpublished-,300,CM,INA:rfgeeksbbs.ddns.net,ITN:2323
+,585,Rust_Belt_BBS,Rochester_NY,Kevin_Miller,-Unpublished-,300,CM,INA:rbbbs.mtonework.com,IBN,ITN
+,800,Capital_Hub_NEC,Schodack_NY,Gregory_Deyss,-Unpublished-,300,CM,INA:capitalhub.dyndns.org,IBN:24555
+Pvt,9999,New_Node_Applicant,Net_267,New_SysOp,-Unpublished-,300,MO
+;
+Host,275,Virginia_And_West_Virginia_Net,Virginia_Beach_VA,Carol_Shenkenberger,-Unpublished-,300,XX,CM,INA:shenks.synchro.net,IBN:shenks.dyndns.org
+,89,Diamond_Mine_Online,Fredericksburg_VA,Dave_Perrussel,-Unpublished-,300,CM,INA:bbs.dmine.net,ITN,IBN
+,91,Fluph,Elkview_WV,Leslie_Given,-Unpublished-,300,CM,XX,INA:fluph.zapato.org,IBN,ITX:transx@suddenlink.net
+Pvt,92,Fluph_test,Elkview_WV,Leslie_Given,-Unpublished-,300,XX,INA:fluph.zapato.org,IBN:2313
+Pvt,94,pure_fluph,Elkview_WV,Leslie_Given,-Unpublished-,300,XX,INA:fluph.zapato.org,IBN:2317
+,93,Valhalla_Home_Services,Richmond_VA,C.G._Learn,-Unpublished-,300,XX,CM,INA:valhalla.synchro.net,ITN,IBN
+,95,Valhalla_II,Richmond_VA,C.G._Learn,-Unpublished-,300,XX,CM,INA:bbs.valhallahomeservices.com,ITN,IBN:24557
+,96,GCOMMLIVE.com,Dumfries_VA,Randy_McCann,-Unpublished-,300,XX,INA:gcommlive.dynu.com,IFT,IBN
+,98,twixed,Fairfax_VA,Anton_Mikhaylov,-Unpublished-,300,XX,INA:bbs.twixed.net,IBN
+,100,Shenks_Express,Virginia_Beach_VA,Carol_Shenkenberger,-Unpublished-,300,XX,CM,INA:shenks.synchro.net,IBN:shenks.dyndns.org
+,101,Cube_Dweller_BBS,Chesterfield_VA,August_Kunnecke,-Unpublished-,300,XX,CM,INA:cubedwellerbbs.ddns.net,IBN,IFT
+,102,RadNet,Purcellville_VA,Michael_Stern,-Unpublished-,300,XX,INA:bbs.mikestern.ddns.net,IBN
+,201,bbs.cyberchatnet.com,Vienna_VA,Phil_Taylor,-Unpublished-,300,CM,INA:sbbs.dynu.net,IBN,IFC
+,301,IPTIA,Stafford_VA,Glenn_Rossi,-Unpublished-,300,XX,INA:bbs2.ipingthereforeiam.com,IBN
+;
+Region,14,Mid_West_USA,IA_KS_MN_MO_NE_ND_SD,Jeff_Smith,-Unpublished-,300,CM,XX,ITN,INA:ftn.region14.org,IBN
+,5,Region_14_IP_Server,Anoka_MN,Jeff_Smith,-Unpublished-,300,CM,XX,ITN,IFT,INA:ftn.region14.org,IBN
+,6,The_Twisted_Balloon,Anoka_MN,Jeff_Smith,-Unpublished-,300,CM,XX,ITN,IFT,INA:bbs.twisted-balloon.org,IBN
+,9999,New_Fidonet_Node,Anywhere_MN,New_Fido_Sysop,-Unpublished-,300
+;
+Host,282,MidWest,IA.KS.MN.MO.NE.ND.SD,Will_Du_Chene,-Unpublished-,300,CM,INA:crystalp.duckdns.org,ITN,IFT,IBN,IFC
+,1031,The_Ouija_Board,Anoka_MN,Jeff_Smith,-Unpublished-,300,CM,XX,ITN,INA:bbs.ouijabrd.net,IBN
+,1050,DARK_KNiGHT_BBS,Minneapolis_MN,Nicholas_Boie,-Unpublished-,300,CM,XX,IFT,ITN:60177,IBN:dkbbs.shensey.com
+,1055,The_Cosmic_Watermelon,Woodbury_MN,Robert_Laprise,-Unpublished-,300,CM,XX,IFT,ITN:60177,IBN:melon.rlaprise.net
+,1056,Crystal_Peak,Pine_City_MN,Will_Du_Chene,-Unpublished-,300,CM,IFC,IFT,IBN:crystalp.duckdns.org,IBN
+,1058,Old_Habbits_BBS,Minneapolis_MN,Steve_McGrath,-Unpublished-,300,MO,CM,IBN,ITN,IFC,IFT,IHT,IBN:oldhabitsbbs.com
+,1060,Nolans_Nest,Cambridge_MN,Nolan_Friedland,-Unpublished-,300,CM,INA:nolan.synchro.net,ITN,IFT,IBN
+,9999,New_Fidonet_Node,Anywhere_MN,New_Fido_SysOp,-Unpublished-,300
+;
+Host,288,South_Dakota_Net,South_Dakota_USA,Jeff_Smith,-Unpublished-,300,CM,IBN,INA:ftn.region14.org,ITN
+,9999,New_Fidonet_Node,Anywhere_ND,New_Fido_SysOp,-Unpublished-,9600
+;
+Host,290,Missouri_Net,Missouri_USA,Jeff_Smith,-Unpublished-,300,CM,XX,IFC,IFT,INA:ftn.region14.org,IBN
+,10,Gateway_to_the_West,St_Peters_Missouri,Robert_Stinnett,-Unpublished-,300,CM,INA:bbs.homelabber.net,ITN,IBN
+,9999,New_Fidonet_Node,Anywhere_NE,New_Fido_SysOp,-Unpublished-,300
+;
+Host,299,Nebraska_Net,Nebraska_USA,Jeff_Smith,-Unpublished-,300,CM,XX,IFC,IFT,INA:ftn.region14.org,IBN
+,5,Aloryn_Avalon,Bellevue_NE,Joshua_David_Cain,-Unpublished-,300,CM,ITN,IFT,IBN:alorynavalon.ddns.net
+,9999,New_Fidonet_Node,Anywhere_NE,New_Fido_SysOp,-Unpublished-,300
+;
+Host,300,Iowa_Net,Iowa_USA,Jeff_Smith,-Unpublished-,300,CM,XX,IFC,IFT,INA:ftn.region14.org,IBN
+,4,Brotherhood_of_Groovyness,Sioux_City_IA,John_Porterfield,-Unpublished-,300,CM,ITN,IFC,IFT,IBN:b-o-g.net
+,5,BGDCAG_BBS,Story_City_IA,Barry_Davis_Jr,-Unpublished-,300,CM,ITN,IFC,IFT,IBN,INA:bgdcag.synchro.net
+,6,Draconian_BBS,Boone_IA,Bradley_D_Hansen,-Unpublished-,300,CM,ITN,IFC,IFT,IBN,INA:drac.synchro.net
+;
+Host,298,Raiders_Inc_BBS,Wichita_Kansas,Jon_Justvig,-Unpublished-,300,CM,INA:vintagebbsing.com,CM,ITN,IBN
+,25,Raiders_Inc_BBS,Wichita_Kansas,Jon_Justvig,-Unpublished-,300,CM,INA:vintagebbsing.com,CM,ITN,IBN
+,26,Stepping_Stone_BBS,Wichita_Kansas,Jon_Justvig,-Unpublished-,300,CM,INA:vintagebbsing.com:24555,CM,ITN,IBN
+,27,Nightfall_Ordain,Wichita_Kansas,Jon_Justvig,-Unpublished-,300,CM,INA:vintagebbsing.com:24556,CM,ITN,IBN
+,29,CheckSum_Acknowledged,Norcatur_Kansas,James_Plotts,-Unpublished-,300,CM,INA:24.225.22.26,ITN,IBN
+,9999,New_Fidonet_Node,Anywhere_KS,New_Fido_SysOp,-Unpublished-,300
+;
+Region,15,Mountain_States,AZ_CO_NM_UT_WY,Tj_Barlow,-Unpublished-,9600,CM,XX,IBN,ITN,INA:region15.net,IBN:24555
+,1,Region15_Echomail_Coordinator,Colorado_Springs_CO,Terry_Barlow,-Unpublished-,9600,CM,XX,IBN,ITN,INA:region15.net,IBN:24555
+,2,Region_15_HQ_Backup,Colorado_Springs_CO,Tj_Barlow,-Unpublished-,9600,ICM,IBN,IFT,IFC,ITN:60177,INA:bk.region15.net
+,3,Region_15_News_Hub,Colorado_Springs_CO,Tj_Barlow,-Unpublished-,9600,ICM,IBN,IFT,IFC,ITN:60177,INA:region15news.net
+,9999,New_FidoNet_Node_Request,Anywhere_US,New_Sysop,-Unpublished-,9600,XA
+;
+Host,104,Mile_High_Net_NC,Niwot_CO,Chris_Anderson,1-303-652-3595,9600,CM,XA,H16,VFC,V32B,V42B,V32T,V34
+,57,ViaSoft_Support_BBS,Parker_Co,Joe_Martin,1-303-953-0568,9600,CM,XA,V32b,V34,V42b
+,114,The_Dinosaur_Board,Niwot_CO,Chris_Anderson,1-303-652-3595,9600,H16,V32b,V32T,V34,V42b,VFC,XA,CM
+,115,The_Dawn_of_Demise,Northglenn_CO,Ron_Kinney,-Unpublished-,9600,CM,XA,INA:tdod.org,IBN
+,9999,New_Fidonet_Node,Anywhere,New_Fido_SysOp,-Unpublished-,300
+;
+Host,114,NC_Net_114_Arizona,Colorado_Springs_Co,Tj_Barlow,-Unpublished-,9600,CM,XX,INA:cscnet1.net,IBN,IFT,ITN:60177
+Pvt,428,CyberSupport_Hq/Co.A_BBS,Phoenix_AZ,Phil_Runyan,-Unpublished-,9600,CM,XX,INA
+,201,The_Babble_BBS,Tucson_AZ,Dane_Beko,-Unpublished-,300,CM,XX,INA:babblebbs.no-ip.org,IBN,IFT,ITN
+,224,Granite_Mountain_Overlook,Prescott_AZ,Robb_Ballard,-Unpublished-,9600,CM,XA,INA:bbs.jumpgate.us,IBN
+,271,DiamondBack_BBS,Surprise_AZ,Dean_Steele,-Unpublished-,9600,CM,XX,INA:bbs.dbackbbs.com,IBN,IFT,ITN
+,365,Kellys_BBS,Peoria_AZ,Kelly_Beam,-Unpublished-,9600,CM,XX,INA:kellys.synchro.net,IBN:24554,IFT,ITN
+,464,Torchwood_Three,Phoenix_AZ,Lloyd_Lewis,-Unpublished-,9600,CM,XX,INA:torchwood-3.dyndns.org,IBN,IFT,ITN
+,480,The_Echo_Zone,Phoenix_AZ,Robert_Basil,-Unpublished-,9600,CM,XX,INA:theechozone.com,IBN,IFT,ITN
+,483,The_Sweet_Shop_BBS,Phoenix_AZ,Butch_&_Diane_Hoffman,1-602-352-1277,9600,CM,XA,V32B,V42B,V34,VFC
+,485,The_Realm_of_Darkness_BBS,Phoenix_AZ,Ken_Bowley,1-623-907-2858,33600,XX,CM,V32B,V42B,IBN,IFC,ITN:60177,INA:bbs.trod.org
+,487,Novabbs,Phoenix_AZ,Richard_Miller,-Unpublished-,9600,CM,XX,INA:novabbs.org,IBN,IFT,ITN
+,489,Abaddons_Palace,Mesa_AZ,Vincent_Chapman,-Unpublished-,9600,CM,XX,INA:bbs.vchapman.info,IBN,IFT,ITN
+,501,ACME_Anvil_Company_LTD,Apache_Junction_AZ,D.L._Schmidt,-Unpublished-,9600,CM,XX,INA:acme-anvil.darktech.org,IBN,IFT,ITN
+,625,The_Realm_BBS,Mesa_AZ,Steve_Bowen,-Unpublished-,9600,CM,XX,INA:therealmbbs.com,IBN,IFT,ITN
+,701,Smoke_Signals_BBS,Tucson_AZ,Lee_Benson,-Unpublished-,9600,CM,XX,INA:ss-bbs.dns2go.com,IBN:24554,IFT,ITN:51
+,702,Amoeba_BBS,Phoenix_AZ,Mike_Dee,-Unpublished-,9600,CM,XX,INA:amoeba.ohbah.com,IBN,IFT,ITN
+Down,703,The_CaVe_BBS,Tempe_AZ,Scott_Swenka,-Unpublished-,9600,CM,XA,XX,INA,IBN,IFT,ITN
+Down,704,The_Helicon_BBS,Surprise_AZ,Douglas_Martin,-Unpublished-,9600,CM,XA,XX,INA,IBN,IFT,ITN
+,705,Troybbs,Mesa_AZ,Scott_Miller,-Unpublished-,9600,CM,XX,INA:Troybbs.com,IBN,IFT,ITN
+,706,RPG_Circus_BBS,Mesa_AZ,Jeffrey_Brissette,-Unpublished-,9600,CM,XX,INA:23.226.138.111,IBN
+,707,Heights_BBS,Tucson_AZ,John_Pinto,1-520-303-7894,33600,XX,CM,V32B,V42B,IBN,IFC,ITN,INA:heightsbbs.heightspc.net
+,708,Dream_Warriors_BBS,Fort_Mohave_AZ,Mark_Hall,-Unpublished-,9600,CM,IFC,ITN,INA:65.154.236.150,IBN
+,9999,New_Fidonet_Node,Anywhere,New_Fido_SysOp,-Unpublished-,300
+;
+Host,128,Pikes_Peak_Net_NC,Colorado_Springs_CO,Terry_Barlow,1-719-550-9599,9600,CM,XA,XX,H16,V32b,V42b,V34,V32t,X2C,INA:cscnet1.net,IBN
+,1,Pikes_Peak_Net_NEC,Colorado_Springs_CO,Terry_Barlow,-Unpublished-,9600,CM,XA,INA:cscnet1.net,IBN
+,2,Bayhaus_BBS,Colorado_Springs_Colorado,Phil_Kimble,-Unpublished-,9600,CM,IFC,ITN:60177,INA:bayhaus.net,IBN
+,3,The_Asgard_BBS,Calhan_Colorado,Kip_Vanover,-Unpublished-,9600,CM,INA:asgard-bbs.net,IBN
+,73,Operation_Insanity,Colorado_Springs_CO,Galen_Barnes,-Unpublished-,9600,CM,XA,V32b,V42b,INA:opinsane.noip.me,IBN
+,187,Colorado_Springs_Central_Net,Colorado_Springs_CO,Terry_Barlow,-Unpublished-,9600,CM,XA,INA:cscnet1.net,IBN
+Down,206,Farpoint_Station,Colorado_Springs_CO,Brian_Killough,-Unpublished-,9600,CM,XA
+Down,252,Night_Owl_BBS,Colorado_Springs_CO,Aaron_Lamers,-Unpublished-,9600,CM,XA,V32b,V42b,INA:bbs.lamersfam.com,IBN
+,253,StarBase_Alpha,Colorado_Springs_CO,Terry_Barlow,-Unpublished-,9600,CM,XA,INA:barlows1.net,IBN
+Down,254,Old_School_Colorado_Springs_Central_Net,Colorado_Springs_CO,Terry_Barlow,1-719-550-9599,9600,CM,XA,V32b,V42b,INA:oldschool.cscnet1.net,IBN
+,9999,New_Fidonet_Node,Anywhere,New_Fido_SysOp,-Unpublished-,300
+;
+Host,305,Southern_New_Mexico,Las_Cruces_NM,Tj_Barlow,-Unpublished-,9600,CM,INA:region15.net,IBN
+,1,LogicNet,Las_Cruces_NM,John_Willis,-Unpublished-,9600,CM,INA:hub.chivanet.org,IBN:24554
+,2,Deadbeatz_BBS,Albuquerque_NM,Tim_Blada,-Unpublished-,9600,CM,INA:deadbeatz.org:IBN
+,3,8-Bit_Boyz_BBS,Rio_Rancho_NM,Shane_O'Neill,-Unpublished-,9600,CM,INA:bbs.8bitboyz.com:IBN
+,9999,New_Fidonet_Node,Anywhere,New_Fido_SysOp,-Unpublished-,300
+;
+Host,307,Pueblo_CO_NC,Pueblo_CO,Terry_Barlow,-Unpublished-,9600,CM,XA,XX,H16,V32b,V42b,V34,V32t,X2C,INA:region15.net,IBN
+,1,Region_15_HQ,Colorado_Springs_CO,Terry_Barlow,-Unpublished-,9600,CM,XA,V32b,V42b,INA:region15.net,IBN
+,2,The_Dragon's_Gate_BBS,La_Junta_CO,Cory_Daehn,-Unpublished-,9600,CM,XA,INA:bbs.mayorlormar.com,IBN
+,9999,New_Fidonet_Node,Anywhere,New_Fido_SysOp,-Unpublished-,300
+;
+Host,310,Cheyenne_WY,Cheyenne_WY,Terry_Barlow,-Unpublished-,9600,CM,XA,XX,H16,V32b,V42b,V34,V32t,X2C,INA:region15.net,IBN
+,1,Region_15_HQ,Colorado_Springs_CO,Terry_Barlow,-Unpublished-,9600,CM,XA,V32b,V42b,INA:region15.net,IBN
+,2,Cheyenne_Mountain_BBS,Cheyenne_WY,Mike_Parks,-Unpublished-,9600,CM,XA,V32b,V42b,INA:cheyenne.tkware.us,IBN
+,9999,New_Fidonet_Node,Anywhere,New_Fido_SysOp,-Unpublished-,300
+;
+Host,311,NC_Net_311,Magna_UT,Terry_Barlow,-Unpublished-,9600,CM,XX,INA:cscnet1.net,IBN,ITN
+,1,Colorado_Springs_Central_Net,Colorado_Springs_CO,Tj_Barlow,-Unpublished-,9600,CM,XA,INA:cscnet1.net,IBN
+,2,Lightning_BBS,Magna_UT,Steve_Helferich,1-801-250-2424,9600,CM,XX,INA:lightningbbs.com,IBN,ITN
+Down,4,Computer_God!!!_BBS,West_Jordan_UT,James_Salazar,-Unpublished-,9600,CM,XX,INT,INA:cpugod.synchro.net,IBN:3141
+,9999,New_Fidonet_Node,Anywhere,New_Fido_SysOp,-Unpublished-,300
+;
+Host,312,NC_Net_312,Provo_UT,Terry_Barlow,-Unpublished-,9600,CM,XA,INA:cscnet1.net,IBN
+,1,Colorado_Springs_Central_Net,Colorado_Springs_CO,Terry_Barlow,-Unpublished-,9600,CM,XA,INA:cscnet1.net,IBN
+,2,Colossus_BBS,Provo_UT,Jordan_McGilvray,-Unpublished-,9600,CM,XA,INA:colossus.dynamic-dns.net,IBN
+,9999,New_Fidonet_Node,Anywhere,New_Fido_SysOp,-Unpublished-,300
+;
+Host,317,Northern_New_Mexico,Albuquerque_NM,Tj_Barlow,-Unpublished-,9600,CM,INA:region15.net,IBN
+,1,Colorado_Springs_Central_Net,Colorado_Springs_CO,Tj_Barlow,-Unpublished-,9600,CM,XA,INA:cscnet1.net,IBN
+,2,Twinkle_BBS,Albuquerque_NM,Christopher_Malo,-Unpublished-,9600,INA:tbbs.homeip.net,IBN,ITX
+,3,Castle_Rock_BBS,Rio_Rancho_NM,Dan_Richter,-Unpublished-,9600,CM,XA,INA:bbs.castlerockbbs.com,IBN
+,9999,New_Fidonet_Node,Anywhere,New_Fido_SysOp,-Unpublished-,300
+;
+Host,3005,Internet_Only_Nodes,Colorado_Springs_CO,Terry_Barlow,-Unpublished-,9600,CM,XA,XX,INA:region15.net,IBN
+,1,StarBase_Discovery,Colorado_Springs_CO,Terry_Barlow,-Unpublished-,9600,CM,XA,INA:sb-discovery.com,IBN
+,9999,New_Fidonet_Node,Anywhere,New_Fido_SysOp,-Unpublished-,300
+;
+Region,16,New_England_Janitor,CT_MA_ME_NH_RI_VT,Andrew_Leary,-Unpublished-,300,XX,CM,INA:phoenix.bnbbbs.net,IBN:24555,IFC,ITN:60177,PING
+,101,NIL_BBS,Boston_MA,Nil_Alexandrov,-Unpublished-,300,ICM,INA:nilbbs.ddns.net,IBN
+;
+Host,132,New_England-North,ME_NH_VT,Fred_Riccio,-Unpublished-,300,XW,CM,MO,IBN:net132.ddns.net,IBN:ullr.thinksnow.net
+,174,The_Computer_Lab,Lincoln_NH,Fred_Riccio,-Unpublished-,300,XW,CM,MO,IBN:fido132174.duckdns.org,IBN:ullr.thinksnow.net
+,362,The_Four_Corners_BBS,Newmarket_NH,Rick_Miller,-Unpublished-,300,CM,INA:4c.dyndns.org,IBN
+;
+Host,142,Central_CT_Net,Central_CT,Andrew_Leary_TempNC,1-860-503-8857,33600,CM,XA,H16,V34,VFC,V32T,V42b,INA:bbs.bnbbbs.net,IBN,ITN:2023,IVM,PING
+,799,Throwback_BBS,Meriden_CT,Todd_Yatzook,-Unpublished-,300,CM,INA:bbs.throwbackbbs.com,IBN
+Pvt,926,n1api_ham-radio-op_net,Meriden_CT,Al_Kaiser,-Unpublished-,300
+;
+Host,320,CT_conNEcTions,Eastern_CT,Marc_Carrano,-Unpublished-,300,CM,INA:syrinxbbs.ddns.net,IBN
+,101,Syrinx_BBS,Norwich_CT,Marc_Carrano,-Unpublished-,300,CM,INA:syrinxbbs.ddns.net,IBN
+,119,Bits_&_Bytes_BBS,N_Stonington_CT,Andrew_Leary,1-860-503-8857,33600,H16,V34,VFC,V32T,V42b,XA,CM,INA:bbs.bnbbbs.net,IBN,IVM,ITN:2023,PING
+,219,Phoenix_BBS,Pawcatuck_CT,Andrew_Leary,-Unpublished-,300,CM,XX,INA:phoenix.bnbbbs.net,IBN:24555,IFC,ITN:60177,PING
+;
+Host,322,Mass_Net_Central,Central_MA,Carlos_Roldan,-Unpublished-,300,CM,INA:necrobbs.strangled.net,IBN:24556
+,756,Necronomicon_BBS,NewBedford_MA,Carlos_Roldan,-Unpublished-,300,CM,INA:necrobbs.strangled.net,IBN
+,757,Mysteria_Majicka_BBS,Cape_Cod_MA,Jim_Haight,-Unpublished-,9600,CM,INA:majicka.at2k.org,IBN
+;
+Region,17,North_West,AB_AK_BC_ID_MB_MT_OR_NWT_SK_WA_YT,Dallas_Hinton,-Unpublished-,300,CM,MO,INA:bandmaster.ddns.net,IBN
+;
+Host,138,Rainier_Net,Pierce_County+_WA,Marc_Blakely,1-253-535-3949,33600,CM,XA,V34,VFC,V32T,H16,V32b,V42b,IBN:lookglas.tzo.com,IFT
+,142,The_Retro_Archive,Graham_WA,Gene_Buckle,-Unpublished-,300,CM,XX,IBN:bbs.retroarchive.org,IFT,ITN
+,146,The_Looking_Glass,Tacoma_WA,Marc_Blakely,1-253-535-3949,33600,CM,XA,V34,VFC,V32T,H16,V32b,V42b,IBN:lookglas.tzo.com,IFT
+,389,Shurato's_Heavenly_Sphere,Boise_ID,Marty_Kazmaier,-Unpublished-,300,XA,IBN,IFT,ITX
+,391,GreyWolf's_Den,Bigfork_MT,Paul_Athorn,-Unpublished-,300,CM,MO,IBN:216.211.176.87
+Pvt,392,Home_of_Internetking_BBS,Issaquah_WA,Nathaniel_Prugh,-Unpublished-,300
+,393,EZVSN,Tacoma_WA,Charles_Waters,000-0-0-0,300,CM,XA,IBN:67.168.44.90
+;
+Host,153,Pacific_Rim_Host,Penticton_BC,Alan_Ianson,-Unpublished-,300,CM,INA:trmb.ca,IBN
+,105,VE7TDT,Chilliwack_BC,Gary_DeMontigny,-Unpublished-,300,CM,MO,INA:ve7tdt.duckdns.org,IBN
+,135,Danger_Bay,Vancouver_BC,Tom_Swartz,-Unpublished-,300,CM,XX,INA:dangerbaybbs.dyndns.org,IBN
+,141,VA7AQD's_Tavern,Kamloops_BC,Adam_Clark,-Unpublished-,300,CM,XW,INA:bbs.isurf.ca,IBN
+,250,The_Parity_Error,Kelowna_BC,Ian_McLaughlin,-Unpublished-,300,CM,MO,INA:theparityerror.com,IBN
+,715,BandMaster,Vancouver_BC,DE_Hinton,-Unpublished-,300,CM,MO,INA:bandmaster.ddns.net,IBN
+Pvt,716,BandMaster_Wits'_End,Vancouver_BC,Ardith_Hinton,-Unpublished-,300,CM,MO,INA:bandmaster.ddns.net,IBN
+,757,The_Rusty_MailBox,Penticton_BC,Alan_Ianson,-Unpublished-,300,CM,INA:trmb.ca,IBN
+,6809,Pot_O'_Gold_BBS,Prince_George_BC,Ken_Flanagan,-Unpublished-,300,CM,INA:selonia.com,IBN
+,7001,Little_Mikey's_Brain,Ladysmith_BC,Maurice_Kinal,-Unpublished-,300,CM,MO,INA:184.69.113.90,IBN
+,7715,BandMaster_Internet,Vancouver_BC,Dallas_Hinton,-Unpublished-,300,CM,MO,INA:bandmaster.ddns.net,IBN
+,9999,New_Fidonet_Node,Net_153,New_Fido_SysOp,-Unpublished-,300,CM,MO
+;
+Host,340,Columbian_River_Net,Cougar_WA_USA,Robert_E_Starr_JR,-Unpublished-,300,CM,IBN:time.synchro.net,INA
+,7,Digital_Distortion,Hillsboro_OR,Eric_Oulashin,-Unpublished-,300,CM,ITN,IFC,IFT,IBN:digdist.synchro.net,INA
+,100,Echto_BBS,Vancouver_WA,Erich_Mounce,-Unpublished-,300,CM,IBN:bbs.echto.net,INA
+,101,Lunatic_Fringe,Vancouver_WA,Chad_Sharp,-Unpublished-,300,CM,IBN:lunatic.synchro.net,INA
+Down,200,Tinfoil_Tetrahedron_BBS,Portland_Or,Damon_A._Getsman,-Unpublished-,300,CM,IBN:tinfoil.synchro.net,INA
+,201,Mike's_Mansion,Portland_Or,Michael_Pierce,-Unpublished-,300,CM,IBN:fluxcap.synchro.net,INA
+,400,Time_Warp_of_the_Future_BBS,Cougar_WA,Robert_E_Starr_JR,-Unpublished-,300,CM,IBN:time.synchro.net,INA
+,800,Catch_22,Coeur_d'Alene_ID,Joseph_Larsen,-Unpublished-,300,CM,IBN:catch22bbs.com,INA
+,900,Realms_Online_BBS,La_Pine_OR,Franke_E_Rauhuff,-Unpublished-,300,CM,IBN:bbs.realms-online.org,INA
+,9999,New_Node_Applicant,Net_340,New_SysOp,-Unpublished-,300,MO
+;
+Host,342,Alberta_Net,Edmonton_AB,Charles_Cruden,1-780-439-8364,33600,XA,CM,H16,V34,V32b,V42b,VFC,V32T
+,9,wolf-lair.dyndns.org,Edmonton_AB,Jason_Mitton,-Unpublished-,33600,XA,CM,IFC
+,11,bbs.RetroDigital.net,Calgary_AB,Michael_Buchholz,-Unpublished-,33600,XX,CM,IBN
+,13,thebitbucket.ca,Wainright_AB,Stephen_Atkins,-Unpublished-,33600,XX,CM,IBN
+,15,bbs.thenexusbbs.com,Calgary_AB,Sean_Vaandering,-Unpublished-,33600,XX,CM,ITN
+,16,First_Rosario,Airdrie_AB,Daniel_Berrettoni,-Unpublished-,300,CM,IBN:jandro1000.no-ip.biz,ITX:jandro1000@gmail.com
+,17,undermine.ddns.net,Calgary_AB,Kostie_Muirhead,-Unpublished-,33600,XX,CM,IBN
+,19,stateoftheark.ca,Calgary_AB,Joe_Piche,-Unpublished-,33600,XX,CM,ITN:1990
+,41,pcgames.synchro.net,Smoky_Lake_AB,Gary_Ross,-Unpublished-,300,CM,IBN
+,77,binkp.gypsybbs.net,Calgary_AB,Kevin_Klement,-Unpublished-,300,MO,XX,IBN
+,200,joesbbs.com,Edmonton_AB,Joe_Schweier,1-587-754-2760,33600,XA,CM,IBN,V34,V42b
+,201,joesbbs.com,Edmonton_AB,Joe_Schweier,-Unpublished-,300,MO,XX,IBN:24555
+,806,xanadubbs.ca,Edmonton_AB,Charles_Cruden,1-780-439-8364,33600,V32b,V42b,V34,VFC,XA,CM,IBN,ITN,IVM,IFT,IFC
+;
+Region,18,SE_US_&_Caribbean_(2019/217),AL_FL_GA_MS_NC_SC_TN_PR_DO,mark_lewis,-Unpublished-,300,XA,CM,INA:sestar.synchro.net,IBN,PING
+,182,Ye_Olde_Coffee_House,Athens_GA,Richard_Coffee,1-706-353-0507,33600,V34,CM,XA
+,200,Outpost_BBS,Limestone_TN,Sean_Dennis,-Unpublished-,300,CM,XX,INA:bbs.outpostbbs.net,IBN,IFC,ITN:60177,IFT:bbsftp.outpostbbs.net,PING
+;
+Host,116,Tennessee_Net,Nashville_TN,Danny_Walters,1-615-752-5770,9600,CM,MO,XA,V34,INA:116-116.dynu.net,IBN,ITN,PING
+,2,NO_CARRIER,North_East_TN,Matt_Bedynek,-Unpublished-,300,INA:bbs.no-carrier.org,IBN,ICM,MN
+,12,Stormer's_Home_BBS,Kingsport_TN,Denni_Feagins,-Unpublished-,300,ITN:stormerlabs.homelinux.net
+,13,The_13th_Floor,Oak_Ridge_TN,Jay_Campey,-Unpublished-,300,CM,XA,INA:bbs.hoyvision.com,ITN:23146
+,17,Neptune's_Lair,Olive_Branch_MS,Robert_Wolfe,-Unpublished-,300,CM,INA:winserver.org,IBN,IFT
+,18,Neptune's_Lair,Olive_Branch_MS,Robert_Wolfe,-Unpublished-,300,CM,INA:os2bbs.org,IBN,IFT
+,19,East_Side_BBS,Columbia_TN,Michael_Aurelio,-Unpublished-,300,MO,CM,XA,INA:eastsidebbs.com,ITN:51
+,28,magnum.synchro.net,Lawrenceburg_TN,Marty_Crum,-Unpublished-,300,CM,XA,INA:magnum.synchro.net,ITN,IBN
+,42,The_Game_Place,Joelton_TN,Harvey_Simpson,1-615-746-2029,9600,CM,XA,INA:tleeonly.zapto.org
+,60,Open_Door_BBS,Sevierville_TN,Jim_Johnson,-Unpublished-,300,CM,INA:opendoor.synchro.net,XX,IBN
+,73,Primative_BBS,Trade_TN,Shawn_Henson,000-74-5-233-38,300,CM,IBN,ITN
+,80,AT2k_Design_BBS,Clarksville_TN,Steve_Winn,-Unpublished-,300,CM,XX,INA:bbs.at2k.org,IBN
+,102,Cartel_BBS,East_Ridge_TN,Wes_Keene,-Unpublished-,300,CM,INA:cartelbbs.keene.co,IBN
+,110,Paradise_BBS,Murfreesboro_TN,Thomas_Kloos,-Unpublished-,300,CM,INA:binkp.paradisebbs.com,IBN
+,116,No_Soap_Radio,Nashville_TN,Danny_Walters,1-615-752-5770,300,CM,MO,XA,PING,INA:116-116.dynu.net,IBN,ITN
+,739,AM-1620_BBS,Knoxville_TN,Rob_Harris,-Unpublished-,300,CM,INA:am1620.servebbs.net,IBN,ITN
+,903,Fido_Chatt,Apison_TN,Brian_Wood,1-423-236-4962,9600,XA,MO
+,4148,Slate_Hell_BBS,Mooresburg_TN,Anthony_Stump,-Unpublished-,300,CM,XA,INA:msbgtn01,synchro.net,IBN,ITN
+;
+Host,123,R18_Orphans_(2019/194),central_NC_USA,mark_lewis,-Unpublished-,300,XA,CM,INA:sestar.synchro.net,IBN,PING
+,10,Archaic_Binary_BBS,Orlando_FL_USA,Wayne_Smith,-Unpublished-,300,CM,INA:bbs.archaicbinary.net,IBN
+Pvt,20,tnel_software_bbs,Landrum_SC_USA,Robert_Lent,-Unpublished-,300,MO
+,25,Vintage_Computer_BBS,Columbia_SC_USA,Kurt_Hamm,-Unpublished-,300,CM,INA:frugalbbs.com,IBN
+,50,Veteran_BBS,Clanton_AL_USA,Mike_Welborn,-Unpublished-,300,CM,INA:bbs.thewelborns.net,IBN
+,115,Palantir_BBS,Pensacola_FL_USA,Dan_Clough,-Unpublished-,300,CM,INA:palantirbbs.ddns.net,IBN
+Hold,120,Deep_Space_Gateway,Crystal_River_FL_USA,Sam_Penwright,-Unpublished-,300,CM,INA:www.deepspacegateway.net,IBN
+,130,After_Hours_BBS,Lady_Lake_FL_USA,Greg_Youngblood,-Unpublished-,300,CM,INA:afterhours-bbs.com,IBN
+,140,Docs_Place_BBS_Online,Clearwater_FL_USA,Ed_Koon,-Unpublished-,300,CM,INA:bbs.fidosysop.org,IBN
+,150,Sloane_BBS,Stone_Mountain_GA_USA,Steve_Smith,-Unpublished-,300,CM,INA:sloanebbs.com,IBN
+,256,Legends_of_Yesteryear,Huntsville_AL_USA,Dallas_Vinson,-Unpublished-,300,CM,INA:loybbs.net,IBN
+,400,Orbit_BBS,Opp_AL_USA,Allen_Scofield,-Unpublished-,300,CM,INA:orbitbbs.ddns.net,IBN
+Pvt,450,Castle_Camelot,Tuscumbia_AL_USA,Donald_Tidmore,-Unpublished-,300,MO
+,525,Alcholiday,Columbia_SC_USA,Andrew_Haworth,-Unpublished-,300,CM,INA:alco.bbs.io,IBN
+,755,DragonsWeb_Labs_BBS,Pembroke_GA_USA,James_DiGriz,-Unpublished-,300,XX,CM,INA:bbs.dragonsweb.org,IBN,IFC,ITN:60177
+,1970,Mid_South_BBS,Amory_MS_USA,Kent_Stanford,-Unpublished-,300,CM,INA:bbs.midsouth.com,IBN,IFC,ITN:60177,IVM
+;
+Host,135,Sunshine_State_Net,Gainesville_FL,Eric_Renfro,-Unpublished-,300,CM,MO,XW,INA:hub.deckersheaven.com,IBN,ITN,PING
+,300,Decker's_Heaven_HUB,Gainesville_FL,Eric_Renfro,-Unpublished-,300,CM,MO,XW,INA:hub.deckersheaven.com,IBN,ITN,PING
+,366,Localyocal_BBS,Clearwater_FL,Mark_Meserve,-Unpublished-,300,CM,XW,INA:localyocalbbs.com,IBN,ITN
+,367,Efectolinux_BBS,Cidra_PR,Antonio_Rivera,-Unpublished-,300,CM,XW,INA:bbs.efectolinux.com,IBN,ITN
+,369,Piranha,Hudson_FL,Brian_Hubbard,-Unpublished-,300,CM,XW,INA:piranha.acid.org,IBN,ITN
+,371,Decker's_Heaven,Gainesville_FL,Eric_Renfro,-Unpublished-,300,CM,XW,IFC,INA:binkp.deckersheaven.com,IBN,ITN
+Down,375,Scruffy_Bill's_BBS,Jacksonville_FL,William_Chaney,-Unpublished-,300,CM,XW,INA:bills.synchro.net,IBN,ITN
+Down,376,Satellite_of_Madness,Jacksonville_FL,Matthew_Blocker,-Unpublished-,300,CM,XW,INA:madness.synchro.net,IBN,ITN
+,377,Tampa_Scanner,Medulla_FL,R.E._Christian,-Unpublished-,300,CM,XW,INA:fidonet.tampascanner.info,IBN,ITN
+,378,PsYcHoTiC_Industries_BBS,Fort_Meyers_FL,Michael_Dunnington,-Unpublished-,300,CM,XW,INA:psychotic.ddns.net,IBN,ITN
+,379,Pro_Audio_Repair_BBS,Kissimmee_FL,Donnie_Lee,-Unpublished-,300,CM,XW,INA:proaudiotech.net,IBN,ITN
+,380,Days_of_Old_BBS,Middleburg_FL,Cliff_Williams,-Unpublished-,300,CM,XW,INA:daysofoldbbs.wilhartsolutions.com,IBN,ITN
+,382,Malkonix's_Place_BBS,Santo_Domingo_Dominican_Republic,Milton_Lizardo,-Unpublished-,300,CM,XW,INA:serv.sytes.net,IBN,ITN
+,383,Rocket_Town_BBS,Titusville_FL,Rick_DeLuco,-Unpublished-,300,CM,XW,INA:rtbbs.ddns.net,IBN,ITN
+,384,Zenolab,Trujillo_Alto_Puerto_Rico,Ralph_Butler,-Unpublished-,300,CM,XW,INA:zenolab.synchro.net,IBN,ITN
+;
+Host,3634,North_Carolina_USA_(2019/194),central_NC_USA,mark_lewis,-Unpublished-,300,XA,CM,INA:sestar.synchro.net,IBN,PING
+,12,The_SouthEast_Star,central_NC_USA,mark_lewis,-Unpublished-,300,XA,CM,INA:sestar.synchro.net,IBN,PING
+,15,wabusa,Cameron_NC_USA,Bill_Burton,1-330-548-2566,33600,CM,MO,LO,XX,V34,V42B,INA:fidonet.wabusa.com,IBN
+,24,Shadowscope_BBS,Temple_GA_USA,Richard_Miles,-Unpublished-,300,XA,CM,INA:bbs.shadowscope.com,IBN,ITN
+,27,The_Gate_BBS,Cherryville_NC_USA,David_Westphalen,-Unpublished-,300,XA,CM,INA:thegateb.synchro.net,IBN
+Pvt,30,Shmonoff's_Station,Matthews_NC_USA,Alexey_Shmonov,-Unpublished-,300,MO,U,MOB
+Pvt,42,Mystic_Dawn,Jordan_Lake_NC_USA,T_Cook,-Unpublished-,300,XA
+Pvt,50,Haven's_Terminus,Haven_NC_USA,Max_Haven,-Unpublished-,300,XA
+,119,UserClub_BBS,Jacksonville_NC_USA,Edward_Rempala,-Unpublished-,300,INA:userclub-bbs.com,CM,IBN
+Pvt,666,Tesoro's_Hell,Chatham_NC_USA,Tesoro_Hayden,-Unpublished-,300,XA
+Hold,999,new_fido_applicant,some_location,new_sysop,-Unpublished-,300
+Hold,9999,new_fido_applicant,some_location,new_sysop,-Unpublished-,300
+;
+Region,19,TX_AR_OK_LA,Huntsville_AL,Marc_Lewis,1-256-895-4786,33600,CM,XA,V42b,V34,INA:sursum-corda.com,ITN,IBN,IFT,IMI:irex396-45@idsno.net
+,5,R19_Internet_Gate,AR_LA_OK_TX,UUCP,1-256-895-4786,33600,CM,XA,V34,V42b,GUUCP
+,10,The_Byte_Museum,Wharton_TX,Matt_Bedynek,-Unpublished-,300,INA:ftn.bytemuseum.org,IBN,ICM,MO,MN,PING,XA
+,25,Darkages_BBS,Wayne_OK,Randy_Henderson,-Unpublished-,300,CM,XA,INA:darkagesbbs.com,ITN,IBN,IFT
+,33,The_Thunderbolt_BBS,Little_Rock_AR,Daryl_Stout,-Unpublished-,300,CM,MO,XX,INA:tbolt.synchro.net,ITN,IBN
+,35,SmokyThing_BBS,San_Antonio_TX,Shannon_Kuchler,-Unpublished-,300,CM,XA,INA:99.165.8.113,ITN,IBN
+,36,LinuxNode,Lindale_TX,Chad_Adams,-Unpublished-,300,CM,MO,XA,INA:hub.linuxnode.net,IBN
+,37,The_ByteXChange_BBS,Lindale_TX,Chad_Adams,-Unpublished-,300,CM,XA,INA:bbs.thebytexchange.com,ITN,IFT,IBN
+,38,CIA_Amiga_BBS,Mayflower_AR,Tim_Grooms,-Unpublished-,300,CM,XA,INA:ciaamigabbs.dynu.net,ITN:ciaamigabbs.dynu.net:6400,IBN
+,40,RealityBytes_BBS,Corpus_Christi_TX,Howard_Beers,-Unpublished-,300,CM,INA:the3beers.com,IBN,IFT,ITN
+,50,Razor's_Domain_][,McAllen_TX,Kevin_Nunn,-Unpublished-,300,CM,INA:bbs.razorsdomain.com,IBN,ITN
+,75,The_Black_Knights_BBS,Midland_TX,Mike_Soper,1-432-262-0545,33600,CM,XA,VFC,V32b,V34,V42b
+Hold,9999,Region19_New_Test_Node,Anytown_US,New_Sysop,-Unpublished-,300,CM
+;
+Host,106,Houston_Area,San_Jose_CA,Darryl_Perry,-Unpublished-,9600,CM,IBN:cyberiabbs.zapto.org
+,201,Home_of_InterMail,Houston_TX,Dale_Barnes,-Unpublished-,300,CM,XX,INA:im.ifidonet.com,IBN
+,324,Cyberia_BBS,San_Jose_CA,Darryl_Perry,-Unpublished-,9600,CM,IBN:cyberiabbs.zapto.org
+;
+Host,124,DALLAS_TX_AREA,Mesquite_TX,Ruben_Figueroa,-Unpublished-,300,CM,INA:pbmystic.rdfig.net:24,IBN:pbmystic.rdfig.net:24555
+Pvt,1113,Nibbles_&_Bytes,Richardson_TX,Ron_Bemis,-Unpublished-,300,XA
+,5009,Family_Net_BBS,Sachse_TX,R_Hoffman,-Unpublished-,300,INA:FMLYNET.DYNDNS.ORG,ITN,IBN:24556,IFT
+,5013,Prison_Board,Mesquite_TX,Ruben_Figueroa,1-972-329-0781,33600,V34,V32b,V42b,CM,XA,IBN:rdfig.net:2324,IBN:rdfig.net:24555,IVM:rdfig.net
+,5014,Mystic_Prison_Board,Mesquite_TX,Ruben_Figueroa,-Unpublished-,300,CM,XA,INA:pbmystic.rdfig.net:24,IBN:pbmystic.rdfig.net:24555
+,5015,PCBoard_Prison_BBS,Mesquite_TX,Dario_Figueroa,-Unpublished-,300,CM,XA,INA:pbmystic.rdfig.net:1023,IBN:pbmystic.rdfig.net:24554
+,5016,End_Of_The_Line_BBS,Plano_Tx,Nigel_Reed,-Unpublished-,300,CM,XA,INA:ipv4.endofthelinebbs.com,IBN:ipv4.endofthelinebbs.com:24554
+,5017,XM_Core_BBS,Dallas_TX,Dwight_Spencer,-Unpublished-,300,CM,XA,INA:bbs.dapla.net,IBN:bbs.dapla.net:24554
+,5018,Shakey_BBS,Allen_TX,Von_Wallace,-Unpublished-,300,CM,XA,INA:shakeybbs.com,IBN:shakeybbs.com:24554
+,5019,Southern_Charm_BBS,Plano_Tx,Lawrence_Stockman,-Unpublished-,300,CM,XA,INA:southerncharmbbs.com,IBN:southerncharmbbs.com:24554
+Hold,9999,Net124_New_Test_Node,Anytown_US,New_Sysop,-Unpublished-,300,CM,XA
+;
+Host,130,The_Cowtown_Net,Fort_Worth_TX,Joe_Knapp,-Unpublished-,300,CM,INA:citylites.duckdns.org,IBN,ITN
+,215,Moderate_Chaos,Watauga_TX,David_DeWell,-Unpublished-,300,INA:bbs.moderatechaos.com,IBN,ITN
+,230,Future_World_II,Fort_Worth_TX,Daniel_FitzGerald,-Unpublished-,300,INA:fw2.cnetbbs.net,CM,IBN,ITN
+Down,512,Spazoo_BBS,Arlington_TX,Anthony_Harwood,-Unpublished-,300,CM,INA:bbs.spazoo.com,IBN,ITN
+,803,Citylites,Fort_Worth_TX,Joe_Knapp,-Unpublished-,300,CM,INA:citylites.duckdns.org,IBN,ITN
+,1015,KloneZone_Mac_BBS,Fort_Worth_TX,Daniel_O'Leary,-Unpublished-,300,CM,INA:klonezonebbs.zapto.org,IBN,ITN
+;
+Host,387,South_Central_Texas_Net,Interim_NC,Marc_Lewis,1-256-895-4786,33600,CM,XA,V42b,V34,INA:sursum-corda.com,ITN,IBN,IFT,IMI:irex396-45@idsno.net
+,20,Bedrock_BBS,Helotes_TX,Rick_Waller,-Unpublished-,300,CM,XA,INA:bbs.kristyandrick.com,ITN,IBN
+,21,TMZ_BBS,Weslaco_TX,Ron_Hall,-Unpublished-,300,CM,XA,INA:tmzbbs01.synchro.net,IBN,IEM:hallracing2003@yahoo.com
+,25,Richard_Fun_House,San_Antonio_TX,Richard_Williamson,-Unpublished-,300,CM,XA,INA:richardf.ddns.net,ITN,IBN
+,26,Perceptronica,Pflugerville_TX,Jeff_Thiele,-Unpublished-,300,CM,XA,INA:perceptronica.duckdns.org,ITN,IBN
+,99,New_Fidonet_Applicant,San_Antonio_TX,New_Sysop,-Unpublished-,300
+;
+Host,396,New_Orleans_Area,Huntsville_AL,Marc_Lewis,1-256-895-4786,33600,CM,XA,V42b,V34,INA:sursum-corda.com,ITN,IBN,IFT,IMI:irex396-45@idsno.net
+,3,Internet_Gateway_Net396,Huntsville_AL,Postmaster,1-256-895-4786,33600,CM,XA,V42b,V34,INA:sursum-corda.com,ITN,IBN,IFT,GUUCP
+,4,Net396_News_Gate,Huntsville_AL,Newsmaster,1-256-895-4786,33600,CM,XA,V42b,V34,INA:sursum-corda.com,ITN,IBN,IFT
+,45,Sursum_Corda,Huntsville_AL,Marc_Lewis,1-256-895-4786,33600,CM,XA,INA:sursum-corda.com,ITN,IBN,IFT,IMI:irex396-45@idsno.net
+,60,RoachGuts_BBS,Brookhaven_MS,John_Guillory,-Unpublished-,300,CM,XA,ITN,IBN,INA:kingcoder.net
+Hold,9999,Net396_New_Test_Node,Anytown_US,New_Sysop,-Unpublished-,300,CM,XA
+;
+Zone,3,Australia_NZ_PNG,Sydney_NSW,Scott_Little,-Unpublished-,300,CM,XX,INA:ftn.sysgod.org,IBN,ITN:60177,IFC,PING
+,50,Kaffeien_Caffe,Bloemfontein_ZA,Russell_Tiedt,-Unpublished-,300,CM,IBN:kaffeien.ddns.net
+;
+Region,54,Terra_Australis,Qld_NSW_Vic_MiscBits,Paul_Quinn,-Unpublished-,300,MO,CM,XW,PING,IBN:quinnsrock.nodelist.net:24555
+;
+Host,640,The_Northern_Country_Net,Bucca_Qld,David_Drummond,-Unpublished-,300,MO,CM,XW,IBN:fido.jabberwocky.com.au:45542
+,305,JabberWOCky_Node_2,Bucca_Qld,David_Drummond,-Unpublished-,300,MO,CM,XW,IBN:fido.jabberwocky.com.au:45542
+,1138,Test_system,Maryborough_Qld,Paul_Quinn,-Unpublished-,300,MO,CM,IBN:quinnspost.nodelist.net:24557
+,1321,The_File_Bank_BBS!,Cairns_Qld,Terry_Roati,-Unpublished-,300,CM,XR,INA:tfb-bbs.org,IBN,IFT,ITN,IVM,ITX:transx@tfb-bbs.org
+,1384,Quinn's_Rock,Maryborough_Qld,Paul_Quinn,-Unpublished-,300,MO,CM,XW,PING,IBN:quinnsrock.nodelist.net:24555
+Pvt,1674,Buzzards_Haven,Armidale_NSW_Australia,Louis_Rau,-Unpublished-,300,MO
+;
+Host,712,sysgod.org,Sydney_NSW,Scott_Little,-Unpublished-,300,CM,XX,INA:ftn.sysgod.org,IBN,ITN:60177,IFC,PING
+,114,TARDIS_BBS,Port_Able_NSW,Mark_Firestone,-Unpublished-,300,CM,IBN:bbs.cortex-media.info
+,550,Logovo,Sydney_NSW,Sergei_Shutov,-Unpublished-,300,CM,MO,IBN:fido.yukla.net
+,617,Flower_BBS,Osborne_Park_WA,Troy_Daniel_Marchant,-Unpublished-,300,CM,IBN:flower.sytes.net
+,620,The_Dungeon_BBS,Conder_ACT,Keith_Matthews,-Unpublished-,300,CM,IBN:dungeon.barnabasmusic.com
+,848,sysgod.org,Sydney_NSW,Scott_Little,-Unpublished-,300,CM,XX,INA:ftn.sysgod.org,IBN,ITN:60177,IFC,PING
+,886,*HUMONGOUS*_BBS,Chiayi_Taiwan,Nathanael_Culver,-Unpublished-,300,CM,INA:jenandcal.familyds.org,IBN:24555
+;
+Host,633,Southern-Australia_Vic-SA-Tas-Misc,Melbourne_Victoria,Stephen_Walsh,-Unpublished-,300,CM,MO,IFC,ITN,IBN:ftn633.vk3heg.net
+,267,Blizzard_of_Ozz,Mt_Eliza_Vic,Andrew_Clarke,-Unpublished-,300,CM,IBN:blizzard.ozzmosis.com
+,280,Net-633-Hub,Melbourne_Vic,Stephen_Walsh,-Unpublished-,300,CM,MO,IFC,ITN,IBN:ftn633.vk3heg.net
+,281,Dragon's_Lair_BBS,Ballarat_Vic,Stephen_Walsh,-Unpublished-,300,CM,IBN:dragon.vk3heg.net
+,384,MS_&_RD_BBS,Melbourne_Vic,Michael_Falzon,-Unpublished-,300,CM,IBN:bbs.mozysswamp.org
+,408,Aliens'_Alcove_2,Taguig_City_Philippines,Eric_Pareja,-Unpublished-,300,CM,IBN:aliens.free.net.ph
+,410,Freeway_BBS,Bendigo_Vic,Tony_Langdon,-Unpublished-,300,CM,IBN:freeway.vkradio.com:24555
+,412,Datanet_BBS,Melbourne_Vic,Steve_Ellis,-Unpublished-,300,CM,IBN:datanetbbs.net
+,509,Chinwag,Parkdale_Vic,Deon_George,-Unpublished-,300,CM,IBN:chinwag.leenooks.net
+;
+Region,57,New_Zealand,New_Zealand,Paul_Hayton,-Unpublished-,300,CM,INA:agency.bbs.nz,IBN
+;
+Host,770,South_Island_Net,New_Zealand,Paul_Hayton,-Unpublished-,300,CM,INA:agency.bbs.nz,IBN
+,1,Southern_Hub,South_Island_NZ,Paul_Hayton,-Unpublished-,300,CM,INA:agency.bbs.nz,IBN
+Pvt,3,Agency_HUB_Gateway,New_Zealand,Paul_Hayton,-Unpublished-,300
+,100,Agency_BBS,Dunedin,Paul_Hayton,-Unpublished-,300,CM,INA:ipv4.agency.bbs.nz,IBN:24555
+,330,1st_Choice_Core,Ashburton,Ian_Segers,-Unpublished-,300,CM,INA:1stchoicecore.co.nz,IBN
+,340,2nd_Choice_Core,Ashburton,Ian_Segers,-Unpublished-,300,CM,INA:2ndchoicecore.ddns.net,IBN:24555
+;
+Host,772,North_Island_Net,New_Zealand,Paul_Hayton,-Unpublished-,300,CM,INA:agency.bbs.nz,IBN
+,1,Northern_Hub,North_Island_NZ,Paul_Hayton,-Unpublished-,300,CM,INA:agency.bbs.nz,IBN
+,210,Trashcan_BBS,Auckland,Nick_MacKechnie,-Unpublished-,300,CM,INA:bbs.thenet.gen.nz,IBN
+,500,A_90s_Manila_BBS,Singapore_SGP,Michael_Balcos,-Unpublished-,300,CM,INA:bbs.balcos.net,IBN
+;
+Zone,4,America_Latina,Argentina,Manuel_Adorni,54-221-421-7694,33600,ICM,XA,V34,IBN:momiabbs.no-ip.info
+,1,Zone1_Gate,La_Plata_BA,Manuel_Adorni,54-221-421-7694,33600,ICM,XA,V34,IBN:momiabbs.no-ip.info
+,2,Zone2_Gate,La_Plata_BA,Manuel_Adorni,54-221-421-7694,33600,ICM,XA,V34,IBN:momiabbs.no-ip.info
+,3,Zone3_Gate,La_Plata_BA,Manuel_Adorni,54-221-421-7694,33600,ICM,XA,V34,IBN:momiabbs.no-ip.info
+;
+Region,80,Brasil,Recife_PE,Ioram_Sette,-Unpublished-,300,CM,IBN:bsbbs.com.br
+;
+Host,801,Brasil,Recife_PE,Ioram_Sette,-Unpublished-,300,CM,IBN:bsbbs.com.br
+Pvt,146,AltBBS,Sorocaba_SP,Eduardo_Marcal,-Unpublished-,300
+Pvt,161,HidraSoft_BBS,Aruja_SP,Renato_Zambon,-Unpublished-,300
+,188,Saturn's_Orbit_BBS,Rio_de_Janeiro_RJ,Flavio_Bessa,-Unpublished-,300,CM,IBN:saturnsorbit.hopto.org
+,189,Brain_Storm_BBS,Recife_PE,Ioram_Sette,-Unpublished-,300,CM,IBN:bsbbs.com.br
+,190,EclipsE_BBS,Rio_de_Janeiro_RJ,Daniel_Marques,-Unpublished-,300,CM,IBN:bbs.eclipse.net.br
+,193,Titan's_Orbit_BBS,Rio_de_Janeiro_RJ,Flavio_Bessa,-Unpublished-,300,CM,IBN:titansorbit.ddns.net
+,194,Ninho_do_Abutre_BBS,Rio_de_Janeiro_RJ,Mauro_Veiga,-Unpublished-,300,CM,IBN:abutre.no-ip.org
+,196,Galadin_BBS,Natal_RN,Ranieri_Andrade,-Unpublished-,300,CM,IBN:bbs.galadin.net
+,197,Infonet_BBS,Brasilia_DF,Regivaldo_Costa,-Unpublished-,300,CM,IBN:bbs.rclabs.com.br
+Pvt,198,Suporte_BBS,Recife_PE,Aloisio_Mello,-Unpublished-,300
+Pvt,199,Net_PE_BBS,Recife_PE,Ioram_Sette,-Unpublished-,300
+,200,RMSBBS,Natal_RN,Ramses_Caldas,-Unpublished-,300,CM,IBN:rmsbbs.ddns.net
+,201,Clube_da_Insonia_BBS,Rio_de_Janeiro_RJ,Glauber_Rodrigues,-Unpublished-,300,CM,INA:bbs.conf.eti.br
+;
+Region,90,Argentina,Argentina,Manuel_Adorni,54-221-421-7694,33600,ICM,XA,V34,IBN:momiabbs.no-ip.info,IMI:hub@momiabbs.com.ar
+,1,InterNet_HUB,Argentina,Manuel_Adorni,54-221-421-7694,33600,ICM,XA,V34,IBN:momiabbs.no-ip.info,IMI:hub@momiabbs.com.ar
+;
+Host,900,CF_y_GBA,Buenos_Aires,Ariel_Brunetto,54-11-4767-1669,33600,ICM,XA,V34,IBN:ice.ath.cx
+Hub,100,CF_y_GBA_Hub,Buenos_Aires,Ariel_Brunetto,54-11-4767-1669,33600,ICM,XA,V34,IBN:ice.ath.cx
+,101,ICE_BBS,Buenos_Aires,Ariel_Brunetto,000-0-0-0-0,300,IBN:ice.ath.cx
+Pvt,105,MAXI_BBS,Capital_Federal_CF,Maximiliano_Guerrero,-Unpublished-,300
+Pvt,106,Cordoba,Cordoba_CBA,Thierry_Olmedo,-Unpublished-,300
+Pvt,108,Zooropa_BBS,Buenos_Aires,Gaston_Martres,-Unpublished-,300
+;
+Host,902,Provincia_de_Buenos_Aires,La_Plata_BA,Manuel_Adorni,54-221-421-7694,33600,ICM,XA,V34,IBN:momiabbs.no-ip.info,IMI:hub@momiabbs.com.ar
+Hub,100,Internet_HUB,La_Plata_BA,Manuel_Adorni,54-221-421-7694,33600,ICM,XA,V34,IBN:momiabbs.no-ip.info,IMI:hub@momiabbs.com.ar
+Pvt,19,Fercho_BBS,La_Plata_BA,Fernando_Miculan,-Unpublished-,33600,ICM,XA,V34,IMI:fido@fcmsistemas.com.ar,IBN:ferchobbs.ddns.net
+,26,Docksud_BBS,Avellaneda_BA,Fernando_Toledo,54-111-11111111,33600,ICM,XA,V34,IBN:bbs.docksud.com.ar
+,27,Momia_BBS,La_Plata_BA,Manuel_Adorni,54-221-421-7694,33600,ICM,XA,V34,IBN:momiabbs.no-ip.info,IMI:hub@momiabbs.com.ar
+;S
+;S  **************************************************************************
+;S  ***                 END OF Z2DAILY ISSUED FOR ZONE2                    ***
+;S  **************************************************************************
+;S
+

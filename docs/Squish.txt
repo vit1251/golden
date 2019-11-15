@@ -1,0 +1,759 @@
+**********************************************************************
+FTSC                             FIDONET TECHNICAL STANDARDS COMMITTEE
+**********************************************************************
+
+Publication:    FSP-1037
+Revision:       draft 3
+Title:          Squish message base format version 1
+Author:         Stas Degteff, 2:5080/102@fidonet
+                Michael Dukelsky, 2:5020/1042@fidonet
+Release date:   March 27, 2010
+Revision date:
+
+----------------------------------------------------------------------
+Contents:
+
+  1. Squish Messagebase Concept
+  2. Data types used in this document
+  3. Files in Squish Messagebase
+  4. Squish Data File format
+  4.1. Squish Data File Header
+  4.2. Squish Data File Frame
+  4.2.1. Frame Header
+  4.2.2. Message Header
+  4.2.3. Message Control Data
+  4.2.4. Message Body
+  5. Squish Index File format
+  5.1. Squish Index Record
+  5.2. The hash function
+  5.2.1. An Implementation Example of The Hash Function
+  6. Squish lastread file format
+  A. Acknowledgements
+  B. References
+  C. History
+
+----------------------------------------------------------------------
+
+Status of this document
+-----------------------
+
+  This document is a Fidonet Standards Proposal (FSP).
+
+  This document specifies an optional Fidonet standard for the Fidonet
+  community, and requests discussion and suggestions for improvements.
+
+  This document is released to the public domain, and may be used,
+  copied or modified without restriction.
+
+Abstract
+--------
+
+  This  document  specifies  format of a  "Squish"  tosser  compatible
+  messages storage (messagebase) version one.
+
+  This document is based on [Squish Developers Kit Version 2.00
+  documentation].
+
+
+Introduction
+------------
+
+  The Squish-compatible message storage is widely used  in the fidonet
+  software  but several not fully compatible implementations exist and
+  different programs  have a documentation of the data format of their
+  own.
+
+  The key words "MUST", "MUST NOT",  "REQUIRED", "SHALL", "SHALL NOT",
+  "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+  document are to be interpreted as described in FTA-1006.
+
+
+1. Squish Messagebase Concept
+-----------------------------
+
+  Squish messagebase is not based on the concept of "message numbers".
+  This  messagebase  does not use an array  for data storage but uses
+  double-linked  list  of records  only.   These  records  are  named
+  "frames".
+
+  While all messages  have a message number,  these numbers can change
+  at any  time.  By  definition,  the  message  numbers  in  a  Squish
+  messagebase  always range from 1  to the number  of messages  in the
+  area.  Consequently,  there are no "gaps"  in message numbers,  so a
+  Squish message area never needs to be renumbered.
+
+  While  this makes it easy to scan  through all of the messages in an
+  area,  this also makes  it difficult  to find  one specific message.
+  Therefore,  the  concept  of  a  Unique  Message  Identifier  (named
+  "UMSGID") is introduced.
+
+  When  a message  is created,  it  is assigned  a UMSGID.   All these
+  identifiers MUST  be unique  for one  messagebase  and  MUST NOT  be
+  ever changed.   So once a UMSGID  of a message  is obtained,  it can
+  always  be used  to find  the current  message  number  of the given
+  message,  no matter how many messages have been added or  deleted in
+  the interim.
+
+
+1.1. Squish Messagebase Limitations
+---------------------------------
+
+  Version one of the Squish Messagebase  contains  several limitations
+  because fixed-length data types are used:
+
+  * maximum replies for one message is 9;
+  * maximum messagebase file size is 4294967295 bytes;
+  * maximum amount of messages  in messagebase is  4294967294  (all of
+    the 32 bit unsigned integers excluding  the special values of zero
+    and 4294967295;
+  * some other limits are implied by one of these.
+
+  The two first limits may be  extended  in  the  next version  of the
+  messagebase  but  the third  limit  is determined  by Unique Message
+  Identifier size and it can't be changed.
+
+
+2. Data types used in this document
+-----------------------------------
+
+  byte
+
+  8 bit unsigned integer value.
+
+  word
+
+  16 bit unsigned integer value.
+
+  sword
+
+  16 bit signed integer value, the sign bit is the highest one.
+
+  dword
+
+  32 bit unsigned integer value.
+
+  sdword
+
+  32 bit signed integer value, the sign bit is the highest one.
+
+  string
+
+  Array of bytes (for storing text characters).
+
+  ftnadr
+
+  FTN address, array of 16-bit unsigned integers ("words").  The first
+  word is a zone number, the second is a network number,  the third is
+  a node number  and the fourth is a  point number of the FTN address.
+  (Negative value "-1" for special  FTN addresses  like 2:2/-1  should
+  be stored in "complement code" as "sword" type with value 0xffff.)
+
+  datime
+
+  32 bit bitmap value for storing date and time:
+  * the first five bits (0..4) represent the day of month (1..31);
+  * the next four bits (5..8) represent month number (1..12);
+  * the next seven bits (9..15) represent number of years since 1980;
+  * the next five bits (16..20) represent the seconds value divided by
+    two (0..29)  (so one second may be lost in squish messagebase  and
+    it has time precision of 2 seconds);
+  * the next six bits (21..26) represent the minutes value (0..59);
+  * the next five bits (27..31) represent the hours value (0..23).
+
+  The structure of "datime" type is illustrated in Fig. 1.
+
+  Figure 1. "datime" bitmask
+  +-+-+-+-+-+-+-+-+-+-+1+1+1+1+1+1+1+1+1+1+2+2+2+2+2+2+2+2+2+2+3+3+
+  +0+1+2+3+4+5+6+7+8+9+0+1+2+3+4+5+6+7+8+9+0+1+2+3+4+5+6+7+8+9+0+1+
+  |   day   | month |    year     |seconds/2|  minutes  |  hours  |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+
+3. Files in Squish Messagebase
+------------------------------
+
+  A standard squish messagebase consists of two files:  a message data
+  file with ".sqd" suffix and a message index file with ".sqi" suffix.
+  The  third file  with ".sql" suffix  extends  the messagebase  for a
+  lastread mark.  This file is optional and is usually used in message
+  editors.
+
+
+4. Squish Data File format
+--------------------------
+
+  The Squish data file (file with ".sqd" suffix,  "SQD file") contains
+  all the data of messages stored in the messagebase.
+
+  The Squish data  file  begins  with  an  area  header  that contains
+  pointers  to the first  and  the last  frames  in the area and other
+  area-specific information. The header is followed by messages stored
+  in a doubly linked list of "frames".  Each frame consists of a frame
+  header  containing  links  to the  previous  and the next  messages,
+  followed  by an optional message header,  a control information  and
+  message body fields. See Fig. 2.
+
+  Figure 2. Squish Data file scheme
+  +-------------+-------+-------+-------+-------+...-+-------+-------+
+  | area header | frame | frame | frame | frame |... | frame | frame |
+  +-------------+-------+-------+-------+-------+...-+-------+-------+
+               /         \                            \       \
+  +--------+--*------+----*----------+------------+ +--*-----+-*-----+
+  | frame  | message | message       | message    | | frame  | empty |
+  | header | header  | control block | body block | | header | block |
+  +--------+---------+---------------+------------+ +--------+-------+
+
+  All numbers in the SQD file are stored in the little-endian form:  a
+  two-byte  word  0x1234  is  stored  as  0x34  0x12  (see Fig. 3),  a
+  four-byte double world 0x12345678  is stored as  0x78 0x56 0x34 0x12
+  (see Fig. 4).
+
+  Figure 3. Little endian "word"
+  +-------------------+------------------+
+  | second 8-bit byte | first 8-bit byte |
+  +-------------------+------------------+
+
+  Figure 4. Little endian "dword"
+  +-------------------+------------------+-------------+-------------+
+  | fourth 8-bit byte | third 8-bit byte | second byte | first byte  |
+  +-------------------+------------------+-------------+-------------+
+
+  Implementation note
+  -------------------
+
+  On a little-endian platform a program may simply write a variable or
+  a structure into disk file.
+
+  On a big-endian platfom each variable should be written byte-by-byte.
+
+
+4.1. Squish Data File Header
+----------------------------
+
+  A SQD file begins with an area header structure and the total length
+  of the area header is 256 bytes.
+
+  Table 1. SQD file area header structure.
+  .-----------.-------.------.---------------------------------------.
+  | Name      | Type  |Offset| Description                           |
+  +-----------+-------+------+---------------------------------------+
+  | length    | word  |    0 | Length of the header (256 bytes)      |
+  +-----------+-------+------+---------------------------------------+
+  | reserved  | word  |    2 | Reserved for future use.              |
+  +------------------------------------------------------------------+
+  | num_msgs  | dword |    4 | Number of messages in this base. This |
+  |           |       |      | should always  be equal  to the value |
+  |           |       |      | of the "high_msg" field.              |
+  +-----------+-------+------+---------------------------------------+
+  | high_msg  | dword |    8 | Highest message number  in this  base |
+  |           |       |      | This number should always be equal to |
+  |           |       |      | the value of the num_msgs field.      |
+  +-----------+-------+------+---------------------------------------+
+  | skip_msg  | dword |   12 | When automatically deleting messages, |
+  |           |       |      | this field  indicates  that the first |
+  |           |       |      | skip_msg  messages in the area should |
+  |           |       |      | not be deleted.                       |
+  +-----------+-------+------+---------------------------------------+
+  | highwater | dword |   16 | The high water marker for this  area. |
+  |           |       |      | This field contains the UMSGID of the |
+  |           |       |      | highest message that was scanned by   |
+  |           |       |      | echomail processing software,         |
+  |           |       |      | generally tosser. This field is used  |
+  |           |       |      | in EchoMail areas only.               |
+  +-----------+-------+------+---------------------------------------+
+  | uid       | dword |   20 | This field contains the UMSGID to  be |
+  |           |       |      | assigned to the next message created  |
+  |           |       |      | in this area.                         |
+  +-----------+-------+------+---------------------------------------+
+  | base      | string|   24 | Name and path of the Squish base,  as |
+  |           | 80 ch.|      | an ASCIIZ  string,  not including the |
+  |           | long  |      | extension. This field is optional.    |
+  |           |       |      | If this field is not used,  it should |
+  |           |       |      | be initialized to zero bytes.         |
+  +-----------+-------+------+---------------------------------------+
+  | beg_frame | dword |  104 | Offset  of the  first  frame  in  the |
+  |           |       |      | message chain.                        |
+  +-----------+-------+------+---------------------------------------+
+  | last_frame| dword |  108 | Offset of the last frame in the       |
+  |           |       |      | message chain.                        |
+  +-----------+-------+------+---------------------------------------+
+  | free_frame| dword |  112 | Offset of the first frame in the free |
+  |           |       |      | chain.                                |
+  +-----------+-------+------+---------------------------------------+
+  | last_free | dword |  116 | Offset of the last frame in the free  |
+  |           |       |      | chain.                                |
+  +-----------+-------+------+---------------------------------------+
+  | end_frame | dword |  120 | Offset of end-of-file.                |
+  |           |       |      | Applications  will append messages to |
+  |           |       |      | to the Squish file from this point.   |
+  +-----------+-------+------+---------------------------------------+
+  | max_msg   | dword |  124 | Maximum number of messages to store   |
+  |           |       |      | into area. When writing messages,     |
+  |           |       |      | applications should dynamically delete|
+  |           |       |      | messages to make sure that no more    |
+  |           |       |      | than max_msgs exist in this area.     |
+  +-----------+-------+------+---------------------------------------+
+  | keep_days | word  |  128 | Maximum age (in days)  of messages in |
+  |           |       |      | in this area.  This field may be used |
+  |           |       |      | by  applications  when  performing a  |
+  |           |       |      | message area pack.                    |
+  +-----------+-------+------+---------------------------------------+
+  | sz_sqhdr  | word  |  130 | Size of the frame header              |
+  +-----------+-------+------+---------------------------------------+
+  | reserved  |string |  132 | Reserved  for  future  use.   It  is  |
+  |           |124 ch.|      | recommended to fill this field with   |
+  |           | long  |      | the zero bytes.                       |
+  *-----------*-------*------*---------------------------------------*
+
+  Implementation notes.
+  ---------------------
+
+  A "skip_msg" value  usage example:  if  "max_msg" is set to  50  and
+  "skip_msg" is 2,  this means that the writing  program should  start
+  deleting  from  the third  message  whenever the total message count
+  exceeds 50 messages.
+
+  For compatibility  with  future  versions of the  Squish messagebase
+  file format,  applications  should  use  the value of the "sz_sqhdr"
+  field  as  the  size  of  the  "frame"  header,  instead of  using a
+  hardcoded value. And if "sz_sqhdr" field value is not equal 28  then
+  the version of this Squish messagebase is not version one.
+
+  It is  RECOMMENDED  to fill  all unused  fields  with zero  bytes in
+  a newly created SQD file.
+
+
+4.2. Squish Data File Frame
+---------------------------
+
+  The "area header" in SQD file is followed by frames area. Each frame
+  may consist of  a frame  header,  a message header,  message control
+  data and a message body.
+
+  A frame in the free chain consists of a frame header structure  only.
+  A free frame does not necessarily contain a message.
+
+
+4.2.1. Frame Header
+-------------------
+
+  A frame header size is 28 bytes in the current version of the Squish
+  Messagebase format.
+
+  Table 2. SQD file frame header "SQHDR".
+  .----------.-------.-----.-----------------------------------------.
+  | Name     | Type  | Off | Description                             |
+  +----------+-------+-----+-----------------------------------------+
+  | id       | dword |   0 | The frame signature constant 0xAFAE4453 |
+  +----------+-------+-----+-----------------------------------------+
+  | next_frm | dword |   4 | Frame offset of the next frame, or zero |
+  |          |       |     | if this is the last frame.              |
+  +----------+-------+-----+-----------------------------------------+
+  | prev_frm | dword |   8 | Frame offset  of the  prior  frame,  or |
+  |          |       |     | zero if this is the first frame.        |
+  +----------+-------+-----+-----------------------------------------+
+  | frm_len  | dword |  12 | Amount of space allocated for the frame |
+  |          |       |     | data,  not including  the space used by |
+  |          |       |     | the frame header itself.                |
+  +----------+-------+-----+-----------------------------------------+
+  | msg_len  | dword |  16 | Amount of space used in  the frame  for |
+  |          |       |     | data  (message header,  message control |
+  |          |       |     | information  and  message  body),   not |
+  |          |       |     | including  the space used by this frame |
+  |          |       |     | header itself.  This field is not equal |
+  |          |       |     | to  "frm_len"  when  the frame  is used |
+  |          |       |     | secondarily.                            |
+  +----------+-------+-----+-----------------------------------------+
+  | ctrl_len | dword |  20 | Length of the control information field |
+  |          |       |     | in this frame.                          |
+  +----------+-------+-----+-----------------------------------------+
+  | frm_type | word  |  24 | Type of frame:  Normal, Free, Update or |
+  |          |       |     | LZSS. See the Table 3.                  |
+  +----------+-------+-----+-----------------------------------------+
+  | reserved | word  |  26 | Reserved for future use, should be zero |
+  *----------*-------*-----*-----------------------------------------*
+
+  Table 3. Frame types allowed in the SQD file frame header.
+  .--------.-------.-------.-----------------------------------------.
+  | Name   | Value | Description                                     |
+  +--------+-------+-------------------------------------------------+
+  | Normal |   0   | Normal frame contains a message header, control |
+  |        |       | information and message body text.              |
+  +--------+-------+-------------------------------------------------+
+  | Free   |   1   | Free frame contains frame header only  and  may |
+  |        |       | be reused  to store  a message with length less |
+  |        |       | or equal to "frm_len".                          |
+  +--------+-------+-------------------------------------------------+
+  | LZSS   |   2   | Reserved for future use.                        |
+  +--------+-------+-------------------------------------------------+
+  | Update |   3   | Frame  update  indicates  that the frame should |
+  |        |       | not be manipulated by another task.             |
+  *--------*-------*-------------------------------------------------*
+
+  Implementation notes.
+  ---------------------
+
+  It is  RECOMMENDED  to fill  all unused  fields  with zero  bytes in
+  a newly created frame.
+
+  The "Update"  frame  type  is not  needed in modern software because
+  file locking  feature  is more convenient  to prevent access  to the
+  frame, but software SHOULD check and set frame type to "Update" when
+  works with this frame.
+
+  If software or system is crashed when "Update" is set, this produces
+  a deadlock. Software should provide ability for unlocking  (force to
+  clear frame type).
+
+  If an  SQD file  has more than  one free frame,  it is recomended to
+  use the frame with the smallest "frm_len" value larger than the size
+  of the new message.
+
+
+4.2.2. Message Header
+---------------------
+
+  For a normal frame type,  the message header immediately follows the
+  frame header.  Message  header  structure  is  238  bytes  long  and
+  is defined in the Table 4.
+
+  Table 4. SQD file,  message header.
+  .---------.--------.-----.-----------------------------------------.
+  | Name    | Type   | Off | Description                             |
+  +---------+--------+-----+-----------------------------------------+
+  | attr    | dword  |   0 | Message attributes  (bits  mask).   See |
+  |         |        |     | Table 5.                                |
+  +---------+--------+-----+-----------------------------------------+
+  | from    | string |   4 | Name of the user  who  originated  this |
+  |         |36 chars|     | message.                                |
+  +---------+--------+-----+-----------------------------------------+
+  | to      | string |  40 | Name of the user to  whom this message  |
+  |         |36 chars|     | is addressed.                           |
+  +---------+--------+-----+-----------------------------------------+
+  | subj    | string |  76 | Message subject.                        |
+  |         |72 chars|     |                                         |
+  +---------+--------+-----+-----------------------------------------+
+  | orig    | ftnadr | 148 | Originating FTN address of this message |
+  +---------+--------+-----+-----------------------------------------+
+  | dest    | ftnadr | 156 | Destination FTN address of this message |
+  +---------+--------+-----+-----------------------------------------+
+  | written | datime | 164 | Date that the message was written.      |
+  +---------+--------+-----+-----------------------------------------+
+  | arrived | datime | 168 | Date that the message was placed in the |
+  |         |        |     | messagebase.                            |
+  +---------+--------+-----+-----------------------------------------+
+  | tz_ofs  | sword  | 172 | The message writer's time  zone  offset |
+  |         |        |     | from UTC, in minutes. Not used widely.  |
+  +---------+--------+-----+-----------------------------------------+
+  | replyto | dword  | 174 | If this message is a reply,  this field |
+  |         |        |     | gives  the  "UMSGID"  of  the  original |
+  |         |        |     | message. Otherwise, this field is given |
+  |         |        |     | a value of zero.                        |
+  +---------+--------+-----+-----------------------------------------+
+  | replies |dword[9]| 178 | If any replies  for this  message  are  |
+  |         |        |     | present, this array lists the "UMSGID"  |
+  |         |        |     | values of up to nine reply messages.    |
+  +---------+--------+-----+-----------------------------------------+
+  | umsgid  | dword  | 214 | The UMSGID of this message.  This field |
+  |         |        |     | MUST correspond to "MSGUID" bit  in the |
+  |         |        |     | "attr"  field.  If  "MSGUID" bit is not |
+  |         |        |     | set,  "umsgid" field value MUST NOT be  |
+  |         |        |     | used.                                   |
+  +---------+--------+-----+-----------------------------------------+
+  | strdate | string | 218 | Message date  in string  representation |
+  |         |20 chars|     | terminated with nil character (FTS-0001 |
+  |         | ASCIIZ |     | compatible format ASCIIZ string).       |
+  *---------*--------*-----*-----------------------------------------*
+
+  Implementation notes
+  --------------------
+
+  The "dest" field is used for netmail-type area usually. For echomail
+  messagebase this field  may  contain the local address of FTN system
+  used for this area (this is recommended) or zero.
+
+  The "strdate" field is used for storing original message date string
+  by the tosser program.  All other  programs  should read the message
+  date from the "written" field.
+
+  The rest part of any string should be filled with zero bytes.
+
+  Table 5. Message attribute bits
+  .---------.------------.-------.-----------------------------------.
+  | Name    | BitMask    | Description                               |
+  +---------+------------+-------------------------------------------+
+  | PRIVATE | 0x00000001 | The message is private (usually netmail). |
+  +---------+------------+-------------------------------------------+
+  | CRASH   | 0x00000002 | The netmail message should  be  given  a  |
+  |         |            | "Crash" flavour when packed. When "Crash" |
+  |         |            | and "Hold" are combined  then the message |
+  |         |            | should be packed as "Direct".             |
+  +---------+------------+-------------------------------------------+
+  | READ    | 0x00000004 | The message has been read by the addressee|
+  +---------+------------+-------------------------------------------+
+  | SENT    | 0x00000008 | The message has been packed and  prepared |
+  |         |            | for transmission to a remote system.      |
+  +---------+------------+-------------------------------------------+
+  | FILEATT | 0x00000010 | The netmail message has a file attached.  |
+  |         |            | The filename is given in the "subj" field.|
+  +---------+------------+-------------------------------------------+
+  | TRANSIT | 0x00000020 | The netmail message is  in-transit:  both |
+  |         |            | originating and destination addresses are |
+  |         |            | not local ones.                           |
+  +---------+------------+-------------------------------------------+
+  | ORPHAN  | 0x00000040 | The netmail message is orphaned:          |
+  |         |            | destination node is not found in nodelist |
+  +---------+------------+-------------------------------------------+
+  | KILL    | 0x00000080 | The message should be  deleted  from  the |
+  |         |            | messagebase when it is packed.            |
+  +---------+------------+-------------------------------------------+
+  | LOCAL   | 0x00000100 | The message  originated  on  this system. |
+  +---------+------------+-------------------------------------------+
+  | HOLD    | 0x00000200 | The netmail message should  be  given  a  |
+  |         |            | "Hold" flavour  when packed.  When "Hold" |
+  |         |            | and "Crash" are combined then the message |
+  |         |            | should be packed as "Direct".             |
+  +---------+------------+-------------------------------------------+
+  | XX2     | 0x00000400 | Reserved for future use by FTS-0001.      |
+  +---------+------------+-------------------------------------------+
+  | FREQ    | 0x00000800 | The netmail message  is a  file  request. |
+  |         |            | The filename is given in the "subj" field.|
+  +---------+------------+-------------------------------------------+
+  | RRQ     | 0x00001000 | A  receipt  is  requested in the netmail. |
+  +---------+------------+-------------------------------------------+
+  | CPT     | 0x00002000 | The netmail message is a  receipt  for an |
+  |         |            | earlier receipt request (RRQ).            |
+  +---------+------------+-------------------------------------------+
+  | ARQ     | 0x00004000 | An audit  trail  is requested in netmail. |
+  +---------+------------+-------------------------------------------+
+  | URQ     | 0x00008000 | The netmail message is an update request. |
+  |         |            | The filename is given in the "subj" field.|
+  +---------+------------+-------------------------------------------+
+  | SCANNED | 0x00010000 | The echomail message has been scanned out |
+  |         |            | to other systems.                         |
+  +---------+------------+-------------------------------------------+
+  | MSGUID  | 0x00020000 | The  "umsgid"  field contains  a valid    |
+  |         |            | UMSGID for this message. (See Table 4.)   |
+  *---------*------------*-------------------------------------------*
+
+  Implementation notes
+  --------------------
+
+  The following attributes SHOULD be used in netmail-type  messagebase
+  only:
+
+  PRIVATE, CRASH, FILEATT, TRANSIT, ORPHAN, HOLD, FREQ, RRQ, ARQ, CPT,
+  URQ
+
+  The following attribute  MUST be used  in  echomail-type messagebase
+  only:
+
+  SCANNED
+
+
+4.2.3. Message Control Data
+---------------------------
+
+  The Message Control Data block is an array of 8 bit characters.  Its
+  size  is specified  in  the  "ctrl_len"  field  of the  Frame Header
+  structure.
+
+  The Message Control Data block is optional. This block is not used
+  whenever "ctrl_len" is zero.
+
+  The  Message Control Data block should  contain control lines of the
+  message as specified in [FTS-4000].  (A control line is started with
+  the ASCII character with code 1  and ended with  the ASCII character
+  with code 13.)
+  The  Message Control Data block should  contain control lines of the
+  message as specified in  [FTS-4000].  A control line of a message is
+  started  with the  ASCII  character with code 1  and ended with  the
+  ASCII character with code 13.  The last character  (with code 13) is
+  omitted in the Message Control Data block (see Fig. 5).
+
+  Figure 5. Squish Data file, Message Control Data block example
+  +--------------------------------------------------+----------------+
+  |                Hex representation                |     ASCII      |
+  +--------------------------------------------------+----------------+
+  | 01 50 49 44 3a 20 46 41  77 6b 20 76 31 2e 34 30 |.PID: FAwk v1.40|
+  | 2e 34 34 01 4d 53 47 49  44 3a 20 32 3a 35 30 32 |.44.MSGID: 2:502|
+  | 30 2f 31 30 34 32 2e 30  40 66 69 64 6f 6e 65 74 |0/1042.0@fidonet|
+  | 20 36 32 31 35 37 38 36  32 01 54 49 44 3a 20 68 | 62157862.TID: h|
+  | 70 74 2f 77 33 32 2d 6d  76 63 64 6c 6c 20 31 2e |pt/w32-mvcdll 1.|
+  | 34 2e 30 2d 73 74 61 20  32 37 2d 31 31 2d 30 38 |4.0-sta 27-11-08|
+  +--------------------------------------------------+----------------+
+
+
+  A common practice  is to store here  only  a contiguous  sequence of
+  control lines taken from the beginning of the message. If there is a
+  control line inside the body  of the message,  it should stay there.
+  The Message Control Data block size  is just an offset  to the first
+  text line of the message.
+
+
+4.2.4. Message Body
+-------------------
+
+  The Message Body block is an array of eight bit characters. Its size
+  is calculated as:
+
+  body_len = (msg_len - ctrl_len - 238)
+
+  where "msg_len" and "ctrl_len" are fields of the Frame Header and 238
+  is the size of the Message Header.
+
+  The Message Body block should contain the text of the message.
+
+
+5. Squish Index File format
+---------------------------
+
+  The index file  (the file with  ".sqi" suffix,  "SQI file") contains
+  an  array of Squish Index records.  The index file is used primarily
+  for performing random access to a message by the message number. The
+  Squish Index record for the first message  in messagebase  is stored
+  at offset 0.
+
+5.1. Squish Index Record
+------------------------
+
+  The size  of the Squish Index record  is 12 bytes.  The structure of
+  the Squish Index record is described in Table 6.
+
+  Each Squish Index record contains Unique message ID ("USMGID" field)
+  of the corresponding frame in SQD file.  All Squish Index records in
+  SQI file MUST be sorted in ascending order of the USMGID values.
+
+  Table 6. SQI file, Squish Index record structure.
+  .--------.--------.-----.------------------------------------------.
+  | Name   | Type   | Off | Description                              |
+  +--------+--------+-----+------------------------------------------+
+  | ofs    | dword  |   0 | Offset of the frame in the  SQD  file. A |
+  |        |        |     | value of zero is used to indicate an     |
+  |        |        |     | invalid message in the frame.            |
+  +--------+--------+-----+------------------------------------------+
+  | umsgid | dword  |   4 | Unique message ID ("USMGID") for frame.  |
+  |        |        |     | A value of 0xffffffff is used to indicate|
+  |        |        |     | an invalid message in the frame.         |
+  +--------+--------+-----+------------------------------------------+
+  | hash   | sdword |   8 | The low 31 bits  of this field contain a |
+  |        |        |     | hash of the "To:" field for this message |
+  |        |        |     | (see paragraph 4.2). The sign bit of the |
+  |        |        |     | field is set if the READ flag is set  in |
+  |        |        |     | the message header of the frame.         |
+  *--------*--------*-----*------------------------------------------*
+
+
+5.2. The hash function
+----------------------
+
+  The following hash function is used to calculate the "hash" field of
+  the Squish Index record structure. All variables are 32 bit unsigned
+  integers unless otherwise noted.
+
+  1. Set "hash" to a value of 0.
+
+  2. For each 8-bit character "ch"  taken  sequentially  from left  to
+     right from the "To:" field, repeat:
+
+    2.1.  Shift the "hash" to the left by four bits.
+    2.2.  Convert "ch" to lowercase (deprecated, see Note).
+    2.3.  Increment the "hash" by the ASCII value of "ch".
+
+    2.4.  Set "g" to the value of the "hash".
+    2.5.  Perform a bitwise AND on "g", using a mask of 0xf0000000.
+
+    2.6.  If "g" is non-zero:
+
+      2.6.1.  Perform a bitwise OR on the "hash" with the value of
+              "g".
+      2.6.2.  Shift the "g" to the right by 24 bits.
+      2.6.3.  Perform a bitwise OR on the "hash" with the value of "g".
+
+  3. Perform a bitwise AND on the "hash" with a value of 0x7fffffff.
+
+  Note about lowercasing char in the hash function
+  ------------------------------------------------
+
+  The step 2.2 uses locale-specific function.  Result:  hash  function
+  works if the locale is identical for all programs operating with the
+  messagebase, locale "C" is recommended.
+
+  It is RECOMMENDED to check "ch" value  for  range  'A'..'Z'  and  to
+  convert it to lower case only if it matched  the range  (this method
+  is preferable  for historical  reasons),  or  skip  lowercasing,  on
+  implementor's choice.
+
+  The conversion  to lower  case  should  be  removed  in  the  future
+  versions of the Squish messagebase format.
+
+
+5.2.1. An Implementation Example of The Hash Function
+------------------------------------------------------
+
+  The following C function can be used to calculate such a hash:
+
+  #include <ctype.h>
+  /* The SquishHash function is derived from the
+   * hashpjw() function by P.J. Weinberger. */
+  unsigned long SquishHash(unsigned char *f)
+  {
+    unsigned long hash=0; /* Initialize hash */
+    unsigned long g;
+    char *p;              /* Pointer to char of string */
+
+    for (p=f; *p; p++)
+    { /* tolower is deprecated
+      hash=(hash << 4) + (unsigned long)tolower(*p); */
+      hash=(hash << 4) + (unsigned long)(*p);
+      if ((g=(hash & 0xf0000000L)) != 0L)
+      {
+        hash |= g >> 24;
+        hash |= g;
+      }
+    }
+    return (hash & 0x7fffffffLu); /* Strip off high bit */
+  }
+
+
+6. Squish lastread file format
+------------------------------
+
+  The lastread file is an array of 32 bit unsigned numbers.  The first
+  element contains  the last read message number  for  the user number
+  one  (element 0  in the "C" language  notation),  the second  32 bit
+  number  is  the  last read message number  for  the  user number two
+  (element 1 in the "C" notation) and etc. Each number in the lastread
+  file MUST be stored in the little endian binary form (see Fig. 4).
+
+
+A. Acknowledgements
+-------------------
+
+  The authors would like to thank for comments and additions:
+  * Alexey Vissarionov 2:5020/545@fidonet;
+  * Michiel van der Vlist 2:280/5555@fidonet;
+  * Scott Little 3:712/848@fidonet;
+  * Konstantin Kuzov 2:5019/40@fidonet.
+
+
+B. References
+-------------
+
+  [Squish Developers Kit Version 2.00 documentation]
+  included into Squish Developers Kit 2.00 distributive package
+  Author: Scott Dudley
+  Date: May 23, 1994
+
+  [FTS-4000]
+  FTS-4000.001 "CONTROL PARAGRAPHS"
+  Date: October 1, 2000
+
+
+C. History
+----------
+  Rev.1 20100307 - First draft is published
+        20100309 - Text proof-reading by Michael Dukelsky 2:5020/1042
+        20100315 - Limitations update by Konstantin Kuzov 2:5019/40.1
+        20100323 - Updates by Scott Little 3:712/848
+        20100326 - Updates by Michael Dukelsky 2:5020/1042

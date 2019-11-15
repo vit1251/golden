@@ -1,0 +1,62 @@
+
+{{ define "content" }}
+
+<style type="text/css">
+.message-header {
+    display: flex;
+}
+.message-header-item {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+}
+.message-header-item-property {
+    display: flex;
+}
+.message-header-item-property-name {
+    flex-basis: 25%;
+}
+.message-header-item-property-value {
+    flex-grow: 1;
+    flex-basis: 25%;
+}
+</style>
+
+<hr>
+
+<div class="message-header">
+    <div class="message-header-item">
+        <div class="message-header-item-property">
+            <div class="message-header-item-property-name">Сообщение</div>
+            <div class="message-header-item-property-value">M из N</div>
+            <div class="message-header-item-property-value"></div>
+            <div class="message-header-item-property-value"></div>
+        </div>
+        <div class="message-header-item-property">
+            <div class="message-header-item-property-name">От</div>
+            <div class="message-header-item-property-value">{{ .Msg.From }}</div>
+            <div class="message-header-item-property-value">{{ .Msg.FromAddr }}</div>
+            <div class="message-header-item-property-value">{{ .Msg.DateWritten }}</div>
+        </div>
+        <div class="message-header-item-property">
+            <div class="message-header-item-property-name">Кому</div>
+            <div class="message-header-item-property-value">{{ .Msg.To }}</div>
+            <div class="message-header-item-property-value">{{ .Msg.ToAddr }}</div>
+            <div class="message-header-item-property-value">{{ .Msg.DateArrived }}</div>
+        </div>
+        <div class="message-header-item-property">
+            <div class="message-header-item-property-name">Тема</div>
+            <div class="message-header-item-property-value">{{ .Msg.Subject }}</div>
+            <div class="message-header-item-property-value"></div>
+            <div class="message-header-item-property-value"></div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<pre>{{ .Content }}</pre>
+
+<hr>
+
+{{ end }}
