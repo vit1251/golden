@@ -2,8 +2,8 @@
 Description=Golden Service
 
 [Service]
-ExecStart=/srv/golden/__main__
-WorkingDirectory=/srv/golden
+ExecStart=/opt/golden/__main__
+WorkingDirectory=/opt/golden
 
 [Install]
 WantedBy=multi-user.target

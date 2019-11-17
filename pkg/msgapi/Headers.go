@@ -1,8 +1,9 @@
-package main
+package msgapi
 
-//import (
+import (
+	"github.com/vit1251/golden/pkg/utils"
 //	"time"
-//)
+)
 
 type Header struct {
 	ID string                // Message ID (i.e. index value provided by engine to repetable search in base)
@@ -19,5 +20,5 @@ type Header struct {
 }
 
 func (self Header) GetContent() string {
-	return makeString(self.Body[:])
+	return utils.MakeString(self.Body[:])
 }

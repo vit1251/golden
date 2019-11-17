@@ -1,0 +1,23 @@
+BadArea BADZ	/var/spool/ftn/mail/bad	
+DupeArea DUPEZ          /var/spool/ftn/mail/dupe           -b msg
+NetmailArea NETMAIL        /var/spool/ftn/mail/netmail        -b msg
+
+EchoAreaDefaults -b squish
+LocalArea my.mail        /var/spool/ftn/mail/my.mail        
+EchoAreaDefaults  off
+LocalArea my.tns         /var/spool/ftn/mail/my.tns         -b squish
+LocalArea sdn.560        /var/spool/ftn/mail/sdn.560        -b squish
+Echoarea sdn.forward    /var/spool/ftn/mail/sdn.forward    -pass -b squish -dupeCheck move -dupeHistory 11 -g Z  2:5020/9696.*
+Echoarea sdn.local      /var/spool/ftn/mail/sdn.local      -b squish -dupeCheck move -dupeHistory 11 -g Z  2:5020/9696.*
+LocalArea sdn.me         /var/spool/ftn/mail/sdn.me         -b squish
+LocalArea sdn.nado       /var/spool/ftn/mail/sdn.nado       -b squish
+LocalArea sdn.pesni      /var/spool/ftn/mail/sdn.pesni      -b squish
+Echoarea sdn.pointoffka /var/spool/ftn/mail/sdn.pointoffka -pass -b squish -dupeCheck move -dupeHistory 11 -g Z  2:5020/9696.*
+LocalArea sdn.points     /var/spool/ftn/mail/sdn.points     -b squish
+LocalArea sdn.test     /var/spool/ftn/mail/sdn.test     -b jam
+LocalArea starper.limited     /var/spool/ftn/mail/starper.limited     -b squish
+LocalArea tomcat.bbs     /var/spool/ftn/mail/tomcatbb     -b jam
+LocalArea duke.mail.sent     /var/spool/ftn/mail/duke.mail.sent     -b jam
+EchoArea blog-mtw     /var/spool/ftn/mail/BLOG-MTW     -b jam
+EchoArea roo.test     /var/spool/ftn/mail/roo.test     -b jam
+Echoarea sdn.stat       /var/spool/ftn/mail/sdn.stat        -b squish -dupeCheck move -dupeHistory 11 -g Z -$m 1000 2:5020/9696.*

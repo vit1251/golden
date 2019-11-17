@@ -1,7 +1,8 @@
-package main
+package msgapi
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/utils"
 	"os"
 	"io"
 	"bufio"
@@ -228,11 +229,11 @@ func (self *SquishMessageBase) readMessage(reader *bufio.Reader) (*Header, error
 		res := new(Header)
 		res.UMSGID = uint32(msgHeader.UMSGID)
 		res.ID = msgHeader.UMSGID.GetMessageID()
-		res.From = makeString(msgHeader.From[:])
+		res.From = utils.MakeString(msgHeader.From[:])
 		res.FromAddr = msgHeader.Orig.GetAddr()
-		res.To = makeString(msgHeader.To[:])
+		res.To = utils.MakeString(msgHeader.To[:])
 		res.ToAddr = msgHeader.Dest.GetAddr()
-		res.Subject = makeString(newSubject)
+		res.Subject = utils.MakeString(newSubject)
 		res.DateWritten = msgHeader.DateWritten.GetDateTime()
 		res.DateArrived = msgHeader.DateArrived.GetDateTime()
 		res.Hash = fmt.Sprintf("%32x", md5.Sum(msg.Body[:]))

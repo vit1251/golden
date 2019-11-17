@@ -1,0 +1,42 @@
+
+{{ define "content" }}
+
+<style type="text/css">
+
+</style>
+
+<h1>Create message</h1>
+
+<hr>
+
+<div class="compose">
+
+    <form method="post">
+
+    <input type="hidden" name="msgid" value="">
+
+    <div>
+        <div>To:</div>
+        <div><input type="text" value="" name="to">
+    </div>
+
+    <div>
+        <div>Subject:</div>
+        <div><input type="text" value="" name="subject">
+    </div>
+
+    <div>
+        <textarea name="body"></textarea>
+    </div>
+
+    <div>
+        <button type="submit">Compose</button>
+    </div>
+
+    </form>
+
+</div>
+
+<hr>
+
+{{ end }}

@@ -1,11 +1,11 @@
-package main
+package utils
 
 import (
 	"bytes"
 	"log"
 )
 
-func makeString(zstr []byte) string {
+func MakeString(zstr []byte) string {
 	var res string
 	n := bytes.IndexByte(zstr, 0)
 	log.Printf("zeroIndex = %d", n)

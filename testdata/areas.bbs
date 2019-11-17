@@ -1,0 +1,50 @@
+; AREAS.BBS file created by fconf2areasbbs, part of the husky FIDOnet software project
+;
+$/var/spool/ftn/mail/fluid.info fluid.info                   2:5020/12000
+P     mclaren.power.pit.stop      
+$/var/spool/ftn/mail/mo.echo mo.echo                      2:5020/570 2:5020/9696.128
+;$/var/spool/ftn/mail/mo.fidopoika mo.fidopoika                 2:5020/12000
+$/var/spool/ftn/mail/mo.vietnamka mo.vietnamka                 2:5020/12000
+$/var/spool/ftn/mail/n5020.point n5020.point                  2:5020/9696.128 2:5020/715
+$/var/spool/ftn/mail/n5020.sysop n5020.sysop                  2:5020/9696.128 2:5020/715
+$/var/spool/ftn/mail/ru.anecdot ru.anecdot                   2:5020/9696.128 2:5020/715
+$/var/spool/ftn/mail/ru.anekdot ru.anekdot                   2:5020/9696.128 2:5020/715
+$/var/spool/ftn/mail/ru.husky ru.husky                     2:5020/9696.128 2:5020/715
+$/var/spool/ftn/mail/ru.linux ru.linux                     2:5020/9696.128 2:5020/715
+$/var/spool/ftn/mail/ru.linux.chainik ru.linux.chainik             2:5020/9696.128 2:5020/715
+$/var/spool/ftn/mail/ru.nethack ru.nethack                   2:5020/715
+$/var/spool/ftn/mail/ru.perl ru.perl                      2:5020/715
+$/var/spool/ftn/mail/ru.unix.ftn ru.unix.ftn                  2:5020/9696.128 2:5020/715
+$/var/spool/ftn/mail/true.kaschenko.local true.kaschenko.local        
+$/var/spool/ftn/mail/xsu.cellular.beeline xsu.cellular.beeline         2:5020/12000
+$/var/spool/ftn/mail/r50.sysop r50.sysop                    2:5020/12000 2:5020/9696.128
+P     fidonews                     2:5020/12000 2:5020/9696.128
+P     ru.military                  2:5020/9696.128 2:5020/715
+P     su.tormoz                    2:5020/12000 2:5020/9696.128
+/var/spool/ftn/mail/ru.fidonet.today ru.fidonet.today             2:5020/9696.128 2:5020/715
+P     ru.mac                       2:5020/9696.128 2:5020/715
+P     ru.unix.bsd                  2:5020/9696.128 2:5020/715
+P     ru.game                      2:5020/9696.128 2:5020/715
+$/var/spool/ftn/mail/ru.ftn.develop ru.ftn.develop               2:5020/9696.128 2:5020/715
+$/var/spool/ftn/mail/pushkin.local pushkin.local                2:5020/12000 2:5020/9696.128
+$/var/spool/ftn/mail/ru.qico ru.qico                      2:5020/715
+$/var/spool/ftn/mail/ru.binkd ru.binkd                     2:5020/715 2:5020/9696.128
+$/var/spool/ftn/mail/alt.hacker alt.hacker                   2:5020/12000
+$/var/spool/ftn/mail/715.techinfo 715.techinfo                 2:5020/715
+$/var/spool/ftn/mail/715.echo 715.echo                     2:5020/715 2:5020/9696.128
+!/var/spool/ftn/mail/715.pvt 715.pvt                      2:5020/715
+P     su.pol                       2:5020/715 2:5020/9696.128
+P     ru.sex                       2:5020/715 2:5020/9696.128
+P     r50.sysop.drunk              2:5020/715 2:5020/9696.128 2:5020/9696.111
+P     hobbit.local                 2:5020/715 2:5020/9696.128
+P     su.hardw.other               2:5020/715 2:5020/9696.128
+P     ru.railways                  2:5020/715 2:5020/9696.128
+P     su.os2.faq                   2:5020/715 2:5020/9696.128
+P     crimea.talk                  2:5020/715 2:5020/9696.128
+P     r46.sysop                    2:5020/715 2:5020/9696.128
+P     su.general                   2:5020/715 2:5020/9696.128
+P     tyt.bce.hacpem               2:5020/715 2:5020/9696.128
+P     su.medic                     2:5020/715 2:5020/9696.128
+P     ru.fidonet.digest            2:5020/715 2:5020/9696.128
+P     sync_programming             2:5020/715 2:5020/9696.128
+P     othernets                    2:5020/715 2:5020/9696.128
