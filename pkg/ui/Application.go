@@ -40,7 +40,6 @@ func (self *Application) scanHeaders() {
 	}
 }
 
-
 func (self *Application) Run() {
 	/* Read service parameters */
 	self.readConfig()
