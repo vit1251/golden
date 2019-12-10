@@ -44,8 +44,5 @@ func StartSite(app *Application) {
 	composeCompleteAction.Site = webSite
 	router.POST("/echo/:name/compose", composeCompleteAction.ServeHTTP)
 	//
-	//fs := http.FileServer(http.Dir("static"))
-	//http.Handle("/static/", http.StripPrefix("/static/", fs))
-	//
 	log.Fatal(http.ListenAndServe("127.0.0.1:8080", router))
 }

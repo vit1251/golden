@@ -10,26 +10,146 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/static/css/inbox.css">
     <style>
-    body {
-        background-color: #000000;
-        font-family: monospace;
-        font-size: 19px;
-        color: #AAAAAA;
-    }
-    a {
-        text-decoration: none;
-    }
-    .container {
-        max-width: 1024px;
-        margin-left: auto;
-        margin-right: auto;
-    }
+
+body {
+    background-color: #000000;
+    font-family: monospace;
+    font-size: 19px;
+    color: #AAAAAA;
+}
+a {
+    text-decoration: none;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+}
+
+.arealist-items {
+    flex-basis: 20%;
+    flex-shrink: 0;
+}
+.main {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 80%;
+    flex-shrink: 0;
+    flex-grow: 0;
+    height: 100%;
+}
+
+.message-header-items {
+    flex-basis: 50vh;
+    flex-shrink: 0;
+    flex-grow: 0;
+    overflow-y: scroll;
+}
+.message-preview {
+    flex-basis: 50vh;
+    flex-shrink: 0;
+    flex-grow: 0;
+    overflow-y: scroll;
+}
+
+.arealist-item:hover {
+    background-color: #0000AA;
+}
+.arealist-header {
+    display: flex;
+    color: #AAAA00;
+    flex-basis: 100%;
+}
+.arealist-header-index {
+    flex-basis: 64px;
+}
+.arealist-header-summary {
+    flex-grow: 1;
+}
+.arealist-header-count {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-header-new {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-header-echoid {
+    flex-basis: 256px;
+}
+.arealist-item {
+    display: flex;
+    color: #AAAAAA;
+    flex-basis: 100%;
+}
+.arealist-item-index {
+    flex-basis: 64px;
+}
+.arealist-item-summary {
+    flex-grow: 1;
+}
+.arealist-item-count {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-item-new {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-item-echoid {
+    flex-basis: 256px;
+}
+
+a.message-item-wrap:hover {
+    color: #FFFFFF;
+}
+a.message-item-wrap:visited {
+    color: #555555;
+}
+a.message-item-wrap {
+    color: #AAAAAA;
+}
+.message-item-wrap {
+}
+.message-item {
+    display: flex;
+}
+.message-item:hover {
+    background-color: #0000AA;
+
+}
+.message-header-netaddr {
+    flex-basis: 256px;
+    flex-shrink: 0;
+}
+.message-header-subject {
+    flex-grow: 1;
+    flex-basis: 256px;
+}
+
+.message-header {
+    display: flex;
+}
+.message-header-item {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+}
+.message-header-item-property {
+    display: flex;
+}
+.message-header-item-property-name {
+    flex-basis: 25%;
+}
+.message-header-item-property-value {
+    flex-grow: 1;
+    flex-basis: 25%;
+}
+
     </style>
 </head>
 <body>
-<div class="container">
 {{ template "content" . }}
-</div>
 </body>
 </html>
 {{ end }}

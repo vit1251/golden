@@ -1,38 +1,21 @@
 
 {{ define "content" }}
 
-<style type="text/css">
-a.message-item-wrap:hover {
-    color: #FFFFFF;
-}
-a.message-item-wrap:visited {
-    color: #555555;
-}
-a.message-item-wrap {
-    color: #AAAAAA;
-}
-.message-item-wrap {
-}
-.message-item {
-    display: flex;
-}
-.message-item:hover {
-    background-color: #0000AA;
+<div class="container">
+    <div class="arealist-items">
+{{ range .Areas }}
+<a class="arealist-item-wrap" href="/echo/{{ .Name }}">
+        <div class="arealist-item">
+            <div class="arealist-item-echoid">{{ .Name }}</div>
+            <div class="arealist-item-count">{{ .MessageCount }}</div>
+        </div>
+</a>
+{{ end }}
+    </div>
+    <div class="main">
+    <div class="message-header-items">
 
-}
-.message-header-netaddr {
-    flex-basis: 256px;
-    flex-shrink: 0;
-}
-.message-header-subject {
-    flex-grow: 1;
-    flex-basis: 256px;
-}
-</style>
-
-<h1>{{ .Area.Name }}</h1>
-
-<hr>
+        <h1>{{ .Area.Name }}</h1>
 
 {{ range $msgHeader := .Headers }}
 <a class="message-item-wrap" href="/echo/{{ $.Area.Name }}/view/{{ $msgHeader.ID }}" data-hash="{{ $msgHeader.Hash }}">
@@ -45,6 +28,15 @@ a.message-item-wrap {
 </a>
 {{ end }}
 
+
+    </div>
+    <div class="message-preview">
+    </div>
+    </div>
+</div>
+
 <hr>
+
+<h1>Golden 1.1.0</h1>
 
 {{ end }}

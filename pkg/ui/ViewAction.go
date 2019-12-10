@@ -28,6 +28,13 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request, params
 	}
 	log.Printf("area = %v", area)
 	//
+	var msgBase1 = new(squish.SquishMessageBase)
+	msgHeaders, err112 := msgBase1.ReadBase(area.Path)
+	if (err112 != nil) {
+		panic(err112)
+	}
+
+	//
 	messageId := params.ByName("msgid")
 	var msgId uint64
 	msgId, err12 := strconv.ParseUint(messageId, 16, 32)
@@ -47,6 +54,7 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request, params
 	outParams := make(map[string]interface{})
 	outParams["Areas"] = self.Site.app.config.AreaList.Areas
 	outParams["Area"] = area
+	outParams["Headers"] = msgHeaders
 	outParams["Msg"] = msg
 	outParams["Content"] = outDoc
 	tmpl.ExecuteTemplate(w, "layout", outParams)

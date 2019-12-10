@@ -1,0 +1,103 @@
+
+body {
+    background-color: #000000;
+    font-family: monospace;
+    font-size: 19px;
+    color: #AAAAAA;
+}
+a {
+    text-decoration: none;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+}
+
+.arealist-items {
+    flex-basis: 20%;
+    flex-shrink: 0;
+}
+.message-header-items {
+    flex-basis: 30%;
+    flex-shrink: 0;
+}
+.message-preview {
+    flex-basis: 50%;
+    flex-shrink: 0;
+}
+
+.arealist-item:hover {
+    background-color: #0000AA;
+}
+.arealist-header {
+    display: flex;
+    color: #AAAA00;
+    flex-basis: 100%;
+}
+.arealist-header-index {
+    flex-basis: 64px;
+}
+.arealist-header-summary {
+    flex-grow: 1;
+}
+.arealist-header-count {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-header-new {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-header-echoid {
+    flex-basis: 256px;
+}
+.arealist-item {
+    display: flex;
+    color: #AAAAAA;
+    flex-basis: 100%;
+}
+.arealist-item-index {
+    flex-basis: 64px;
+}
+.arealist-item-summary {
+    flex-grow: 1;
+}
+.arealist-item-count {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-item-new {
+    flex-basis: 64px;
+    text-align: right;
+}
+.arealist-item-echoid {
+    flex-basis: 256px;
+}
+
+a.message-item-wrap:hover {
+    color: #FFFFFF;
+}
+a.message-item-wrap:visited {
+    color: #555555;
+}
+a.message-item-wrap {
+    color: #AAAAAA;
+}
+.message-item-wrap {
+}
+.message-item {
+    display: flex;
+}
+.message-item:hover {
+    background-color: #0000AA;
+
+}
+.message-header-netaddr {
+    flex-basis: 256px;
+    flex-shrink: 0;
+}
+.message-header-subject {
+    flex-grow: 1;
+    flex-basis: 256px;
+}
