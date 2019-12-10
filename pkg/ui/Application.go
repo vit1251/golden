@@ -2,7 +2,8 @@ package ui
 
 import (
 	"log"
-	"github.com/vit1251/golden/pkg/msgapi"
+	"github.com/vit1251/golden/pkg/msgapi/squish"
+//	"github.com/vit1251/golden/pkg/msgapi/sqlite"
 	"github.com/vit1251/golden/pkg/config"
 //	"errors"
 )
@@ -22,20 +23,29 @@ func (self *Application) readConfig() {
 }
 
 func (self *Application) scanHeaders() {
+
+	/* Prepare base plugins*/
+//	plugins := make(map[AreaType]MessageBase)
+//	plugins[config.AreaTypeMsg] = 
+//	plugins[config.AreaTypeSquish] = 
+//	plugins[config.AreaTypeSqlite] = 
+
+	/* Re-scan area */
 	for _, area := range self.config.AreaList.Areas {
 		log.Printf("Scan %s: path = %s", area.Name, area.Path)
-		if area.Type == config.AreaTypeMsg {
-			var msgBase = msgapi.FidoMessageBase{}
-			msgBase.ReadBase(area.Path)
-			messageCount := msgBase.GetMessageCount()
-			area.MessageCount = messageCount
-		} else if area.Type == config.AreaTypeSquish {
-			var msgBase = msgapi.SquishMessageBase{}
+//		if area.Type == config.AreaTypeMsg {
+//			var msgBase = msgapi.FidoMessageBase{}
+//			msgBase.ReadBase(area.Path)
+//			messageCount := msgBase.GetMessageCount()
+//			area.MessageCount = messageCount
+//		} else
+		if area.Type == config.AreaTypeSquish {
+			msgBase := new(squish.SquishMessageBase)
 			msgBase.ReadBase(area.Path)
 			messageCount := msgBase.GetMessageCount()
 			area.MessageCount = messageCount
 		} else {
-			log.Fatal("Fail on scan message base %s", area.Name)
+			log.Printf("Fail on scan message base %s", area.Name)
 		}
 	}
 }

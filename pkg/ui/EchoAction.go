@@ -3,7 +3,7 @@ package ui
 import (
 	"net/http"
 	"github.com/julienschmidt/httprouter"
-	"github.com/vit1251/golden/pkg/msgapi"
+	"github.com/vit1251/golden/pkg/msgapi/squish"
 	"path/filepath"
 	"html/template"
 	"log"
@@ -26,7 +26,7 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request, params
 	}
 	log.Printf("area = %v", area)
 	//
-	var msgBase = msgapi.SquishMessageBase{}
+	var msgBase = new(squish.SquishMessageBase)
 	msgHeaders, err2 := msgBase.ReadBase(area.Path)
 	if (err2 != nil) {
 		panic(err2)

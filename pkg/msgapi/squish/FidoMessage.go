@@ -1,4 +1,4 @@
-package msgapi
+package squish
 
 import (
 	"os"

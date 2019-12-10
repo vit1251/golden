@@ -40,5 +40,15 @@ func (self *ComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request, par
 }
 
 func (self *ComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-
+	//
+	err := r.ParseForm()
+	if err != nil {
+		panic(err)
+	}
+	//
+	to := r.Form.Get("to")
+	subj := r.Form.Get("subject")
+	body := r.Form.Get("body")
+	//
+	log.Printf("to = %s subj = %s body = %s", to, subj, body)
 }

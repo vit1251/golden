@@ -1,4 +1,4 @@
-package msgapi
+package squish
 
 import (
 	"github.com/vit1251/golden/pkg/utils"

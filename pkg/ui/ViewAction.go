@@ -3,7 +3,8 @@ package ui
 import (
 	"net/http"
 	"github.com/julienschmidt/httprouter"
-	"github.com/vit1251/golden/pkg/msgapi"
+	"github.com/vit1251/golden/pkg/msgapi/squish"
+	msgProc "github.com/vit1251/golden/pkg/msg"
 	"path/filepath"
 	"html/template"
 	"strconv"
@@ -32,16 +33,21 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request, params
 	msgId, err12 := strconv.ParseUint(messageId, 16, 32)
 	log.Printf("err = %v msgid = %d or %x", err12, msgId, msgId)
 	//
-	var msgBase = msgapi.SquishMessageBase{}
+	var msgBase = new(squish.SquishMessageBase)
 	msg, err2 := msgBase.ReadMessage(area.Path, uint32(msgId))
 	if (err2 != nil) {
 		panic(err2)
 	}
 	//
+	var content string = msg.GetContent()
+	//
+	mr := msgProc.NewMessageTextReader()
+	outDoc := mr.Prepare(content)
+	//
 	outParams := make(map[string]interface{})
 	outParams["Areas"] = self.Site.app.config.AreaList.Areas
 	outParams["Area"] = area
 	outParams["Msg"] = msg
-	outParams["Content"] = msg.GetContent()
+	outParams["Content"] = outDoc
 	tmpl.ExecuteTemplate(w, "layout", outParams)
 }
