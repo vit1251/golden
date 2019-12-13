@@ -27,14 +27,14 @@ func (self *ComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request, par
 	echoTag := params.ByName("name")
 	log.Printf("echoTag = %v", echoTag)
 	//
-	area, err1 := self.Site.app.config.AreaList.SearchByName(echoTag)
+	area, err1 := self.Site.app.AreaList.SearchByName(echoTag)
 	if (err1 != nil) {
 		panic(err1)
 	}
 	log.Printf("area = %v", area)
 	//
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = self.Site.app.config.AreaList.Areas
+	outParams["Areas"] = self.Site.app.AreaList.Areas
 	outParams["Area"] = area
 	tmpl.ExecuteTemplate(w, "layout", outParams)
 }

@@ -3,11 +3,11 @@ from invoke import task
 
 @task
 def depend(c):
-    c.run('/usr/local/go/bin/go get -u', echo=True, pty=True)
+    c.run('GOPROXY=https://proxy.golang.org /usr/local/go/bin/go get -v', echo=True, pty=True)
 
-@task(default=True)
+@task(default=True, pre=[ depend ])
 def build(c):
-    c.run('/usr/local/go/bin/go build -o __main__', echo=True, pty=True)
+    c.run('GOPROXY=https://proxy.golang.org /usr/local/go/bin/go build -o __main__', echo=True, pty=True)
 
 @task
 def debug(c):

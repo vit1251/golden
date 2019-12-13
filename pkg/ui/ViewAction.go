@@ -3,11 +3,9 @@ package ui
 import (
 	"net/http"
 	"github.com/julienschmidt/httprouter"
-	"github.com/vit1251/golden/pkg/msgapi/squish"
 	msgProc "github.com/vit1251/golden/pkg/msg"
 	"path/filepath"
 	"html/template"
-	"strconv"
 	"log"
 )
 
@@ -22,37 +20,35 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request, params
 	echoTag := params.ByName("name")
 	log.Printf("echoTag = %v", echoTag)
 	//
-	area, err1 := self.Site.app.config.AreaList.SearchByName(echoTag)
+	area, err1 := self.Site.app.AreaList.SearchByName(echoTag)
 	if (err1 != nil) {
 		panic(err1)
 	}
 	log.Printf("area = %v", area)
 	//
-	var msgBase1 = new(squish.SquishMessageBase)
-	msgHeaders, err112 := msgBase1.ReadBase(area.Path)
+	msgHeaders, err112 := self.Site.app.MessageBaseReader.GetMessageHeaders(echoTag)
 	if (err112 != nil) {
 		panic(err112)
 	}
 
 	//
 	messageId := params.ByName("msgid")
-	var msgId uint64
-	msgId, err12 := strconv.ParseUint(messageId, 16, 32)
-	log.Printf("err = %v msgid = %d or %x", err12, msgId, msgId)
-	//
-	var msgBase = new(squish.SquishMessageBase)
-	msg, err2 := msgBase.ReadMessage(area.Path, uint32(msgId))
+	msg, err2 := self.Site.app.MessageBaseReader.GetMessage(echoTag, messageId)
 	if (err2 != nil) {
 		panic(err2)
 	}
-	//
-	var content string = msg.GetContent()
+	var content string
+	if msg != nil {
+		content = msg.GetContent()
+	} else {
+		content = "!! Unable restore message !!"
+	}
 	//
 	mr := msgProc.NewMessageTextReader()
 	outDoc := mr.Prepare(content)
 	//
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = self.Site.app.config.AreaList.Areas
+	outParams["Areas"] = self.Site.app.AreaList.Areas
 	outParams["Area"] = area
 	outParams["Headers"] = msgHeaders
 	outParams["Msg"] = msg

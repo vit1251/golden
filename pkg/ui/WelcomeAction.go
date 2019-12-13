@@ -19,6 +19,6 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request, _ h
 		panic(err)
 	}
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = self.Site.app.config.AreaList.Areas
+	outParams["Areas"] = self.Site.app.AreaList.Areas
 	tmpl.ExecuteTemplate(w, "layout", outParams)
 }
