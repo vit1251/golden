@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/opt/binkd-1.0.4/binkd -P 2:5023/24@fidonet -p /etc/binkd/binkd.cfg
+

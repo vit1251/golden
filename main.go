@@ -7,15 +7,26 @@ import (
 
 func main() {
 
-	if os.Args[1] == "pktinfo" {
+	/* Parse command */
+	var name string = "help"
+	if len(os.Args) == 2 {
+		name = os.Args[1]
+	}
+
+	/* Process */
+	if name == "pktinfo" {
 
 		PktInfo()
 
-	} else if os.Args[1] == "toss" {
+	} else if name == "toss" {
 
 		Tosser()
 
-	} else if os.Args[1] == "reader" {
+	} else if name == "mailer" {
+
+		Mailer()
+
+	} else if name == "reader" {
 
 		Reader()
 
