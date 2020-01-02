@@ -1,3 +1,5 @@
 __main__
 *.log
 go.sum
+*.pkt
+reader

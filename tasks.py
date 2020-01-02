@@ -3,15 +3,8 @@ from invoke import task
 
 @task
 def depend(c):
-    c.run('GOPROXY=https://proxy.golang.org /usr/local/go/bin/go get -v', echo=True, pty=True)
+    c.run('/usr/local/go/bin/go get -v', echo=True, pty=True)
 
-@task(default=True, pre=[ depend ])
-def build(c):
-    c.run('GOPROXY=https://proxy.golang.org /usr/local/go/bin/go build -o __main__', echo=True, pty=True)
-
-@task
-def debug(c):
-    c.run('./__main__ 2> debug.log', echo=True, pty=True)
 
 @task
 def install(c):
@@ -37,3 +30,11 @@ def status(c):
 @task
 def watch(c):
     c.run('journalctl -f -u golden.service', echo=True, pty=True)
+
+@task(default=True, pre=[ depend ])
+def build(c):
+    c.run('/usr/local/go/bin/go build -o reader .', echo=True, pty=True)
+
+@task
+def check(c):
+    c.run('/usr/local/go/bin/go test', pty=True, echo=True)

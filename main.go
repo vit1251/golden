@@ -1,10 +1,28 @@
 package main
 
 import (
-	"github.com/vit1251/golden/pkg/ui"
+	"os"
+	"log"
 )
 
 func main() {
-	app := new(ui.Application)
-	app.Run()
+
+	if os.Args[1] == "pktinfo" {
+
+		PktInfo()
+
+	} else if os.Args[1] == "toss" {
+
+		Tosser()
+
+	} else if os.Args[1] == "reader" {
+
+		Reader()
+
+	} else {
+
+		log.Printf("Usage: golden [command]")
+
+	}
+
 }

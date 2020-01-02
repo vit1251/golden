@@ -15,10 +15,11 @@ type Application struct {
 func (self *Application) AreaListReset() {
 }
 
-func (self *Application) AreaListAreaRegister(areaName string) {
-	area := NewArea()
-	area.Name = areaName
-	self.AreaList.Areas = append(self.AreaList.Areas, area)
+func (self *Application) AreaListAreaRegister(area *sqlite.Area) {
+	a := NewArea()
+	a.Name = area.Name
+	a.MessageCount = area.Count
+	self.AreaList.Areas = append(self.AreaList.Areas, a)
 }
 
 func (self *Application) scanBase() {
@@ -38,7 +39,7 @@ func (self *Application) scanBase() {
 	self.MessageBaseReader = messageBaseReader
 
 	/* Preload echo areas */
-	areas, err3 := messageBaseReader.GetAreaList()
+	areas, err3 := messageBaseReader.GetAreaList2()
 	if err3 != nil {
 		panic(err3)
 	}
