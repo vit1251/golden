@@ -3,7 +3,7 @@ package packet
 import (
 	"io"
 //	"log"
-//	"encoding/binary"
+	"encoding/binary"
 )
 
 type BinaryWriter struct {
@@ -22,19 +22,17 @@ func (self *BinaryWriter) Offset() int64 {
 	return self.offset
 }
 
-//func (self *BinaryWriter) ReadByte() (uint8, error) {
-//	var i uint8
-//	err := binary.Read(self.reader, binary.LittleEndian, &i)
-//	self.offset += 1
-//	return i, err
-//}
+func (self *BinaryWriter) WriteUINT8(value uint8) (error) {
+	err := binary.Write(self.writer, binary.LittleEndian, &value)
+	self.offset += 1
+	return err
+}
 
-//func (self *BinaryReader) ReadUINT16() (uint16, error) {
-//	var i uint16
-//	err := binary.Read(self.reader, binary.LittleEndian, &i)
-//	self.offset += 2
-//	return i, err
-//}
+func (self *BinaryWriter) WriteUINT16(value uint16) (error) {
+	err := binary.Write(self.writer, binary.LittleEndian, value)
+	self.offset += 2
+	return err
+}
 
 //func (self *BinaryReader) ReadString(size int) ([]byte, error) {
 //	var i byte
@@ -70,3 +68,6 @@ func (self *BinaryWriter) Offset() int64 {
 //	log.Printf("ReadUntil(%c) = %v = %v", ch, cache, result)
 //	return cache, nil
 //}
+
+func (self *BinaryWriter) Close() {
+}

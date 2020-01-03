@@ -55,3 +55,11 @@ func (self *Message) SetUnixTime(unixTime int64) {
 	tm := time.Unix(unixTime, 0)
 	self.DateWritten = &tm
 }
+
+func (self *Message) SetTime(ptm *time.Time) {
+	self.DateWritten = ptm
+	if ptm != nil {
+		var tm time.Time = *ptm
+		self.UnixTime = tm.Unix()
+	}
+}

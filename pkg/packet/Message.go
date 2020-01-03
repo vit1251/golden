@@ -7,7 +7,9 @@ import (
 type Message struct {
 	Area      string
 	From      string
+	FromAddr  string
 	To        string
+	ToAddr    string
 	Subject   string
 	Content   string
 	UnixTime  int64          /* Unit time stampe */

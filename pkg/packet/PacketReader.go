@@ -6,149 +6,265 @@ import (
 	"log"
 	"bufio"
 	"errors"
-	"fmt"
 )
 
-func (self *PacketHeader) packetDateTimeRead(stream *BinaryReader) (error) {
-	if value, err := stream.ReadUINT16(); err != nil {
+type PacketReader struct {
+	stream                   *os.File          /* .. */
+	streamReader             *bufio.Reader     /* .. */
+	binaryStreamReader       *BinaryReader     /* .. */
+}
+
+func NewPacketReader(name string) (*PacketReader, error) {
+
+	/* Create packet reader */
+	pr := new(PacketReader)
+
+	/* Create native OS stream */
+	if stream, err := os.Open(name); err != nil {
+		return nil, err
 	} else {
-		self.pktCreated.Year = value
+		pr.stream = stream
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
+
+	/* Create cache stream */
+	pr.streamReader = bufio.NewReader(pr.stream)
+
+	/* Create binary stream reader */
+	if binaryStreamReader, err := NewBinaryReader(pr.streamReader); err != nil {
+		pr.Close()
+		return nil, err
 	} else {
-		self.pktCreated.Mon = value
+		pr.binaryStreamReader = binaryStreamReader
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
+
+	/* Done */
+	return pr, nil
+}
+
+func (self *PacketReader) readerPacketHeaderDateTime() (*PktDateTime, error) {
+
+	/* New packet date time */
+	pktDateTime := new(PktDateTime)
+
+	/* Reading */
+	if value, err1 := self.binaryStreamReader.ReadUINT16(); err1 != nil {
+		return nil, err1
 	} else {
-		self.pktCreated.MDay = value
+		pktDateTime.Year = value
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
+	if value, err2 := self.binaryStreamReader.ReadUINT16(); err2 != nil {
+		return nil, err2
 	} else {
-		self.pktCreated.Hour = value
+		pktDateTime.Mon = value
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
+	if value, err3 := self.binaryStreamReader.ReadUINT16(); err3 != nil {
+		return nil, err3
 	} else {
-		self.pktCreated.Min = value
+		pktDateTime.MDay = value
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
+	if value, err4 := self.binaryStreamReader.ReadUINT16(); err4 != nil {
+		return nil, err4
 	} else {
-		self.pktCreated.Sec = value
+		pktDateTime.Hour = value
 	}
+	if value, err5 := self.binaryStreamReader.ReadUINT16(); err5 != nil {
+		return nil, err5
+	} else {
+		pktDateTime.Min = value
+	}
+	if value, err6 := self.binaryStreamReader.ReadUINT16(); err6 != nil {
+		return nil, err6
+	} else {
+		pktDateTime.Sec = value
+	}
+
+	return pktDateTime, nil
+}
+
+func (self *PacketReader) readPacketHeaderCapatiblityBytes() (uint8, uint8, error) {
+
+	var capByte1 uint8
+	var capByte2 uint8
+
+	if value, err1 := self.binaryStreamReader.ReadUINT8(); err1 != nil {
+		return capByte1, capByte2, err1
+	} else {
+		capByte1 = value
+	}
+
+	if value, err2 := self.binaryStreamReader.ReadUINT8(); err2 != nil {
+		return capByte1, capByte2, err2
+	} else {
+		capByte2 = value
+	}
+
+	return capByte1, capByte2, nil
+}
+
+func (self *PacketReader) readPacketHeaderProductVersion() (error) {
+
+	if _, err1 := self.binaryStreamReader.ReadUINT8(); err1 != nil {
+		return err1
+//	} else {
+//		header.hiProductCode = value
+	}
+
+	if _, err2 := self.binaryStreamReader.ReadUINT8(); err2 != nil {
+		return err2
+//	} else {
+//		header.minorProductRev = value
+	}
+
 	return nil
 }
 
-func packetHeaderRead(stream *BinaryReader) (*PacketHeader, error) {
+func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 
 	/* Create packet header */
-	header := new(PacketHeader)
+	pktHeader := new(PacketHeader)
 
-	/* Read orginator node address */
-	if value, err := stream.ReadUINT16(); err != nil {
-		return nil, errors.New("Fail on read originator node address")
+	/* Read orginator node address (2 byte) */
+	if value, err1 := self.binaryStreamReader.ReadUINT16(); err1 != nil {
+		return nil, err1
 	} else {
-		log.Printf("Origination node address: %v", value)
-		header.OrigAddr.Node = value
+		pktHeader.OrigAddr.Node = value
 	}
-	/* Read destination node address */
-	if value, err := stream.ReadUINT16(); err != nil {
+
+	/* Read destination node address (2 byte) */
+	if value, err2 := self.binaryStreamReader.ReadUINT16(); err2 != nil {
+		return nil, err2
 	} else {
-		header.DestAddr.Node = value
+		pktHeader.DestAddr.Node = value
 	}
-	/*  12 bytes */
-	if err := header.packetDateTimeRead(stream); err != nil {
-		return nil, errors.New("Fail on read pktDateTime")
+
+	/* Read packet create (12 byte) */
+	if value, err3 := self.readerPacketHeaderDateTime(); err3 != nil {
+		return nil, err3
+	} else {
+		pktHeader.pktCreated = *value
 	}
-	/* read 2 bytes for the unused baud field */
-	if _, err := stream.ReadUINT16(); err != nil {
-		return nil, errors.New("Fail on read unused baud field")
+
+	/* Read unused (2 byte) */
+	if _, err4 := self.binaryStreamReader.ReadUINT16(); err4 != nil {
+		return nil, err4
 	}
-	if pktVersion, err := stream.ReadUINT16(); err != nil {
-		return nil, errors.New("Fail on read packet version")
+
+	/* Read pakcet version (2 byte) */
+	if pktVersion, err5 := self.binaryStreamReader.ReadUINT16(); err5 != nil {
+		return nil, err5
 	} else {
 		if pktVersion != 2 {
-			log.Printf("Packet version is %d", pktVersion)
 			return nil, errors.New("Invalid pkt version")
 		}
 	}
-	/* Origination network */
-	if value, err := stream.ReadUINT16(); err != nil {
-		return nil, errors.New("Fail on read origination network")
+
+	/* Origination network (2 byte) */
+	if value, err6 := self.binaryStreamReader.ReadUINT16(); err6 != nil {
+		return nil, err6
 	} else {
-		header.OrigAddr.Net = value
+		pktHeader.OrigAddr.Net = value
 	}
-	/* Destination network */
-	if value, err := stream.ReadUINT16(); err != nil {
-		return nil, errors.New("Fail on read destination network")
+
+	/* Destination network (2 byte) */
+	if value, err7 := self.binaryStreamReader.ReadUINT16(); err7 != nil {
+		return nil, err7
 	} else {
-		header.DestAddr.Net = value
+		pktHeader.DestAddr.Net = value
 	}
-	if value, err := stream.ReadByte(); err != nil {
+
+	/* Read LO product code (1 byte)*/
+	if _, err8 := self.binaryStreamReader.ReadUINT8(); err8 != nil {
+		return nil, err8
+	}
+	/* Read MAJOR product review (1 byte)*/
+	if _, err9 := self.binaryStreamReader.ReadUINT8(); err9 != nil {
+		return nil, err9
+	}
+
+	/* Read packet password (8 byte) */
+	if value, err10 := self.binaryStreamReader.ReadString(8); err10 != nil {
+		return nil, err10
 	} else {
-		header.loProductCode = value
+		pktHeader.pktPassword = value
 	}
-	if value, err := stream.ReadByte(); err != nil {
+
+	/* Read packet zone (2 byte) */
+	if value, err11 := self.binaryStreamReader.ReadUINT16(); err11 != nil {
+		return nil, err11
 	} else {
-		header.majorProductRev = value
+		pktHeader.OrigAddr.Zone = value
 	}
-	if value, err := stream.ReadString(8); err != nil {
+
+	/* Read packet zone (2 byte) */
+	if value, err12 := self.binaryStreamReader.ReadUINT16(); err12 != nil {
+		return nil, err12
 	} else {
-		log.Printf("pktPassword = %s", value)
-//		readPktPassword(pkt, (UCHAR *)header->pktPassword); /*  8 bytes */
+		pktHeader.DestAddr.Zone = value
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
+
+	/* Read auxNet (2 byte) */
+	if value, err13 := self.binaryStreamReader.ReadUINT16(); err13 != nil {
+		return nil, err13
 	} else {
-		header.OrigAddr.Zone = value
+		pktHeader.auxNet = value
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
+
+	/* Read capatiblity bytes (2 byte) */
+	if capByte1, capByte2, err14 := self.readPacketHeaderCapatiblityBytes(); err14 != nil {
+		return nil, err14
 	} else {
-		header.DestAddr.Zone = value
+		pktHeader.capatiblityByte1 = capByte1
+		pktHeader.capatiblityByte2 = capByte2
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
+
+	/* Read product version (2 byte) */
+	if err15 := self.readPacketHeaderProductVersion(); err15 != nil {
+		return nil, err15
+	}
+
+	/* Read capability word (2 byte) */
+	if value, err16 := self.binaryStreamReader.ReadUINT16(); err16 != nil {
+		return nil, err16
 	} else {
-		log.Printf("auxNet = %d", value)
-//		header.auxNet = getUINT16(pkt);
+		pktHeader.capabilityWord = value
 	}
-	if value, err := stream.ReadByte(); err != nil {
-	} else {
-		header.capatiblityByte1 = value
-	}
-	if value, err := stream.ReadByte(); err != nil {
-	} else {
-		header.capatiblityByte2 = value
-	}
-	if value, err := stream.ReadByte(); err != nil {
-	} else {
-		header.hiProductCode = value
-	}
-	if value, err := stream.ReadByte(); err != nil {
-	} else {
-		header.minorProductRev = value
-	}
-	if value, err := stream.ReadUINT16(); err != nil {
-	} else {
-		header.capabilityWord = value
-	}
+
 	/* Check capatibility */
-	var capWord uint16 = uint16(header.capatiblityByte1 << 8) + uint16(header.capatiblityByte2)
-	if capWord != header.capabilityWord {
-		return nil, errors.New("CapabilityWord error in following pkt!")
+	if ok := pktHeader.IsCapatiblity(); !ok {
+		return nil, errors.New("Packet capatiblity error")
 	}
-	/* Read additional zone info */
-	stream.ReadUINT16()
-	stream.ReadUINT16()
-	/* Read point */
-	if value, err := stream.ReadUINT16(); err != nil {
+
+	/* Read additional zone info (2 byte) */
+	if _, err19 := self.binaryStreamReader.ReadUINT16(); err19 != nil {
+		return nil, err19
+	}
+	/* Read additional zone info (2 byte) */
+	if _, err20 := self.binaryStreamReader.ReadUINT16(); err20 != nil {
+		return nil, err20
+	}
+
+	/* Read point (2 byte) */
+	if value, err21 := self.binaryStreamReader.ReadUINT16(); err21 != nil {
+		return nil, err21
 	} else {
-		header.OrigAddr.Point = value
+		pktHeader.OrigAddr.Point = value
 	}
-	/* Read point */
-	if value, err := stream.ReadUINT16(); err != nil {
+
+	/* Read point (2 byte) */
+	if value, err22 := self.binaryStreamReader.ReadUINT16(); err22 != nil {
+		return nil, err22
 	} else {
-		header.DestAddr.Point = value
+		pktHeader.DestAddr.Point = value
 	}
-	/* Read production data */
-	stream.ReadUINT16()
-	stream.ReadUINT16()
+
+	/* Read production data (2 byte) */
+	if _, err23 := self.binaryStreamReader.ReadUINT16(); err23 != nil {
+		return nil, err23
+	}
+	if _, err24 := self.binaryStreamReader.ReadUINT16(); err24 != nil {
+		return nil, err24
+	}
+
 	/* Determine OPUS or FSC */
 //	if header.origAddr.net == 0xFFFF {
 //		if (header->origAddr.point) {
@@ -158,72 +274,59 @@ func packetHeaderRead(stream *BinaryReader) (*PacketHeader, error) {
 //			header->origAddr.net = header->destAddr.net;
 //		}
 //	}
-//	if (header->origAddr.zone == 0) {
-//		for (capWord=0; capWord<config->addrCount; capWord++) {
-//			if (header->origAddr.net==config->addr[capWord].net) {
-//				header->origAddr.zone = config->addr[capWord].zone;
-//				break;
-//			}
-//		}
-//		if (header->origAddr.zone==0) header->origAddr.zone=config->addr[0].zone;
-//	}
-//	if (header->destAddr.zone == 0) {
-//		for (capWord=0; capWord<config->addrCount; capWord++) {
-//			if (header->destAddr.net==config->addr[capWord].net) {
-//				header->destAddr.zone = config->addr[capWord].zone;
-//				break;
-//			}
-//		}
-//		if (header->destAddr.zone==0) header->destAddr.zone=config->addr[0].zone;
-//	}
 
-	return header, nil
+	return pktHeader, nil
 }
 
-func packetMessageRead(stream *BinaryReader) (*PacketMessage, error) {
+func (self *PacketReader) ReadMessageHeader() (*PacketMessageHeader, error) {
 
-	msg := new(PacketMessage)
+	msgHeader := new(PacketMessageHeader)
 
-	/* Check version */
-	if value, err := stream.ReadUINT16(); err != nil {
-		return nil, err
+	/* Read packet message version (2 byte) */
+	if value, err1 := self.binaryStreamReader.ReadUINT16(); err1 != nil {
+		return nil, err1
 	} else {
 		if value == 0 {
 			return nil, io.EOF
 		} else if value == 2 {
 			/* Valid */
 		} else {
-			return nil, fmt.Errorf("Invalid packet message header: version = %d (offset = %d)", value, stream.Offset())
+			return nil, errors.New("Invalid packet message version")
 		}
 	}
 
-	if value, err := stream.ReadUINT16(); err != nil {
+	/* Read origination node (2 byte) */
+	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
 	} else {
-		msg.OrigAddr.Node = value
+		msgHeader.OrigAddr.Node = value
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
+	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
 	} else {
-		msg.DestAddr.Node = value
+		msgHeader.DestAddr.Node = value
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
+	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
 	} else {
-		msg.OrigAddr.Net = value
+		msgHeader.OrigAddr.Net = value
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
+	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
 	} else {
-		msg.DestAddr.Net = value
+		msgHeader.DestAddr.Net = value
 	}
-	if value, err := stream.ReadUINT16(); err != nil {
-		msg.Attributes = value
+
+	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
+		msgHeader.Attributes = value
 	}
+
 	/* Read unused cost fields (2bytes) */
-	if _, err := stream.ReadByte(); err != nil {
+	if _, err := self.binaryStreamReader.ReadUINT8(); err != nil {
 	} else {
 	}
-	if _, err := stream.ReadByte(); err != nil {
-	} else {}
+	if _, err := self.binaryStreamReader.ReadUINT8(); err != nil {
+	} else {
+	}
+
 	/* Read datetime */
-	if value, err := stream.ReadString(20); err != nil {
+	if value, err := self.binaryStreamReader.ReadString(20); err != nil {
 	} else {
 
 		log.Printf("datetime = %s", value)
@@ -237,151 +340,65 @@ func packetMessageRead(stream *BinaryReader) (*PacketMessage, error) {
 			} else {
 				if stamp, err2 := date.Time(); err2 != nil {
 				} else {
-					msg.Time = stamp
+					msgHeader.Time = stamp
 				}
 			}
 		}
 
 	}
-	/* Read To header */
-	if value, err := stream.ReadUntil('\x00'); err != nil {
+	/* Read "To" (var bytes) */
+	if value, err := self.binaryStreamReader.ReadUntil('\x00'); err != nil {
 	} else {
 //		log.Printf("ToUserName = %s", value)
 		if content, err1 := DecodeText(value); err1 != nil {
 		} else {
-			msg.ToUserName = string(content)
+			msgHeader.ToUserName = string(content)
 		}
 	}
-	/* Read From header */
-	if value, err := stream.ReadUntil('\x00'); err != nil {
+
+	/* Read "From" (var bytes) */
+	if value, err := self.binaryStreamReader.ReadUntil('\x00'); err != nil {
 	} else {
 //		log.Printf("FromUserName = %s", value)
 		if content, err1 := DecodeText(value); err1 != nil {
 		} else {
-			msg.FromUserName = string(content)
+			msgHeader.FromUserName = string(content)
 		}
 	}
-	/* Read Subject */
-	if value, err := stream.ReadUntil('\x00'); err != nil {
+
+	/* Read "Subject" */
+	if value, err := self.binaryStreamReader.ReadUntil('\x00'); err != nil {
 	} else {
 //		log.Printf("Subject = %s", value)
 		if content, err1 := DecodeText(value); err1 != nil {
 		} else {
-			msg.Subject = string(content)
-		}
-	}
-	/* Read Text */
-	if value, err := stream.ReadUntil('\x00'); err != nil {
-	} else {
-		//
-		msg.RAW = value
-		//
-		if content, err1 := DecodeText(value); err1 != nil {
-		} else {
-			msg.Text = string(content)
-
+			msgHeader.Subject = string(content)
 		}
 	}
 
-	return msg, nil
+	return msgHeader, nil
 }
 
-type PacketReader struct {
-	stream                   io.Reader
-	binaryStreamReader       *BinaryReader
-	packetHeader             *PacketHeader
-}
+func (self *PacketReader) ReadMessage() ([]byte, error) {
 
-func NewPacketReader(name string) (*PacketReader, error) {
-	/* Create packet reader */
-	reader := new(PacketReader)
-	/* Create native OS stream */
-	if stream, err := os.Open(name); err != nil {
-		return nil, err
-	} else {
-		reader.stream = stream
+	/* Read message body (var bytes) */
+	body, err1 := self.binaryStreamReader.ReadUntil('\x00')
+	if err1 != nil {
+		return nil, err1
 	}
-	/* Create cache stream */
-	streamReader := bufio.NewReader(reader.stream)
-	/* Create binary stream reader */
-	if binaryStreamReader, err := NewBinaryReader(streamReader); err != nil {
-		reader.Close()
-		return nil, err
-	} else {
-		reader.binaryStreamReader = binaryStreamReader
-	}
-	/* Read packet header */
-	if packetHeader, err := packetHeaderRead(reader.binaryStreamReader); err != nil {
-		reader.Close()
-		return nil, err
-	} else {
-		reader.packetHeader = packetHeader
-	}
-	log.Printf("Process packet %s: source = %s destination = %s", name, reader.packetHeader.OrigAddr.String(), reader.packetHeader.DestAddr.String())
+
 	/* Done */
-	return reader, nil
-}
-
-type FidoMessage struct {
-	Headers map[string]string
-	Text    []byte
-}
-
-func (self *PacketReader) Scan() <-chan Message {
-	c := make(chan Message)
-	go func() {
-		for {
-
-			/* Parse message */
-			msg, err3 := packetMessageRead(self.binaryStreamReader)
-			if err3 != nil {
-				if err3 == io.EOF {
-					break
-				} else {
-					log.Fatal(err3)
-					break
-				}
-			}
-
-			/* Parse message content */
-			mbp, err4 := NewMessageBodyParser()
-			if err4 != nil {
-				log.Fatal(err4)
-				break
-			}
-
-			mb, err5 := mbp.Parse(msg.RAW)
-			if err5 != nil {
-				log.Fatal(err4)
-				break
-			}
-
-			log.Printf("mb = %q", mb)
-
-			/* Area name */
-			var areaName string = "BAD"
-			if area, ok := mb.Kludges["AREA"]; ok {
-				areaName = area
-			}
-
-			/* Create message on storage */
-			outMsg := NewMessage()
-			outMsg.From = msg.FromUserName
-			outMsg.To = msg.ToUserName
-			outMsg.Subject = msg.Subject
-			outMsg.Area = areaName
-			outMsg.Content = mb.Text()
-			outMsg.SetTime(msg.Time)
-			c <- *outMsg
-
-//			log.Printf("msg = %V", msg)
-
-		}
-		close(c)
-	}()
-	return c
+	return body, nil
 }
 
 func (self *PacketReader) Close() {
-//	self.stream.Close()
+	/**/
+	self.binaryStreamReader.Close()
+	self.binaryStreamReader = nil
+	/**/
+//	self.streamReader.Flush()
+	self.streamReader = nil
+	/**/
+	self.stream.Close()
+	self.stream = nil
 }

@@ -36,16 +36,18 @@ type PktDateTime struct {
 }
 
 type PacketHeader struct {
-	OrigAddr         NetAddr
-	DestAddr         NetAddr
-	pktCreated       PktDateTime
-	capatiblityByte1 byte
-	capatiblityByte2 byte
-	hiProductCode    byte
-	minorProductRev  byte
-	capabilityWord   uint16
-	loProductCode    byte
-	majorProductRev  byte
+	OrigAddr            NetAddr
+	DestAddr            NetAddr
+	pktCreated          PktDateTime
+	capatiblityByte1    uint8
+	capatiblityByte2    uint8
+	pktPassword       []byte
+	auxNet              uint16
+	hiProductCode       uint8
+	minorProductRev     uint8
+	capabilityWord      uint16
+	loProductCode       uint8
+	majorProductRev     uint8
 }
 
 func NewPacketHeader() (*PacketHeader) {
@@ -53,47 +55,46 @@ func NewPacketHeader() (*PacketHeader) {
 	return ph
 }
 
-type PacketMessage struct {
+func (self PacketHeader) IsCapatiblity() (bool) {
+	var capWord uint16 = uint16(self.capatiblityByte1 << 8) + uint16(self.capatiblityByte2)
+	return capWord == self.capabilityWord
+}
+
+type PacketMessageHeader struct {
 	OrigAddr      NetAddr
 	DestAddr      NetAddr
 	Attributes    uint16
 	ToUserName    string
 	FromUserName  string
 	Subject       string
-	Text          string
-	RAW         []byte
 	Time         *time.Time   /* Packet time */
 }
 
-func NewPacketMessage() (*PacketMessage) {
-	pm := new(PacketMessage)
-	return pm
+func NewPacketMessageHeader() (*PacketMessageHeader) {
+	msgHeader := new(PacketMessageHeader)
+	return msgHeader
 }
 
-func (self *PacketMessage) UnsetAttribute(attribute string) (error) {
+func (self *PacketMessageHeader) UnsetAttribute(attribute string) (error) {
 	return nil
 }
 
-func (self *PacketMessage) SetAttribute(attribute string) (error) {
+func (self *PacketMessageHeader) SetAttribute(attribute string) (error) {
 	return nil
 }
 
-func (self *PacketMessage) SetToUserName(ToUserName string) (error) {
+func (self *PacketMessageHeader) SetToUserName(ToUserName string) (error) {
 	return nil
 }
 
-func (self *PacketMessage) SetFromUserName(FromUserName string) (error) {
+func (self *PacketMessageHeader) SetFromUserName(FromUserName string) (error) {
 	return nil
 }
 
-func (self *PacketMessage) SetSubject(subj string) (error) {
+func (self *PacketMessageHeader) SetSubject(subj string) (error) {
 	return nil
 }
 
-func (self *PacketMessage) SetText(msg string) (error) {
-	return nil
-}
-
-func (self *PacketMessage) SetTime(t *time.Time) (error) {
+func (self *PacketMessageHeader) SetTime(t *time.Time) (error) {
 	return nil
 }
