@@ -33,7 +33,7 @@ def watch(c):
 
 @task(default=True, pre=[ depend ])
 def build(c):
-    c.run('/usr/local/go/bin/go build -o reader .', echo=True, pty=True)
+    c.run('/usr/local/go/bin/go build -o golden .', echo=True, pty=True)
 
 @task
 def check(c):

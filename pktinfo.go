@@ -3,16 +3,16 @@ package main
 import (
 	"github.com/vit1251/golden/pkg/packet"
 	"os"
-	"log"
+	"fmt"
 )
 
 func PktInfo() {
 
-	name := os.Args[1]
+	name := os.Args[2]
 
 	packet, err1 := packet.NewPacketReader(name)
 	if err1 != nil {
-		log.Fatal(err1)
+		panic(err1)
 	}
 	defer packet.Close()
 
@@ -21,19 +21,17 @@ func PktInfo() {
 
 	for msg := range packet.Scan() {
 
-		log.Printf("Area: %s", msg.Area)
-		log.Printf("From: %s", msg.From)
-		log.Printf("To: %s", msg.To)
-		log.Printf("Subject: %s", msg.Subject)
-		log.Printf("Time: %q", msg.Time)
-		log.Printf("Body: %s", msg.Content)
+		fmt.Printf("From: \"%s\" <%s>\n", msg.From, "no-reply@fidonet.org")
+		fmt.Printf("To: \"%s\" <%s>\n", msg.To, "no-reply@fidonet.org")
+		fmt.Printf("Subject: %s\n", msg.Subject)
+		fmt.Printf("Newsgroups: %s\n", msg.Area)
+		fmt.Printf("Date: %s\n", msg.Time)
+		fmt.Printf("\n")
+		fmt.Printf("%s", msg.Content)
 
 		/* Add message count */
 		msgCount += 1
 
 	}
-
-	/* Show summary */
-	log.Printf("Packet contain %d message(s)", msgCount)
 
 }

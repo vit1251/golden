@@ -9,7 +9,7 @@ func main() {
 
 	/* Parse command */
 	var name string = "help"
-	if len(os.Args) == 2 {
+	if len(os.Args) > 1 {
 		name = os.Args[1]
 	}
 
