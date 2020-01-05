@@ -52,6 +52,11 @@ type PacketHeader struct {
 
 func NewPacketHeader() (*PacketHeader) {
 	ph := new(PacketHeader)
+	ph.capatiblityByte1 = 0
+	ph.capatiblityByte2 = 1
+	ph.pktPassword = []byte("\x00\x00\x00\x00\x00\x00\x00\x00")
+	ph.auxNet = 0
+	ph.capabilityWord = 1
 	return ph
 }
 
@@ -84,14 +89,17 @@ func (self *PacketMessageHeader) SetAttribute(attribute string) (error) {
 }
 
 func (self *PacketMessageHeader) SetToUserName(ToUserName string) (error) {
+	self.ToUserName = ToUserName
 	return nil
 }
 
 func (self *PacketMessageHeader) SetFromUserName(FromUserName string) (error) {
+	self.FromUserName = FromUserName
 	return nil
 }
 
-func (self *PacketMessageHeader) SetSubject(subj string) (error) {
+func (self *PacketMessageHeader) SetSubject(Subject string) (error) {
+	self.Subject = Subject
 	return nil
 }
 

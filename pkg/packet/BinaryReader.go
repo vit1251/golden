@@ -36,7 +36,7 @@ func (self *BinaryReader) ReadUINT16() (uint16, error) {
 	return i, err
 }
 
-func (self *BinaryReader) ReadString(size int) ([]byte, error) {
+func (self *BinaryReader) ReadBytes(size int) ([]byte, error) {
 	var i byte
 	var cache []byte
 	for j := 0; j < size; j++ {
@@ -48,6 +48,10 @@ func (self *BinaryReader) ReadString(size int) ([]byte, error) {
 		self.offset += 1
 	}
 	return cache, nil
+}
+
+func (self *BinaryReader) ReadZString() ([]byte, error) {
+	return self.ReadUntil('\x00')
 }
 
 func (self *BinaryReader) ReadUntil(ch byte) ([]byte, error) {

@@ -2,8 +2,7 @@ package ui
 
 import (
 	"log"
-	"github.com/vit1251/golden-toss/pkg/msgapi/sqlite"
-//	"errors"
+	"github.com/vit1251/golden/pkg/msgapi/sqlite"
 )
 
 type Application struct {

@@ -41,7 +41,7 @@ func NewPacketReader(name string) (*PacketReader, error) {
 	return pr, nil
 }
 
-func (self *PacketReader) readerPacketHeaderDateTime() (*PktDateTime, error) {
+func (self *PacketReader) readPacketHeaderDateTime() (*PktDateTime, error) {
 
 	/* New packet date time */
 	pktDateTime := new(PktDateTime)
@@ -138,7 +138,7 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 	}
 
 	/* Read packet create (12 byte) */
-	if value, err3 := self.readerPacketHeaderDateTime(); err3 != nil {
+	if value, err3 := self.readPacketHeaderDateTime(); err3 != nil {
 		return nil, err3
 	} else {
 		pktHeader.pktCreated = *value
@@ -172,17 +172,13 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 		pktHeader.DestAddr.Net = value
 	}
 
-	/* Read LO product code (1 byte)*/
-	if _, err8 := self.binaryStreamReader.ReadUINT8(); err8 != nil {
+	/* Read product version (2 byte)*/
+	if err8 := self.readPacketHeaderProductVersion(); err8 != nil {
 		return nil, err8
-	}
-	/* Read MAJOR product review (1 byte)*/
-	if _, err9 := self.binaryStreamReader.ReadUINT8(); err9 != nil {
-		return nil, err9
 	}
 
 	/* Read packet password (8 byte) */
-	if value, err10 := self.binaryStreamReader.ReadString(8); err10 != nil {
+	if value, err10 := self.binaryStreamReader.ReadBytes(8); err10 != nil {
 		return nil, err10
 	} else {
 		pktHeader.pktPassword = value
@@ -326,7 +322,7 @@ func (self *PacketReader) ReadMessageHeader() (*PacketMessageHeader, error) {
 	}
 
 	/* Read datetime */
-	if value, err := self.binaryStreamReader.ReadString(20); err != nil {
+	if value, err := self.binaryStreamReader.ReadBytes(20); err != nil {
 	} else {
 
 		log.Printf("datetime = %s", value)
@@ -347,7 +343,7 @@ func (self *PacketReader) ReadMessageHeader() (*PacketMessageHeader, error) {
 
 	}
 	/* Read "To" (var bytes) */
-	if value, err := self.binaryStreamReader.ReadUntil('\x00'); err != nil {
+	if value, err := self.binaryStreamReader.ReadZString(); err != nil {
 	} else {
 //		log.Printf("ToUserName = %s", value)
 		if content, err1 := DecodeText(value); err1 != nil {
@@ -357,7 +353,7 @@ func (self *PacketReader) ReadMessageHeader() (*PacketMessageHeader, error) {
 	}
 
 	/* Read "From" (var bytes) */
-	if value, err := self.binaryStreamReader.ReadUntil('\x00'); err != nil {
+	if value, err := self.binaryStreamReader.ReadZString(); err != nil {
 	} else {
 //		log.Printf("FromUserName = %s", value)
 		if content, err1 := DecodeText(value); err1 != nil {
@@ -367,7 +363,7 @@ func (self *PacketReader) ReadMessageHeader() (*PacketMessageHeader, error) {
 	}
 
 	/* Read "Subject" */
-	if value, err := self.binaryStreamReader.ReadUntil('\x00'); err != nil {
+	if value, err := self.binaryStreamReader.ReadZString(); err != nil {
 	} else {
 //		log.Printf("Subject = %s", value)
 		if content, err1 := DecodeText(value); err1 != nil {
@@ -382,7 +378,7 @@ func (self *PacketReader) ReadMessageHeader() (*PacketMessageHeader, error) {
 func (self *PacketReader) ReadMessage() ([]byte, error) {
 
 	/* Read message body (var bytes) */
-	body, err1 := self.binaryStreamReader.ReadUntil('\x00')
+	body, err1 := self.binaryStreamReader.ReadZString()
 	if err1 != nil {
 		return nil, err1
 	}

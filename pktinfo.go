@@ -56,10 +56,7 @@ func PktInfo() {
 		}
 
 		/* Determine area */
-		var areaName string = "NETMAIL"
-		if area, ok := msgBody.Kludges["AREA"]; ok {
-			areaName = area
-		}
+		var areaName string = msgBody.GetArea()
 
 		fmt.Printf("From: \"%s\" <%s>\n", msgHeader.FromUserName, msgHeader.OrigAddr.String() )
 		fmt.Printf("To: \"%s\" <%s>\n", msgHeader.ToUserName, msgHeader.DestAddr.String() )

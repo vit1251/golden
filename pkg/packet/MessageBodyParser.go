@@ -42,9 +42,16 @@ func NewMessageBodyParser() (*MessageBodyParser, error) {
 
 func (self *MessageBodyParser) processKludge() {
 	//
-	log.Printf("Meet kludge: name = %q value = %q", self.kludgeName, self.kludgeValue)
+	log.Printf("Meet kludge: name = %v value = %v", self.kludgeName, self.kludgeValue)
 	//
-	self.result.SetKludge(self.kludgeName, self.kludgeValue)
+	var name string = string(self.kludgeName)
+	var value string = string(self.kludgeValue)
+	//
+	if name == "AREA" {
+		self.result.SetArea(value)
+	} else {
+		self.result.AddKludge(name, value)
+	}
 	//
 	self.kludgeName = nil // make([]byte, 0)
 	self.kludgeValue = nil // make([]byte, 0)

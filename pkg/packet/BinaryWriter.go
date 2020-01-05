@@ -34,40 +34,40 @@ func (self *BinaryWriter) WriteUINT16(value uint16) (error) {
 	return err
 }
 
-//func (self *BinaryReader) ReadString(size int) ([]byte, error) {
-//	var i byte
-//	var cache []byte
-//	for j := 0; j < size; j++ {
-//		err := binary.Read(self.reader, binary.LittleEndian, &i)
-//		if err != nil {
-//			return nil, err
-//		}
-//		cache = append(cache, i)
-//		self.offset += 1
-//	}
-//	var result string = string(cache)
-//	log.Printf("ReadString(%d) = %v = %v", size, cache, result)
-//	return cache, nil
-//}
-//
-//func (self *BinaryReader) ReadUntil(ch byte) ([]byte, error) {
-//	var i byte
-//	var cache []byte
-//	for {
-//		err := binary.Read(self.reader, binary.LittleEndian, &i)
-//		if err != nil {
-//			return nil, err
-//		}
-//		cache = append(cache, i)
-//		self.offset += 1
-//		if i == ch {
-//			break
-//		}
-//	}
-//	var result string = string(cache)
-//	log.Printf("ReadUntil(%c) = %v = %v", ch, cache, result)
-//	return cache, nil
-//}
+func (self *BinaryWriter) WriteBytes(msg []byte) (error) {
+	size := len(msg)
+	for j := 0; j < size; j++ {
+		var i byte = msg[j]
+		err := binary.Write(self.writer, binary.LittleEndian, &i)
+		if err != nil {
+			return err
+		}
+		self.offset += 1
+	}
+	return nil
+}
+
+func (self *BinaryWriter) WriteZString(msg []byte) (error) {
+	/* ... */
+	size := len(msg)
+	for j := 0; j < size; j++ {
+		var i1 byte = msg[j]
+		err1 := binary.Write(self.writer, binary.LittleEndian, &i1)
+		if err1 != nil {
+			return err1
+		}
+		self.offset += 1
+	}
+	/* Write ZERO byte */
+	var i2 byte = '\x00'
+	err2 := binary.Write(self.writer, binary.LittleEndian, &i2)
+	if err2 != nil {
+		return err2
+	}
+	self.offset += 1
+	/* Done */
+	return nil
+}
 
 func (self *BinaryWriter) Close() {
 }

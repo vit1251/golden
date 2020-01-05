@@ -1,41 +1,62 @@
 package packet
 
 import (
-	"log"
+//	"log"
 )
 
+type Kludge struct {
+	Name string
+	Value string
+}
+
 type MessageBody struct {
-	Kludges   map[string]string
+	Area      string
+	Kludges []Kludge
 	Body      string
 	RAW     []byte
 }
 
 func NewMessageBody() (*MessageBody) {
 	mb := new(MessageBody)
-	mb.Kludges = make(map[string]string, 0)
 	return mb
 }
 
 func (self *MessageBody) IsEchoMail() bool {
 	var result bool = false
-	if _, ok := self.Kludges["AREA"]; ok {
-		result = true
+	for _, k := range self.Kludges {
+		if k.Name == "AREA" {
+			result = true
+			break
+		}
 	}
 	return result
 }
 
-func (self *MessageBody) SetKludge(name []byte, value []byte) {
-	//
-	log.Printf("Set kludge: name = %q value = %q", name, value)
-	//
-	var strName string = string(name)
-	var strValue string = string(value)
-	//
-	self.Kludges[strName] = strValue
+func (self *MessageBody) GetArea() (string) {
+	return self.Area
 }
 
-func (self *MessageBody) GetKludge(name string) string {
-	return self.Kludges[name]
+func (self *MessageBody) SetArea(area string) {
+	self.Area = area
+}
+
+func (self *MessageBody) AddKludge(name string, value string) {
+	newKludge := Kludge{
+		Name: name,
+		Value: value,
+	}
+	self.Kludges = append(self.Kludges, newKludge)
+}
+
+func (self *MessageBody) GetKludge(name string, defaultValue string) string {
+	var result string = defaultValue
+	for _, k := range self.Kludges {
+		if k.Name == name {
+			result = k.Value
+			break
+		}
+	}
+	return result
 }
 
 func (self *MessageBody) SetBody(msg []byte) {
