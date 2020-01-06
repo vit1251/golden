@@ -239,9 +239,14 @@ func (self *PacketWriter) WriteMessageHeader(msgHeader *PacketMessageHeader) (er
 	}
 
 	/* Read datetime */
-	var pktDateTime []byte = []byte("03 Jan 20  23:51:10\x00")
-	if err9 := self.binaryStreamWriter.WriteBytes(pktDateTime); err9 != nil {
-		return err9
+	newFidoDate := NewFidoDate()
+	newFidoDate.SetNow()
+	var pktDateTime []byte = newFidoDate.FTSC()
+	if err9_0 := self.binaryStreamWriter.WriteBytes(pktDateTime); err9_0 != nil {
+		return err9_0
+	}
+	if err9_1 := self.binaryStreamWriter.WriteBytes([]byte("\x00")); err9_1 != nil {
+		return err9_1
 	}
 
 	/* Read "To" (var bytes) */
@@ -277,13 +282,13 @@ func (self *PacketWriter) WriteMessage(msgBody *MessageBody) (error) {
 	for _, k := range msgBody.Kludges {
 		self.binaryStreamWriter.WriteBytes([]byte("\x01"))
 		self.binaryStreamWriter.WriteBytes([]byte(k.Name))
-		self.binaryStreamWriter.WriteBytes([]byte(":"))
+		self.binaryStreamWriter.WriteBytes([]byte(": "))
 		self.binaryStreamWriter.WriteBytes([]byte(k.Value))
 		self.binaryStreamWriter.WriteBytes([]byte("\x0D"))
 	}
 
 	/* Step 3. Write message body */
-	if err1 := self.binaryStreamWriter.WriteZString([]byte(msgBody.Body)); err1 != nil {
+	if err1 := self.binaryStreamWriter.WriteZString(msgBody.RAW); err1 != nil {
 		return err1
 	}
 

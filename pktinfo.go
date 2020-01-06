@@ -64,7 +64,7 @@ func PktInfo() {
 		fmt.Printf("Newsgroups: %s\n", areaName)
 		fmt.Printf("Date: %s\n", msgHeader.Time)
 		fmt.Printf("\n")
-		fmt.Printf("%s", msgBody.Body)
+		fmt.Printf("%s", string(msgBody.RAW))
 
 		/* Add message count */
 		msgCount += 1

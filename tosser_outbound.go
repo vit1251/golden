@@ -2,9 +2,12 @@ package main
 
 import (
 	"github.com/vit1251/golden/pkg/packet"
+	"github.com/vit1251/golden/pkg/msg"
 	"github.com/satori/go.uuid"
+	"hash/crc32"
 	"time"
 	"fmt"
+	"log"
 )
 
 func (self *Application) ProcessOutbound() (error) {
@@ -34,7 +37,7 @@ func (self *Application) ProcessOutbound() (error) {
 	msgHeader.SetAttribute("Direct")
 	msgHeader.SetToUserName("All")
 	msgHeader.SetFromUserName("Vitold Sedyshev")
-	msgHeader.SetSubject("Golden Tosser (generator)")
+	msgHeader.SetSubject("Golden Point - Test 2")
 	var now time.Time = time.Now()
 	msgHeader.SetTime(&now)
 	if err3 := pw.WriteMessageHeader(msgHeader); err3 != nil {
@@ -48,17 +51,38 @@ func (self *Application) ProcessOutbound() (error) {
 //		return err4
 //	}
 
+	/* Construct message content */
+	msgContent := msg.NewMessageContent()
+	msgContent.AddLine("Добрый день,")
+	msgContent.AddLine("")
+	msgContent.AddLine("Это третье сообщение в UTF-8 и оно нужно быол что бы протестировать Ваши тоссеры, читалки и другой софт,")
+	msgContent.AddLine("но если Вам удалось его прочитать, то я очень рад буду узнать о Вашем стеке технологий.")
+	msgContent.AddLine("")
+	msgContent.AddLine("Пожалуйста отпишитесь в ответ на это сообщение.")
+	msgContent.AddLine("")
+	msgContent.AddLine("Спасибо.")
+	msgContent.AddLine("--- Golden/LNX 1.2.0 2020-01-05 18:29:20 MSK (master)")
+	msgContent.AddLine(" * Origin: Yo Adrian, I Did It! (c) Rocky II (2:5023/24.3752)")
+	rawMsg := msgContent.Pack()
+
+	/* Calculate checksumm */
+	h := crc32.NewIEEE()
+	h.Write(rawMsg)
+	hs := h.Sum32()
+	log.Printf("crc32 = %+v", hs)
+
 	/* Write message body */
 	msgBody := packet.NewMessageBody()
 	//
-	msgBody.SetArea("HOBBIT.TEST")
+	msgBody.SetArea("UTF8.FTN.MESSAGING")
 	//
 	msgBody.AddKludge("TZUTC", "0300")
-	msgBody.AddKludge("CHRS", "CP866 2")
+	msgBody.AddKludge("CHRS", "UTF-8 4")
+	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", "2:5023/24.3752", hs))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
-	msgBody.AddKludge("TID", "golden/lnx 1.2.0 2020-01-04")
+	msgBody.AddKludge("TID", "golden/lnx 1.2.1 2020-01-05 20:41 (master)")
 	//
-	msgBody.SetBody([]byte("Hello,\r\n\r\nI am Golden tosser outbound message generator stub message. I am uses common message to check packet delivery.\r\n\r\nFeature: Direct\r\n\r\n * Origin: Yo Adrian, I Did It! (c) Rocky II"))
+	msgBody.SetRaw(rawMsg)
 	//
 	if err5 := pw.WriteMessage(msgBody); err5 != nil {
 		return err5

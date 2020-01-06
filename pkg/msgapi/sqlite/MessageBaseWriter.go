@@ -32,9 +32,9 @@ func (self *MessageBaseWriter) Write(msg *Message) (error) {
 
 	/* Step 3. Make prepare SQL insert query */
 	sqlStmt := "INSERT INTO message "+
-	           "    (msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate) " +
+	           "    (msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate) " +
 	           "  VALUES " + 
-	           "    (?, ?, ?, ?, ?, ?)"
+	           "    (?, ?, ?, ?, ?, ?, ?)"
 	log.Printf("sql = %q", sqlStmt)
 	stmt, err3 := ConnTransaction.Prepare(sqlStmt)
 	if err3 != nil {
@@ -43,7 +43,7 @@ func (self *MessageBaseWriter) Write(msg *Message) (error) {
 	defer stmt.Close()
 
 	/* Step 4. Invoke prepare SQL insert query */
-	_, err4 := stmt.Exec(msg.Area, msg.From, msg.To, msg.Subject, msg.Content, msg.UnixTime)
+	_, err4 := stmt.Exec(msg.Hash, msg.Area, msg.From, msg.To, msg.Subject, msg.Content, msg.UnixTime)
 	if err4 != nil {
 		return err4
 	}

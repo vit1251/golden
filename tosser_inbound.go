@@ -8,6 +8,8 @@ import (
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/msgapi/sqlite"
 	"github.com/vit1251/golden/pkg/tosser"
+	"strings"
+	"errors"
 )
 
 func ProcessPacket(name string) (error) {
@@ -69,24 +71,42 @@ func ProcessPacket(name string) (error) {
 		var areaName string = msgBody.GetArea()
 
 		/* Decode message */
-		/* TODO - search charmap in message kludge */
-//		newBody, err9 := packet.DecodeText(msgBody.RAW)
-//		if err9 != nil {
-//			return err9
-//		}
+		charset := msgBody.GetKludge("CHRS", "CP866 2")
+		charset = strings.Trim(charset, " ")
+		log.Printf("charset = %+v", charset)
+		var newBody string
+		if charset == "CP866 2" {
+			if unicodeBody, err9 := packet.DecodeText(msgBody.RAW); err9 == nil {
+				newBody = string(unicodeBody)
+			} else {
+				return err9
+			}
+		} else if charset == "UTF-8 4"{
+			newBody = string(msgBody.RAW)
+		} else {
+			return errors.New("Fail charset on message")
+		}
 
-		/* Determine dupe */
-		// TODO - add checking dupe message ...
+		/* Determine message hash */
+		msgid := msgBody.GetKludge("MSGID", "")
+		msgid = strings.Trim(msgid, " ")
+		msgidParts := strings.Split(msgid, " ")
+		var msgHash string
+		if len(msgidParts) == 2 {
+			//source := msgidParts[0]
+			msgHash = msgidParts[1]
+		}
 
 		/* Create msgapi.Message */
 		newMsg := new(sqlite.Message)
+		newMsg.SetMsgID(msgHash)
 		newMsg.SetArea(areaName)
 		newMsg.SetFrom(msgHeader.FromUserName)
 		newMsg.SetTo(msgHeader.ToUserName)
 		newMsg.SetSubject(msgHeader.Subject)
 		newMsg.SetTime(msgHeader.Time)
 
-		newMsg.SetContent(msgBody.Body)
+		newMsg.SetContent(newBody)
 
 		/* Store message */
 		mBaseWriter.Write(newMsg)

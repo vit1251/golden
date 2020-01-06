@@ -2,13 +2,13 @@ package packet
 
 import (
 	"time"
-//	"log"
+	"fmt"
 	"bytes"
 	"errors"
 	"io"
 )
 
-type Date struct {
+type FidoDate struct {
 	year     int
 	month    time.Month
 	day      int
@@ -19,7 +19,36 @@ type Date struct {
 //	tz
 }
 
-func (self Date) Time() (*time.Time, error) {
+func NewFidoDate() (*FidoDate) {
+	fd := new(FidoDate)
+	return fd
+}
+
+func (self *FidoDate) SetNow() {
+	//
+	newTime := time.Now()
+	//
+	self.year = newTime.Year()
+	self.month = newTime.Month()
+	self.day = newTime.Day()
+	//
+	self.hour = newTime.Hour()
+	self.minute = newTime.Minute()
+	self.sec = newTime.Second()
+	//
+}
+
+func (self FidoDate) FTSC() ([]byte) {
+	// []byte("03 Jan 20  23:51:10\x00")
+	var result []byte
+	newMonth := self.month.String()
+	newMonth = newMonth[0:3]
+	newDate := fmt.Sprintf("%02d %s %02d  %02d:%02d:%02d", self.day, newMonth, self.year - 2000, self.hour, self.minute, self.sec)
+	result = []byte(newDate)
+	return result
+}
+
+func (self FidoDate) Time() (*time.Time, error) {
 
 	moscow, err := time.LoadLocation("Europe/Moscow")
 	if err != nil {
@@ -33,8 +62,8 @@ func (self Date) Time() (*time.Time, error) {
 }
 
 type DateParser struct {
-	stream *bytes.Buffer
-	date Date
+	stream   *bytes.Buffer
+	date      FidoDate
 }
 
 func NewDateParser() (*DateParser) {
@@ -197,7 +226,7 @@ func (self *DateParser) parseMonth() (*time.Month, error) {
 	return &result, nil
 }
 
-func (self *DateParser) Parse(date []byte) (*Date, error) {
+func (self *DateParser) Parse(date []byte) (*FidoDate, error) {
 
 	self.stream = bytes.NewBuffer(date)
 

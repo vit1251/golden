@@ -110,7 +110,7 @@ func (self *MessageBaseReader) GetMessageHeaders(echoTag string) ([]*Message, er
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `msgId`, `msgSubject`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
+	sqlStmt := "SELECT `msgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
 	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
 	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag)
 	if err1 != nil {
@@ -120,16 +120,20 @@ func (self *MessageBaseReader) GetMessageHeaders(echoTag string) ([]*Message, er
 	for rows.Next() {
 
 		var ID string
+		var msgHash *string
 		var subject string
 		var from string
 		var to string
 		var msgDate int64
-		err2 := rows.Scan(&ID, &subject, &from, &to, &msgDate)
+		err2 := rows.Scan(&ID, &msgHash, &subject, &from, &to, &msgDate)
 		if err2 != nil{
 			return nil, err2
 		}
 		log.Printf("subject = %q", subject)
 		msg := NewMessage()
+		if msgHash != nil {
+			msg.SetMsgID(*msgHash)
+		}
 		msg.SetSubject(subject)
 		msg.SetID(ID)
 		msg.SetFrom(from)

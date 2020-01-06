@@ -102,7 +102,7 @@ func (self *MessageBodyParser) Parse(msg []byte) (*MessageBody, error) {
 		if err1 != nil {
 			if err1 == io.EOF {
 				log.Printf("msg = %q", self.message)
-				self.result.SetBody(self.message)
+				self.result.SetRaw(self.message)
 				break
 			} else {
 				log.Fatal(err1)

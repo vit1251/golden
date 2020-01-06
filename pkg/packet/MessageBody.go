@@ -12,7 +12,6 @@ type Kludge struct {
 type MessageBody struct {
 	Area      string
 	Kludges []Kludge
-	Body      string
 	RAW     []byte
 }
 
@@ -59,14 +58,10 @@ func (self *MessageBody) GetKludge(name string, defaultValue string) string {
 	return result
 }
 
-func (self *MessageBody) SetBody(msg []byte) {
-	unicodeBody, _ := DecodeText(msg)
-	var body string = string(unicodeBody)
-	//
-	self.Body = body
+func (self *MessageBody) GetRaw() ([]byte) {
+	return self.RAW
 }
 
-func (self *MessageBody) Text() string {
-	return self.Body
+func (self *MessageBody) SetRaw(rawBody []byte) {
+	self.RAW = rawBody
 }
-

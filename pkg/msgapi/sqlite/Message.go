@@ -30,6 +30,10 @@ func (self *Message) SetID(id string) {
 	self.ID = id
 }
 
+func (self *Message) SetMsgID(msgHash string) {
+	self.Hash = msgHash
+}
+
 func (self *Message) SetArea(area string) {
 	self.Area = strings.TrimRight(area, "\x00")
 }
