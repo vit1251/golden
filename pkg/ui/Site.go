@@ -34,7 +34,7 @@ func StartSite(app *Application) {
 	//
 	viewAction := new(ViewAction)
 	viewAction.Site = webSite
-	router.GET("/echo/:name/view/:msgid", viewAction.ServeHTTP)
+	router.GET("/echo/:name/view/:msghash", viewAction.ServeHTTP)
 	//
 	composeAction := new(ComposeAction)
 	composeAction.Site = webSite

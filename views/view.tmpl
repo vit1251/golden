@@ -18,8 +18,8 @@
             <h1>{{ .Area.Name }}</h1>
 
 {{ range $msgHeader := .Headers }}
-            <a class="message-item-wrap" href="/echo/{{ $.Area.Name }}/view/{{ $msgHeader.ID }}" data-hash="{{ $msgHeader.Hash }}">
-                <div class="message-item" data-msgid="{{ $msgHeader.ID }}">
+            <a class="message-item-wrap" href="/echo/{{ $.Area.Name }}/view/{{ $msgHeader.Hash }}" data-id="{{ $msgHeader.ID }}">
+                <div class="message-item">
                     <div class="message-header-netaddr">{{ $msgHeader.From }}</div>
                     <div class="message-header-netaddr">{{ $msgHeader.To }}</div>
                     <div class="message-header-subject">{{ $msgHeader.Subject }}</div>

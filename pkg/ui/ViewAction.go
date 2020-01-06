@@ -32,8 +32,8 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request, params
 	}
 
 	//
-	messageId := params.ByName("msgid")
-	msg, err2 := self.Site.app.MessageBaseReader.GetMessage(echoTag, messageId)
+	msgHash := params.ByName("msghash")
+	msg, err2 := self.Site.app.MessageBaseReader.GetMessageByHash(echoTag, msgHash)
 	if (err2 != nil) {
 		panic(err2)
 	}

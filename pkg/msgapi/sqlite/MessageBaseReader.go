@@ -148,7 +148,7 @@ func (self *MessageBaseReader) GetMessageHeaders(echoTag string) ([]*Message, er
 	return result, nil
 }
 
-func (self *MessageBaseReader) GetMessage(echoTag string, msgId string) (*Message, error) {
+func (self *MessageBaseReader) GetMessageByHash(echoTag string, msgHash string) (*Message, error) {
 
 	var result *Message
 
@@ -165,9 +165,9 @@ func (self *MessageBaseReader) GetMessage(echoTag string, msgId string) (*Messag
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `msgId`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent` FROM `message` WHERE `msgArea` = $1 AND `msgId` = $2"
-	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
-	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag, msgId)
+	sqlStmt := "SELECT `msgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	log.Printf("sql = %+v params = ( %+v, %+v )", sqlStmt, echoTag, msgHash)
+	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag, msgHash)
 	if err1 != nil {
 		return nil, err1
 	}
@@ -175,11 +175,12 @@ func (self *MessageBaseReader) GetMessage(echoTag string, msgId string) (*Messag
 	for rows.Next() {
 
 		var ID string
+		var msgHash *string
 		var subject string
 		var from string
 		var to string
 		var content string
-		err2 := rows.Scan(&ID, &subject, &from, &to, &content)
+		err2 := rows.Scan(&ID, &msgHash, &subject, &from, &to, &content)
 		if err2 != nil{
 			return nil, err2
 		}
@@ -187,7 +188,9 @@ func (self *MessageBaseReader) GetMessage(echoTag string, msgId string) (*Messag
 		msg := NewMessage()
 		msg.Subject = subject
 		msg.ID = ID
-//		msg.Hash = // TODO - save message UUID in database on tossing
+		if msgHash != nil {
+			msg.Hash = *msgHash
+		}
 		msg.From = from
 		msg.To = to
 		msg.Content = content
