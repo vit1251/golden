@@ -8,10 +8,16 @@ import (
 	"log"
 )
 
-func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	//
+type RemoveAction struct {
+	Action
+}
+type RemoveCompleteAction struct {
+	Action
+}
+
+func (self *RemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "echo.tmpl")
+	fp := filepath.Join("views", "compose.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
 		panic(err)
@@ -26,19 +32,30 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		panic(err1)
 	}
 	log.Printf("area = %v", area)
-	//
-	msgHeaders, err2 := self.Site.app.MessageBaseReader.GetMessageHeaders(echoTag)
-	if (err2 != nil) {
-		panic(err2)
-	}
-	log.Printf("msgHeaders = %q", msgHeaders)
-	for _, msg := range msgHeaders {
-		log.Printf("msg = %q", msg)
-	}
+
 	//
 	outParams := make(map[string]interface{})
 	outParams["Areas"] = self.Site.app.AreaList.Areas
 	outParams["Area"] = area
-	outParams["Headers"] = msgHeaders
 	tmpl.ExecuteTemplate(w, "layout", outParams)
+}
+
+func (self *RemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	//
+	err := r.ParseForm()
+	if err != nil {
+		panic(err)
+	}
+	//
+	vars := mux.Vars(r)
+	echoTag := vars["echoname"]
+	log.Printf("echoTag = %v", echoTag)
+	//
+	area, err1 := self.Site.app.AreaList.SearchByName(echoTag)
+	if (err1 != nil) {
+		panic(err1)
+	}
+	log.Printf("area = %v", area)
+	//
+//	to := r.Form.Get("to")
 }

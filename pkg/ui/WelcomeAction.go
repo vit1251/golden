@@ -2,7 +2,7 @@ package ui
 
 import (
 	"net/http"
-	"github.com/julienschmidt/httprouter"
+//	"github.com/gorilla/mux"
 	"path/filepath"
 	"html/template"
 )
@@ -11,7 +11,7 @@ type WelcomeAction struct {
 	Action
 }
 
-func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "welcome.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)

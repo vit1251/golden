@@ -3,4 +3,5 @@ __main__
 go.sum
 *.pkt
 golden
+*.bak
 

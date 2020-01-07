@@ -13,25 +13,29 @@
 {{ end }}
     </div>
     <div class="main">
-    <div class="message-header-items">
 
         <h1>{{ .Area.Name }}</h1>
 
+        <table width="100%">
+            <tbody>
 {{ range $msgHeader := .Headers }}
-<a class="message-item-wrap" href="/echo/{{ $.Area.Name }}/view/{{ $msgHeader.Hash }}">
-    <div class="message-item">
-        <div class="message-header-netaddr">{{ $msgHeader.From }}</div>
-        <div class="message-header-netaddr">{{ $msgHeader.To }}</div>
-        <div class="message-header-subject">{{ $msgHeader.Subject }}</div>
-        <div>{{ $msgHeader.DateWritten }}</div>
-    </div>
-</a>
+                <tr class="message-item">
+                    <td class="message-header-netaddr">{{ $msgHeader.From }}</td>
+                    <td class="message-header-netaddr">{{ $msgHeader.To }}</td>
+                    <td class="message-header-subject">
+                        <a class="message-item-wrap" href="/echo/{{ $.Area.Name }}/message/{{ $msgHeader.Hash }}/view">
+                            <span>{{ $msgHeader.Subject }}</span>
+                        </a>
+                    </td>
+                    <td class="message-header-date">{{ $msgHeader.DateWritten }}</td>
+                    <td class="message-header-actions">
+                        <a href="/echo/{{ $.Area.Name }}/message/{{ $msgHeader.Hash }}/remove">Remove</a>
+                    </td>
+                </tr>
 {{ end }}
+            </tbody>
+        </table>
 
-
-    </div>
-    <div class="message-preview">
-    </div>
     </div>
 </div>
 

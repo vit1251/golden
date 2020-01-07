@@ -2,14 +2,14 @@ package ui
 
 import (
 	"net/http"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	msgProc "github.com/vit1251/golden/pkg/msg"
 	"path/filepath"
 	"html/template"
 	"log"
 )
 
-func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "view.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
@@ -17,7 +17,8 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request, params
 		panic(err)
 	}
 	//
-	echoTag := params.ByName("name")
+	vars := mux.Vars(r)
+	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 	//
 	area, err1 := self.Site.app.AreaList.SearchByName(echoTag)
@@ -32,7 +33,7 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request, params
 	}
 
 	//
-	msgHash := params.ByName("msghash")
+	msgHash := vars["msgid"]
 	msg, err2 := self.Site.app.MessageBaseReader.GetMessageByHash(echoTag, msgHash)
 	if (err2 != nil) {
 		panic(err2)

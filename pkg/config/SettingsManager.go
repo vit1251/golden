@@ -23,21 +23,6 @@ func NewParamStorage() (*ParamStorage, error) {
 	ps := new(ParamStorage)
 	ps.Path = "~/.golden.sqlite3"
 
-	/* Initialize parameters */
-	ps.Register("Name", "")
-	ps.Register("Sysop", "")
-	ps.Register("Location", "")
-	ps.Register("Address", "")
-	ps.Register("Inbound", "")
-	ps.Register("ProtInbound", "")
-	ps.Register("Outbound", "")
-	ps.Register("Origin", "Add this Origin to hpt messages: post, reports about new areas created.")
-	ps.Register("SortEchoList", "This keyword determines sorting mode for echolist. By default echolist is sorted by name.")
-	ps.Register("TearLine", "Add this tearline to messages (post, reports about new areas created)")
-	ps.Register("MsgBaseDir", "This command specifies the path where msgBases of autocreated areas are stored.")
-	ps.Register("TempInbound", "This command specifies a path which is used while tossing. The incoming packets are unpacked there.")
-	ps.Register("TempOutbound", "This command specifies your temporary outbound path. It is used for storing outgoing pkt-files before packing.")
-
 	/* Done */
 	return ps, nil
 }

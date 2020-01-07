@@ -53,8 +53,10 @@ func (self *Application) scanBase() {
 
 func (self *Application) Run() {
 
+	/* Update settings */
 	self.scanBase()
 
 	/* Start user interface Web-service */
-	StartSite(self)
+	self.StartSite()
+
 }

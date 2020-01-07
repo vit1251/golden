@@ -2,12 +2,24 @@ package ui
 
 import (
 	"net/http"
-	"github.com/julienschmidt/httprouter"
-	"log"
+	"github.com/gorilla/mux"
+	"time"
 )
 
+type IAction interface {
+	SetSite(webSite *WebSite)
+	ServeHTTP(w http.ResponseWriter, r *http.Request)
+}
+
+type Route struct {
+	pattern  string        /* Regilar expression         */
+	action   IAction       /* Processing callback        */
+}
+
 type WebSite struct {
-	app *Application
+	app      *Application
+	routes  []Route
+	rtr      *mux.Router
 }
 
 type EchoAction struct {
@@ -17,32 +29,69 @@ type ViewAction struct {
 	Action
 }
 
-func StartSite(app *Application) {
-	//
+func NewWebSite(app *Application) (*WebSite) {
 	webSite := new(WebSite)
 	webSite.app = app
+	webSite.rtr = mux.NewRouter()
+	return webSite
+}
+
+func (self *WebSite) Register(pattern string, a IAction) {
+
+	/* Register owner */
+	a.SetSite(self)
+
+	/* Register */
+	actionFunc := a.ServeHTTP
+	self.rtr.HandleFunc(pattern, actionFunc)
+
+	/* Create router */
+//	r := Route{}
+//	r.pattern = pattern
+//	r.action = a
+//	self.routes = append(self.routes, r)
+
+}
+
+const INTERFACE = "127.0.0.1:8080"
+
+func (self *WebSite) Start() (error) {
+	srv := &http.Server{
+	    Handler:      self.rtr,
+	    Addr:         INTERFACE,
+	    // Good practice: enforce timeouts for servers you create!
+	    WriteTimeout: 15 * time.Second,
+	    ReadTimeout:  15 * time.Second,
+	}
+	err := srv.ListenAndServe()
+	return err
+}
+
+func (self *WebSite) Stop() (error) {
+	return nil
+}
+
+func (self *Application) StartSite() (error) {
 	//
-	router := httprouter.New()
+	webSite := NewWebSite(self)
 	//
-	welcomeAction := new(WelcomeAction)
-	welcomeAction.Site = webSite
-	router.GET("/", welcomeAction.ServeHTTP)
+	webSite.Register("/", new(WelcomeAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}", new(EchoAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/compose", new(ComposeAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/compose/complete", new(ComposeCompleteAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/view", new(ViewAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/reply", new(ReplyAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/remove", new(RemoveAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", new(RemoveCompleteAction))
 	//
-	echoAction := new(EchoAction)
-	echoAction.Site = webSite
-	router.GET("/echo/:name", echoAction.ServeHTTP)
+	err := webSite.Start()
 	//
-	viewAction := new(ViewAction)
-	viewAction.Site = webSite
-	router.GET("/echo/:name/view/:msghash", viewAction.ServeHTTP)
+	return err
+}
+
+func (app *Application) StopSite() (error) {
 	//
-	composeAction := new(ComposeAction)
-	composeAction.Site = webSite
-	router.GET("/echo/:name/compose", composeAction.ServeHTTP)
+//	webSite.Stop()
 	//
-	composeCompleteAction := new(ComposeCompleteAction)
-	composeCompleteAction.Site = webSite
-	router.POST("/echo/:name/compose", composeCompleteAction.ServeHTTP)
-	//
-	log.Fatal(http.ListenAndServe("127.0.0.1:8080", router))
+	return nil
 }

@@ -69,6 +69,9 @@ func ProcessPacket(name string) (error) {
 
 		/* Determine area */
 		var areaName string = msgBody.GetArea()
+		if areaName == "" {
+			areaName = "NETMAIL"
+		}
 
 		/* Decode message */
 		charset := msgBody.GetKludge("CHRS", "CP866 2")

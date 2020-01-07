@@ -14,14 +14,14 @@ import (
 	"fmt"
 )
 
-type ComposeAction struct {
+type ReplyAction struct {
 	Action
 }
-type ComposeCompleteAction struct {
+type ReplyCompleteAction struct {
 	Action
 }
 
-type UserMessage struct {
+type ReplyMessage struct {
 	Subject string
 	To string
 	From string
@@ -29,7 +29,7 @@ type UserMessage struct {
 	AreaName string
 }
 
-func WriteMessage(um UserMessage) (error) {
+func ProcessReplyMessage(um ReplyMessage) (error) {
 
 	/* Create packet name */
 	name := "compose.pkt"
@@ -105,8 +105,7 @@ func WriteMessage(um UserMessage) (error) {
 }
 
 
-func (self *ComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	//
+func (self *ReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "compose.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
@@ -133,15 +132,14 @@ func (self *ComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 
 
-func (self *ComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	//
-	vars := mux.Vars(r)
+func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	//
 	err := r.ParseForm()
 	if err != nil {
 		panic(err)
 	}
 	//
+	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 	//
@@ -155,13 +153,13 @@ func (self *ComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Requ
 	subj := r.Form.Get("subject")
 	body := r.Form.Get("body")
 	//
-	var um UserMessage
+	var um ReplyMessage
 	um.Subject = subj
 	um.To = to
 	um.Body = body
 	um.AreaName = area.Name
 	//
-	WriteMessage(um)
+	ProcessReplyMessage(um)
 	//
 	log.Printf("to = %s subj = %s body = %s", to, subj, body)
 }
