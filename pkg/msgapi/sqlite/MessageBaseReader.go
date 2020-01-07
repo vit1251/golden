@@ -202,3 +202,31 @@ func (self *MessageBaseReader) GetMessageByHash(echoTag string, msgHash string) 
 
 	return result, nil
 }
+
+func (self *MessageBaseReader) RemoveMessageByHash(echoTag string, msgHash string) (error) {
+
+	/* Step 1. Create message base session (i.e. SQL service connection) */
+	mBaseSession, err1 := self.MessageBase.Open()
+	if err1 != nil {
+		return err1
+	}
+	defer mBaseSession.Close()
+
+	/* Step 2. */
+	ConnTransaction, err2 := mBaseSession.Conn.Begin()
+	if err2 != nil {
+		return err2
+	}
+
+	sqlStmt := "DELETE FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	log.Printf("sql = %+v params = ( %+v, %+v )", sqlStmt, echoTag, msgHash)
+	result, err3 := ConnTransaction.Exec(sqlStmt, echoTag, msgHash)
+	if err3 != nil {
+		return err3
+	}
+	log.Printf("result = %+v", result)
+
+	ConnTransaction.Commit()
+
+	return nil
+}

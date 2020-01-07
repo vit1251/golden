@@ -2,6 +2,9 @@
 {{ define "content" }}
 
 <div class="container">
+
+
+
     <div class="arealist-items">
 {{ range .Areas }}
         <a class="arealist-item-wrap" href="/echo/{{ .Name }}">
@@ -13,6 +16,24 @@
 {{ end }}
     </div>
     <div class="main">
+
+    <div class="actions">
+        <div class="action-cover">
+            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/reply">
+                <div class="action">
+                    <span>Reply</span>
+                </div>
+            </a>
+        </div>
+        <div class="action-cover">
+            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/remove">
+                <div class="action">
+                    <span>Remove</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
         <div class="message-preview">
 
 {{ .Content }}

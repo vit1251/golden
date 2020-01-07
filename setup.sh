@@ -12,5 +12,6 @@ go get -v
 go build -o golden .
 
 # Step 3. Start reader
+./golden mailer >golden_mailer.log 2>golden_mailer_err.log
 ./golden toss >golden_toss.log 2>golden_toss_err.log
 ./golden reader >golden_reader.log 2>golden_reader_err.log

@@ -1,0 +1,24 @@
+
+{{ define "content" }}
+
+<div class="container">
+
+    <div class="main">
+
+        <h1>Delete message?</h1>
+
+        <form method="post" action="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/remove/complete">
+
+            <p>{{ .Msg.Subject }}</p>
+
+            <p>A you sure?</p>
+
+            <button type="submit">Yes</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{{ end }}
