@@ -11,6 +11,10 @@
     <link rel="stylesheet" type="text/css" href="/static/css/inbox.css">
     <style>
 
+* {
+	-border: 1px solid red;
+}
+
 body {
     background-color: #000000;
     font-family: monospace;
@@ -46,10 +50,9 @@ a {
     overflow-y: scroll;
 }
 .message-preview {
-    flex-basis: 50vh;
     flex-shrink: 0;
     flex-grow: 0;
-    overflow-y: scroll;
+    white-space: pre-wrap;
 }
 
 .arealist-item:hover {
@@ -151,10 +154,6 @@ a.message-item-wrap {
 <body>
 
 {{ template "content" . }}
-
-<hr>
-
-<h1>Golden 1.2.0</h1>
 
 </body>
 </html>

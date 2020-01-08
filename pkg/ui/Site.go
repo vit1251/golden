@@ -60,8 +60,8 @@ func (self *WebSite) Start() (error) {
 	    Handler:      self.rtr,
 	    Addr:         INTERFACE,
 	    // Good practice: enforce timeouts for servers you create!
-	    WriteTimeout: 15 * time.Second,
-	    ReadTimeout:  15 * time.Second,
+	    WriteTimeout: 10 * time.Minute,
+	    ReadTimeout:  10 * time.Minute,
 	}
 	err := srv.ListenAndServe()
 	return err

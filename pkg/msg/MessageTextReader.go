@@ -4,64 +4,106 @@ import (
 	"log"
 	"unicode"
 	"html/template"
+	"strings"
 )
 
+type MessageState int
+
+const MessageStateBody    = 1
+const MessageStateService = 2
+
 type MessageTextReader struct {
-	result string
+	State    MessageState
+	result   string
 }
 
 
 func NewMessageTextReader() (*MessageTextReader) {
 	mr := new(MessageTextReader)
+	mr.State = MessageStateBody
 	return mr
 }
 
 const (
-	LineUnkown     = 0
-	LineQuotes     = 1
-	LineQuoteBody  = 2
+	LineNoQuote        = 0
+	LineQuoteLevel     = 1
+	LineQuoteBody      = 2
 )
 
 func (self *MessageTextReader) processLine(oneLine string) string {
 
 	log.Printf("oneLine = %s", oneLine)
 
+	if strings.HasPrefix(oneLine, " * Origin: ") {
+		self.State = MessageStateService
+	}
+
+	var pureLine string
+	var quoteAuthor string
 	var startLine string
-	var newLine string
+	var quoteMarkers string
 	var quoteLine string
 	var quoteLevel int = 0
-	var state = LineUnkown
+	var quoteProbe bool = true
+
+	var state = LineNoQuote
 	for _, ch := range oneLine {
-		if state == LineUnkown {
-			if ch == '>' {
+
+		pureLine += string(ch)
+
+		if state == LineNoQuote {
+
+			if quoteProbe && quoteAuthor != "" && ch == '>' {
+
 				quoteLevel += 1
-				state = LineQuotes
-				quoteLine += string(ch)
-			} else if unicode.IsUpper(ch) || unicode.IsSpace(ch) {
-				startLine = startLine + string(ch)
+				state = LineQuoteLevel
+				quoteMarkers += string(ch)
+
+			} else if unicode.IsUpper(ch) {
+				startLine += string(ch)
+				quoteAuthor = quoteAuthor + string(ch)
+			} else if unicode.IsSpace(ch) {
+				startLine += string(ch)
 			} else {
-				newLine = startLine  + string(ch)
-				state = LineQuoteBody
+				startLine += string(ch)
+				quoteProbe = false
 			}
-		} else if state == LineQuotes {
+
+		} else if state == LineQuoteLevel {
+
 			if ch == '>' {
+
 				quoteLevel += 1
-				quoteLine += string(ch)
+				quoteMarkers += string(ch)
+
 			} else {
-				newLine = newLine + string(ch)
+
+				quoteLine += string(ch)
 				state = LineQuoteBody
+
 			}
-		} else {
-			newLine = newLine + string(ch)
+
+		} else if state == LineQuoteBody {
+
+			quoteLine += string(ch)
+
 		}
 	}
 
-	if quoteLevel > 0 {
+	var newLine string 
+
+	if quoteLevel == 0 {
+
+		newLine = pureLine
+
+	} else {
+
 		if quoteLevel % 2 == 0 {
-			newLine = "<span style='color: red'>" + startLine + quoteLine + newLine + "</span>"
+			newLine = "<span style='color: red'>" + startLine + quoteMarkers + quoteLine + "</span>"
 		} else {
-			newLine = "<span style='color: green'>" + startLine +  quoteLine + newLine + "</span>"
+			newLine = "<span style='color: green'>" + startLine +  quoteMarkers + quoteLine + "</span>"
 		}
+
 	}
 
 	return newLine
@@ -72,9 +114,16 @@ func (self *MessageTextReader) Prepare(msg string) template.HTML {
 	var oneLine string
 	for _, ch := range msg {
 		if ch == '\x0A' || ch == '\x0D' {
-			newLine := self.processLine(oneLine)
+
+			if self.State == MessageStateBody {
+				newLine := self.processLine(oneLine)
+				self.result += string(newLine) + "<br>"
+			} else {
+				log.Printf("Service line: row = %s", oneLine)
+			}
+
 			oneLine = ""
-			self.result += string(newLine) + "<br>"
+
 		} else {
 			oneLine = oneLine + string(ch)
 		}

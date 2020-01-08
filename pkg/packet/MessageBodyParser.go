@@ -9,8 +9,8 @@ import (
 type ParserState int
 
 const (
-	MBP_STATE_KLUDGE ParserState = 1
-	MBP_STATE_BODY   ParserState = 2
+	MBP_STATE_KLUDGE        ParserState = 1
+	MBP_STATE_BODY          ParserState = 2
 )
 
 type KludgeState int
@@ -90,7 +90,10 @@ func (self *MessageBodyParser) processKludgeByte(value byte) {
 }
 
 func (self *MessageBodyParser) processMessageByte(value byte) {
+
+	/* Step 1. Add new message bytes */
 	self.message = append(self.message, value)
+
 }
 
 func (self *MessageBodyParser) Parse(msg []byte) (*MessageBody, error) {

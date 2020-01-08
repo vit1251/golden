@@ -2,8 +2,25 @@ package main
 
 import (
 	"os"
+	"time"
 	"log"
 )
+
+func Periodic() {
+
+	for {
+
+		log.Printf("Check new mail")
+
+		Mailer()
+
+		Tosser()
+
+		time.Sleep( 10 * time.Minute )
+
+	}
+
+}
 
 func main() {
 
@@ -26,13 +43,18 @@ func main() {
 
 		Mailer()
 
+	} else if name == "service" {
+
+		go Periodic()
+		Reader()  /* TODO - make sceduler or service manager ... */
+
 	} else if name == "reader" {
 
 		Reader()
 
 	} else {
 
-		log.Printf("Usage: golden [command]")
+		log.Printf("Usage: golden [toss|mailer|reader|service]")
 
 	}
 
