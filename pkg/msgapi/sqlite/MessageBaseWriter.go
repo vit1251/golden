@@ -15,6 +15,48 @@ func NewMessageBaseWriter(mBase *MessageBase) (*MessageBaseWriter, error) {
 	return writer, nil
 }
 
+func (self *MessageBaseWriter) IsMessageExistsByHash(echoTag string, msgHash string) (bool, error) {
+
+	var result bool = false
+
+	/* Step 1. Create message base session (i.e. SQL service connection) */
+	mBaseSession, err1 := self.MessageBase.Open()
+	if err1 != nil {
+		return result, err1
+	}
+	defer mBaseSession.Close()
+
+	/* Step 2. */
+	ConnTransaction, err := mBaseSession.Conn.Begin()
+	if err != nil {
+		return result, err
+	}
+
+	sqlStmt := "SELECT `msgId` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	log.Printf("sql = %+v params = ( %+v, %+v )", sqlStmt, echoTag, msgHash)
+	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag, msgHash)
+	if err1 != nil {
+		return result, err1
+	}
+	defer rows.Close()
+	for rows.Next() {
+
+		var ID string
+		err2 := rows.Scan(&ID)
+		if err2 != nil{
+			return result, err2
+		}
+		if ID != "" {
+			result = true
+		}
+
+	}
+
+	ConnTransaction.Commit()
+
+	return result, nil
+}
+
 func (self *MessageBaseWriter) Write(msg *Message) (error) {
 
 	/* Step 1. Create message base session (i.e. SQL service connection) */

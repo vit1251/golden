@@ -15,16 +15,16 @@
 
     <div>
         <div>To:</div>
-        <div><input type="text" value="" name="to">
+        <div><input class="input" type="text" name="to" value="{{ .Msg.From }}">
     </div>
 
     <div>
         <div>Subject:</div>
-        <div><input type="text" value="" name="subject">
+        <div><input class="input" type="text" value="{{ .Msg.Subject }}" name="subject">
     </div>
 
     <div>
-        <textarea class="message-input-area" name="body">{{ .Msg.Content }}</textarea>
+        <textarea class="input input-area" name="body">{{ .Msg.Content }}</textarea>
     </div>
 
     <div>

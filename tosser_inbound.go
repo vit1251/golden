@@ -90,7 +90,7 @@ func ProcessPacket(name string) (error) {
 			return errors.New("Fail charset on message")
 		}
 
-		/* Determine message hash */
+		/* Determine msgid */
 		msgid := msgBody.GetKludge("MSGID", "")
 		msgid = strings.Trim(msgid, " ")
 		msgidParts := strings.Split(msgid, " ")
@@ -100,22 +100,47 @@ func ProcessPacket(name string) (error) {
 			msgHash = msgidParts[1]
 		}
 
-		/* Create msgapi.Message */
-		newMsg := new(sqlite.Message)
-		newMsg.SetMsgID(msgHash)
-		newMsg.SetArea(areaName)
-		newMsg.SetFrom(msgHeader.FromUserName)
-		newMsg.SetTo(msgHeader.ToUserName)
-		newMsg.SetSubject(msgHeader.Subject)
-		newMsg.SetTime(msgHeader.Time)
+//		/* Determine reply */
+//		reply := msgBody.GetKludge("REPLY", "")
+//		reply = strings.Trim(reply, " ")
+//		log.Printf("reply = %s", reply)
+//		replyParts := strings.Split(reply, " ")
+//		var replyHash string
+//		if len(replyParts) == 2 {
+//			//source := replyParts[0]
+//			replyHash = replyParts[1]
+//		}
 
-		newMsg.SetContent(newBody)
+		/* Check unique item */
+		exists, err9 := mBaseWriter.IsMessageExistsByHash(areaName, msgHash)
+		if err9 != nil {
+			return err9
+		}
+		if exists {
 
-		/* Store message */
-		mBaseWriter.Write(newMsg)
+			log.Printf("Message %s already exists", msgHash)
 
-		/* Update counter */
-		msgCount += 1
+		} else {
+
+			/* Create msgapi.Message */
+			newMsg := new(sqlite.Message)
+			newMsg.SetMsgID(msgHash)
+			newMsg.SetArea(areaName)
+			newMsg.SetFrom(msgHeader.FromUserName)
+			newMsg.SetTo(msgHeader.ToUserName)
+			newMsg.SetSubject(msgHeader.Subject)
+			newMsg.SetTime(msgHeader.Time)
+
+			newMsg.SetContent(newBody)
+
+			/* Store message */
+			err := mBaseWriter.Write(newMsg)
+			log.Printf("err = %v", err)
+
+			/* Update counter */
+			msgCount += 1
+		}
+
 	}
 
 	/* Show summary */
