@@ -1,4 +1,4 @@
-package ui
+package area
 
 import (
 	"errors"
@@ -6,6 +6,10 @@ import (
 
 type AreaList struct {
 	Areas   []*Area
+}
+
+func (self *AreaList) Reset() {
+	self.Areas = nil
 }
 
 func (self *AreaList) SearchByName(echoTag string) (*Area, error) {

@@ -1,0 +1,41 @@
+
+{{ define "content" }}
+
+<style type="text/css">
+
+</style>
+
+<h1>Create message</h1>
+
+<hr>
+
+<div class="reply">
+
+    <form method="post" action="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/reply/complete">
+
+    <div>
+        <div>To:</div>
+        <div><input type="text" value="" name="to">
+    </div>
+
+    <div>
+        <div>Subject:</div>
+        <div><input type="text" value="" name="subject">
+    </div>
+
+    <div>
+        <textarea class="message-input-area" name="body">{{ .Msg.Content }}</textarea>
+    </div>
+
+    <div>
+        <button type="submit" name="action" value="save">Save draft</button>
+        <button type="submit" name="action" value="send">Send</button>
+    </div>
+
+    </form>
+
+</div>
+
+<hr>
+
+{{ end }}

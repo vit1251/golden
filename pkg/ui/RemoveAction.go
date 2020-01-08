@@ -23,22 +23,27 @@ func (self *RemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
+
 	//
-	area, err1 := self.Site.app.AreaList.SearchByName(echoTag)
+	areaManager := self.Site.app.GetAreaManager()
+	area, err1 := areaManager.GetAreaByName(echoTag)
 	if (err1 != nil) {
 		panic(err1)
 	}
 	log.Printf("area = %v", area)
+
 	//
 	msgHash := vars["msgid"]
 	msg, err2 := self.Site.app.MessageBaseReader.GetMessageByHash(echoTag, msgHash)
 	if (err2 != nil) {
 		panic(err2)
 	}
+
 	//
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = self.Site.app.AreaList.Areas
+	outParams["Areas"] = areaManager.GetAreas()
 	outParams["Area"] = area
 	outParams["Msg"] = msg
 	tmpl.ExecuteTemplate(w, "layout", outParams)
+
 }

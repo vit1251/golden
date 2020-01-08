@@ -22,9 +22,6 @@ type WebSite struct {
 	rtr      *mux.Router
 }
 
-type EchoAction struct {
-	Action
-}
 type ViewAction struct {
 	Action
 }
@@ -81,6 +78,7 @@ func (self *Application) StartSite() (error) {
 	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/compose/complete", new(ComposeCompleteAction))
 	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/view", new(ViewAction))
 	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/reply", new(ReplyAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/reply/complete", new(ReplyCompleteAction))
 	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/remove", new(RemoveAction))
 	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", new(RemoveCompleteAction))
 	//

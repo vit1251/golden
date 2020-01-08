@@ -1,4 +1,4 @@
-package ui
+package area
 
 type Area struct {
 	Name         string

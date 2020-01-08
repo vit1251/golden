@@ -1,27 +1,22 @@
 package ui
 
 import (
-	"log"
 	"github.com/vit1251/golden/pkg/msgapi/sqlite"
+	"github.com/vit1251/golden/pkg/area"
+//	"log"
 )
 
 type Application struct {
-	AreaList           AreaList
+	AreaManager       *area.AreaManager
 	MessageBase       *sqlite.MessageBase
 	MessageBaseReader *sqlite.MessageBaseReader
 }
 
-func (self *Application) AreaListReset() {
+func (self *Application) GetAreaManager() (*area.AreaManager) {
+	return self.AreaManager
 }
 
-func (self *Application) AreaListAreaRegister(area *sqlite.Area) {
-	a := NewArea()
-	a.Name = area.Name
-	a.MessageCount = area.Count
-	self.AreaList.Areas = append(self.AreaList.Areas, a)
-}
-
-func (self *Application) scanBase() {
+func (self *Application) Open() {
 
 	/* Open message base */
 	messageBase, err1 := sqlite.NewMessageBase()
@@ -37,24 +32,18 @@ func (self *Application) scanBase() {
 	}
 	self.MessageBaseReader = messageBaseReader
 
-	/* Preload echo areas */
-	areas, err3 := messageBaseReader.GetAreaList2()
-	if err3 != nil {
-		panic(err3)
-	}
-	/* Reset areas */
-	self.AreaListReset()
-	for _, area := range areas {
-		log.Printf("area = %q", area)
-		self.AreaListAreaRegister(area)
-	}
+}
 
+func (self *Application) Close() {
 }
 
 func (self *Application) Run() {
 
+	/* Open base */
+	self.Open()
+
 	/* Update settings */
-	self.scanBase()
+	self.AreaManager = area.NewAreaManager()
 
 	/* Start user interface Web-service */
 	self.StartSite()

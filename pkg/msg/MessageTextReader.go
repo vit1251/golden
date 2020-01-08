@@ -111,9 +111,15 @@ func (self *MessageTextReader) processLine(oneLine string) string {
 
 func (self *MessageTextReader) Prepare(msg string) template.HTML {
 
+	/* Replace CRLF on \x0D */
+	newMsg := msg
+	newMsg = strings.ReplaceAll(newMsg, "\x0A\x0D", "\x0D")
+	newMsg = strings.ReplaceAll(newMsg, "\x0A", "\x0D")
+
+	/* Process */
 	var oneLine string
-	for _, ch := range msg {
-		if ch == '\x0A' || ch == '\x0D' {
+	for _, ch := range newMsg {
+		if ch == '\x0D' {
 
 			if self.State == MessageStateBody {
 				newLine := self.processLine(oneLine)
