@@ -2,22 +2,31 @@
 {{ define "content" }}
 
 <div class="container">
-    <div class="arealist-items">
+
+    <div>
+        <img src="/static/img/fido.gif">
+    </div>
+
 {{ range .Areas }}
-<a class="arealist-item-wrap" href="/echo/{{ .Name }}">
-        <div class="arealist-item">
-            <div class="arealist-item-echoid">{{ .Name }}</div>
-            <div class="arealist-item-count">{{ .MessageCount }}</div>
-        </div>
-</a>
+    <div>
+        <a href="/echo/{{ .Name }}" class="btn btn-warning">
+            <span class="">Работа с сообщениями {{ .Name }}</span>
+        </a>
+    </div>
 {{ end }}
+
+    <div>
+        <a href="/filebox" class="btn btn-warning">
+            <span class="">Работа с файлами</span>
+        </a>
     </div>
-    <div class="main">
-    <div class="message-header-items">
+
+    <div>
+        <a href="/setup" class="btn btn-warning">
+            <span class="">Настройки</span>
+        </a>
     </div>
-    <div class="message-preview">
-    </div>
-    </div>
+
 </div>
 
 {{ end }}

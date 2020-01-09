@@ -27,9 +27,19 @@ type ViewAction struct {
 }
 
 func NewWebSite(app *Application) (*WebSite) {
+
+	/* Create new onw web application */
 	webSite := new(WebSite)
+
+	/* Save application reference */
 	webSite.app = app
-	webSite.rtr = mux.NewRouter()
+
+	/* Create router */
+	rtr := mux.NewRouter()
+	staticDir := "./static"
+	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
+	webSite.rtr = rtr
+
 	return webSite
 }
 
