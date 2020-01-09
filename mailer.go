@@ -8,6 +8,7 @@ func Mailer() {
 
 //	m := mailer.NewMailer()
 	m := mailer.NewMailerCompat()
+
 	m.Check()
 
 }

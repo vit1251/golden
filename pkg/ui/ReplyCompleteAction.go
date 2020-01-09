@@ -6,6 +6,7 @@ import (
 	"log"
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/satori/go.uuid"
 	"hash/crc32"
 	"time"
@@ -26,11 +27,18 @@ type ReplyMessage struct {
 
 func ProcessReplyMessage(um ReplyMessage) (error) {
 
+	/* Message UUID */
+	u1 := uuid.NewV4()
+//	u1, err4 := uuid.NewV4()
+//	if err4 != nil {
+//		return err4
+//	}
+
 	/* Create packet name */
-	name := "compose.pkt"
+	pktName := fmt.Sprintf("%s.pkt", u1)
 
 	/* Open outbound packet */
-	pw, err1 := packet.NewPacketWriter(name)
+	pw, err1 := packet.NewPacketWriter(pktName)
 	if err1 != nil {
 		return err1
 	}
@@ -57,13 +65,6 @@ func ProcessReplyMessage(um ReplyMessage) (error) {
 	if err3 := pw.WriteMessageHeader(msgHeader); err3 != nil {
 		return err3
 	}
-
-	/* Message UUID */
-	u1 := uuid.NewV4()
-//	u1, err4 := uuid.NewV4()
-//	if err4 != nil {
-//		return err4
-//	}
 
 	/* Construct message content */
 	msgContent := msg.NewMessageContent()
@@ -95,6 +96,13 @@ func ProcessReplyMessage(um ReplyMessage) (error) {
 	if err5 := pw.WriteMessage(msgBody); err5 != nil {
 		return err5
 	}
+
+	/* Close packet */
+	pw.Close()
+
+	/* Setup upload */
+	m := mailer.NewMailerCompat()
+	m.TransmitFile(pktName)
 
 	return nil
 }
