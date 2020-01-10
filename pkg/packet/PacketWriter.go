@@ -250,17 +250,17 @@ func (self *PacketWriter) WriteMessageHeader(msgHeader *PacketMessageHeader) (er
 	}
 
 	/* Read "To" (var bytes) */
-	if err10 := self.binaryStreamWriter.WriteZString([]byte(msgHeader.ToUserName)); err10 != nil {
+	if err10 := self.binaryStreamWriter.WriteZString([]byte(msgHeader.ToUserName), 36 - 1); err10 != nil {
 		return err10
 	}
 
 	/* Read "From" (var bytes) */
-	if err11 := self.binaryStreamWriter.WriteZString([]byte(msgHeader.FromUserName)); err11 != nil {
+	if err11 := self.binaryStreamWriter.WriteZString([]byte(msgHeader.FromUserName), 36 - 1); err11 != nil {
 		return err11
 	}
 
 	/* Read "Subject" */
-	if err12 := self.binaryStreamWriter.WriteZString([]byte(msgHeader.Subject)); err12 != nil {
+	if err12 := self.binaryStreamWriter.WriteZString([]byte(msgHeader.Subject), 72 - 1); err12 != nil {
 		return err12
 	}
 
@@ -288,7 +288,7 @@ func (self *PacketWriter) WriteMessage(msgBody *MessageBody) (error) {
 	}
 
 	/* Step 3. Write message body */
-	if err1 := self.binaryStreamWriter.WriteZString(msgBody.RAW); err1 != nil {
+	if err1 := self.binaryStreamWriter.WriteZString(msgBody.RAW, 0); err1 != nil {
 		return err1
 	}
 

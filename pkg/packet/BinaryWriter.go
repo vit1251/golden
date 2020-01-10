@@ -1,9 +1,9 @@
 package packet
 
 import (
-	"io"
-//	"log"
 	"encoding/binary"
+	"io"
+	"log"
 )
 
 type BinaryWriter struct {
@@ -47,10 +47,24 @@ func (self *BinaryWriter) WriteBytes(msg []byte) (error) {
 	return nil
 }
 
-func (self *BinaryWriter) WriteZString(msg []byte) (error) {
-	/* ... */
-	size := len(msg)
-	for j := 0; j < size; j++ {
+func (self *BinaryWriter) WriteZString(msg []byte, maxSize int) (error) {
+
+	log.Printf("Write ZString: maxSize = %d len = %d", maxSize, len(msg))
+
+	/* Set maximum size */
+	var newMaxSize int
+	newMaxSize = len(msg)
+	if maxSize != 0 {
+		if newMaxSize > maxSize {
+			newMaxSize = maxSize
+			log.Printf("Cut length: up to %d", maxSize)
+		}
+	} else {
+		log.Printf("Write ZString without limits")
+	}
+	log.Printf("Write ZString: newMaxSize = %d", newMaxSize)
+
+	for j := 0; j < newMaxSize; j++ {
 		var i1 byte = msg[j]
 		err1 := binary.Write(self.writer, binary.LittleEndian, &i1)
 		if err1 != nil {
