@@ -28,6 +28,7 @@ func (self *AreaManager) GetAreas() ([]*Area) {
 }
 
 func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
+	self.Rescan()
 	return self.AreaList.SearchByName(echoTag)
 }
 
