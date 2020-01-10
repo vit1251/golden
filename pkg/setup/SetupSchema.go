@@ -1,4 +1,4 @@
-package config
+package setup
 
 func Create(section string, name string, summary string) {
 

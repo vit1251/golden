@@ -1,10 +1,10 @@
-package config
+package setup
 
 type ParamType int
 
 const ParamString ParamType = 1
 
-type Param struct {
+type SetupParam struct {
 	Summary    string         /* Parameter summary     */
 	Section    string         /* Parameter section     */
 	Name       string         /* Parameter name        */
@@ -13,33 +13,30 @@ type Param struct {
 	Type       ParamType      /* Parameter value type  */
 }
 
-type ParamStorage struct {
+type SetupManager struct {
 	Path     string  /* Param stroage path */
 	Params []Param   /* Param array        */
 }
 
-func NewParamStorage() (*ParamStorage, error) {
-
-	ps := new(ParamStorage)
-	ps.Path = "~/.golden.sqlite3"
-
-	/* Done */
-	return ps, nil
+func NewSetupManager() (*SetupManager) {
+	sm := new(SetupManager)
+	sm.Path = "~/.golden.sqlite3"
+	return sm
 }
 
-func (self *ParamStorage) Set(name string, value string) (error) {
+func (self *SetupManager) Set(name string, value string) (error) {
 	return nil
 }
 
-func (self *ParamStorage) Get(name string, defaultValue string) (value string, error) {
+func (self *SetupManager) Get(name string, defaultValue string) (value string, error) {
 	return "", nil
 }
 
-func (self *ParamStorage) Register(name string, summary string) (error) {
+func (self *SetupManager) Register(name string, summary string) (error) {
 	return nil
 }
 
-func (self *ParamStorage) Audit(msg string) (error) {
+func (self *SetupManager) Audit(msg string) (error) {
 
 	/* Store audit message in parameter storage */
 
@@ -47,7 +44,7 @@ func (self *ParamStorage) Audit(msg string) (error) {
 
 }
 
-func (self *ParamStorage) Restore() (error) {
+func (self *SetupManager) Restore() (error) {
 
 	/* Open SQL storage */
 	db, err1 := sql.Open("sqlite3", self.Path)
@@ -60,7 +57,7 @@ func (self *ParamStorage) Restore() (error) {
 	return nil
 }
 
-func (self *ParamStorage) Store() (error) {
+func (self *SetupManager) Store() (error) {
 
 	/* Open SQL storage */
 	db, err1 := sql.Open("sqlite3", self.Path)

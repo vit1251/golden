@@ -83,14 +83,14 @@ func (self *Application) StartSite() (error) {
 	webSite := NewWebSite(self)
 	//
 	webSite.Register("/", new(WelcomeAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}", new(EchoAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/compose", new(ComposeAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/compose/complete", new(ComposeCompleteAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/view", new(ViewAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/reply", new(ReplyAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/reply/complete", new(ReplyCompleteAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/remove", new(RemoveAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", new(RemoveCompleteAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}", new(EchoAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/compose", new(ComposeAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/compose/complete", new(ComposeCompleteAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/view", new(ViewAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/reply", new(ReplyAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/reply/complete", new(ReplyCompleteAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/remove", new(RemoveAction))
+	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", new(RemoveCompleteAction))
 	//
 	err := webSite.Start()
 	//

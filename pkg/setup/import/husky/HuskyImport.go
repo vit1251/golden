@@ -7,19 +7,19 @@ import (
 	"strings"
 )
 
-type FidoConfig struct {
+type HuskyImport struct {
 	AreaList *AreaList
 }
 
-func (self *FidoConfig) processNetMail() {
+func (self *HuskyImport) processNetMail() {
 
 }
 
-func (self *FidoConfig) processEchoMail() {
+func (self *HuskyImport) processEchoMail() {
 
 }
 
-func (self *FidoConfig) processLine(row string) (error) {
+func (self *HuskyImport) processLine(row string) (error) {
 	//
 	var params []string
 	scanner := bufio.NewScanner(strings.NewReader(row))
@@ -33,7 +33,7 @@ func (self *FidoConfig) processLine(row string) (error) {
 	return self.processParams(params)
 }
 
-func (self *FidoConfig) processParams(params []string) (error) {
+func (self *HuskyImport) processParams(params []string) (error) {
 	//
 	if len(params) == 0 {
 		return nil
@@ -86,12 +86,12 @@ func (self *FidoConfig) processParams(params []string) (error) {
 	return nil
 }
 
-func (self *FidoConfig) registerArea(a *Area) (error) {
+func (self *HuskyImport) registerArea(a *Area) (error) {
 	self.AreaList.Areas = append(self.AreaList.Areas, a)
 	return nil
 }
 
-func (self *FidoConfig) debugUpdateAreas() (error) {
+func (self *HuskyImport) debugUpdateAreas() (error) {
 	//
 	//
 	a1 := new(Area)
@@ -121,7 +121,7 @@ func (self *FidoConfig) debugUpdateAreas() (error) {
 	return nil
 }
 
-func (self *FidoConfig) UpdateAreas(filename string) (error) {
+func (self *HuskyImport) UpdateAreas(filename string) (error) {
 	//
 	stream, err := os.Open(filename)
 	if err != nil {
@@ -148,8 +148,12 @@ func (self *FidoConfig) UpdateAreas(filename string) (error) {
 	return nil
 }
 
-func ReadAreas(filename string) (*AreaList, error) {
-	c := new(FidoConfig)
+func NewHuskyImport() (*HuskyImport) {
+	hi := new(HuskyImport)
+	return hi
+}
+
+func (self *HuskyImport) ReadAreas(filename string) (*AreaList, error) {
 	c.AreaList = new(AreaList)
 	err1 := c.UpdateAreas(filename)
 	if err1 != nil {
@@ -157,4 +161,3 @@ func ReadAreas(filename string) (*AreaList, error) {
 	}
 	return c.AreaList, nil
 }
-
