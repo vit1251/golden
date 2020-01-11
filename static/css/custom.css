@@ -42,6 +42,7 @@ a {
     flex-shrink: 0;
     flex-grow: 0;
     white-space: pre-wrap;
+    line-height: 1;
 }
 
 .input {
