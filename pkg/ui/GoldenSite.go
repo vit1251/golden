@@ -31,6 +31,7 @@ func (self *GoldenSite) SetSetupManager(sm *setup.SetupManager) {
 func (self *GoldenSite) Start() (error) {
 	//
 	self.WebSite.Register("/", new(WelcomeAction))
+	self.WebSite.Register("/echo", new(AreaAction))
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}", new(EchoAction))
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/compose", new(ComposeAction))
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/compose/complete", new(ComposeCompleteAction))
