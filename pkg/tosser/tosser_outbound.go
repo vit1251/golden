@@ -1,4 +1,4 @@
-package main
+package tosser
 
 import (
 	"github.com/vit1251/golden/pkg/packet"
@@ -10,7 +10,11 @@ import (
 	"log"
 )
 
-func (self *Application) ProcessOutbound() (error) {
+func (self *Tosser) ProcessOutbound() (error) {
+	return nil
+}
+
+func (self *Tosser) ProcessOutboundNew() (error) {
 
 	/* Create packet name */
 	name := "out.pkt"

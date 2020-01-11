@@ -3,6 +3,9 @@ package ui
 import (
 	"net/http"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/msg"
 	"time"
 )
 
@@ -17,22 +20,33 @@ type Route struct {
 }
 
 type WebSite struct {
-	app      *Application
-	routes  []Route
-	rtr      *mux.Router
+	routes        []Route
+	rtr            *mux.Router
+	AreaManager    *area.AreaManager
+	SetupManager   *setup.SetupManager
+	MessageManager *msg.MessageManager
 }
 
 type ViewAction struct {
 	Action
 }
 
-func NewWebSite(app *Application) (*WebSite) {
+func (self *WebSite) GetMessageManager() (*msg.MessageManager) {
+	return self.MessageManager
+}
+
+func (self *WebSite) GetAreaManager() (*area.AreaManager) {
+	return self.AreaManager
+}
+
+func (self *WebSite) GetSetupManager() (*setup.SetupManager) {
+	return self.SetupManager
+}
+
+func NewWebSite() (*WebSite) {
 
 	/* Create new onw web application */
 	webSite := new(WebSite)
-
-	/* Save application reference */
-	webSite.app = app
 
 	/* Create router */
 	rtr := mux.NewRouter()
@@ -75,31 +89,5 @@ func (self *WebSite) Start() (error) {
 }
 
 func (self *WebSite) Stop() (error) {
-	return nil
-}
-
-func (self *Application) StartSite() (error) {
-	//
-	webSite := NewWebSite(self)
-	//
-	webSite.Register("/", new(WelcomeAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}", new(EchoAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/compose", new(ComposeAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/compose/complete", new(ComposeCompleteAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/view", new(ViewAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/reply", new(ReplyAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/reply/complete", new(ReplyCompleteAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/remove", new(RemoveAction))
-	webSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", new(RemoveCompleteAction))
-	//
-	err := webSite.Start()
-	//
-	return err
-}
-
-func (app *Application) StopSite() (error) {
-	//
-//	webSite.Stop()
-	//
 	return nil
 }

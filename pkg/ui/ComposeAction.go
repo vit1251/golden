@@ -26,7 +26,8 @@ func (self *ComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("echoTag = %v", echoTag)
 
 	/* Search area */
-	areaManager := self.Site.app.GetAreaManager()
+	webSite := self.Site
+	areaManager := webSite.GetAreaManager()
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if (err1 != nil) {
 		panic(err1)

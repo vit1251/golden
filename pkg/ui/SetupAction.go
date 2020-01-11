@@ -5,30 +5,32 @@ import (
 //	"github.com/gorilla/mux"
 	"path/filepath"
 	"html/template"
+	"log"
 )
 
-type WelcomeAction struct {
+type SetupAction struct {
 	Action
 }
 
-func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	/* Prepare cache */
 	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "welcome.tmpl")
+	fp := filepath.Join("views", "setup.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
 		panic(err)
 	}
 
+	//
 	webSite := self.Site
 
-	/* Get area manager */
-	areaManager := webSite.GetAreaManager()
+	/* Setup manager operation */
+	setupManager := webSite.GetSetupManager()
+	params := setupManager.GetParams()
+	log.Printf("params = %+v", params)
 
 	/* Render */
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = areaManager.GetAreas()
+	outParams["Params"] = params
 	tmpl.ExecuteTemplate(w, "layout", outParams)
-
 }

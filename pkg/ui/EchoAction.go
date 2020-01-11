@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"path/filepath"
 	"html/template"
+	"fmt"
 	"log"
 )
 
@@ -23,7 +24,9 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fp := filepath.Join("views", "echo.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
-		panic(err)
+		response := fmt.Sprintf("Fail on ParseFiles")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
 
 	/* Parse parameters */
@@ -31,18 +34,25 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
+	webSite := self.Site
+
 	/* Get area manager */
-	areaManager := self.Site.app.GetAreaManager()
+	areaManager := webSite.GetAreaManager()
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if (err1 != nil) {
-		panic(err1)
+		response := fmt.Sprintf("Fail on GetAreaByName where echoTag is %s: err = %+v", echoTag, err1)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
 	log.Printf("area = %v", area)
 
 	/* Get message headers */
-	msgHeaders, err2 := self.Site.app.MessageBaseReader.GetMessageHeaders(echoTag)
+	messageManager := webSite.GetMessageManager()
+	msgHeaders, err2 := messageManager.GetMessageHeaders(echoTag)
 	if (err2 != nil) {
-		panic(err2)
+		response := fmt.Sprintf("Fail on GetMessageHeaders where echoTag is %s: err = %+v", echoTag, err2)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
 	log.Printf("msgHeaders = %q", msgHeaders)
 	for _, msg := range msgHeaders {

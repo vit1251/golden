@@ -13,19 +13,24 @@ type RemoveAction struct {
 }
 
 func (self *RemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "remove.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
 		panic(err)
 	}
+
 	//
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	areaManager := self.Site.app.GetAreaManager()
+	webSite := self.Site
+
+	//
+	areaManager := webSite.GetAreaManager()
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if (err1 != nil) {
 		panic(err1)
@@ -34,7 +39,8 @@ func (self *RemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	//
 	msgHash := vars["msgid"]
-	msg, err2 := self.Site.app.MessageBaseReader.GetMessageByHash(echoTag, msgHash)
+	messageManager := webSite.GetMessageManager()
+	msg, err2 := messageManager.GetMessageByHash(echoTag, msgHash)
 	if (err2 != nil) {
 		panic(err2)
 	}

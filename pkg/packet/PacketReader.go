@@ -388,13 +388,23 @@ func (self *PacketReader) ReadMessage() ([]byte, error) {
 }
 
 func (self *PacketReader) Close() {
+
 	/**/
-	self.binaryStreamReader.Close()
-	self.binaryStreamReader = nil
+	if self.binaryStreamReader != nil {
+		self.binaryStreamReader.Close()
+		self.binaryStreamReader = nil
+	}
+
 	/**/
-//	self.streamReader.Flush()
-	self.streamReader = nil
+	if self.streamReader != nil {
+//		self.streamReader.Flush()
+		self.streamReader = nil
+	}
+
 	/**/
-	self.stream.Close()
-	self.stream = nil
+	if self.stream != nil {
+		self.stream.Close()
+		self.stream = nil
+	}
+
 }

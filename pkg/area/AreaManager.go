@@ -1,7 +1,7 @@
 package area
 
 import (
-	"github.com/vit1251/golden/pkg/msgapi/sqlite"
+	"github.com/vit1251/golden/pkg/msg"
 	"log"
 )
 
@@ -35,19 +35,10 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 func (self *AreaManager) Rescan() {
 
 	/* Open message base */
-	messageBase, err1 := sqlite.NewMessageBase()
-	if err1 != nil {
-		panic(err1)
-	}
-
-	/* Create message base reader */
-	messageBaseReader, err2 := sqlite.NewMessageBaseReader(messageBase)
-	if err2 != nil {
-		panic(err2)
-	}
+	messageManager := msg.NewMessageManager()
 
 	/* Preload echo areas */
-	areas, err3 := messageBaseReader.GetAreaList2()
+	areas, err3 := messageManager.GetAreaList2()
 	if err3 != nil {
 		panic(err3)
 	}

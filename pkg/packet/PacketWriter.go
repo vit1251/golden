@@ -296,15 +296,23 @@ func (self *PacketWriter) WriteMessage(msgBody *MessageBody) (error) {
 }
 
 func (self *PacketWriter) Close() {
+
 	/* Close binary writer */
-	self.binaryStreamWriter.Close()
-	self.binaryStreamWriter = nil
-	/**/
-	if err1 := self.streamWriter.Flush(); err1 != nil {
-		panic(err1)
+	if self.binaryStreamWriter != nil {
+		self.binaryStreamWriter.Close()
+		self.binaryStreamWriter = nil
 	}
-	self.streamWriter = nil
+
+	/* Flush output cache */
+	if self.streamWriter != nil {
+		self.streamWriter.Flush()
+		self.streamWriter = nil
+	}
+
 	/* Close OS stream */
-	self.stream.Close()
-	self.stream = nil
+	if self.stream != nil {
+		self.stream.Close()
+		self.stream = nil
+	}
+
 }

@@ -1,31 +1,49 @@
 
 {{ define "content" }}
 
-<div class="container">
+<div class="row">
 
-    <div class="arealist-items">
+    <div class="col-2 menu">
+
 {{ range .Areas }}
-        <a class="arealist-item-wrap" href="/echo/{{ .Name }}">
-            <div class="arealist-item">
-                <div class="arealist-item-echoid">{{ .Name }}</div>
-                <div class="arealist-item-count">{{ .MessageCount }}</div>
-            </div>
-        </a>
+<a class="arealist-item-wrap" href="/echo/{{ .Name }}">
+        <div class="arealist-item">
+            <div class="arealist-item-echoid">{{ .Name }}</div>
+            <div class="arealist-item-count">{{ .MessageCount }}</div>
+        </div>
+</a>
 {{ end }}
+
     </div>
-    <div class="main">
+
+    <div class="col-10 main">
+
+        <div class="msg-header">
+            <div class="row">
+                <div>From:</div>
+                <div>{{ .Msg.From }}</div>
+            </div>
+            <div class="row">
+                <div>To:</div>
+                <div>{{ .Msg.To }}</div>
+            </div>
+            <div class="row">
+                <div>Subject:</div>
+                <div>{{ .Msg.Subject }}</div>
+            </div>
+        </div>
 
     <div class="actions">
         <div class="action-cover">
-            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/reply">
-                <div class="action btn btn-warning">
+            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/reply" class="btn btn-info">
+                <div class="action">
                     <span>Reply</span>
                 </div>
             </a>
         </div>
         <div class="action-cover">
-            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/remove">
-                <div class="action btn btn-warning">
+            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/remove" class="btn btn-info">
+                <div class="action">
                     <span>Remove</span>
                 </div>
             </a>

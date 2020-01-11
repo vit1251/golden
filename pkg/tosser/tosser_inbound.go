@@ -1,4 +1,4 @@
-package main
+package tosser
 
 import (
 	"log"
@@ -6,22 +6,14 @@ import (
 	"io"
 	"io/ioutil"
 	"github.com/vit1251/golden/pkg/packet"
-	"github.com/vit1251/golden/pkg/msgapi/sqlite"
-	"github.com/vit1251/golden/pkg/tosser"
+	"github.com/vit1251/golden/pkg/msg"
 	"strings"
 	"errors"
 )
 
-func ProcessPacket(name string) (error) {
+func (self *Tosser) ProcessPacket(name string) (error) {
 
-	mBase, err1 := sqlite.NewMessageBase()
-	if err1 != nil {
-		return err1
-	}
-	mBaseWriter, err2 := sqlite.NewMessageBaseWriter(mBase)
-	if err2 != nil {
-		return err2
-	}
+	messageManager := msg.NewMessageManager()
 
 	/* Start new packet reader */
 	pr, err3 := packet.NewPacketReader(name)
@@ -112,7 +104,7 @@ func ProcessPacket(name string) (error) {
 //		}
 
 		/* Check unique item */
-		exists, err9 := mBaseWriter.IsMessageExistsByHash(areaName, msgHash)
+		exists, err9 := messageManager.IsMessageExistsByHash(areaName, msgHash)
 		if err9 != nil {
 			return err9
 		}
@@ -123,7 +115,7 @@ func ProcessPacket(name string) (error) {
 		} else {
 
 			/* Create msgapi.Message */
-			newMsg := new(sqlite.Message)
+			newMsg := new(msg.Message)
 			newMsg.SetMsgID(msgHash)
 			newMsg.SetArea(areaName)
 			newMsg.SetFrom(msgHeader.FromUserName)
@@ -134,7 +126,7 @@ func ProcessPacket(name string) (error) {
 			newMsg.SetContent(newBody)
 
 			/* Store message */
-			err := mBaseWriter.Write(newMsg)
+			err := messageManager.Write(newMsg)
 			log.Printf("err = %v", err)
 
 			/* Update counter */
@@ -149,12 +141,9 @@ func ProcessPacket(name string) (error) {
 	return nil
 }
 
-func SearchArcmail() {
+func (self *Tosser) SearchArcmail() {
 
-	baseDir := "/var/spool/ftn/inb"
-	workDirectory := "/var/spool/ftn/tmp.inb"
-
-	items, err := ioutil.ReadDir(baseDir)
+	items, err := ioutil.ReadDir(self.inboundDirectory)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -165,14 +154,14 @@ func SearchArcmail() {
 			if IsNetmail(item.Name()) {
 
 			} else if IsArchmail(item.Name()) {
-				absPath := path.Join(baseDir, item.Name())
+				absPath := path.Join(self.inboundDirectory, item.Name())
 				log.Printf("Process %s", absPath)
-				packets, err := tosser.Unpack(absPath, workDirectory)
+				packets, err := Unpack(absPath, self.workInboundDirectory)
 				if err != nil {
 					log.Fatal(err)
 				}
 				for _, packet := range packets {
-					ProcessPacket(packet)
+					self.ProcessPacket(packet)
 				}
 				log.Printf("Packets %s", packets)
 			}
@@ -181,8 +170,8 @@ func SearchArcmail() {
 
 }
 
-func (self *Application) ProcessInbound() (error) {
-	SearchArcmail()
+func (self *Tosser) ProcessInbound() (error) {
+	self.SearchArcmail()
 	//ProcessPacket("testdata/5de3695e.pkt")
 	return nil
 }

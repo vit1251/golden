@@ -27,7 +27,10 @@ func (self *ReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	areaManager := self.Site.app.GetAreaManager()
+	webSite := self.Site
+
+	//
+	areaManager := webSite.GetAreaManager()
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if (err1 != nil) {
 		panic(err1)
@@ -36,7 +39,8 @@ func (self *ReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	//
 	msgHash := vars["msgid"]
-	msg, err2 := self.Site.app.MessageBaseReader.GetMessageByHash(echoTag, msgHash)
+	messageManager := webSite.GetMessageManager()
+	msg, err2 := messageManager.GetMessageByHash(echoTag, msgHash)
 	if (err2 != nil) {
 		panic(err2)
 	}

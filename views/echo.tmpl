@@ -1,8 +1,11 @@
 
+
 {{ define "content" }}
 
-<div class="container">
-    <div class="arealist-items">
+<div class="row">
+
+    <div class="col-2 menu">
+
 {{ range .Areas }}
 <a class="arealist-item-wrap" href="/echo/{{ .Name }}">
         <div class="arealist-item">
@@ -11,8 +14,10 @@
         </div>
 </a>
 {{ end }}
+
     </div>
-    <div class="main">
+
+    <div class="col-10 main">
 
         <h1>{{ .Area.Name }}</h1>
 
@@ -28,15 +33,11 @@
                         </a>
                     </td>
                     <td class="message-header-date">{{ $msgHeader.DateWritten }}</td>
-                    <td class="message-header-actions">
-                        <a href="/echo/{{ $.Area.Name }}/message/{{ $msgHeader.Hash }}/remove">Remove</a>
-                    </td>
                 </tr>
 {{ end }}
             </tbody>
         </table>
 
     </div>
-</div>
 
 {{ end }}

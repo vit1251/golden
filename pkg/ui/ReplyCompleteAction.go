@@ -119,7 +119,10 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	areaManager := self.Site.app.GetAreaManager()
+	webSite := self.Site
+
+	//
+	areaManager := webSite.GetAreaManager()
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if (err1 != nil) {
 		panic(err1)
@@ -139,4 +142,8 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	ProcessReplyMessage(um)
 	//
 	log.Printf("to = %s subj = %s body = %s", to, subj, body)
+
+	//
+	newLocation := fmt.Sprintf("/echo/%s", echoTag)
+	http.Redirect(w, r, newLocation, 303)
 }

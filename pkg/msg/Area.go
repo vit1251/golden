@@ -1,4 +1,4 @@
-package sqlite
+package msg
 
 type Area struct {
 	Name    string
