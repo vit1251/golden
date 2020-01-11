@@ -1,6 +1,8 @@
 package setup
 
 import (
+	"os/user"
+	"path/filepath"
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
@@ -31,8 +33,16 @@ type SetupManager struct {
 func NewSetupManager() (*SetupManager) {
 	sm := new(SetupManager)
 
+	/* Search user home directory */
+	usr, err1 := user.Current()
+	if err1 != nil {
+		panic( err1 )
+	}
+	userHomeDirectory := usr.HomeDir
+	log.Printf("userHomeDirectory = %+v", userHomeDirectory)
+
 	/* Set parameter storage */
-	sm.Path = "/var/spool/ftn/user.sqlite3"
+	sm.Path = filepath.Join(userHomeDirectory, "golden.sqlite3")
 
 	/* Set parameter */
 	sm.Register("main", "Origin", "Origin was provide BBS station name and network address")
@@ -49,8 +59,8 @@ func NewSetupManager() (*SetupManager) {
 	sm.restoreDefault()
 
 	/* Overwrite user parameters */
-	err1 := sm.Restore()
-	if err1 != nil {
+	err2 := sm.Restore()
+	if err2 != nil {
 		log.Printf("err1 = %+v", err1)
 	}
 
