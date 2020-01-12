@@ -3,6 +3,7 @@ jobs:
   build:
     working_directory: /tmp/golden-1.2.3
     docker:
+      - image: debian:10
       - image: circleci/golang:1.13
     steps:
       - checkout
