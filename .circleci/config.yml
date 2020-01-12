@@ -7,6 +7,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Update Go depenedncies
+          command: /bin/sh ./depend.sh
+      - run:
           name: Check Golden point module compatibles
           command: /bin/sh ./check.sh
       - run:

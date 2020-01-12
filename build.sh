@@ -3,10 +3,7 @@
 set -x
 
 # Step 0. Move executable
-mv ./golden ./golden.bak
-
-# Step 1. Download source code dependencies
-go get -v
+rm -rf ./golden
 
 # Step 2. Compile Golden
 go build -o golden .
