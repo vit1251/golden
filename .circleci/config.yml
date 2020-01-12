@@ -7,14 +7,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Check Golden point modle compatible
-          command: go test .
+          name: Check Golden point module compatibles
+          command: go test ./...
       - run:
           name: Build Golden Point Linux binnary package
-          command: go build .
+          command: /bin/sh ./build.sh
       - run:
           name: Create binnary package distribution
           command: /bin/sh ./package.sh
       - store_artifacts:
-          path: /opt/golden-1.2.3/*.deb
+          path: *.deb
           destination: raw-test-output

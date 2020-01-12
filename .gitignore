@@ -4,4 +4,6 @@ go.sum
 *.pkt
 golden
 *.bak
+*.deb
+package
 
