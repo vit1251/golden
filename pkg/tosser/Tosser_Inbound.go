@@ -10,6 +10,55 @@ import (
 	"errors"
 )
 
+func (self *Tosser) parseCharsetKludge(charsetKludge string) (string) {
+
+	var result string = "CP866"
+
+	/* Trim spaces */
+	charsetKludge = strings.Trim(charsetKludge, " ")
+
+	/* Split */
+	charsetParts := strings.Split(charsetKludge, " ")
+	charsetPartCount := len(charsetParts)
+	if charsetPartCount == 2 {
+		result = charsetParts[0]
+	}
+
+	log.Printf("Message charset: %+v", result)
+
+	return result
+
+}
+
+func (self *Tosser) decodeMessageBody(msgBody []byte, charset string) (string, error) {
+
+	var result string
+
+	if charset == "CP866" {
+
+		if unicodeBody, err1 := packet.DecodeText(msgBody); err1 == nil {
+			result = string(unicodeBody)
+		} else {
+			return result, err1
+		}
+
+	} else if charset == "UTF-8" {
+
+		result = string(msgBody)
+
+	} else if charset == "LATIN-1" {
+
+		result = string(msgBody)
+
+	} else {
+
+		return result, errors.New("Fail charset on message")
+
+	}
+
+	return result, nil
+}
+
 func (self *Tosser) ProcessPacket(name string) (error) {
 
 	messageManager := msg.NewMessageManager()
@@ -65,21 +114,15 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 		}
 
 		/* Decode message */
-		charset := msgBody.GetKludge("CHRS", "CP866 2")
-		charset = strings.Trim(charset, " ")
-		log.Printf("charset = %+v", charset)
-		var newBody string
-		if charset == "CP866 2" {
-			if unicodeBody, err9 := packet.DecodeText(msgBody.RAW); err9 == nil {
-				newBody = string(unicodeBody)
-			} else {
-				return err9
-			}
-		} else if charset == "UTF-8 4"{
-			newBody = string(msgBody.RAW)
-		} else {
-			return errors.New("Fail charset on message")
+		charsetKludge := msgBody.GetKludge("CHRS", "CP866 2")
+		charset := self.parseCharsetKludge(charsetKludge)
+
+		/* Decode message body */
+		newBody, err9 := self.decodeMessageBody(msgBody.RAW, charset)
+		if err9 != nil {
+			return err9
 		}
+
 
 		/* Determine msgid */
 		msgid := msgBody.GetKludge("MSGID", "")
