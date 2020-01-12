@@ -2,11 +2,10 @@ package tosser
 
 import (
 	"log"
-	"path"
 	"io"
-	"io/ioutil"
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/mailer"
 	"strings"
 	"errors"
 )
@@ -141,53 +140,61 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 	return nil
 }
 
-func (self *Tosser) SearchArcmail() {
+func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) (error) {
+	return nil
+}
 
-	items, err := ioutil.ReadDir(self.inboundDirectory)
-	if err != nil {
-		log.Fatal(err)
+func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
+
+	packets, err1 := Unpack(item.AbsolutePath, self.workInboundDirectory)
+	if err1 != nil {
+		return err1
 	}
 
-	for _, item := range items {
-
-		absPath := path.Join(self.inboundDirectory, item.Name())
-
-		mode := item.Mode()
-		if (mode.IsRegular()) {
-
-			if IsNetmail(item.Name()) {
-
-				log.Printf("Found netmail packet %s. Skip.", item.Name() )
-
-			} else if IsArchmail(item.Name()) {
-
-				log.Printf("Found archmail packet %s. Process.", item.Name() )
-
-				log.Printf("Process %s", absPath)
-
-				packets, err := Unpack(absPath, self.workInboundDirectory)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				log.Printf("Process FTN packets %+v", packets)
-
-				for _, packet := range packets {
-					self.ProcessPacket(packet)
-				}
-
-			} else {
-
-				log.Printf("Found unknown packet %s. Skip.", item.Name() )
-
-			}
-		}
+	for _, packet := range packets {
+		log.Printf("-- Process FTN packets %+v", packets)
+		err2 := self.ProcessPacket(packet)
+		log.Printf("error durng parse package: err = %+v", err2)
 	}
+
+	return nil
 
 }
 
-func (self *Tosser) ProcessInbound() (error) {
-	self.SearchArcmail()
-	//ProcessPacket("testdata/5de3695e.pkt")
+func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	return nil
+}
+
+func (self *Tosser) ProcessInbound() (error) {
+
+	/* New mailer inbound */
+	mi := mailer.NewMailerInbound()
+//	if err1 != nil {
+//		return err1
+//	}
+	mi.SetInboundDirectory(self.inboundDirectory)
+
+	/* Scan inbound */
+	items, err2 := mi.Scan()
+	if err2 != nil {
+		return err2
+	}
+
+	for _, item := range items {
+		if item.Type == mailer.TypeNetmail {
+			log.Printf(" - Found Netmail packet %s. Skip.", item.Name)
+			self.processNetmail(item)
+		} else if item.Type == mailer.TypeARCmail {
+			log.Printf(" - Found ARCmail packet %s. Process.", item.Name)
+			self.processARCmail(item)
+		} else if item.Type == mailer.TypeTICmail {
+			log.Printf(" - Found TIC packet %s. Skip.", item.Name)
+			self.processTICmail(item)
+		} else {
+			log.Printf(" - Found other packet %s. Skip.", item.Name)
+		}
+	}
+
+	return nil
+
 }

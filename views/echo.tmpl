@@ -29,7 +29,11 @@
                     <td class="message-header-netaddr">{{ $msgHeader.To }}</td>
                     <td class="message-header-subject">
                         <a class="message-item-wrap" href="/echo/{{ $.Area.Name }}/message/{{ $msgHeader.Hash }}/view">
+{{ if $msgHeader.Subject }}
                             <span>{{ $msgHeader.Subject }}</span>
+{{ else }}
+                            <span>-empty-</span>
+{{ end }}
                         </a>
                     </td>
                     <td class="message-header-date">{{ $msgHeader.DateWritten }}</td>
