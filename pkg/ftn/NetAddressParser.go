@@ -8,62 +8,82 @@ import (
 type NetAddressParserState int
 
 const (
+
+	UnknownState  NetAddressParserState = 0
+
 	ZoneState     NetAddressParserState = 1
 	NetState      NetAddressParserState = 2
 	NodeState     NetAddressParserState = 3
 	PointState    NetAddressParserState = 4
+
 )
 
 type NetAddressParser struct {
-	State     NetAddressParserState   /* Parser state */
-	addr      NetAddress
+	state     NetAddressParserState   /* Parser state    */
+	addr      NetAddress              /* Result address  */
+	cache     bytes.Buffer            /* Cache           */
 }
 
 func NewNetAddressParser() (*NetAddressParser) {
 	ap := new(NetAddressParser)
-	ap.State = ZoneState
+	ap.state = ZoneState
 	return ap
 }
 
+func (self *NetAddressParser) processComplete() {
+
+	if self.state == ZoneState {
+		self.addr.Zone = self.cache.String()
+		self.cache.Reset()
+		self.state = NetState
+	} else if self.state == NetState {
+		self.addr.Net = self.cache.String()
+		self.cache.Reset()
+		self.state = NodeState
+	} else if self.state == NodeState {
+		self.addr.Node = self.cache.String()
+		self.cache.Reset()
+		self.state = PointState
+	} else if self.state == PointState {
+		self.addr.Point = self.cache.String()
+		self.cache.Reset()
+		self.state = UnknownState
+	}
+
+}
+
 func (self *NetAddressParser) Parse(addr string) (*NetAddress, error) {
-	var buffer bytes.Buffer
-	//
+
 	for _, rune := range addr {
-		if self.State == ZoneState {
+		if self.state == ZoneState {
 			if rune == ':' {
-				self.addr.Zone = buffer.String()
-				buffer.Reset()
-				self.State = NetState
+				self.processComplete()
 			} else {
-				buffer.WriteRune(rune)
+				self.cache.WriteRune(rune)
 			}
-		} else if self.State == NetState {
+		} else if self.state == NetState {
 			if rune == '/' {
-				self.addr.Net = buffer.String()
-				buffer.Reset()
-				self.State = NodeState
+				self.processComplete()
 			} else {
-				buffer.WriteRune(rune)
+				self.cache.WriteRune(rune)
 			}
-		} else if self.State == NodeState {
+		} else if self.state == NodeState {
 			if rune == '.' {
-				self.addr.Node = buffer.String()
-				buffer.Reset()
-				self.State = PointState
+				self.processComplete()
 			} else {
-				buffer.WriteRune(rune)
+				self.cache.WriteRune(rune)
 			}
-		} else if self.State == PointState {
-			buffer.WriteRune(rune)
+		} else if self.state == PointState {
+			self.cache.WriteRune(rune)
 		}
 	}
-	//
-	if self.State == PointState {
-		self.addr.Point = buffer.String()
-		buffer.Reset()
-	}
-	//
-	log.Printf("add = %q", self.addr)
-	//
+
+	/* Last section */
+	self.processComplete()
+
+	/* Debug message */
+	log.Printf("NetAddressParser.Parse: %s => %+v", addr, self.addr)
+
+	/* Done */
 	return &self.addr, nil
 }

@@ -4,28 +4,51 @@ import (
 	"testing"
 )
 
-func TestMessage(t *testing.T) {
+func TestParseQuoteLineMessage1(t *testing.T) {
 
-	var msg string = "Hello, All!\n" +
-	    "\n"+
-	    " VS> Level1\n" +
-	    "\n"+
-	    " VS>> Level2\n" +
-	    " VS>> Level2\n" +
-	    "\n"+
-	    " VS>>> Level3\n" +
-	    " VS>>> Level3\n" +
-	    "\n"+
-	    " VS>> Level2\n" +
-	    " VS>> Level2\n" +
-	    "\n"+
-	    " VS> Level1\n" +
-	    " VS> Level1\n" +
-	    "\n"+
-	    "Всего хорошего.\n"
+	msgProc := NewMessageTextReader()
 
-	mr := NewMessageTextReader()
-	outDoc := mr.Prepare(msg)
+	var origMsg string = "Hello, All!"
 
-	t.Errorf("outDoc = %s", outDoc)
+	author, quoteLevel, msg :=  msgProc.ParseQuoteLine(origMsg)
+	if author != "" {
+	}
+	if quoteLevel != "" {
+	}
+	if msg != origMsg {
+	}
+
 }
+
+//func TestParseQuoteLineMessage2(t *testing.T) {
+//	var row2 string = ""
+//}
+
+//func TestParseQuoteLineMessage3(t *testing.T) {
+//	var row3 string = " VS> Level1"
+//}
+
+//func TestParseQuoteLineMessage4(t *testing.T) {
+//	var row4 string = " VS>> Level2"
+//}
+
+//func TestParseQuoteLineMessage5(t *testing.T) {
+//	var row5 string = "> Quote"
+//}
+
+func TestParseQuoteLineMessage6(t *testing.T) {
+
+	msgProc := NewMessageTextReader()
+
+	var origMsg string = "Line contain > in body"
+
+	author, quoteLevel, msg :=  msgProc.ParseQuoteLine(origMsg)
+	if author != "" {
+	}
+	if quoteLevel != "" {
+	}
+	if msg != origMsg {
+	}
+
+}
+

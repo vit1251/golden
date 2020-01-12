@@ -44,7 +44,7 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
-	log.Printf("area = %v", area)
+	log.Printf("area = %+v", area)
 
 	/* Get message headers */
 	messageManager := webSite.GetMessageManager()
@@ -54,9 +54,9 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
-	log.Printf("msgHeaders = %q", msgHeaders)
+	log.Printf("msgHeaders = %+v", msgHeaders)
 	for _, msg := range msgHeaders {
-		log.Printf("msg = %q", msg)
+		log.Printf("msg = %+v", msg)
 	}
 
 	/* Rener */

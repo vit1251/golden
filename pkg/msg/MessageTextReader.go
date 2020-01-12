@@ -30,6 +30,14 @@ const (
 	LineQuoteBody      = 2
 )
 
+func (self *MessageTextReader) ParseQuoteLine(quoteLine string) (author string, quoteLevel string, msg string) {
+
+	msg = quoteLine
+
+	return author, quoteLevel, msg
+
+}
+
 func (self *MessageTextReader) processLine(oneLine string) string {
 
 	log.Printf("oneLine = %s", oneLine)

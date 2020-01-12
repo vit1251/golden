@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Check Golden point module compatibles
-          command: go test ./...
+          command: /bin/sh ./check.sh
       - run:
           name: Build Golden Point Linux binnary package
           command: /bin/sh ./build.sh

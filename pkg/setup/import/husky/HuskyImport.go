@@ -154,10 +154,10 @@ func NewHuskyImport() (*HuskyImport) {
 }
 
 func (self *HuskyImport) ReadAreas(filename string) (*AreaList, error) {
-	c.AreaList = new(AreaList)
-	err1 := c.UpdateAreas(filename)
+	self.AreaList = new(AreaList)
+	err1 := self.UpdateAreas(filename)
 	if err1 != nil {
 		return nil, err1
 	}
-	return c.AreaList, nil
+	return self.AreaList, nil
 }
