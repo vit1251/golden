@@ -2,6 +2,7 @@ package tosser
 
 import (
 	"path/filepath"
+	"strings"
 )
 
 type Tosser struct {
@@ -23,8 +24,25 @@ func IsNetmail(name string) bool {
 }
 
 func IsArchmail(name string) bool {
+	var result bool = false
 	var ext string = filepath.Ext(name)
-	return ext != ".pkt"
+
+	/* Monday packet */
+	if strings.HasPrefix(ext, ".MO") {
+		result = true
+	}
+
+	// ...
+
+	/* Saturday packet */
+	if strings.HasPrefix(ext, ".SA") {
+		result = true
+	}
+	if strings.HasPrefix(ext, ".SU") {
+		result = true
+	}
+
+	return result
 }
 
 func (self *Tosser) Toss() {

@@ -54,6 +54,9 @@ func NewSetupManager() (*SetupManager) {
 	sm.Register("main", "MessageBaseDirectory", "Directory where store message base")
 	sm.Register("main", "Address", "FidoNet network point address (i.e. POINT address)")
 	sm.Register("main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
+	sm.Register("main", "RealName", "Realname is by fido policy is you English version of First and Last name (example: Dmitri Kamenski")
+	sm.Register("main", "Country", "Country where user is seat")
+	sm.Register("main", "City", "City where user is seat")
 
 	/* Recover default parameters */
 	sm.restoreDefault()

@@ -149,21 +149,37 @@ func (self *Tosser) SearchArcmail() {
 	}
 
 	for _, item := range items {
+
+		absPath := path.Join(self.inboundDirectory, item.Name())
+
 		mode := item.Mode()
 		if (mode.IsRegular()) {
+
 			if IsNetmail(item.Name()) {
 
+				log.Printf("Found netmail packet %s. Skip.", item.Name() )
+
 			} else if IsArchmail(item.Name()) {
-				absPath := path.Join(self.inboundDirectory, item.Name())
+
+				log.Printf("Found archmail packet %s. Process.", item.Name() )
+
 				log.Printf("Process %s", absPath)
+
 				packets, err := Unpack(absPath, self.workInboundDirectory)
 				if err != nil {
 					log.Fatal(err)
 				}
+
+				log.Printf("Process FTN packets %+v", packets)
+
 				for _, packet := range packets {
 					self.ProcessPacket(packet)
 				}
-				log.Printf("Packets %s", packets)
+
+			} else {
+
+				log.Printf("Found unknown packet %s. Skip.", item.Name() )
+
 			}
 		}
 	}
