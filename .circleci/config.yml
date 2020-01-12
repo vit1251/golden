@@ -1,0 +1,17 @@
+version: 2
+jobs:
+  build:
+    working_directory: /opt/golden-1.2.3
+    docker:
+      - image: circleci/golang:1.13
+    steps:
+      - checkout
+      - run:
+          name: Waiting for Postgres to be ready
+          command: go build .
+      - run:
+          name: Package
+          command: /bin/sh ./package.sh
+      - store_artifacts:
+          path: /opt/golden-1.2.3/*.deb
+          destination: raw-test-output
