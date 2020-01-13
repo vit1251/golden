@@ -18,7 +18,45 @@
 
     <div class="col-10 main">
 
-        <div class="msg-header">
+
+
+    <div class="actions">
+        <div class="action-cover">
+            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/topic" class="btn btn-info">
+                <div class="action">
+                    <img src="/static/img/icon/topic-50.png">
+                    <span>Tree</span>
+                </div>
+            </a>
+        </div>
+        <div class="action-cover">
+            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/star" class="btn btn-info">
+                <div class="action">
+                    <img src="/static/img/icon/star-50.png">
+                    <span>Star</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="action-cover">
+            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/reply" class="btn btn-info">
+                <div class="action">
+                    <img src="/static/img/icon/quote-50.png">
+                    <span>Reply</span>
+                </div>
+            </a>
+        </div>
+        <div class="action-cover">
+            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/remove" class="btn btn-info">
+                <div class="action">
+                    <img src="/static/img/icon/remove-50.png">
+                    <span>Remove</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+        <div class="msg-header" style="border-bottom: 1px solid blue">
             <div class="row">
                 <div>From:</div>
                 <div>{{ .Msg.From }}</div>
@@ -32,23 +70,6 @@
                 <div>{{ .Msg.Subject }}</div>
             </div>
         </div>
-
-    <div class="actions">
-        <div class="action-cover">
-            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/reply" class="btn btn-info">
-                <div class="action">
-                    <span>Reply</span>
-                </div>
-            </a>
-        </div>
-        <div class="action-cover">
-            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/remove" class="btn btn-info">
-                <div class="action">
-                    <span>Remove</span>
-                </div>
-            </a>
-        </div>
-    </div>
 
         <div class="message-preview">
 
