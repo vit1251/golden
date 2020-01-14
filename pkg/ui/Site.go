@@ -25,10 +25,15 @@ type WebSite struct {
 	AreaManager    *area.AreaManager
 	SetupManager   *setup.SetupManager
 	MessageManager *msg.MessageManager
+	version         string
 }
 
-type ViewAction struct {
-	Action
+func (self *WebSite) SetVersion(Version string) {
+	self.version = Version
+}
+
+func (self *WebSite) GetVersion() (string) {
+	return self.version
 }
 
 func (self *WebSite) GetMessageManager() (*msg.MessageManager) {

@@ -21,14 +21,13 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	/* Get dependency injection manager */
 	webSite := self.Site
-
-	/* Get area manager */
-	areaManager := webSite.GetAreaManager()
+	version := webSite.GetVersion()
 
 	/* Render */
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = areaManager.GetAreas()
+	outParams["Version"] = version
 	tmpl.ExecuteTemplate(w, "layout", outParams)
 
 }

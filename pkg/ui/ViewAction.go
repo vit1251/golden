@@ -9,6 +9,10 @@ import (
 	"log"
 )
 
+type ViewAction struct {
+	Action
+}
+
 func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	lp := filepath.Join("views", "layout.tmpl")

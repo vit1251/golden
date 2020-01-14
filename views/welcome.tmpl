@@ -5,25 +5,8 @@
         <img src="/static/img/fido.gif">
     </div>
 
-{{ range .Areas }}
-    <div>
-        <a href="/echo/{{ .Name }}" class="btn btn-warning">
-            <span class="">Работа с сообщениями {{ .Name }}</span>
-        </a>
-    </div>
-{{ end }}
+    <h1>Golden point</h1>
 
-    <div>
-        <a href="/filebox" class="btn btn-warning">
-            <span class="">Работа с файлами</span>
-        </a>
-    </div>
-
-    <div>
-        <a href="/setup" class="btn btn-warning">
-            <span class="">Настройки</span>
-        </a>
-    </div>
-
+    <h2>Version {{ .Version }}</h2>
 
 {{ end }}

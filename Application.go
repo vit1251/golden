@@ -15,6 +15,13 @@ type Application struct {
 	AreaManager       *area.AreaManager
 	SetupManager      *setup.SetupManager
 	MessageManager    *msg.MessageManager
+	Version            string                /* Golden Point version string  */
+}
+
+func NewApplication() (*Application) {
+	app := new(Application)
+	app.Version = "1.2.3"
+	return app
 }
 
 func (self *Application) GetAreaManager() (*area.AreaManager) {
@@ -74,6 +81,7 @@ func (self *Application) Run() {
 	newGoldenSite.SetSetupManager(self.SetupManager)
 	newGoldenSite.SetAreaManager(self.AreaManager)
 	newGoldenSite.SetMessageManager(self.MessageManager)
+	newGoldenSite.SetVersion(self.Version)
 	newGoldenSite.Start()
 
 }
