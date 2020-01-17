@@ -12,6 +12,11 @@ type RemoveAction struct {
 	Action
 }
 
+func NewRemoveAction() (*RemoveAction) {
+	ra:=new(RemoveAction)
+	return ra
+}
+
 func (self *RemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	lp := filepath.Join("views", "layout.tmpl")
@@ -47,7 +52,6 @@ func (self *RemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	//
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = areaManager.GetAreas()
 	outParams["Area"] = area
 	outParams["Msg"] = msg
 	tmpl.ExecuteTemplate(w, "layout", outParams)

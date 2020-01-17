@@ -6,14 +6,17 @@ import (
 	msgProc "github.com/vit1251/golden/pkg/msg"
 	"path/filepath"
 	"html/template"
+	"fmt"
 	"log"
 )
 
 type ViewAction struct {
 	Action
+	tmpl     *template.Template
 }
 
-func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func NewViewAction() (*ViewAction) {
+	va:=new(ViewAction)
 
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "view.tmpl")
@@ -21,6 +24,12 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+	va.tmpl = tmpl
+
+	return va
+}
+
+func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	//
 	vars := mux.Vars(r)
@@ -38,18 +47,30 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("area = %v", area)
 
+	/* Get message area */
+	areas, err2 := areaManager.GetAreas()
+	if err2 != nil {
+		response := fmt.Sprintf("Fail on GetAreas")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+
 	//
 	messageManager := webSite.GetMessageManager()
 	msgHeaders, err112 := messageManager.GetMessageHeaders(echoTag)
 	if (err112 != nil) {
-		panic(err112)
+		response := fmt.Sprintf("Fail on GetAreas")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
 
 	//
 	msgHash := vars["msgid"]
-	msg, err2 := messageManager.GetMessageByHash(echoTag, msgHash)
-	if (err2 != nil) {
-		panic(err2)
+	msg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
+	if (err3 != nil) {
+		response := fmt.Sprintf("Fail on GetAreas")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
 	var content string
 	if msg != nil {
@@ -63,10 +84,10 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Render */
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = areaManager.GetAreas()
+	outParams["Areas"] = areas
 	outParams["Area"] = area
 	outParams["Headers"] = msgHeaders
 	outParams["Msg"] = msg
 	outParams["Content"] = outDoc
-	tmpl.ExecuteTemplate(w, "layout", outParams)
+	self.tmpl.ExecuteTemplate(w, "layout", outParams)
 }

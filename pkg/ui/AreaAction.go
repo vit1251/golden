@@ -9,23 +9,25 @@ import (
 
 type AreaAction struct {
 	Action
+	tmpl     *template.Template
 }
 
 func NewAreaAction() (*AreaAction) {
-	return new(AreaAction)
-}
-
-func (self *AreaAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	aa := new(AreaAction)
 
 	/* Prepare cache */
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "area.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
-		response := fmt.Sprintf("Fail on ParseFiles")
-		http.Error(w, response, http.StatusInternalServerError)
-		return
+		panic(err)
 	}
+	aa.tmpl = tmpl
+
+	return aa
+}
+
+func (self *AreaAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Parse parameters */
 	webSite := self.Site
@@ -33,9 +35,17 @@ func (self *AreaAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	/* Get area manager */
 	areaManager := webSite.GetAreaManager()
 
+	/* Get message area */
+	areas, err1 := areaManager.GetAreas()
+	if err1 != nil {
+		response := fmt.Sprintf("Fail on GetAreas")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+
 	/* Rener */
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = areaManager.GetAreas()
-	tmpl.ExecuteTemplate(w, "layout", outParams)
+	outParams["Areas"] = areas
+	self.tmpl.ExecuteTemplate(w, "layout", outParams)
 
 }

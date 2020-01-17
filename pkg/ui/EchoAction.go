@@ -11,25 +11,27 @@ import (
 
 type EchoAction struct {
 	Action
+	tmpl  *template.Template
 }
 
 func NewEchoAction() (*EchoAction) {
-	return new(EchoAction)
-}
-
-func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	ea := new(EchoAction)
 
 	/* Prepare cache */
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "echo.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
-		response := fmt.Sprintf("Fail on ParseFiles")
-		http.Error(w, response, http.StatusInternalServerError)
-		return
+		panic(err)
 	}
+	ea.tmpl = tmpl
 
-	/* Parse parameters */
+	return ea
+}
+
+func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	/* Parse URL parameters */
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
@@ -38,6 +40,7 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Get area manager */
 	areaManager := webSite.GetAreaManager()
+
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if (err1 != nil) {
 		response := fmt.Sprintf("Fail on GetAreaByName where echoTag is %s: err = %+v", echoTag, err1)
@@ -45,6 +48,14 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Printf("area = %+v", area)
+
+	/* Get message area */
+	areas, err2 := areaManager.GetAreas()
+	if err2 != nil {
+		response := fmt.Sprintf("Fail on GetAreas")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
 
 	/* Get message headers */
 	messageManager := webSite.GetMessageManager()
@@ -61,9 +72,9 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Rener */
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = areaManager.GetAreas()
+	outParams["Areas"] = areas
 	outParams["Area"] = area
 	outParams["Headers"] = msgHeaders
-	tmpl.ExecuteTemplate(w, "layout", outParams)
+	self.tmpl.ExecuteTemplate(w, "layout", outParams)
 
 }

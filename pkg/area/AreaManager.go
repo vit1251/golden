@@ -39,10 +39,7 @@ func (self *AreaManager) Register(a *Area) {
 	self.AreaList.Areas = append(self.AreaList.Areas, a)
 }
 
-func (self *AreaManager) GetAreas() ([]*Area) {
-	self.Rescan()
-	return self.AreaList.Areas
-}
+
 
 func (self *AreaManager) checkSchema(conn *sql.DB) (error) {
 
@@ -60,6 +57,34 @@ func (self *AreaManager) checkSchema(conn *sql.DB) (error) {
 
 	return nil
 
+}
+
+func (self *AreaManager) Rescan() {
+
+	/* Open message base */
+	messageManager := msg.NewMessageManager()
+
+	/* Preload echo areas */
+	areas, err3 := messageManager.GetAreaList2()
+	if err3 != nil {
+		panic(err3)
+	}
+
+	/* Reset areas */
+	self.Reset()
+	for _, area := range areas {
+		log.Printf("area = %q", area)
+		a := NewArea()
+		a.Name = area.Name
+		a.MessageCount = area.Count
+		self.Register(a)
+	}
+
+}
+
+func (self *AreaManager) GetAreas() ([]*Area, error) {
+	self.Rescan()
+	return self.AreaList.Areas, nil
 }
 
 func (self *AreaManager) GetAreas2() ([]*Area, error) {
@@ -108,25 +133,3 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 	return self.AreaList.SearchByName(echoTag)
 }
 
-func (self *AreaManager) Rescan() {
-
-	/* Open message base */
-	messageManager := msg.NewMessageManager()
-
-	/* Preload echo areas */
-	areas, err3 := messageManager.GetAreaList2()
-	if err3 != nil {
-		panic(err3)
-	}
-
-	/* Reset areas */
-	self.Reset()
-	for _, area := range areas {
-		log.Printf("area = %q", area)
-		a := NewArea()
-		a.Name = area.Name
-		a.MessageCount = area.Count
-		self.Register(a)
-	}
-
-}

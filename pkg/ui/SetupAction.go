@@ -12,6 +12,11 @@ type SetupAction struct {
 	Action
 }
 
+func NewSetupAction() (*SetupAction) {
+	sa := new(SetupAction)
+	return sa
+}
+
 func (self *SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	lp := filepath.Join("views", "layout.tmpl")

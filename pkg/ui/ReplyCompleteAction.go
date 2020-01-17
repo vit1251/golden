@@ -17,6 +17,11 @@ type ReplyCompleteAction struct {
 	Action
 }
 
+func NewReplyCompleteAction() (*ReplyCompleteAction) {
+	rca := new(ReplyCompleteAction)
+	return rca
+}
+
 type ReplyMessage struct {
 	Subject string
 	To string

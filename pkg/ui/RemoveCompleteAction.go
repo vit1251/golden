@@ -11,6 +11,11 @@ type RemoveCompleteAction struct {
 	Action
 }
 
+func NewRemoveCompleteAction() (*RemoveCompleteAction) {
+	rca := new(RemoveCompleteAction)
+	return rca
+}
+
 func (self *RemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	//

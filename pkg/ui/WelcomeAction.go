@@ -11,6 +11,11 @@ type WelcomeAction struct {
 	Action
 }
 
+func NewWelcomeAction() (*WelcomeAction) {
+	wa := new(WelcomeAction)
+	return wa
+}
+
 func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Prepare cache */

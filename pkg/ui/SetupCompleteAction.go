@@ -11,6 +11,11 @@ type SetupCompleteAction struct {
 	Action
 }
 
+func NewSetupCompleteAction() (*SetupCompleteAction) {
+	sca := new(SetupCompleteAction)
+	return sca
+}
+
 func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	webSite := self.Site

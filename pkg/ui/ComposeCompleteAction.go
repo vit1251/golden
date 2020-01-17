@@ -16,6 +16,11 @@ type ComposeCompleteAction struct {
 	Action
 }
 
+func NewComposeCompleteAction() (*ComposeCompleteAction) {
+	cca := new(ComposeCompleteAction)
+	return cca
+}
+
 type UserMessage struct {
 	Subject string
 	To string
