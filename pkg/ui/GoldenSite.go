@@ -4,6 +4,7 @@ import(
 	"github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/msg"
+	"log"
 )
 
 type GoldenSite struct {
@@ -34,7 +35,10 @@ func (self *GoldenSite) SetSetupManager(sm *setup.SetupManager) {
 }
 
 func (self *GoldenSite) Start() (error) {
-	//
+
+	log.Printf("Golden web service start")
+
+	/* Register actions */
 	self.WebSite.Register("/", new(WelcomeAction))
 	self.WebSite.Register("/echo", new(AreaAction))
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}", new(EchoAction))
@@ -54,8 +58,11 @@ func (self *GoldenSite) Start() (error) {
 }
 
 func (self *GoldenSite) Stop() (error) {
+
+	log.Printf("Golden web service stop")
+
 	//
 //	webSite.Stop()
-	//
+
 	return nil
 }

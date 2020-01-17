@@ -60,7 +60,7 @@ func (self *MailerInbound) nodeTypePrediction(name string) (MailerInboundRecType
 	}
 
 	/* Check on ARCmail message */
-	var arcExtensionPrefixList []string = []string{".MO", ".TU", ".SA", ".SU"}
+	var arcExtensionPrefixList []string = []string{".MO", ".TU", ".WE", ".TH", ".FR", ".SA", ".SU"}
 	for _, arcExtPrefix := range arcExtensionPrefixList {
 		if strings.HasPrefix(nodeExtension, arcExtPrefix) {
 			result = TypeARCmail

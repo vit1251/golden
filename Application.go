@@ -51,6 +51,8 @@ func (self *Application) Periodic() {
 	newTosser.SetInboundDirectory(inboundDirectory)
 	newTosser.SetWorkInboundDirectory(workInboundDirectory)
 
+	log.Printf("Mailer service start")
+
 	/* Main processing */
 	for {
 		log.Printf("Check new mail")
@@ -64,6 +66,9 @@ func (self *Application) Periodic() {
 		/* Wait 10 min. */
 		time.Sleep( 10 * time.Minute )
 	}
+
+	log.Printf("Mailer service complete")
+
 }
 
 func (self *Application) Run() {
@@ -82,6 +87,12 @@ func (self *Application) Run() {
 	newGoldenSite.SetAreaManager(self.AreaManager)
 	newGoldenSite.SetMessageManager(self.MessageManager)
 	newGoldenSite.SetVersion(self.Version)
-	newGoldenSite.Start()
+	err := newGoldenSite.Start()
+	if err != nil {
+		panic(err)
+	}
+
+	/* Wait completion */
+	log.Printf("Complete.")
 
 }
