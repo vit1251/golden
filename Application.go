@@ -21,7 +21,7 @@ type Application struct {
 
 func NewApplication() (*Application) {
 	app := new(Application)
-	app.Version = "1.2.4"
+	app.Version = "1.2.5"
 	return app
 }
 
