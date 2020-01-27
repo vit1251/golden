@@ -1,26 +1,27 @@
 package main
 
 import (
-	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/vit1251/golden/pkg/area"
-	"github.com/vit1251/golden/pkg/tosser"
+	"github.com/vit1251/golden/pkg/file"
+	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/tosser"
 	"github.com/vit1251/golden/pkg/ui"
-	"time"
 	"log"
+	"time"
 )
 
 type Application struct {
-	AreaManager       *area.AreaManager
-	SetupManager      *setup.SetupManager
-	MessageManager    *msg.MessageManager
-	Version            string                /* Golden Point version string  */
+	SetupManager    *setup.SetupManager
+	AreaManager     *area.AreaManager
+	FileAreaManager *file.FileManager
+	MessageManager  *msg.MessageManager
+	Version         string /* Golden Point version string  */
 }
 
 func NewApplication() (*Application) {
 	app := new(Application)
-	app.Version = "1.2.3"
+	app.Version = "1.2.4"
 	return app
 }
 
@@ -33,10 +34,6 @@ func (self *Application) GetSetupManager() (*setup.SetupManager) {
 }
 
 func (self *Application) Periodic() {
-
-	/* Prepare mailer */
-//	m := mailer.NewMailer()
-	m := mailer.NewMailerCompat()
 
 	/* Prepare tosser */
 	inboundDirectory, err1 := self.SetupManager.Get("main", "Inbound", ".")
@@ -57,9 +54,6 @@ func (self *Application) Periodic() {
 	for {
 		log.Printf("Check new mail")
 
-		/* Check new message */
-		m.Check()
-
 		/* Toss new message */
 		newTosser.Toss()
 
@@ -77,6 +71,7 @@ func (self *Application) Run() {
 	self.SetupManager = setup.NewSetupManager()
 	self.AreaManager = area.NewAreaManager()
 	self.MessageManager = msg.NewMessageManager()
+	self.FileAreaManager = file.NewFileManager()
 
 	/* Check periodic message */
 	go self.Periodic()
@@ -85,6 +80,7 @@ func (self *Application) Run() {
 	newGoldenSite := ui.NewGoldenSite()
 	newGoldenSite.SetSetupManager(self.SetupManager)
 	newGoldenSite.SetAreaManager(self.AreaManager)
+	newGoldenSite.SetFileManager(self.FileAreaManager)
 	newGoldenSite.SetMessageManager(self.MessageManager)
 	newGoldenSite.SetVersion(self.Version)
 	err := newGoldenSite.Start()

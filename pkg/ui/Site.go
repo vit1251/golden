@@ -1,11 +1,12 @@
 package ui
 
 import (
-	"net/http"
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/area"
-	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/setup"
+	"net/http"
 	"time"
 )
 
@@ -20,12 +21,14 @@ type Route struct {
 }
 
 type WebSite struct {
-	routes        []Route
-	rtr            *mux.Router
-	AreaManager    *area.AreaManager
-	SetupManager   *setup.SetupManager
-	MessageManager *msg.MessageManager
+	routes          []Route
+	rtr             *mux.Router
+	AreaManager     *area.AreaManager
+	FileAreaManager *file.FileManager
+	SetupManager    *setup.SetupManager
+	MessageManager  *msg.MessageManager
 	version         string
+
 }
 
 func (self *WebSite) SetVersion(Version string) {
@@ -42,6 +45,10 @@ func (self *WebSite) GetMessageManager() (*msg.MessageManager) {
 
 func (self *WebSite) GetAreaManager() (*area.AreaManager) {
 	return self.AreaManager
+}
+
+func (self *WebSite) GetFileAreaManager() (*file.FileManager) {
+	return self.FileAreaManager
 }
 
 func (self *WebSite) GetSetupManager() (*setup.SetupManager) {

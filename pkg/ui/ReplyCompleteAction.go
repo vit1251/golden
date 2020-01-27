@@ -106,7 +106,7 @@ func ProcessReplyMessage(um ReplyMessage) (error) {
 	pw.Close()
 
 	/* Setup upload */
-	m := mailer.NewMailerCompat()
+	m := mailer.NewMailerOutbound()
 	m.TransmitFile(pktName)
 
 	return nil

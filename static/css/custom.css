@@ -122,8 +122,16 @@ a.message-item-wrap {
 }
 .message-item:hover {
     background-color: #0000AA;
-
 }
+
+.message-item {
+    color: #808080;
+}
+
+.message-item-new {
+    color: #a8e000;
+}
+
 .message-header-netaddr {
     flex-basis: 256px;
     flex-shrink: 0;

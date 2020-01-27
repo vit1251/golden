@@ -67,7 +67,7 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	//
 	msgHash := vars["msgid"]
 	msg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
-	if (err3 != nil) {
+	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetAreas")
 		http.Error(w, response, http.StatusInternalServerError)
 		return
@@ -81,6 +81,14 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	//
 	mr := msgProc.NewMessageTextReader()
 	outDoc := mr.Prepare(content)
+
+	/* Update view counter */
+	err4 := messageManager.ViewMessageByHash(echoTag, msgHash)
+	if err4 != nil {
+		response := fmt.Sprintf("Fail on ViewMessageByHash")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
 
 	/* Render */
 	outParams := make(map[string]interface{})

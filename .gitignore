@@ -1,3 +1,4 @@
+.idea
 __main__
 *.log
 go.sum
@@ -6,4 +7,4 @@ golden
 *.bak
 *.deb
 package
-
+*.exe

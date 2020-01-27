@@ -4,8 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/vit1251/golden/pkg/msg"
-	"os/user"
-	"path/filepath"
+	"github.com/vit1251/golden/pkg/setup"
 	"log"
 )
 
@@ -16,18 +15,8 @@ type AreaManager struct {
 
 func NewAreaManager() (*AreaManager) {
 	am := new(AreaManager)
-
-	/* Search user home directory */
-	usr, err1 := user.Current()
-	if err1 != nil {
-		panic( err1 )
-	}
-	userHomeDirectory := usr.HomeDir
-	log.Printf("userHomeDirectory = %+v", userHomeDirectory)
-
-	/* Set parameter storage */
-	am.Path = filepath.Join(userHomeDirectory, "golden.sqlite3")
-
+	basePath := setup.GetBasePath()
+	am.Path = basePath
 	return am
 }
 

@@ -24,7 +24,11 @@
         <table width="100%">
             <tbody>
 {{ range $msgHeader := .Headers }}
+{{ if $msgHeader.ViewCount }}
                 <tr class="message-item">
+{{ else }}
+                <tr class="message-item message-item-new">
+{{ end }}
                     <td class="message-header-netaddr">{{ $msgHeader.From }}</td>
                     <td class="message-header-netaddr">{{ $msgHeader.To }}</td>
                     <td class="message-header-subject">

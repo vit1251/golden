@@ -6,15 +6,16 @@ import (
 )
 
 type Message struct {
-	ID           string
-	Hash         string
-	Area         string
-	From         string
-	To           string
-	Subject      string
-	Content      string
-	UnixTime     int64     /* Unit time stampe */
+	ID          string
+	Hash        string
+	Area        string
+	From        string
+	To          string
+	Subject     string
+	Content     string
+	UnixTime    int64 /* Unit time stampe */
 	DateWritten *time.Time
+	ViewCount   int
 }
 
 func NewMessage() (*Message) {
@@ -66,4 +67,8 @@ func (self *Message) SetTime(ptm *time.Time) {
 		var tm time.Time = *ptm
 		self.UnixTime = tm.Unix()
 	}
+}
+
+func (self *Message) SetViewCount(count int) {
+	self.ViewCount = count
 }

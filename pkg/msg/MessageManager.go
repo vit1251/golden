@@ -3,6 +3,7 @@ package msg
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/vit1251/golden/pkg/setup"
 	"log"
 )
 
@@ -12,7 +13,8 @@ type MessageManager struct {
 
 func NewMessageManager() (*MessageManager) {
 	mm := new(MessageManager)
-	mm.Path = "/var/spool/ftn/echo/base.sqlite3"
+	basePath := setup.GetBasePath()
+	mm.Path = basePath
 	mm.checkSchema()
 	return mm
 }
@@ -28,7 +30,8 @@ func (self *MessageManager) checkSchema() {
 	sqlStmt :=  "CREATE TABLE IF NOT EXISTS message (" +
 		    "    msgId INTEGER NOT NULL PRIMARY KEY," +
 		    "    msgHash CHAR(16) NOT NULL," +
-		    "    msgDate INTEGER," +
+			"    msgDate INTEGER NOT NULL," +
+			"    msgViewCount INTEGER DEFAULT 0," +
 		    "    msgArea CHAR(64) NOT NULL," +
 		    "    msgFrom TEXT NOT NULL," +
 		    "    msgTo TEXT NOT NULL," +
@@ -136,7 +139,7 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `msgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
+	sqlStmt := "SELECT `msgId`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
 	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
 	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag)
 	if err1 != nil {
@@ -151,7 +154,8 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 		var from string
 		var to string
 		var msgDate int64
-		err2 := rows.Scan(&ID, &msgHash, &subject, &from, &to, &msgDate)
+		var viewCount int
+		err2 := rows.Scan(&ID, &msgHash, &subject, &viewCount, &from, &to, &msgDate)
 		if err2 != nil{
 			return nil, err2
 		}
@@ -165,6 +169,7 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 		msg.SetFrom(from)
 		msg.SetTo(to)
 		msg.SetUnixTime(msgDate)
+		msg.SetViewCount(viewCount)
 		result = append(result, msg)
 
 	}
@@ -227,6 +232,35 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 	ConnTransaction.Commit()
 
 	return result, nil
+}
+
+func (self *MessageManager) ViewMessageByHash(echoTag string, msgHash string) (error) {
+
+	/* Step 1. Create SQL connection */
+	db, err1 := sql.Open("sqlite3", self.Path)
+	if err1 != nil {
+		panic(err1)
+	}
+	defer db.Close()
+
+	/* Step 2. Start SQL transaction */
+	ConnTransaction, err := db.Begin()
+	if err != nil {
+		return err
+	}
+
+	sqlStmt := "UPDATE `message` SET `msgViewCount` = `msgViewCount` + 1 WHERE `msgArea` = $1 AND `msgHash` = $2"
+	log.Printf("sql = %+v params = ( %+v, %+v )", sqlStmt, echoTag, msgHash)
+	result, err3 := ConnTransaction.Exec(sqlStmt, echoTag, msgHash)
+	if err3 != nil {
+		return err3
+	}
+	log.Printf("result = %+v", result)
+
+	ConnTransaction.Commit()
+
+	return nil
+
 }
 
 func (self *MessageManager) RemoveMessageByHash(echoTag string, msgHash string) (error) {

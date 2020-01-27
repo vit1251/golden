@@ -1,9 +1,10 @@
 package ui
 
-import(
+import (
 	"github.com/vit1251/golden/pkg/area"
-	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/setup"
 	"log"
 )
 
@@ -24,6 +25,10 @@ func (self *GoldenSite) SetVersion(Version string) {
 
 func (self *GoldenSite) SetMessageManager(mm *msg.MessageManager) {
 	self.WebSite.MessageManager = mm
+}
+
+func (self *GoldenSite) SetFileManager(manager *file.FileManager) {
+	self.WebSite.FileAreaManager = manager
 }
 
 func (self *GoldenSite) SetAreaManager(am *area.AreaManager) {
@@ -49,6 +54,8 @@ func (self *GoldenSite) Start() (error) {
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/reply/complete", NewReplyCompleteAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/remove", NewRemoveAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", NewRemoveCompleteAction())
+	self.WebSite.Register("/file", NewFileAreaAction())
+	//self.WebSite.Register("/file", NewFileAreaAction())
 	self.WebSite.Register("/stat", NewStatAction())
 	self.WebSite.Register("/setup", NewSetupAction())
 	self.WebSite.Register("/setup/complete", NewSetupCompleteAction())

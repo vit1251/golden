@@ -22,9 +22,9 @@ func NewStatAction() (*StatAction) {
 	/* Cache HTML page template */
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "stat.tmpl")
-	tmpl, err := template.ParseFiles(lp, fp)
-	if err != nil {
-		panic(err)
+	tmpl, err1 := template.ParseFiles(lp, fp)
+	if err1 != nil {
+		panic(err1)
 	}
 	sa.tmpl = tmpl
 
@@ -32,9 +32,6 @@ func NewStatAction() (*StatAction) {
 }
 
 func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	/* Render */
 	outParams := make(map[string]interface{})
 	self.tmpl.ExecuteTemplate(w, "layout", outParams)
-
 }
