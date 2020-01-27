@@ -1,6 +1,7 @@
 package tosser
 
 import (
+	"github.com/vit1251/golden/pkg/file"
 	"log"
 	"io"
 	"github.com/vit1251/golden/pkg/packet"
@@ -205,6 +206,14 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 }
 
 func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
+
+	newTicParser := file.NewTicParser()
+	tic, err1 := newTicParser.ParseFile(item.AbsolutePath)
+	if err1 != nil {
+		return err1
+	}
+	log.Printf("tic = %+v", tic)
+
 	return nil
 }
 
@@ -231,7 +240,7 @@ func (self *Tosser) ProcessInbound() (error) {
 			log.Printf(" - Found ARCmail packet %s. Process.", item.Name)
 			self.processARCmail(item)
 		} else if item.Type == mailer.TypeTICmail {
-			log.Printf(" - Found TIC packet %s. Skip.", item.Name)
+			log.Printf(" - Found TIC packet %s. Process.", item.Name)
 			self.processTICmail(item)
 		} else {
 			log.Printf(" - Found other packet %s. Skip.", item.Name)

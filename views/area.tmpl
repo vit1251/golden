@@ -11,7 +11,12 @@
             <tr>
                 <td><a href="/echo/{{ .Name }}">{{ .Name }}</a></td>
                 <td>{{ .Summary }}</td>
-                <td>{{ .MessageCount }}</td>
+                <td>
+                    {{ .MessageCount }}
+{{ if .NewMessageCount }}
+                    <span class="message-item-new">+{{ .NewMessageCount }}</span>
+{{ end }}
+                </td>
             </tr>
 {{ end }}
         </table>
