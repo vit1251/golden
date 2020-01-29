@@ -47,14 +47,6 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("area = %v", area)
 
-	/* Get message area */
-	areas, err2 := areaManager.GetAreas()
-	if err2 != nil {
-		response := fmt.Sprintf("Fail on GetAreas")
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
-
 	//
 	messageManager := webSite.GetMessageManager()
 	msgHeaders, err112 := messageManager.GetMessageHeaders(echoTag)
@@ -92,7 +84,6 @@ func (self *ViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Render */
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = areas
 	outParams["Area"] = area
 	outParams["Headers"] = msgHeaders
 	outParams["Msg"] = msg

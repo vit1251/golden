@@ -49,14 +49,6 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("area = %+v", area)
 
-	/* Get message area */
-	areas, err2 := areaManager.GetAreas()
-	if err2 != nil {
-		response := fmt.Sprintf("Fail on GetAreas")
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
-
 	/* Get message headers */
 	messageManager := webSite.GetMessageManager()
 	msgHeaders, err2 := messageManager.GetMessageHeaders(echoTag)
@@ -72,7 +64,6 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Rener */
 	outParams := make(map[string]interface{})
-	outParams["Areas"] = areas
 	outParams["Area"] = area
 	outParams["Headers"] = msgHeaders
 	self.tmpl.ExecuteTemplate(w, "layout", outParams)

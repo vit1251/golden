@@ -47,6 +47,7 @@ func (self *GoldenSite) Start() (error) {
 	self.WebSite.Register("/", NewWelcomeAction())
 	self.WebSite.Register("/echo", NewAreaAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}", NewEchoAction())
+	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/update", NewEchoUpdateAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/compose", NewComposeAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/compose/complete", NewComposeCompleteAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/view", NewViewAction())
