@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/vit1251/golden/pkg/common"
 	"net/http"
 //	"github.com/gorilla/mux"
 	"path/filepath"
@@ -27,8 +28,7 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Get dependency injection manager */
-	webSite := self.Site
-	version := webSite.GetVersion()
+	version := common.GetVersion()
 
 	/* Render */
 	outParams := make(map[string]interface{})

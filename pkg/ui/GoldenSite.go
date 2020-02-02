@@ -10,17 +10,12 @@ import (
 
 type GoldenSite struct {
 	WebSite *WebSite   /* Web site common type   */
-	Version  string    /* Golden point version   */
 }
 
 func NewGoldenSite() (*GoldenSite) {
 	site := new(GoldenSite)
 	site.WebSite = NewWebSite()
 	return site
-}
-
-func (self *GoldenSite) SetVersion(Version string) {
-	self.WebSite.SetVersion(Version)
 }
 
 func (self *GoldenSite) SetMessageManager(mm *msg.MessageManager) {

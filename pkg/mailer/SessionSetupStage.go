@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"github.com/vit1251/golden/pkg/common"
 	"log"
 	"net"
 	"runtime"
@@ -90,11 +91,12 @@ func (self *Mailer) processSessionSetupState() {
 			//self.writeInfo("SYS", "Vitold Station")
 			//self.writeInfo("ZYZ", "Vitold Sedyshev")
 			//self.writeInfo("LOC", "Saint-Petersburg, Russia")
-			//self.writeInfo("NDL", "115200,TCP,BINKP")
+			self.writeInfo("NDL", "115200,TCP,BINKP")
 			self.writeInfo("TIME", self.GetTime())
 			self.writeInfo("OS", self.GetPlatform())
-			//self.writeInfo("SIP", "sip:vit1251@sipnet.ru")
-			self.writeInfo("VER", fmt.Sprintf("%s/%s", "GoldenMailer", "1.2.5"))
+			appName := "GoldenMailer"
+			appVersion :=common.GetVersion()
+			self.writeInfo("VER", fmt.Sprintf("%s/%s", appName, appVersion))
 			self.writeAddress(self.addr)
 			// TODO - setup timeout ...
 			/* Change state */

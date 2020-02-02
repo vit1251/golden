@@ -21,7 +21,6 @@ type Application struct {
 
 func NewApplication() (*Application) {
 	app := new(Application)
-	app.Version = "1.2.6"
 	return app
 }
 
@@ -82,7 +81,6 @@ func (self *Application) Run() {
 	newGoldenSite.SetAreaManager(self.AreaManager)
 	newGoldenSite.SetFileManager(self.FileAreaManager)
 	newGoldenSite.SetMessageManager(self.MessageManager)
-	newGoldenSite.SetVersion(self.Version)
 	err := newGoldenSite.Start()
 	if err != nil {
 		panic(err)

@@ -27,16 +27,7 @@ type WebSite struct {
 	FileAreaManager *file.FileManager
 	SetupManager    *setup.SetupManager
 	MessageManager  *msg.MessageManager
-	version         string
 
-}
-
-func (self *WebSite) SetVersion(Version string) {
-	self.version = Version
-}
-
-func (self *WebSite) GetVersion() (string) {
-	return self.version
 }
 
 func (self *WebSite) GetMessageManager() (*msg.MessageManager) {
