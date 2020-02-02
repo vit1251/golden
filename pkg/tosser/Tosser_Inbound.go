@@ -2,6 +2,7 @@ package tosser
 
 import (
 	"github.com/vit1251/golden/pkg/file"
+	"github.com/vit1251/golden/pkg/stat"
 	"log"
 	"io"
 	"github.com/vit1251/golden/pkg/packet"
@@ -195,9 +196,9 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 		return err1
 	}
 
-	for _, packet := range packets {
+	for _, p := range packets {
 		log.Printf("-- Process FTN packets %+v", packets)
-		err2 := self.ProcessPacket(packet)
+		err2 := self.ProcessPacket(p)
 		log.Printf("error durng parse package: err = %+v", err2)
 	}
 
@@ -207,12 +208,35 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 
 func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 
+	fm := file.NewFileManager()
+	sm := stat.NewStatManager()
+
+	/* Parse */
 	newTicParser := file.NewTicParser()
 	tic, err1 := newTicParser.ParseFile(item.AbsolutePath)
 	if err1 != nil {
 		return err1
 	}
 	log.Printf("tic = %+v", tic)
+
+	/* Create area */
+	fa := file.NewFileArea()
+	fa.Name = tic.Area
+	fm.CreateFileArea(fa)
+
+	/* Check exists */
+	exists, err2 := fm.CheckFileExists(tic)
+	if err2 != nil {
+		// TODO - handle error here ...
+	}
+
+	/* Register */
+	if !exists {
+		fm.RegisterFile(tic)
+
+		/* Register status */
+		sm.RegisterFile(tic.File)
+	}
 
 	return nil
 }

@@ -17,7 +17,7 @@ func NewFileAreaAction() (*FileAreaAction) {
 
 	/* Prepare cache */
 	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "file_area.tmpl")
+	fp := filepath.Join("views", "file_area_index.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
 		panic(err)

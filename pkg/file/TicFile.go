@@ -7,3 +7,8 @@ type TicFile struct {
 	Area string
 	Desc string
 }
+
+func NewTicFile() *TicFile {
+	tic := new(TicFile)
+	return tic
+}

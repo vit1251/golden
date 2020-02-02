@@ -1,10 +1,14 @@
 package stat
 
+import "github.com/vit1251/golden/pkg/setup"
+
 type StatManager struct {
+	Path string
 }
 
 func NewStatManager() (*StatManager) {
 	sm := new(StatManager)
+	sm.Path = setup.GetBasePath()
 	return sm
 }
 

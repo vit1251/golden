@@ -1,0 +1,19 @@
+
+{{ define "content" }}
+
+<div class="row">
+
+    <div class="col-12 main">
+
+        <table width="100%">
+{{ range .Files }}
+            <tr>
+                <td><a href="/file/#/file/{{ .File }}/download">{{ .File }}</a></td>
+                <td>{{ .Desc }}</td>
+            </tr>
+{{ end }}
+        </table>
+
+    </div>
+
+{{ end }}

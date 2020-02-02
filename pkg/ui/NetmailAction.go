@@ -16,7 +16,7 @@ func NewNetmailAction() (*NetmailAction) {
 
 	/* Cache HTML page template */
 	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "netmail.tmpl")
+	fp := filepath.Join("views", "netmail_index.tmpl")
 	tmpl, err1 := template.ParseFiles(lp, fp)
 	if err1 != nil {
 		panic(err1)

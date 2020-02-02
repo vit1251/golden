@@ -36,16 +36,17 @@ func NewSetupManager() (*SetupManager) {
 	sm.Path = basePath
 
 	/* Set parameter */
+	sm.Register("main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
 	sm.Register("main", "Origin", "Origin was provide BBS station name and network address")
 	sm.Register("main", "TearLine", "Tearline provide person sign in all their messages")
 	sm.Register("main", "Inbound", "Directory where store incoming packets")
 	sm.Register("main", "TempInbound", "Directory where should be process incoming packets")
 	sm.Register("main", "TempOutbound", "Directory where process outbound packet")
 	sm.Register("main", "Outbound", "Directory where store outbound packet")
-	sm.Register("main", "MessageBaseDirectory", "Directory where store message base")
 	sm.Register("main", "Address", "FidoNet network point address (i.e. POINT address)")
+	sm.Register("main", "NetAddr", "FidoNet network BOSS address (example: f24.n5023.z2.binkp.net:24554)")
+	sm.Register("main", "Password", "FidoNet point password")
 	sm.Register("main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
-	sm.Register("main", "RealName", "Realname is by fido policy is you English version of First and Last name (example: Dmitri Kamenski")
 	sm.Register("main", "Country", "Country where user is seat")
 	sm.Register("main", "City", "City where user is seat")
 
@@ -118,12 +119,11 @@ func (self *SetupManager) Audit(msg string) (error) {
 func (self *SetupManager) restoreDefault() (error) {
 
 	/* Step 1. Initialize parameters */
-	self.Set("main", "FirstName", "Alice")
-	self.Set("main", "LastName", "Cooper")
+	self.Set("main", "RealName", "Alice Cooper")
 	self.Set("main", "Country", "Russia")
 	self.Set("main", "City", "Moscow")
 	self.Set("main", "Origin", "Yo Adrian, I Did It! (c) Rocky II")
-	self.Set("main", "TearLine", "Golden/LNX 1.2.1 2020-01-05 18:29:20 MSK (master)")
+	self.Set("main", "TearLine", "Golden/LNX 1.2.5 2020-02-02 15:38:20 MSK (master)")
 	self.Set("main", "Address", "2:5030/1592.15")
 	self.Set("main", "Link", "2:5030/1592.0")
 	self.Set("main", "Inbound", "/var/spool/ftn/inb")

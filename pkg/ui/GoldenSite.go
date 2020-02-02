@@ -56,9 +56,11 @@ func (self *GoldenSite) Start() (error) {
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/remove", NewRemoveAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", NewRemoveCompleteAction())
 	self.WebSite.Register("/file", NewFileAreaAction())
-	//self.WebSite.Register("/file", NewFileAreaAction())
+	self.WebSite.Register("/file/{echoname:[A-Z0-9\\.\\-]+}", NewFileAreaViewAction())
 	self.WebSite.Register("/netmail", NewNetmailAction())
 	self.WebSite.Register("/stat", NewStatAction())
+	self.WebSite.Register("/service", NewServiceManageAction())
+	self.WebSite.Register("/service/complete", NewServiceManageCompleteAction())
 	self.WebSite.Register("/setup", NewSetupAction())
 	self.WebSite.Register("/setup/complete", NewSetupCompleteAction())
 	//

@@ -9,9 +9,7 @@
         <table width="100%">
 {{ range .Areas }}
             <tr>
-                <td><a href="/echo/{{ .Name }}">{{ .Name }}</a></td>
-                <td>{{ .Summary }}</td>
-                <td>{{ .MessageCount }}</td>
+                <td><a href="/file/{{ .Name }}">{{ .Name }}</a></td>
             </tr>
 {{ end }}
         </table>
