@@ -49,6 +49,7 @@ func NewSetupManager() (*SetupManager) {
 	sm.Register("main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
 	sm.Register("main", "Country", "Country where user is seat")
 	sm.Register("main", "City", "City where user is seat")
+	sm.Register("main", "FileBox", "Directory where store inbound file area files")
 
 	/* Recover default parameters */
 	sm.restoreDefault()
@@ -128,6 +129,7 @@ func (self *SetupManager) restoreDefault() (error) {
 	self.Set("main", "Link", "2:5030/1592.0")
 	self.Set("main", "Inbound", "/var/spool/ftn/inb")
 	self.Set("main", "Outbound", "/var/spool/ftn/outb")
+	self.Set("main", "FileBox", "/var/spool/ftn/files")
 
 	return nil
 }

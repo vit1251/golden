@@ -1,0 +1,32 @@
+
+{{ define "content" }}
+
+<h1>Create netmail message</h1>
+
+<div class="compose">
+
+    <form method="post">
+
+    <div>
+        <div>To:</div>
+        <div><input type="text" value="" name="to">
+    </div>
+
+    <div>
+        <div>Subject:</div>
+        <div><input type="text" value="" name="subject">
+    </div>
+
+    <div>
+        <textarea name="body"></textarea>
+    </div>
+
+    <div>
+        <button type="submit">Send</button>
+    </div>
+
+    </form>
+
+</div>
+
+{{ end }}

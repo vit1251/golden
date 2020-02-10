@@ -8,13 +8,32 @@ import (
 	"strings"
 )
 
+type TicParserHandler func(string)
+
 type TicParser struct {
 	TicFile *TicFile
+	Handlers map[string]TicParserHandler
 }
 
 func NewTicParser() (*TicParser) {
 	tp := new(TicParser)
 	tp.TicFile = new(TicFile)
+	tp.Handlers = make(map[string]TicParserHandler)
+	tp.Handlers["Area"] = tp.processArea
+	tp.Handlers["Desc"] = tp.processDesc
+	tp.Handlers["File"] = tp.processFile
+	tp.Handlers["From"] = nil
+	tp.Handlers["To"] = nil
+	tp.Handlers["Pw"] = nil
+	tp.Handlers["File"] = tp.processFile
+	tp.Handlers["Path"] = nil
+	tp.Handlers["Crc"] = nil
+	tp.Handlers["Size"] = nil
+	tp.Handlers["Origin"] = nil
+	tp.Handlers["LDesc"] = nil
+	tp.Handlers["LDesc"] = nil
+	tp.Handlers["Seenby"] = nil
+
 	return tp
 }
 
@@ -22,31 +41,27 @@ func (self *TicParser) prcessLine(newLine string) {
 	//
 	parts := strings.SplitN(newLine, " ", 2)
 	//
-	log.Printf("parts = %+v", parts)
-	//
 	var key string = parts[0]
 	var value string = parts[1]
 	//
-	if key == "Area" {
-		self.TicFile.Area = value
-	} else if key == "Desc" {
-		self.TicFile.Desc = value
-	} else if key == "File" {
-		self.TicFile.File = value
-	} else if key == "From" {
-		self.TicFile.From = value
-	} else if key == "To" {
-		self.TicFile.To = value
+	var processCount int = 0
+	for handerKey, handleService := range self.Handlers {
+		if strings.EqualFold(handerKey, key) {
+			if handleService != nil {
+				handleService(value)
+			}
+			processCount += 1
+		}
 	}
-
-
+	//
+	if processCount == 0 {
+		log.Printf("Unknown TIC keyword: %+v", parts)
+	}
 
 }
 
-func (self *TicParser) Parse(stream io.Reader) (error) {
-
+func (self *TicParser) Parse(stream io.Reader) error {
 	cacheStream := bufio.NewReader(stream)
-
 	for {
 		newLine, err2 := cacheStream.ReadString('\n')
 		if err2 == nil {
@@ -55,13 +70,10 @@ func (self *TicParser) Parse(stream io.Reader) (error) {
 		} else {
 			return err2
 		}
-		log.Printf("Line %s", newLine)
 		newLine = strings.Trim(newLine, "\r\n ")
 		self.prcessLine(newLine)
 	}
-
 	return nil
-
 }
 
 func (self *TicParser) ParseFile(filename string) (*TicFile, error) {
@@ -80,4 +92,16 @@ func (self *TicParser) ParseFile(filename string) (*TicFile, error) {
 	}
 
 	return self.TicFile, nil
+}
+
+func (self *TicParser) processArea(value string) {
+	self.TicFile.Area = value
+}
+
+func (self *TicParser) processDesc(value string) {
+	self.TicFile.Desc = value
+}
+
+func (self *TicParser) processFile(value string) {
+	self.TicFile.File = value
 }

@@ -132,7 +132,7 @@ func (self *Mailer) processReceiveFileTransferState() {
 		self.outStream.Write(nextFrame.DataFrame.Body)
 		//
 		if self.writeSize == self.size {
-			log.Printf("!!! Close stream")
+			log.Printf("!!! RX streame complete. Close write stream.")
 			//
 			self.outStream.Close()
 			self.outStream = nil

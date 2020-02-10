@@ -2,12 +2,15 @@ package tosser
 
 import (
 	"github.com/vit1251/golden/pkg/file"
+	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/stat"
 	"log"
 	"io"
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/mailer"
+	"os"
+	"path"
 	"strings"
 	"errors"
 )
@@ -208,8 +211,11 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 
 func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 
+	/* TODO - replace on DI container */
+	fa := file.NewFileArea()
 	fm := file.NewFileManager()
-	sm := stat.NewStatManager()
+	stm := stat.NewStatManager()
+	sm := setup.NewSetupManager()
 
 	/* Parse */
 	newTicParser := file.NewTicParser()
@@ -220,23 +226,38 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	log.Printf("tic = %+v", tic)
 
 	/* Create area */
-	fa := file.NewFileArea()
 	fa.Name = tic.Area
 	fm.CreateFileArea(fa)
 
-	/* Check exists */
-	exists, err2 := fm.CheckFileExists(tic)
-	if err2 != nil {
-		// TODO - handle error here ...
-	}
+		/* Check area exists */
+		boxBasePath, err1 := sm.Get("main", "FileBox", "")
+		if err1 != nil {
+			panic(err1)
+		}
+		inboxBasePath, err2 := sm.Get("main", "Inbound", "")
+		if err2 != nil {
+			panic(err2)
+		}
 
-	/* Register */
-	if !exists {
+	areaLocation := path.Join(boxBasePath, tic.Area)
+	os.MkdirAll(areaLocation, 0755)
+
+	inboxTicLocation := path.Join(inboxBasePath, tic.File)
+
+	areaTicLocation := path.Join(areaLocation, tic.File)
+	log.Printf("Area path %+v", areaLocation)
+
+	/* Move in area*/
+	os.Rename(inboxTicLocation, areaTicLocation)
+
+		/* Register file */
 		fm.RegisterFile(tic)
 
 		/* Register status */
-		sm.RegisterFile(tic.File)
-	}
+		stm.RegisterFile(tic.File)
+
+	/* Remove TIC descriptor */
+	os.Remove(item.AbsolutePath)
 
 	return nil
 }
