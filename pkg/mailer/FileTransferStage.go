@@ -144,9 +144,22 @@ func (self *Mailer) processReceiveFileTransferState() {
 		}
 		//
 	}
+	log.Printf("Receive complete!")
 }
 
 func (self *Mailer) processTransmitFileTransferState() {
+
+	mo := NewMailerOutbound()
+	items := mo.GetItems()
+	for _, item := range items {
+		err1 := self.Transmit(item.Name)
+		if err1 != nil {
+			log.Printf("Unable transmit %s file!", item.Name)
+			break
+		}
+	}
+
+	log.Printf("Sent complete!")
 }
 
 func (self *Mailer) processFileTransferState() {
@@ -155,6 +168,8 @@ func (self *Mailer) processFileTransferState() {
 	} else if self.transferState == FileTransferSwitchState {
 		self.processReceiveFileTransferState()
 		self.processTransmitFileTransferState()
+		//
+		// TODO - on receive and sent complete close stream and start toss ...
 	} else {
 		// TODO - error here ...
 	}

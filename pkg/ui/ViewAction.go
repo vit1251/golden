@@ -19,7 +19,7 @@ func NewViewAction() (*ViewAction) {
 	va:=new(ViewAction)
 
 	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "view.tmpl")
+	fp := filepath.Join("views", "echo_msg_view.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
 		panic(err)

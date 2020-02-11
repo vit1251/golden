@@ -18,6 +18,6 @@ func (self *Tosser) Toss() {
 	self.ProcessOutbound()
 }
 
-func NewTosser() (*Tosser) {
+func NewTosser() *Tosser {
 	return new(Tosser)
 }

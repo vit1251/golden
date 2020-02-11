@@ -73,4 +73,8 @@ func (self *ServiceManageCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	/* ... */
 	self.Start()
 
+	/* Redirect */
+	newLocation := fmt.Sprintf("/service")
+	http.Redirect(w, r, newLocation, 303)
+
 }

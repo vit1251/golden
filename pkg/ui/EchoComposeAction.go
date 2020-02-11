@@ -9,17 +9,17 @@ import (
 	"log"
 )
 
-type ComposeAction struct {
+type EchoComposeAction struct {
 	Action
 	tmpl *template.Template
 }
 
-func NewComposeAction() (*ComposeAction) {
-	ca := new(ComposeAction)
+func NewEchoComposeAction() (*EchoComposeAction) {
+	ca := new(EchoComposeAction)
 
 	//
 	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "compose.tmpl")
+	fp := filepath.Join("views", "echo_msg_compose.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
 		panic(err)
@@ -29,7 +29,7 @@ func NewComposeAction() (*ComposeAction) {
 	return ca
 }
 
-func (self *ComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)

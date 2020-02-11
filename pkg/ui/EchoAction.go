@@ -19,7 +19,7 @@ func NewEchoAction() (*EchoAction) {
 
 	/* Prepare cache */
 	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "echo.tmpl")
+	fp := filepath.Join("views", "echo_msg_index.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
 		panic(err)

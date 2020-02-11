@@ -33,6 +33,10 @@ func (self *MailerInboundRec) SetType(nodeType MailerInboundRecType) {
 	self.Type = nodeType
 }
 
+func (self *MailerInboundRec) SetName(name string) {
+	self.Name = name
+}
+
 func NewMailerInboundRec() (*MailerInboundRec) {
 	return new(MailerInboundRec)
 }
@@ -87,9 +91,10 @@ func (self *MailerInbound) Scan() ([]*MailerInboundRec, error) {
 	for _, item := range items {
 		absPath := path.Join(self.inboundDirectory, item.Name())
 		itemMode := item.Mode()
-		if (itemMode.IsRegular()) {
+		if itemMode.IsRegular() {
 			rec := NewMailerInboundRec()
 			rec.SetAbsolutePath(absPath)
+			rec.SetName(item.Name())
 			rec.SetType(self.nodeTypePrediction(absPath))
 			result = append(result, rec)
 		}

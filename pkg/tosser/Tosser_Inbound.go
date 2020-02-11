@@ -194,6 +194,8 @@ func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) (error) {
 
 func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 
+	sm := setup.NewSetupManager()
+
 	packets, err1 := Unpack(item.AbsolutePath, self.workInboundDirectory)
 	if err1 != nil {
 		return err1
@@ -204,6 +206,18 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 		err2 := self.ProcessPacket(p)
 		log.Printf("error durng parse package: err = %+v", err2)
 	}
+
+	newInboundPath, err3 := sm.Get("main", "TempInbound", "")
+	if err3 != nil {
+		panic(err3)
+	}
+
+	/* Construct new path */
+	newArcPath := path.Join(newInboundPath, item.Name)
+
+	/* Move in area*/
+	log.Printf("Move %s -> %s", item.AbsolutePath, newArcPath)
+	os.Rename(item.AbsolutePath, newArcPath)
 
 	return nil
 

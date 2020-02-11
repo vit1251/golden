@@ -3,6 +3,7 @@ package mailer
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"os"
@@ -127,4 +128,42 @@ func (self *Mailer) SetInboundDirectory(inb string) {
 
 func (self *Mailer) SetOutboundDirectory(outb string) {
 	self.outboundDirectory = outb
+}
+
+func (self *Mailer) Transmit(name string) error {
+
+	/* Open stream */
+	stream, err1 := os.Open(name)
+	if err1 != nil {
+		return err1
+	}
+	defer stream.Close()
+
+	/* Transmit header */
+	// p0018ea8.WE0 39678 1579714843 0
+	size := 0
+	unixtime := 0
+	fileStat := fmt.Sprintf("%s %d %d %d", "example.pkt", size, unixtime, 0)
+	log.Printf("TX %s", fileStat)
+	self.writeHeader(fileStat)
+
+	/* Transmit chunk */
+	chunk := make([]byte, 4096) // TODO - how about change chunk size ?
+	_, err2 := io.ReadFull(stream, chunk)
+	if err2 != nil {
+	    return err2
+	}
+	self.writeData(chunk)
+
+	/* Check error */
+
+	return nil
+}
+
+func (self *Mailer) writeData(chunk []byte) error {
+	return nil
+}
+
+func (self *Mailer) writeHeader(stat string) error {
+	return nil
 }

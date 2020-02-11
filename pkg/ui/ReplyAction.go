@@ -21,7 +21,7 @@ func NewReplyAction() (*ReplyAction) {
 func (self *ReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "reply.tmpl")
+	fp := filepath.Join("views", "echo_msg_reply.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
 		panic(err)

@@ -1,0 +1,19 @@
+
+{{ define "content" }}
+
+<table class="table">
+    <thead>
+        <th>Name</th>
+        <th>Value</th>
+    </thead>
+    <tbody>
+{{ range $name, $value := .Status }}
+    <tr>
+        <td>{{ $name }}</td>
+        <td>{{ $value }}</td>
+    </tr>
+{{ end }}
+    </tbody>
+</table>
+
+{{ end }}

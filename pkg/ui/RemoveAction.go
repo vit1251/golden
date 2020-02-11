@@ -20,7 +20,7 @@ func NewRemoveAction() (*RemoveAction) {
 func (self *RemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "remove.tmpl")
+	fp := filepath.Join("views", "echo_msg_remove.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
 		panic(err)
