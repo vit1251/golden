@@ -50,6 +50,14 @@ func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	Status["Total Echomail Received"] = fmt.Sprintf("%d", stat.EchomailReceived)
 	Status["Total Echomail Sent"] = fmt.Sprintf("%d", stat.EchomailSent)
 
+	Status["Total Packet Received"] = fmt.Sprintf("%d", stat.PacketReceived)
+	Status["Total Packet Sent"] = fmt.Sprintf("%d", stat.PacketSent)
+
+	Status["Total Message Received"] = fmt.Sprintf("%d", stat.MessageReceived)
+	Status["Total Message Sent"] = fmt.Sprintf("%d", stat.MessageSent)
+
+	Status["Dupe Count"] = fmt.Sprintf("%d", stat.Dupe)
+
 //	Status["Total Received"] = "N/A"
 //	Status["Total Sent"] = "N/A"
 

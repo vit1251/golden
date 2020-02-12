@@ -66,6 +66,7 @@ func (self *Tosser) decodeMessageBody(msgBody []byte, charset string) (string, e
 
 func (self *Tosser) ProcessPacket(name string) (error) {
 
+	statm := stat.NewStatManager()
 	messageManager := msg.NewMessageManager()
 
 	/* Start new packet reader */
@@ -158,6 +159,7 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 		if exists {
 
 			log.Printf("Message %s already exists", msgHash)
+			statm.RegisterDupe()
 
 		} else {
 
@@ -177,6 +179,7 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 			log.Printf("err = %v", err)
 
 			/* Update counter */
+			statm.RegisterMessage()
 			msgCount += 1
 		}
 
@@ -194,8 +197,13 @@ func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) (error) {
 
 func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 
+	statm := stat.NewStatManager()
 	sm := setup.NewSetupManager()
 
+	/* Update statistics */
+	statm.RegisterARCmail(item.AbsolutePath)
+
+	/**/
 	packets, err1 := Unpack(item.AbsolutePath, self.workInboundDirectory)
 	if err1 != nil {
 		return err1
@@ -203,8 +211,14 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 
 	for _, p := range packets {
 		log.Printf("-- Process FTN packets %+v", packets)
-		err2 := self.ProcessPacket(p)
-		log.Printf("error durng parse package: err = %+v", err2)
+
+		/**/
+		err2 := statm.RegisterPacket(p)
+		log.Printf("error durng report stat package: err = %+v", err2)
+
+		/**/
+		err3 := self.ProcessPacket(p)
+		log.Printf("error durng parse package: err = %+v", err3)
 	}
 
 	newInboundPath, err3 := sm.Get("main", "TempInbound", "")

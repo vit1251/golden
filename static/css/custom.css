@@ -191,3 +191,21 @@ a.message-item-wrap {
 	background-color: #e0a800;
 	border-color: #d39e00;
 }
+
+.table {
+    display: table;
+    width: 100%;
+}
+
+.table-row {
+    display: table-row;
+}
+
+.table-cell {
+    display: table-cell;
+    padding: 10px;
+}
+
+.table-row:hover {
+    background-color: #0000C0;
+}

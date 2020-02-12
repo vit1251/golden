@@ -1,19 +1,27 @@
 
 {{ define "content" }}
 
-<table class="table">
-    <thead>
-        <th>Name</th>
-        <th>Value</th>
-    </thead>
-    <tbody>
+<div class="row">
+
+    <div class="col-12 main">
+
+        <h1>Statistics</h1>
+
+        <div class="table">
+            <div class="table-row">
+                <div class="table-cell">Name</div>
+                <div class="table-cell">Value</div>
+            </div>
 {{ range $name, $value := .Status }}
-    <tr>
-        <td>{{ $name }}</td>
-        <td>{{ $value }}</td>
-    </tr>
+            <div class="table-row">
+                <div class="table-cell">{{ $name }}</div>
+                <div class="table-cell">{{ $value }}</div>
+            </div>
 {{ end }}
-    </tbody>
-</table>
+        </div>
+
+    </div>
+
+</div>
 
 {{ end }}

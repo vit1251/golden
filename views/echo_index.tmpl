@@ -6,20 +6,20 @@
 
     <div class="col-12 main">
 
-        <table width="100%">
+        <div class="table">
 {{ range .Areas }}
-            <tr>
-                <td><a href="/echo/{{ .Name }}">{{ .Name }}</a></td>
-                <td>{{ .Summary }}</td>
-                <td>
+            <a class="table-row" href="/echo/{{ .Name }}">
+                <div class="table-cell">{{ .Name }}</div>
+                <div class="table-cell">{{ .Summary }}</div>
+                <div class="table-cell">
                     {{ .MessageCount }}
-{{ if .NewMessageCount }}
-                    <span class="message-item-new">+{{ .NewMessageCount }}</span>
+                </div>
+                <div class="table-cell">
+                    <span class="message-item-new">{{ .NewMessageCount }}</span>
+                </div>
+            </a>
 {{ end }}
-                </td>
-            </tr>
-{{ end }}
-        </table>
+        </div>
 
     </div>
 

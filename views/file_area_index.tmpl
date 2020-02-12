@@ -6,14 +6,16 @@
 
     <div class="col-12 main">
 
-        <table width="100%">
+        <div class="table">
 {{ range .Areas }}
-            <tr>
-                <td><a href="/file/{{ .Name }}">{{ .Name }}</a></td>
-            </tr>
+            <a class="table-row" href="/file/{{ .Name }}">
+                <div class="table-cell">{{ .Name }}</div>
+            </a>
 {{ end }}
-        </table>
+        </div>
 
     </div>
+
+</div>
 
 {{ end }}
