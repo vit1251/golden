@@ -23,10 +23,7 @@ func Unpack(src string, dest string) ([]string, error) {
 
     for _, f := range r.File {
 
-        // Store filename/path for returning and using later on
         fpath := filepath.Join(dest, f.Name)
-
-        // Check for ZipSlip. More Info: http://bit.ly/2MsjAWE
         if !strings.HasPrefix(fpath, filepath.Clean(dest)+string(os.PathSeparator)) {
             return filenames, fmt.Errorf("%s: illegal file path", fpath)
         }
@@ -34,12 +31,10 @@ func Unpack(src string, dest string) ([]string, error) {
         filenames = append(filenames, fpath)
 
         if f.FileInfo().IsDir() {
-            // Make Folder
             os.MkdirAll(fpath, os.ModePerm)
             continue
         }
 
-        // Make File
         if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
             return filenames, err
         }

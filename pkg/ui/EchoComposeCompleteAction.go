@@ -3,7 +3,7 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/tosser"
+	"github.com/vit1251/golden/pkg/common"
 	"log"
 	"net/http"
 )
@@ -18,6 +18,9 @@ func NewEchoComposeCompleteAction() (*EchoComposeCompleteAction) {
 }
 
 func (self *EchoComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	master := common.GetMaster()
+
 	//
 	vars := mux.Vars(r)
 	//
@@ -30,33 +33,30 @@ func (self *EchoComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	webSite := self.Site
-	areaManager := webSite.GetAreaManager()
+	areaManager := master.AreaManager
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}
 	log.Printf("area = %v", area)
+
 	//
 	to := r.Form.Get("to")
 	subj := r.Form.Get("subject")
 	body := r.Form.Get("body")
 	log.Printf("to = %s subj = %s body = %s", to, subj, body)
 
-	//
-	tm := tosser.NewTosserManager()
-
-	//
-	em := tm.NewEchoMessage()
+	/* Create message */
+	em := master.TosserManager.NewEchoMessage()
 	em.Subject = subj
 	em.Body = body
 	em.AreaName = area.Name
 	em.To = to
 
 	/* Delivery message */
-	err2 := tm.WriteEchoMessage(em)
-	if err2 != nil {
-		panic(err2)
+	err3 := master.TosserManager.WriteEchoMessage(em)
+	if err3 != nil {
+		panic(err3)
 	}
 
 	//

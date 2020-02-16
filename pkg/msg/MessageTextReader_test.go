@@ -6,7 +6,7 @@ import (
 
 func TestParseQuoteLineMessage1(t *testing.T) {
 
-	msgProc := NewMessageTextReader()
+	msgProc := NewMessageTextProcessor()
 
 	var origMsg string = "Hello, All!"
 
@@ -38,7 +38,7 @@ func TestParseQuoteLineMessage1(t *testing.T) {
 
 func TestParseQuoteLineMessage6(t *testing.T) {
 
-	msgProc := NewMessageTextReader()
+	msgProc := NewMessageTextProcessor()
 
 	var origMsg string = "Line contain > in body"
 

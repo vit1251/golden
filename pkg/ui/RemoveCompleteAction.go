@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/vit1251/golden/pkg/common"
 	"net/http"
 	"github.com/gorilla/mux"
 	"fmt"
@@ -18,6 +19,8 @@ func NewRemoveCompleteAction() (*RemoveCompleteAction) {
 
 func (self *RemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	master := common.GetMaster()
+
 	//
 	err := r.ParseForm()
 	if err != nil {
@@ -29,12 +32,10 @@ func (self *RemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
-	//
-	webSite := self.Site
 
 	//
 	msgid := vars["msgid"]
-	messageManager := webSite.GetMessageManager()
+	messageManager := master.MessageManager
 	messageManager.RemoveMessageByHash(echoTag, msgid)
 
 	//

@@ -1,7 +1,10 @@
 package ui
 
 import (
+	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/common"
 	"html/template"
+	"log"
 	"net/http"
 	"path/filepath"
 )
@@ -11,8 +14,8 @@ type EchoUpdateAction struct {
 	tmpl  *template.Template
 }
 
-func NewEchoUpdateAction() (*EchoAction) {
-	ea := new(EchoAction)
+func NewEchoUpdateAction() *EchoUpdateAction {
+	ea := new(EchoUpdateAction)
 
 	/* Prepare cache */
 	lp := filepath.Join("views", "layout.tmpl")
@@ -27,6 +30,24 @@ func NewEchoUpdateAction() (*EchoAction) {
 }
 
 func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	master := common.GetMaster()
+
+	//
+	vars := mux.Vars(r)
+	echoTag := vars["echoname"]
+	log.Printf("echoTag = %v", echoTag)
+
+	//
+	areaManager := master.AreaManager
+	area, err1 := areaManager.GetAreaByName(echoTag)
+	if err1 != nil {
+		panic(err1)
+	}
+	log.Printf("area = %v", area)
+
+	/* Render */
 	outParams := make(map[string]interface{})
+	outParams["Area"] = area
 	self.tmpl.ExecuteTemplate(w, "layout", outParams)
 }

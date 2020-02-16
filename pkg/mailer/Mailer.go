@@ -3,6 +3,7 @@ package mailer
 import (
 	"bufio"
 	"fmt"
+	"github.com/vit1251/golden/pkg/setup"
 	"io"
 	"log"
 	"net"
@@ -39,7 +40,7 @@ type Mailer struct {
 	addr              string                 /* Network address */
 	secret            string                 /* Secret password */
 	ServerAddr        string
-	inboundDirectory  string                 /* */
+	inboundDirectory  string /* */
 	outboundDirectory string
 	respAuthorization string
 	outStream         *os.File
@@ -47,14 +48,17 @@ type Mailer struct {
 	size              int
 	connComplete      chan int
 	recvUnix          int
-	recvName		  string
+	recvName          string
+	TempOutbound      string
+	SetupManager     *setup.SetupManager
 }
 
-func NewMailer() (*Mailer) {
+func NewMailer(sm *setup.SetupManager) (*Mailer) {
 	m := new(Mailer)
 	m.inDataFrames = make(chan Frame)
 	m.outDataFrames = make(chan Frame)
 	m.connComplete = make(chan int)
+	m.SetupManager = sm
 	return m
 }
 
@@ -65,6 +69,10 @@ func (self *Mailer) closeSession() {
 func (self *Mailer) writeTrafic(mail int, data int) {
 	raw := fmt.Sprintf("TRF %d %d", mail, data)
 	self.writeComment(raw)
+}
+
+func (self *Mailer) SetTempOutbound(TempOutbound string) {
+	self.TempOutbound = TempOutbound
 }
 
 func (self *Mailer) SetAddr(addr string) {
@@ -130,40 +138,96 @@ func (self *Mailer) SetOutboundDirectory(outb string) {
 	self.outboundDirectory = outb
 }
 
-func (self *Mailer) Transmit(name string) error {
+func (self *Mailer) Transmit(i Item) error {
 
 	/* Open stream */
-	stream, err1 := os.Open(name)
+	stream, err1 := os.Open(i.AbsolutePath)
 	if err1 != nil {
 		return err1
 	}
 	defer stream.Close()
 
+	/* Some status */
+	streamInfo, err2 := stream.Stat()
+	if err2 != nil {
+		return err2
+	}
+
 	/* Transmit header */
 	// p0018ea8.WE0 39678 1579714843 0
-	size := 0
-	unixtime := 0
-	fileStat := fmt.Sprintf("%s %d %d %d", "example.pkt", size, unixtime, 0)
+	streamSize := streamInfo.Size()
+	streamTime := streamInfo.ModTime().Unix()
+	fileStat := fmt.Sprintf("%s %d %d %d", i.Name, streamSize, streamTime, 0)
 	log.Printf("TX %s", fileStat)
 	self.writeHeader(fileStat)
 
 	/* Transmit chunk */
-	chunk := make([]byte, 4096) // TODO - how about change chunk size ?
-	_, err2 := io.ReadFull(stream, chunk)
-	if err2 != nil {
-	    return err2
+	var outSize int = int(streamSize)
+	for {
+
+		/* Calculate transmit chunk */
+		chunkSize := Min(outSize, 4096)
+		chunk := make([]byte, chunkSize)
+
+		/* Read */
+		_, err3 := io.ReadFull(stream, chunk)
+		if err3 != nil {
+			return err3
+		}
+
+		/* Transmit chunk */
+		self.writeData(chunk)
+
+		/* Update TX size */
+		outSize -= chunkSize
+		if outSize == 0 {
+			log.Printf("Transmit complete!")
+			break
+		}
 	}
-	self.writeData(chunk)
 
 	/* Check error */
 
 	return nil
 }
 
+func Min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+
 func (self *Mailer) writeData(chunk []byte) error {
+	log.Printf("TX data chunk %d", len(chunk))
+
+	/* Transmit data frame */
+	newFrame := Frame{
+		Command: false,
+		DataFrame: DataFrame{
+			Body: chunk,
+		},
+	}
+	self.outDataFrames <- newFrame
+
 	return nil
 }
 
 func (self *Mailer) writeHeader(stat string) error {
+	log.Printf("TX stream header %s", stat)
+
+	newFrame := Frame{
+		Command: true,
+		CommandFrame: CommandFrame{
+			CommandID: M_FILE,
+			Body: []byte(stat),
+		},
+	}
+	self.outDataFrames <- newFrame
+
 	return nil
+}
+
+func (self *Mailer) GetVersion() string {
+	return "1.2.8"
 }

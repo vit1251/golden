@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/vit1251/golden/pkg/common"
 	"net/http"
 	"github.com/gorilla/mux"
 	"path/filepath"
@@ -31,18 +32,18 @@ func NewEchoAction() (*EchoAction) {
 
 func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	master := common.GetMaster()
+
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
-	webSite := self.Site
-
 	/* Get area manager */
-	areaManager := webSite.GetAreaManager()
+	areaManager := master.AreaManager
 
 	area, err1 := areaManager.GetAreaByName(echoTag)
-	if (err1 != nil) {
+	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreaByName where echoTag is %s: err = %+v", echoTag, err1)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
@@ -50,7 +51,7 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("area = %+v", area)
 
 	/* Get message headers */
-	messageManager := webSite.GetMessageManager()
+	messageManager := master.MessageManager
 	msgHeaders, err2 := messageManager.GetMessageHeaders(echoTag)
 	if (err2 != nil) {
 		response := fmt.Sprintf("Fail on GetMessageHeaders where echoTag is %s: err = %+v", echoTag, err2)

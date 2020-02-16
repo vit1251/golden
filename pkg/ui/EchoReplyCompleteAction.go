@@ -1,16 +1,17 @@
 package ui
 
 import (
-	"net/http"
-	"github.com/gorilla/mux"
-	"log"
-	"github.com/vit1251/golden/pkg/packet"
-	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/mailer"
-	"github.com/satori/go.uuid"
-	"hash/crc32"
-	"time"
 	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/satori/go.uuid"
+	"github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/mailer"
+	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/packet"
+	"hash/crc32"
+	"log"
+	"net/http"
+	"time"
 )
 
 type ReplyCompleteAction struct {
@@ -31,6 +32,8 @@ type ReplyMessage struct {
 }
 
 func ProcessReplyMessage(um ReplyMessage) (error) {
+
+	master := common.GetMaster()
 
 	/* Message UUID */
 	u1 := uuid.NewV4()
@@ -73,9 +76,10 @@ func ProcessReplyMessage(um ReplyMessage) (error) {
 
 	/* Construct message content */
 	msgContent := msg.NewMessageContent()
+	msgContent.SetCharset("CP866")
 	msgContent.AddLine(um.Body)
 	msgContent.AddLine("")
-	msgContent.AddLine("--- Golden/LNX 1.2.0 2020-01-05 18:29:20 MSK (master)")
+	msgContent.AddLine("--- Golden/LNX 1.2.8 2020-02-16 15:20:20 MSK (master)")
 	msgContent.AddLine(" * Origin: Yo Adrian, I Did It! (c) Rocky II (2:5023/24.3752)")
 	rawMsg := msgContent.Pack()
 
@@ -91,7 +95,7 @@ func ProcessReplyMessage(um ReplyMessage) (error) {
 	msgBody.SetArea(um.AreaName)
 	//
 	msgBody.AddKludge("TZUTC", "0300")
-	msgBody.AddKludge("CHRS", "UTF-8 4")
+	msgBody.AddKludge("CHRS", "CP866 2")
 	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", "2:5023/24.3752", hs))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
 	msgBody.AddKludge("TID", "golden/lnx 1.2.1 2020-01-05 20:41 (master)")
@@ -106,13 +110,16 @@ func ProcessReplyMessage(um ReplyMessage) (error) {
 	pw.Close()
 
 	/* Setup upload */
-	m := mailer.NewMailerOutbound()
+	m := mailer.NewMailerOutbound(master.SetupManager)
 	m.TransmitFile(pktName)
 
 	return nil
 }
 
 func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	master := common.GetMaster()
+
 	//
 	err := r.ParseForm()
 	if err != nil {
@@ -124,12 +131,9 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	webSite := self.Site
-
-	//
-	areaManager := webSite.GetAreaManager()
+	areaManager := master.AreaManager
 	area, err1 := areaManager.GetAreaByName(echoTag)
-	if (err1 != nil) {
+	if err1 != nil {
 		panic(err1)
 	}
 	log.Printf("area = %v", area)

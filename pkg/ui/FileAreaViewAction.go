@@ -2,6 +2,7 @@ package ui
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/common"
 	"html/template"
 	"log"
 	"net/http"
@@ -30,15 +31,15 @@ func NewFileAreaViewAction() (*FileAreaViewAction) {
 
 func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	master := common.GetMaster()
+
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
-	webSite := self.Site
-
 	/* Get area manager */
-	fileManager := webSite.GetFileAreaManager()
+	fileManager := master.FileManager
 
 	files, err1 := fileManager.GetFileHeaders(echoTag)
 	if err1 != nil {

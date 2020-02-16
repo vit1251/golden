@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/msg"
 	"net/http"
 	"github.com/gorilla/mux"
 	"path/filepath"
@@ -9,16 +11,18 @@ import (
 	"log"
 )
 
-type ReplyAction struct {
+type EchoReplyAction struct {
 	Action
 }
 
-func NewReplyAction() (*ReplyAction) {
-	ra := new(ReplyAction)
+func NewEchoReplyAction() (*EchoReplyAction) {
+	ra := new(EchoReplyAction)
 	return ra
 }
 
-func (self *ReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	master := common.GetMaster()
 
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "echo_msg_reply.tmpl")
@@ -33,12 +37,9 @@ func (self *ReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	webSite := self.Site
-
-	//
-	areaManager := webSite.GetAreaManager()
+	areaManager := master.AreaManager
 	area, err1 := areaManager.GetAreaByName(echoTag)
-	if (err1 != nil) {
+	if err1 != nil {
 		panic(err1)
 	}
 	log.Printf("area = %v", area)
@@ -53,18 +54,25 @@ func (self *ReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	//
 	msgHash := vars["msgid"]
-	messageManager := webSite.GetMessageManager()
-	msg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
-	if (err3 != nil) {
+	messageManager := master.MessageManager
+	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
+	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 
-	//
+	/* Make reply content */
+	mtp := msg.NewMessageTextProcessor()
+	mtp.Prepare(origMsg.Content)
+	mtp.MakeReply()
+	newContent := mtp.Content()
+
+	/* Render */
 	outParams := make(map[string]interface{})
 	outParams["Areas"] = areas
 	outParams["Area"] = area
-	outParams["Msg"] = msg
+	outParams["Msg"] = origMsg
+	outParams["Content"] = newContent
 	tmpl.ExecuteTemplate(w, "layout", outParams)
 }

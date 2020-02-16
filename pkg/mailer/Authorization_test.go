@@ -1,8 +1,8 @@
 package mailer
 
 import (
-	"testing"
 	"log"
+	"testing"
 )
 
 // Password here is tanstaaftanstaaf

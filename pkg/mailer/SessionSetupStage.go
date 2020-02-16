@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/vit1251/golden/pkg/common"
 	"log"
 	"net"
 	"runtime"
@@ -95,7 +94,7 @@ func (self *Mailer) processSessionSetupState() {
 			self.writeInfo("TIME", self.GetTime())
 			self.writeInfo("OS", self.GetPlatform())
 			appName := "GoldenMailer"
-			appVersion :=common.GetVersion()
+			appVersion := self.GetVersion()
 			self.writeInfo("VER", fmt.Sprintf("%s/%s", appName, appVersion))
 			self.writeAddress(self.addr)
 			// TODO - setup timeout ...

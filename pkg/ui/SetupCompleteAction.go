@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/vit1251/golden/pkg/common"
 	"net/http"
 //	"github.com/gorilla/mux"
 	"fmt"
@@ -18,10 +19,10 @@ func NewSetupCompleteAction() (*SetupCompleteAction) {
 
 func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	webSite := self.Site
+	master := common.GetMaster()
 
 	/* Setup manager operation */
-	setupManager := webSite.GetSetupManager()
+	setupManager := master.SetupManager
 	params := setupManager.GetParams()
 	log.Printf("params = %+v", params)
 

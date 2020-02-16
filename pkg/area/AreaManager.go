@@ -9,13 +9,15 @@ import (
 )
 
 type AreaManager struct {
-	Path       string       /* Area path        */
+	Path                string
+	MessageManager     *msg.MessageManager
 }
 
-func NewAreaManager() (*AreaManager) {
+func NewAreaManager(mm *msg.MessageManager) (*AreaManager) {
 	am := new(AreaManager)
 	basePath := setup.GetBasePath()
 	am.Path = basePath
+	am.MessageManager = mm
 	am.Rescan()
 	return am
 }
@@ -43,11 +45,8 @@ func (self *AreaManager) checkSchema(conn *sql.DB) (error) {
 
 func (self *AreaManager) Rescan() {
 
-	/* Open message base */
-	messageManager := msg.NewMessageManager()
-
 	/* Preload echo areas */
-	areas, err3 := messageManager.GetAreaList2()
+	areas, err3 := self.MessageManager.GetAreaList2()
 	if err3 != nil {
 		panic(err3)
 	}
@@ -65,14 +64,11 @@ func (self *AreaManager) Rescan() {
 
 func (self *AreaManager) updateMsgCount(areas []*Area) {
 
-	/* Open message base */
-	messageManager := msg.NewMessageManager()
-
 	var msgCount int
 	var msgNewCount int
 
 	for _, area := range areas {
-		msgs, err1 := messageManager.GetMessageHeaders(area.Name)
+		msgs, err1 := self.MessageManager.GetMessageHeaders(area.Name)
 		if err1 != nil {
 			panic(err1)
 		}

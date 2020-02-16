@@ -2,7 +2,7 @@ package ui
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/tosser"
+	"github.com/vit1251/golden/pkg/common"
 	"log"
 	"net/http"
 )
@@ -13,11 +13,12 @@ type NetmailComposeCompleteAction struct {
 
 func NewNetmailComposeCompleteAction() (*NetmailComposeCompleteAction) {
 	nm := new(NetmailComposeCompleteAction)
-
 	return nm
 }
 
 func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	master := common.GetMaster()
 
 	/* Parse */
 	err1 := r.ParseForm()
@@ -32,16 +33,13 @@ func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 	log.Printf("Compose netmail: to = %s subj = %s body = %s", to, subj, body)
 
 	//
-	tm := tosser.NewTosserManager()
-
-	//
-	nm := tm.NewNetmailMessage()
+	nm := master.TosserManager.NewNetmailMessage()
 	nm.Subject = subj
 	nm.Body = body
 	nm.To = to
 
 	/* Delivery message */
-	err2 := tm.WriteNetmailMessage(nm)
+	err2 := master.TosserManager.WriteNetmailMessage(nm)
 	if err2 != nil {
 		panic(err2)
 	}

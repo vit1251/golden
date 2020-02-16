@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/vit1251/golden/pkg/common"
 	"net/http"
 	"github.com/gorilla/mux"
 	"path/filepath"
@@ -31,18 +32,17 @@ func NewEchoComposeAction() (*EchoComposeAction) {
 
 func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	master := common.GetMaster()
+
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
-	/* Search area */
-	webSite := self.Site
-
 	/* Search echo area */
-	areaManager := webSite.GetAreaManager()
+	areaManager := master.AreaManager
 	area, err1 := areaManager.GetAreaByName(echoTag)
-	if (err1 != nil) {
+	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreaByName")
 		http.Error(w, response, http.StatusInternalServerError)
 		return

@@ -1,10 +1,6 @@
 package ui
 
 import (
-	"github.com/vit1251/golden/pkg/area"
-	"github.com/vit1251/golden/pkg/file"
-	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/setup"
 	"log"
 )
 
@@ -18,22 +14,6 @@ func NewGoldenSite() (*GoldenSite) {
 	return site
 }
 
-func (self *GoldenSite) SetMessageManager(mm *msg.MessageManager) {
-	self.WebSite.MessageManager = mm
-}
-
-func (self *GoldenSite) SetFileManager(manager *file.FileManager) {
-	self.WebSite.FileAreaManager = manager
-}
-
-func (self *GoldenSite) SetAreaManager(am *area.AreaManager) {
-	self.WebSite.AreaManager = am
-}
-
-func (self *GoldenSite) SetSetupManager(sm *setup.SetupManager) {
-	self.WebSite.SetupManager = sm
-}
-
 func (self *GoldenSite) Start() (error) {
 
 	log.Printf("Golden web service start")
@@ -45,8 +25,8 @@ func (self *GoldenSite) Start() (error) {
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/update", NewEchoUpdateAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/compose", NewEchoComposeAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/compose/complete", NewEchoComposeCompleteAction())
-	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/view", NewViewAction())
-	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/reply", NewReplyAction())
+	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/view", NewEchoViewAction())
+	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/reply", NewEchoReplyAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/reply/complete", NewReplyCompleteAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/remove", NewRemoveAction())
 	self.WebSite.Register("/echo/{echoname:[A-Z0-9\\.\\-]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", NewRemoveCompleteAction())

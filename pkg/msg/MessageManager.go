@@ -11,7 +11,7 @@ type MessageManager struct {
 	Path  string          /* Message base directory */
 }
 
-func NewMessageManager() (*MessageManager) {
+func NewMessageManager() *MessageManager {
 	mm := new(MessageManager)
 	basePath := setup.GetBasePath()
 	mm.Path = basePath

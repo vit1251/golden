@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/vit1251/golden/pkg/common"
 	"net/http"
 	"path/filepath"
 	"html/template"
@@ -29,11 +30,10 @@ func NewFileAreaAction() (*FileAreaAction) {
 
 func (self *FileAreaAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	/* Parse parameters */
-	webSite := self.Site
+	master := common.GetMaster()
 
 	/* Get area manager */
-	fileAreaManager := webSite.GetFileAreaManager()
+	fileAreaManager := master.FileManager
 
 	/* Get message area */
 	areas, err1 := fileAreaManager.GetAreas()

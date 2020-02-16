@@ -149,14 +149,25 @@ func (self *Mailer) processReceiveFileTransferState() {
 
 func (self *Mailer) processTransmitFileTransferState() {
 
-	mo := NewMailerOutbound()
-	items := mo.GetItems()
+	mo := NewMailerOutbound(self.SetupManager)
+	items, err2 := mo.GetItems()
+	if err2 != nil {
+		panic(err2)
+	}
+
 	for _, item := range items {
-		err1 := self.Transmit(item.Name)
+
+		/* Transmit packet */
+		err1 := self.Transmit(*item)
 		if err1 != nil {
-			log.Printf("Unable transmit %s file!", item.Name)
+			log.Printf("Unable transmit %s file: err = %+v", item.Name, err1)
 			break
 		}
+
+		/* Complete routine */
+		newName := path.Join(self.TempOutbound, item.Name)
+		os.Rename(item.AbsolutePath, newName)
+
 	}
 
 	log.Printf("Sent complete!")

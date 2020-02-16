@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/vit1251/golden/pkg/common"
 	"net/http"
 	"path/filepath"
 	"html/template"
@@ -29,11 +30,10 @@ func NewAreaAction() (*AreaAction) {
 
 func (self *AreaAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	/* Parse parameters */
-	webSite := self.Site
+	master := common.GetMaster()
 
 	/* Get area manager */
-	areaManager := webSite.GetAreaManager()
+	areaManager := master.AreaManager
 
 	/* Get message area */
 	areas, err1 := areaManager.GetAreas()
@@ -43,7 +43,7 @@ func (self *AreaAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	/* Rener */
+	/* Render */
 	outParams := make(map[string]interface{})
 	outParams["Areas"] = areas
 	self.tmpl.ExecuteTemplate(w, "layout", outParams)

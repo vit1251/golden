@@ -1,18 +1,16 @@
 package tosser
 
 import (
+	"errors"
 	"github.com/vit1251/golden/pkg/file"
-	"github.com/vit1251/golden/pkg/setup"
-	"github.com/vit1251/golden/pkg/stat"
-	"log"
-	"io"
-	"github.com/vit1251/golden/pkg/packet"
-	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/mailer"
+	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/packet"
+	"io"
+	"log"
 	"os"
 	"path"
 	"strings"
-	"errors"
 )
 
 func (self *Tosser) parseCharsetKludge(charsetKludge string) (string) {
@@ -57,7 +55,7 @@ func (self *Tosser) decodeMessageBody(msgBody []byte, charset string) (string, e
 
 	} else {
 
-		return result, errors.New("Fail charset on message")
+		return result, errors.New("wrong charset on message")
 
 	}
 
@@ -65,9 +63,6 @@ func (self *Tosser) decodeMessageBody(msgBody []byte, charset string) (string, e
 }
 
 func (self *Tosser) ProcessPacket(name string) (error) {
-
-	statm := stat.NewStatManager()
-	messageManager := msg.NewMessageManager()
 
 	/* Start new packet reader */
 	pr, err3 := packet.NewPacketReader(name)
@@ -129,7 +124,6 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 			return err9
 		}
 
-
 		/* Determine msgid */
 		msgid := msgBody.GetKludge("MSGID", "")
 		msgid = strings.Trim(msgid, " ")
@@ -152,14 +146,14 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 //		}
 
 		/* Check unique item */
-		exists, err9 := messageManager.IsMessageExistsByHash(areaName, msgHash)
+		exists, err9 := self.MessageManager.IsMessageExistsByHash(areaName, msgHash)
 		if err9 != nil {
 			return err9
 		}
 		if exists {
 
 			log.Printf("Message %s already exists", msgHash)
-			statm.RegisterDupe()
+			self.StatManager.RegisterDupe()
 
 		} else {
 
@@ -175,11 +169,11 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 			newMsg.SetContent(newBody)
 
 			/* Store message */
-			err := messageManager.Write(newMsg)
+			err := self.MessageManager.Write(newMsg)
 			log.Printf("err = %v", err)
 
 			/* Update counter */
-			statm.RegisterMessage()
+			self.StatManager.RegisterMessage()
 			msgCount += 1
 		}
 
@@ -197,14 +191,17 @@ func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) (error) {
 
 func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 
-	statm := stat.NewStatManager()
-	sm := setup.NewSetupManager()
-
 	/* Update statistics */
-	statm.RegisterARCmail(item.AbsolutePath)
+	self.StatManager.RegisterARCmail(item.AbsolutePath)
 
 	/**/
-	packets, err1 := Unpack(item.AbsolutePath, self.workInboundDirectory)
+	workOut, err0 := self.SetupManager.Get("main", "TempOutbound", "")
+	if err0 != nil {
+		panic(err0)
+	}
+
+	/* Unpack */
+	packets, err1 := Unpack(item.AbsolutePath, workOut)
 	if err1 != nil {
 		return err1
 	}
@@ -213,7 +210,7 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 		log.Printf("-- Process FTN packets %+v", packets)
 
 		/**/
-		err2 := statm.RegisterPacket(p)
+		err2 := self.StatManager.RegisterPacket(p)
 		log.Printf("error durng report stat package: err = %+v", err2)
 
 		/**/
@@ -221,7 +218,7 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 		log.Printf("error durng parse package: err = %+v", err3)
 	}
 
-	newInboundPath, err3 := sm.Get("main", "TempInbound", "")
+	newInboundPath, err3 := self.SetupManager.Get("main", "TempInbound", "")
 	if err3 != nil {
 		panic(err3)
 	}
@@ -239,12 +236,6 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 
 func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 
-	/* TODO - replace on DI container */
-	fa := file.NewFileArea()
-	fm := file.NewFileManager()
-	stm := stat.NewStatManager()
-	sm := setup.NewSetupManager()
-
 	/* Parse */
 	newTicParser := file.NewTicParser()
 	tic, err1 := newTicParser.ParseFile(item.AbsolutePath)
@@ -254,18 +245,19 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	log.Printf("tic = %+v", tic)
 
 	/* Create area */
+	fa := file.NewFileArea()
 	fa.Name = tic.Area
-	fm.CreateFileArea(fa)
+	self.FileManager.CreateFileArea(fa)
 
-		/* Check area exists */
-		boxBasePath, err1 := sm.Get("main", "FileBox", "")
-		if err1 != nil {
-			panic(err1)
-		}
-		inboxBasePath, err2 := sm.Get("main", "Inbound", "")
-		if err2 != nil {
-			panic(err2)
-		}
+	/* Check area exists */
+	boxBasePath, err1 := self.SetupManager.Get("main", "FileBox", "")
+	if err1 != nil {
+		panic(err1)
+	}
+	inboxBasePath, err2 := self.SetupManager.Get("main", "Inbound", "")
+	if err2 != nil {
+		panic(err2)
+	}
 
 	areaLocation := path.Join(boxBasePath, tic.Area)
 	os.MkdirAll(areaLocation, 0755)
@@ -278,11 +270,11 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	/* Move in area*/
 	os.Rename(inboxTicLocation, areaTicLocation)
 
-		/* Register file */
-		fm.RegisterFile(tic)
+	/* Register file */
+	self.FileManager.RegisterFile(tic)
 
-		/* Register status */
-		stm.RegisterFile(tic.File)
+	/* Register status */
+	self.StatManager.RegisterFile(tic.File)
 
 	/* Remove TIC descriptor */
 	os.Remove(item.AbsolutePath)
@@ -290,14 +282,11 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	return nil
 }
 
-func (self *Tosser) ProcessInbound() (error) {
+func (self *Tosser) ProcessInbound() error {
 
 	/* New mailer inbound */
-	mi := mailer.NewMailerInbound()
-//	if err1 != nil {
-//		return err1
-//	}
-	mi.SetInboundDirectory(self.inboundDirectory)
+	mi := mailer.NewMailerInbound(self.SetupManager)
+
 
 	/* Scan inbound */
 	items, err2 := mi.Scan()

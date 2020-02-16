@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/vit1251/golden/pkg/common"
 	"net/http"
 //	"github.com/gorilla/mux"
 	"path/filepath"
@@ -19,6 +20,8 @@ func NewSetupAction() (*SetupAction) {
 
 func (self *SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	master := common.GetMaster()
+
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "setup.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
@@ -26,11 +29,8 @@ func (self *SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	//
-	webSite := self.Site
-
 	/* Setup manager operation */
-	setupManager := webSite.GetSetupManager()
+	setupManager := master.SetupManager
 	params := setupManager.GetParams()
 	log.Printf("params = %+v", params)
 

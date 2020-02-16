@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/mailer"
 	"log"
 	"net/http"
@@ -22,11 +23,10 @@ func (self *ServiceManageCompleteAction) Start() {
 
 func (self *ServiceManageCompleteAction) Run() error {
 
-	/* Get Web-site action */
-	webSite := self.Site
+	master := common.GetMaster()
 
 	/* Get setup manager */
-	setupManager := webSite.GetSetupManager()
+	setupManager := master.SetupManager
 	params := setupManager.GetParams()
 	log.Printf("params = %+v", params)
 
@@ -51,12 +51,17 @@ func (self *ServiceManageCompleteAction) Run() error {
 	if err5 != nil {
 		return err5
 	}
+	TempOutbound, err6 := setupManager.Get("main", "TempOutbound", "")
+	if err6 != nil {
+		return err6
+	}
 
 	/**/
 	newAddress := fmt.Sprintf("%s@fidonet", address)
 
 	/* Get parameters */
-	m := mailer.NewMailer()
+	m := mailer.NewMailer(master.SetupManager)
+	m.SetTempOutbound(TempOutbound)
 	m.SetServerAddr(netAddr)
 	m.SetInboundDirectory(inb)
 	m.SetOutboundDirectory(outb)

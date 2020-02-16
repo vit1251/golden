@@ -2,13 +2,13 @@ package ui
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/stat"
+	"github.com/vit1251/golden/pkg/common"
 	"net/http"
-//	"github.com/gorilla/mux"
-//	msgProc "github.com/vit1251/golden/pkg/msg"
-	"path/filepath"
 	"html/template"
-//	"log"
+	//	"github.com/gorilla/mux"
+	//	msgProc "github.com/vit1251/golden/pkg/msg"
+	"path/filepath"
+	//	"log"
 )
 
 type StatAction struct {
@@ -35,8 +35,9 @@ func NewStatAction() (*StatAction) {
 
 func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	statm := stat.NewStatManager()
-	stat, err1 := statm.GetStat()
+	master := common.GetMaster()
+
+	stat, err1 := master.StatManager.GetStat()
 	if err1 != nil {
 		panic(err1)
 	}

@@ -5,13 +5,15 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
+	"github.com/vit1251/golden/pkg/setup"
 	"hash/crc32"
 	"log"
+	"path"
 	"time"
 )
 
-type TosserManager struct{
-
+type TosserManager struct {
+	SetupManager *setup.SetupManager
 }
 
 type NetmailMessage struct {
@@ -33,15 +35,21 @@ func (m *EchoMessage) SetSubject(subj string) {
 	m.Subject = subj
 }
 
-func NewTosserManager() *TosserManager {
+func NewTosserManager(sm *setup.SetupManager) *TosserManager {
 	tm := new(TosserManager)
+	tm.SetupManager = sm
 	return tm
 }
 
 func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 
 	/* Create packet name */
-	name := "compose.pkt"
+	outb, err1 := self.SetupManager.Get("main", "Outbound", ".")
+	if err1 != nil {
+		return err1
+	}
+
+	name := path.Join(outb, "compose.pkt")
 
 	/* Open outbound packet */
 	pw, err1 := packet.NewPacketWriter(name)
@@ -81,10 +89,14 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 
 	/* Construct message content */
 	msgContent := msg.NewMessageContent()
+
+	msgContent.SetCharset("CP866")
+
 	msgContent.AddLine(em.Body)
 	msgContent.AddLine("")
-	msgContent.AddLine("--- Golden/LNX 1.2.0 2020-01-05 18:29:20 MSK (master)")
+	msgContent.AddLine("--- Golden/LNX 1.2.8 2020-02-14 11:10:20 MSK (master)")
 	msgContent.AddLine(" * Origin: Yo Adrian, I Did It! (c) Rocky II (2:5023/24.3752)")
+
 	rawMsg := msgContent.Pack()
 
 	/* Calculate checksumm */
@@ -99,10 +111,11 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	msgBody.SetArea(em.AreaName)
 	//
 	msgBody.AddKludge("TZUTC", "0300")
-	msgBody.AddKludge("CHRS", "UTF-8 4")
+	//msgBody.AddKludge("CHRS", "UTF-8 4")
+	msgBody.AddKludge("CHRS", "CP866 2")
 	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", "2:5023/24.3752", hs))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
-	msgBody.AddKludge("TID", "golden/lnx 1.2.1 2020-01-05 20:41 (master)")
+	msgBody.AddKludge("TID", "golden/lnx 1.2.8 2020-01-05 20:41 (master)")
 	//
 	msgBody.SetRaw(rawMsg)
 	//
@@ -158,7 +171,7 @@ func (self *TosserManager) WriteNetmailMessage(em *NetmailMessage) error {
 	msgContent := msg.NewMessageContent()
 	msgContent.AddLine(em.Body)
 	msgContent.AddLine("")
-	msgContent.AddLine("--- Golden/LNX 1.2.0 2020-01-05 18:29:20 MSK (master)")
+	msgContent.AddLine("--- Golden/LNX 1.2.8 2020-01-05 18:29:20 MSK (master)")
 	msgContent.AddLine(" * Origin: Yo Adrian, I Did It! (c) Rocky II (2:5023/24.3752)")
 	rawMsg := msgContent.Pack()
 

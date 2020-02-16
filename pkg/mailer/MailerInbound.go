@@ -1,15 +1,15 @@
 package mailer
 
 import (
-	"path"
-	"strings"
-	"path/filepath"
+	"github.com/vit1251/golden/pkg/setup"
 	"io/ioutil"
-//	"log"
+	"path"
+	"path/filepath"
+	"strings"
 )
 
 type MailerInbound struct {
-	inboundDirectory string   /* Inbound directory     */
+	SetupManager	*setup.SetupManager
 }
 
 type MailerInboundRecType int
@@ -41,13 +41,10 @@ func NewMailerInboundRec() (*MailerInboundRec) {
 	return new(MailerInboundRec)
 }
 
-func NewMailerInbound() (*MailerInbound) {
+func NewMailerInbound(sm *setup.SetupManager) (*MailerInbound) {
 	mi := new(MailerInbound)
+	mi.SetupManager = sm
 	return mi
-}
-
-func (self *MailerInbound) SetInboundDirectory(inboundDirectory string) {
-	self.inboundDirectory = inboundDirectory
 }
 
 func (self *MailerInbound) nodeTypePrediction(name string) (MailerInboundRecType) {
@@ -83,13 +80,15 @@ func (self *MailerInbound) Scan() ([]*MailerInboundRec, error) {
 
 	var result []*MailerInboundRec
 
-	items, err1 := ioutil.ReadDir(self.inboundDirectory)
+	inb, err1 := self.SetupManager.Get("main", "Inbound", ".")
+
+	items, err1 := ioutil.ReadDir(inb)
 	if err1 != nil {
 		return nil, err1
 	}
 
 	for _, item := range items {
-		absPath := path.Join(self.inboundDirectory, item.Name())
+		absPath := path.Join(inb, item.Name())
 		itemMode := item.Mode()
 		if itemMode.IsRegular() {
 			rec := NewMailerInboundRec()

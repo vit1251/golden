@@ -1,25 +1,53 @@
 package msg
 
 import (
-	"log"
-	"unicode"
 	"html/template"
+	"log"
 	"strings"
+	"unicode"
 )
+
+// Message text is unbounded and null terminated (note exception below).
+//
+// A 'hard' carriage return, 0DH,  marks the end of a paragraph, and must
+// be preserved.
+//
+// So   called  'soft'  carriage  returns,  8DH,  may  mark  a   previous
+// processor's  automatic line wrap, and should be ignored.  Beware  that
+// they may be followed by linefeeds, or may not.
+//
+// All  linefeeds, 0AH, should be ignored.  Systems which display message
+// text should wrap long lines to suit their application.
+//
+// If the first character of a physical line (e.g. the first character of
+// the  message text, or the character immediately after a hard  carriage
+// return (ignoring any linefeeds)) is a ^A (<control-A>, 01H), then that
+// line  is  not  displayed  as  it  contains  control  information.  The
+// convention for such control lines is:
+//   o They begin with ^A
+//   o They end at the end of the physical line (i.e. ignore soft <cr>s).
+//   o They begin with a keyword followed by a colon.
+//   o The keywords are uniquely assigned to applications.
+//   o They keyword/colon pair is followed by application specific data.
+//
+// Current ^A keyword assignments are:
+//   o TOPT <pt no> - destination point address
+//   o FMPT <pt no> - origin point address
+//   o INTL <dest z:n/n> <orig z:n/n> - used for inter-zone address
 
 type MessageState int
 
 const MessageStateBody    = 1
 const MessageStateService = 2
 
-type MessageTextReader struct {
+type MessageTextProcessor struct {
 	State    MessageState
 	result   string
 }
 
 
-func NewMessageTextReader() (*MessageTextReader) {
-	mr := new(MessageTextReader)
+func NewMessageTextProcessor() *MessageTextProcessor {
+	mr := new(MessageTextProcessor)
 	mr.State = MessageStateBody
 	return mr
 }
@@ -30,7 +58,7 @@ const (
 	LineQuoteBody      = 2
 )
 
-func (self *MessageTextReader) ParseQuoteLine(quoteLine string) (author string, quoteLevel string, msg string) {
+func (self *MessageTextProcessor) ParseQuoteLine(quoteLine string) (author string, quoteLevel string, msg string) {
 
 	msg = quoteLine
 
@@ -38,7 +66,7 @@ func (self *MessageTextReader) ParseQuoteLine(quoteLine string) (author string, 
 
 }
 
-func (self *MessageTextReader) processLine(oneLine string) string {
+func (self *MessageTextProcessor) processLine(oneLine string) string {
 
 	log.Printf("oneLine = %s", oneLine)
 
@@ -117,18 +145,18 @@ func (self *MessageTextReader) processLine(oneLine string) string {
 	return newLine
 }
 
-func (self *MessageTextReader) Prepare(msg string) template.HTML {
+func (self *MessageTextProcessor) Prepare(msg string) error {
 
 	/* Replace CRLF on \x0D */
 	newMsg := msg
-	newMsg = strings.ReplaceAll(newMsg, "\x0A\x0D", "\x0D")
-	newMsg = strings.ReplaceAll(newMsg, "\x0A", "\x0D")
+	newMsg = strings.ReplaceAll(newMsg, "\x0A", "")
 
 	/* Process */
 	var oneLine string
-	for _, ch := range newMsg {
-		if ch == '\x0D' {
 
+	for _, ch := range newMsg {
+
+		if ch == '\x0D' {
 			if self.State == MessageStateBody {
 				newLine := self.processLine(oneLine)
 				self.result += string(newLine) + "<br>"
@@ -143,5 +171,18 @@ func (self *MessageTextReader) Prepare(msg string) template.HTML {
 		}
 	}
 
+	return nil
+}
+
+func (self *MessageTextProcessor) MakeReply() error {
+	// TODO - process each line and make quote ...
+	return nil
+}
+
+func (self *MessageTextProcessor) HTML() template.HTML {
 	return template.HTML(self.result)
+}
+
+func (self *MessageTextProcessor) Content() string {
+	return self.result
 }

@@ -57,7 +57,7 @@ func (self *Mailer) processTX() {
 		if nextFrame.Command {
 			var frameHeader uint16
 			var frameSize int = len(nextFrame.CommandFrame.Body)
-			log.Printf("TX frame: command %v size = %d", nextFrame.Command, frameSize)
+			log.Printf("TX frame: type = command (%v): size = %d", nextFrame.Command, frameSize)
 			if frameSize >= int(FrameSizeMask) {
 				panic("Frame size is overflow.")
 			}
@@ -70,8 +70,16 @@ func (self *Mailer) processTX() {
 			binary.Write(self.writer, binary.BigEndian, nextFrame.CommandFrame.Body)
 			self.writer.Flush()
 		} else {
-			log.Printf("TX frame: command %v size = %d", nextFrame.Command, 0)
-			// TODO - process send data ..
+			var frameHeader uint16
+			var frameSize int = len(nextFrame.DataFrame.Body)
+			log.Printf("TX frame: type = data: size = %d", frameSize)
+			if frameSize >= int(FrameSizeMask) {
+				panic("Frame size is overflow.")
+			}
+			frameHeader = uint16(frameSize)
+			binary.Write(self.writer, binary.BigEndian, frameHeader)
+			binary.Write(self.writer, binary.BigEndian, nextFrame.DataFrame.Body)
+			self.writer.Flush()
 		}
 	}
 	log.Printf("TX stream stop")

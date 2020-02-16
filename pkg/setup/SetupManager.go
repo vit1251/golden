@@ -29,6 +29,7 @@ type SetupManager struct {
 }
 
 func NewSetupManager() (*SetupManager) {
+
 	sm := new(SetupManager)
 
 	basePath := GetBasePath()

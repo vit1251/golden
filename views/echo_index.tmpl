@@ -12,10 +12,12 @@
                 <div class="table-cell">{{ .Name }}</div>
                 <div class="table-cell">{{ .Summary }}</div>
                 <div class="table-cell">
-                    {{ .MessageCount }}
+{{ if .NewMessageCount }}
+                    <span class="message-item-new">{{ .NewMessageCount }}</span>
+{{ end }}
                 </div>
                 <div class="table-cell">
-                    <span class="message-item-new">{{ .NewMessageCount }}</span>
+                    {{ .MessageCount }}
                 </div>
             </a>
 {{ end }}

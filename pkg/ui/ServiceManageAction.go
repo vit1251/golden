@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/vit1251/golden/pkg/common"
 	"html/template"
 	"log"
 	"net/http"
@@ -18,6 +19,8 @@ func NewServiceManageAction() *ServiceManageAction {
 
 func (self *ServiceManageAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	master := common.GetMaster()
+
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "service_index.tmpl")
 	tmpl, err := template.ParseFiles(lp, fp)
@@ -25,11 +28,8 @@ func (self *ServiceManageAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		panic(err)
 	}
 
-	//
-	webSite := self.Site
-
 	/* Setup manager operation */
-	setupManager := webSite.GetSetupManager()
+	setupManager := master.SetupManager
 	params := setupManager.GetParams()
 	log.Printf("params = %+v", params)
 
