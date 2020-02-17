@@ -41,6 +41,20 @@ func NewTosserManager(sm *setup.SetupManager) *TosserManager {
 	return tm
 }
 
+func (self *TosserManager) makePacketName() string {
+	/* Message UUID */
+	u1 := uuid.NewV4()
+	//	u1, err4 := uuid.NewV4()
+	//	if err4 != nil {
+	//		return err4
+	//	}
+
+	/* Create packet name */
+	pktName := fmt.Sprintf("%s.pkt", u1)
+
+	return pktName
+}
+
 func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 
 	/* Create packet name */
@@ -49,7 +63,8 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 		return err1
 	}
 
-	name := path.Join(outb, "compose.pkt")
+	pktName := self.makePacketName()
+	name := path.Join(outb, pktName)
 
 	/* Open outbound packet */
 	pw, err1 := packet.NewPacketWriter(name)
@@ -129,7 +144,14 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 func (self *TosserManager) WriteNetmailMessage(em *NetmailMessage) error {
 
 	/* Create packet name */
-	name := "new_netmail.pkt"
+	outb, err1 := self.SetupManager.Get("main", "Outbound", ".")
+	if err1 != nil {
+		return err1
+	}
+
+	/* Create packet name */
+	pktName := self.makePacketName()
+	name := path.Join(outb, pktName)
 
 	/* Open outbound packet */
 	pw, err1 := packet.NewPacketWriter(name)
