@@ -2,6 +2,7 @@ package mailer
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"github.com/vit1251/golden/pkg/setup"
 	"io"
@@ -91,14 +92,13 @@ func (self *Mailer) Start() {
 	go self.run()
 }
 
-func (self *Mailer) processState() {
-	if (self.protocolState == SessionSetupState) {
-		self.processSessionSetupState()
-	} else if (self.protocolState == FileTransferState) {
-		self.processFileTransferState()
-	} else {
-		log.Panicf("Wrong mailer state: state = %v", self.protocolState)
+func (self *Mailer) processState() error {
+	if self.protocolState == SessionSetupState {
+		return self.processSessionSetupState()
+	} else if self.protocolState == FileTransferState {
+		return self.processFileTransferState()
 	}
+	return errors.New("wrong mailer state")
 }
 
 func (self *Mailer) run() {

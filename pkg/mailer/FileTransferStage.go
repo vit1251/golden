@@ -85,7 +85,7 @@ func (self *Mailer) parseSize(size []byte) (int) {
 	return int(newSize)
 }
 
-func (self *Mailer) processReceiveFileTransferState() {
+func (self *Mailer) processReceiveFileTransferState() error {
 	nextFrame := <- self.inDataFrames
 	if nextFrame.Command {
 		if nextFrame.CommandFrame.CommandID == M_FILE {
@@ -144,10 +144,14 @@ func (self *Mailer) processReceiveFileTransferState() {
 		}
 		//
 	}
+	//
 	log.Printf("Receive complete!")
+	//self.Tosser
+	//
+	return nil
 }
 
-func (self *Mailer) processTransmitFileTransferState() {
+func (self *Mailer) processTransmitFileTransferState() error {
 
 	mo := NewMailerOutbound(self.SetupManager)
 	items, err2 := mo.GetItems()
@@ -171,9 +175,11 @@ func (self *Mailer) processTransmitFileTransferState() {
 	}
 
 	log.Printf("Sent complete!")
+
+	return nil
 }
 
-func (self *Mailer) processFileTransferState() {
+func (self *Mailer) processFileTransferState() error {
 	if self.transferState == FileTransferInitTransferState {
 		self.SetFileTransferState(FileTransferSwitchState)
 	} else if self.transferState == FileTransferSwitchState {
@@ -184,4 +190,5 @@ func (self *Mailer) processFileTransferState() {
 	} else {
 		// TODO - error here ...
 	}
+	return nil
 }

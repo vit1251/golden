@@ -195,7 +195,7 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 	self.StatManager.RegisterARCmail(item.AbsolutePath)
 
 	/**/
-	workOut, err0 := self.SetupManager.Get("main", "TempOutbound", "")
+	workOut, err0 := self.SetupManager.Get("main", "TempInbound", "")
 	if err0 != nil {
 		panic(err0)
 	}

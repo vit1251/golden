@@ -69,8 +69,8 @@ func (self *Mailer) parseInfoOptFrame(rawOptions []byte)  {
 	}
 }
 
-func (self *Mailer) processSessionSetupState() {
-	if (self.sessionSetupState == SessionSetupConnInitState) {
+func (self *Mailer) processSessionSetupState() error {
+	if self.sessionSetupState == SessionSetupConnInitState {
 		/* Switch state */
 		self.SetSessionSetupState(SessionSetupWaitConnState)
 		/* Start connection */
@@ -101,7 +101,7 @@ func (self *Mailer) processSessionSetupState() {
 			/* Change state */
 			self.SetSessionSetupState(SessionSetupWaitAddrState)
 		}
-	} else if (self.sessionSetupState == SessionSetupWaitAddrState) {
+	} else if self.sessionSetupState == SessionSetupWaitAddrState {
 		nextFrame := <-self.inDataFrames
 		if nextFrame.Command {
 			if nextFrame.CommandFrame.CommandID == M_NUL {
@@ -121,7 +121,7 @@ func (self *Mailer) processSessionSetupState() {
 				log.Panicf("Unexpected Frame in state: %v", self.sessionSetupState)
 			}
 		}
-	} else if (self.sessionSetupState == SessionSetupIfSecureState) {
+	} else if self.sessionSetupState == SessionSetupIfSecureState {
 		nextFrame := <-self.inDataFrames
 		log.Printf("Auth complete: frame = %+v", nextFrame)
 		if nextFrame.Command {
@@ -135,4 +135,5 @@ func (self *Mailer) processSessionSetupState() {
 	} else {
 		log.Panicf("Wrong session setup state: %v", self.sessionSetupState)
 	}
+	return nil
 }

@@ -28,6 +28,7 @@ func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 
 	/* Create netmail message */
 	to := r.PostForm.Get("to")
+	to_addr := r.PostForm.Get("to_addr")
 	subj := r.PostForm.Get("subject")
 	body := r.PostForm.Get("body")
 	log.Printf("Compose netmail: to = %s subj = %s body = %s", to, subj, body)
@@ -37,11 +38,11 @@ func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 	nm.Subject = subj
 	nm.Body = body
 	nm.To = to
+	nm.ToAddr = to_addr
 
 	/* Delivery message */
-	err2 := master.TosserManager.WriteNetmailMessage(nm)
-	if err2 != nil {
-		panic(err2)
+	if err := master.TosserManager.WriteNetmailMessage(nm); err != nil {
+		panic(err)
 	}
 
 	/* Redirect */
