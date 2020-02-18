@@ -25,7 +25,7 @@ def package(c):
 def check(c):
     c.run('go test ./...', echo=True)
 
-@task(default=True, pre=[check])
+@task(default=True)
 def build(c):
     c.run('go build -o golden .', echo=True)
 
