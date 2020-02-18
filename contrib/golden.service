@@ -1,9 +1,0 @@
-[Unit]
-Description=Golden Service
-
-[Service]
-ExecStart=/opt/golden/__main__
-WorkingDirectory=/opt/golden
-
-[Install]
-WantedBy=multi-user.target

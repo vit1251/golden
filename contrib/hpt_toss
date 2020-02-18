@@ -1,3 +1,0 @@
-#!/bin/sh
-
-/opt/hpt-1.9/builddir/hpt toss

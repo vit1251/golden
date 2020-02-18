@@ -125,7 +125,7 @@ func (self *SetupManager) restoreDefault() (error) {
 	self.Set("main", "Country", "Russia")
 	self.Set("main", "City", "Moscow")
 	self.Set("main", "Origin", "Yo Adrian, I Did It! (c) Rocky II")
-	self.Set("main", "TearLine", "Golden/LNX 1.2.5 2020-02-02 15:38:20 MSK (master)")
+	self.Set("main", "TearLine", "Golden/WIN 1.2.8 2020-02-18 13:19 MSK (master)")
 	self.Set("main", "Address", "2:5030/1592.15")
 	self.Set("main", "Link", "2:5030/1592.0")
 	self.Set("main", "Inbound", "/var/spool/ftn/inb")
