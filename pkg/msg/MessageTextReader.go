@@ -150,6 +150,7 @@ func (self *MessageTextProcessor) Prepare(msg string) error {
 	/* Replace CRLF on \x0D */
 	newMsg := msg
 	newMsg = strings.ReplaceAll(newMsg, "\x0A", "")
+	newMsg = strings.ReplaceAll(newMsg, "\x07", "&#8226;") // Bullet char
 
 	/* Process */
 	var oneLine string

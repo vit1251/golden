@@ -3,29 +3,21 @@ package msg
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/vit1251/golden/pkg/setup"
 	"log"
 )
 
 type MessageManager struct {
-	Path  string          /* Message base directory */
+	conn *sql.DB
 }
 
-func NewMessageManager() *MessageManager {
+func NewMessageManager(conn *sql.DB) *MessageManager {
 	mm := new(MessageManager)
-	basePath := setup.GetBasePath()
-	mm.Path = basePath
+	mm.conn = conn
 	mm.checkSchema()
 	return mm
 }
 
 func (self *MessageManager) checkSchema() {
-
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		panic(err1)
-	}
-	defer db.Close()
 
 	sqlStmt :=  "CREATE TABLE IF NOT EXISTS message (" +
 		    "    msgId INTEGER NOT NULL PRIMARY KEY," +
@@ -38,7 +30,7 @@ func (self *MessageManager) checkSchema() {
 		    "    msgSubject TEXT NOT NULL," +
 		    "    msgContent TEXT NOT NULL" +
 		    ")"
-	db.Exec(sqlStmt)
+	self.conn.Exec(sqlStmt)
 
 }
 
@@ -46,15 +38,8 @@ func (self *MessageManager) GetAreaList() ([]string, error) {
 
 	var result []string
 
-	/* Step 1. Create SQL connection */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		panic(err1)
-	}
-	defer db.Close()
-
 	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := db.Begin()
+	ConnTransaction, err := self.conn.Begin()
 	if err != nil {
 		return nil, err
 	}
@@ -85,15 +70,8 @@ func (self *MessageManager) GetAreaList2() ([]*Area, error) {
 
 	var result []*Area
 
-	/* Step 1. Create SQL connection */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		panic(err1)
-	}
-	defer db.Close()
-
 	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := db.Begin()
+	ConnTransaction, err := self.conn.Begin()
 	if err != nil {
 		return nil, err
 	}
@@ -126,15 +104,8 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 
 	var result []*Message
 
-	/* Step 1. Create SQL connection */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		panic(err1)
-	}
-	defer db.Close()
-
 	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := db.Begin()
+	ConnTransaction, err := self.conn.Begin()
 	if err != nil {
 		return nil, err
 	}
@@ -183,15 +154,8 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 
 	var result *Message
 
-	/* Step 1. Create SQL connection */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		panic(err1)
-	}
-	defer db.Close()
-
 	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := db.Begin()
+	ConnTransaction, err := self.conn.Begin()
 	if err != nil {
 		return nil, err
 	}
@@ -236,15 +200,8 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 
 func (self *MessageManager) ViewMessageByHash(echoTag string, msgHash string) (error) {
 
-	/* Step 1. Create SQL connection */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		panic(err1)
-	}
-	defer db.Close()
-
 	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := db.Begin()
+	ConnTransaction, err := self.conn.Begin()
 	if err != nil {
 		return err
 	}
@@ -265,15 +222,8 @@ func (self *MessageManager) ViewMessageByHash(echoTag string, msgHash string) (e
 
 func (self *MessageManager) RemoveMessageByHash(echoTag string, msgHash string) (error) {
 
-	/* Step 1. Create SQL connection */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		panic(err1)
-	}
-	defer db.Close()
-
 	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := db.Begin()
+	ConnTransaction, err := self.conn.Begin()
 	if err != nil {
 		return err
 	}
@@ -295,15 +245,8 @@ func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string
 
 	var result bool = false
 
-	/* Step 1. Create SQL connection */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		panic(err1)
-	}
-	defer db.Close()
-
 	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := db.Begin()
+	ConnTransaction, err := self.conn.Begin()
 	if err != nil {
 		return result, err
 	}
@@ -335,15 +278,8 @@ func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string
 
 func (self *MessageManager) Write(msg *Message) (error) {
 
-	/* Step 1. Create SQL connection */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		panic(err1)
-	}
-	defer db.Close()
-
 	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := db.Begin()
+	ConnTransaction, err := self.conn.Begin()
 	if err != nil {
 		return err
 	}

@@ -1,12 +1,12 @@
 package stat
 
 import (
-	"github.com/vit1251/golden/pkg/setup"
+	"database/sql"
 	"log"
 )
 
 type StatManager struct {
-	Path string
+	conn *sql.DB
 }
 
 type Stat struct {
@@ -29,9 +29,9 @@ type Stat struct {
 
 var stat Stat
 
-func NewStatManager() (*StatManager) {
+func NewStatManager(conn *sql.DB) *StatManager {
 	sm := new(StatManager)
-	sm.Path = setup.GetBasePath()
+	sm.conn = conn
 	return sm
 }
 

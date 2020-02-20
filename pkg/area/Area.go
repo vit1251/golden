@@ -1,5 +1,7 @@
 package area
 
+import "strings"
+
 type Area struct {
 	Name            string     /* Echo name              */
 	Summary         string     /* Echo summary           */
@@ -16,4 +18,8 @@ func NewArea() *Area {
 	a.Summary = "Без описания"
 	a.Flag = "A"
 	return a
+}
+
+func (self *Area) SetName(name string) {
+	self.Name = strings.ToUpper(name)
 }

@@ -23,12 +23,6 @@ var master *GoldenMaster
 func GetMaster() *GoldenMaster {
 	if master == nil {
 		master = new(GoldenMaster)
-		master.SetupManager = setup.NewSetupManager()
-		master.MessageManager = msg.NewMessageManager()
-		master.AreaManager = area.NewAreaManager(master.MessageManager)
-		master.FileManager = file.NewFileManager()
-		master.StatManager = stat.NewStatManager()
-		master.TosserManager = tosser.NewTosserManager(master.SetupManager)
 	}
 	return master
 }

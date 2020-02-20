@@ -24,18 +24,14 @@ func (self *SetupParam) SetValue(value string) {
 }
 
 type SetupManager struct {
-	Path      string       /* Param stroage path */
-	Params []*SetupParam   /* Param array        */
+	Params []*SetupParam
+	conn *sql.DB
 }
 
-func NewSetupManager() (*SetupManager) {
-
+func NewSetupManager(conn *sql.DB) *SetupManager {
 	sm := new(SetupManager)
-
-	basePath := GetBasePath()
-
-	sm.Path = basePath
-
+	sm.conn = conn
+	sm.checkSchema()
 	/* Set parameter */
 	sm.Register("main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
 	sm.Register("main", "Origin", "Origin was provide BBS station name and network address")
@@ -85,17 +81,13 @@ func (self *SetupManager) Set(section string, name string, value string) (error)
 }
 
 func (self *SetupManager) Get(section string, name string, defaultValue string) (string, error) {
-
 	var result string = defaultValue
-
 	for _, param := range self.Params {
 		if param.Section == section && param.Name == name {
 			result = param.Value
 		}
 	}
-
 	return result, nil
-
 }
 
 func (self *SetupManager) Register(section string, name string, summary string) (error) {
@@ -135,7 +127,7 @@ func (self *SetupManager) restoreDefault() (error) {
 	return nil
 }
 
-func (self *SetupManager) checkSchema(conn *sql.DB) (error) {
+func (self *SetupManager) checkSchema() error {
 
 	/* Step 1. Create "settings" store */
 	sqlStmt1 := "CREATE TABLE IF NOT EXISTS settings (" +
@@ -147,26 +139,16 @@ func (self *SetupManager) checkSchema(conn *sql.DB) (error) {
 
 	log.Printf("sql = %s", sqlStmt1)
 
-	conn.Exec(sqlStmt1)
+	self.conn.Exec(sqlStmt1)
 
 	return nil
 }
 
-func (self *SetupManager) Restore() (error) {
-
-	/* Open SQL storage */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		return err1
-	}
-	defer db.Close()
-
-	/* Check schema */
-	self.checkSchema(db)
+func (self *SetupManager) Restore() error {
 
 	/* Restore parameters */
 	sqlStmt := "SELECT `section`, `name`, `value` FROM `settings`"
-	rows, err2 := db.Query(sqlStmt)
+	rows, err2 := self.conn.Query(sqlStmt)
 	if err2 != nil {
 		return err2
 	}
@@ -189,26 +171,16 @@ func (self *SetupManager) Restore() (error) {
 
 func (self *SetupManager) Store() (error) {
 
-	/* Open SQL storage */
-	db, err1 := sql.Open("sqlite3", self.Path)
+	/* Prepare update query */
+	stmt1, err1 := self.conn.Prepare("UPDATE `settings` SET `value` = ? WHERE `section` = ? AND `name` = ?")
 	if err1 != nil {
 		return err1
 	}
-	defer db.Close()
-
-	/* Check schema */
-	self.checkSchema(db)
-
-	/* Prepare update query */
-	stmt1, err2_1 := db.Prepare("UPDATE `settings` SET `value` = ? WHERE `section` = ? AND `name` = ?")
-	if err2_1 != nil {
-		return err2_1
-	}
 
 	/* Prepare insert query */
-	stmt2, err2_2 := db.Prepare("INSERT INTO `settings` (`section`, `name`, `value`) VALUES (?, ?, ?)")
-	if err2_2 != nil {
-		return err2_2
+	stmt2, err2 := self.conn.Prepare("INSERT INTO `settings` (`section`, `name`, `value`) VALUES (?, ?, ?)")
+	if err2 != nil {
+		return err2
 	}
 
 	/* Store parameters */

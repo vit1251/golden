@@ -4,26 +4,25 @@ import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/setup"
 	"log"
 )
 
 type AreaManager struct {
-	Path                string
-	MessageManager     *msg.MessageManager
+	MessageManager *msg.MessageManager
+	conn *sql.DB
 }
 
-func NewAreaManager(mm *msg.MessageManager) (*AreaManager) {
+func NewAreaManager(conn *sql.DB, mm *msg.MessageManager) (*AreaManager) {
+	log.Printf("NewAreaManager: conn = %+v", conn)
 	am := new(AreaManager)
-	basePath := setup.GetBasePath()
-	am.Path = basePath
+	am.conn = conn
 	am.MessageManager = mm
+	am.checkSchema()
 	am.Rescan()
 	return am
 }
 
-func (self *AreaManager) checkSchema(conn *sql.DB) (error) {
-
+func (self *AreaManager) checkSchema() error {
 	sqlStmt := "CREATE TABLE IF NOT EXISTS area (" +
 		    "    areaId INTEGER NOT NULL PRIMARY KEY," +
 		    "    areaName CHAR(64) NOT NULL," +
@@ -34,13 +33,9 @@ func (self *AreaManager) checkSchema(conn *sql.DB) (error) {
 		    "    UNIQUE(areaName)" +
 		    ")"
 	log.Printf("sqlStmt = %s", sqlStmt)
-	_, err1 := conn.Exec(sqlStmt)
+	_, err1 := self.conn.Exec(sqlStmt)
 	log.Printf("createSchema: err = %v", err1)
-//	if err1 != nil {
-//	}
-
 	return err1
-
 }
 
 func (self *AreaManager) Rescan() {
@@ -55,7 +50,7 @@ func (self *AreaManager) Rescan() {
 	for _, area := range areas {
 		log.Printf("area = %q", area)
 		a := NewArea()
-		a.Name = area.Name
+		a.SetName(area.Name)
 		a.MessageCount = area.Count
 		self.Register(a)
 	}
@@ -94,16 +89,9 @@ func (self *AreaManager) updateMsgCount(areas []*Area) {
 
 func (self *AreaManager) Register(a *Area) error {
 
-	/* Open SQL storage */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		return err1
-	}
-	defer db.Close()
-
 	/* Insert new one area */
 	sqlStmt1 := "INSERT INTO `area` ( `areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder` ) VALUES ( ?, '', '', '', 0 )"
-	stmt1, err2 := db.Prepare(sqlStmt1)
+	stmt1, err2 := self.conn.Prepare(sqlStmt1)
 	if err2 != nil {
 		return err2
 	}
@@ -120,19 +108,9 @@ func (self *AreaManager) GetAreas() ([]*Area, error) {
 
 	var areas []*Area
 
-	/* Open SQL storage */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		return nil, err1
-	}
-	defer db.Close()
-
-	/* Check schema */
-	self.checkSchema(db)
-
 	/* Restore parameters */
 	sqlStmt := "SELECT `areaName` FROM `area`"
-	rows, err2 := db.Query(sqlStmt)
+	rows, err2 := self.conn.Query(sqlStmt)
 	if err2 != nil {
 		return nil, err2
 	}
@@ -164,16 +142,9 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 
 	var result *Area
 
-	/* Open SQL storage */
-	db, err1 := sql.Open("sqlite3", self.Path)
-	if err1 != nil {
-		return nil, err1
-	}
-	defer db.Close()
-
 	/* Restore parameters */
 	sqlStmt := "SELECT `areaName` FROM `area` WHERE `areaName` = ?"
-	rows, err2 := db.Query(sqlStmt, echoTag)
+	rows, err2 := self.conn.Query(sqlStmt, echoTag)
 	if err2 != nil {
 		return nil, err2
 	}
