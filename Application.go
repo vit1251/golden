@@ -6,6 +6,7 @@ import (
 	"github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/stat"
 	"github.com/vit1251/golden/pkg/tosser"
@@ -62,6 +63,9 @@ func (self *Application) Run() {
 	if err := self.Container.Provide(stat.NewStatManager); err != nil {
 		panic(err)
 	}
+	if err := self.Container.Provide(netmail.NewNetmailManager); err != nil {
+		panic(err)
+	}
 	if err := self.Container.Provide(func(sm *setup.SetupManager) *tosser.TosserManager {
 		return tosser.NewTosserManager(sm)
 	}); err != nil {
@@ -69,8 +73,8 @@ func (self *Application) Run() {
 	}
 
 	/* Check periodic message */
-	self.Container.Invoke(func(mm *msg.MessageManager, sm *stat.StatManager, setm *setup.SetupManager, fm *file.FileManager) {
-		newTosser := tosser.NewTosser(mm, sm, setm, fm)
+	self.Container.Invoke(func(am *area.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.SetupManager, fm *file.FileManager) {
+		newTosser := tosser.NewTosser(am, mm, sm, setm, fm)
 		newTosser.Toss()
 	})
 

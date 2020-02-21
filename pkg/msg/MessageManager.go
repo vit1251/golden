@@ -19,7 +19,7 @@ func NewMessageManager(conn *sql.DB) *MessageManager {
 
 func (self *MessageManager) checkSchema() {
 
-	sqlStmt :=  "CREATE TABLE IF NOT EXISTS message (" +
+	query1 :=  "CREATE TABLE IF NOT EXISTS message (" +
 		    "    msgId INTEGER NOT NULL PRIMARY KEY," +
 		    "    msgHash CHAR(16) NOT NULL," +
 			"    msgDate INTEGER NOT NULL," +
@@ -30,7 +30,22 @@ func (self *MessageManager) checkSchema() {
 		    "    msgSubject TEXT NOT NULL," +
 		    "    msgContent TEXT NOT NULL" +
 		    ")"
-	self.conn.Exec(sqlStmt)
+	log.Printf("query = %+v", query1)
+	if _, err := self.conn.Exec(query1); err != nil {
+		log.Printf("Error create \"message\" storage: err = %+v", err)
+	}
+
+	/* Create index on msgHash */
+	query2 := "CREATE INDEX \"idx_message_msgHash\" ON \"message\" (\"msgHash\" ASC)"
+	if _, err := self.conn.Exec(query2); err != nil {
+		log.Printf("Error create \"message\" storage: err = %+v", err)
+	}
+
+	/* Create index on msgHash */
+	query3 := "CREATE INDEX \"idx_message_msgArea\" ON \"message\" (\"msgArea\" ASC)"
+	if _, err := self.conn.Exec(query3); err != nil {
+		log.Printf("Error create \"message\" storage: err = %+v", err)
+	}
 
 }
 

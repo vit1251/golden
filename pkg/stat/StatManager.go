@@ -49,6 +49,7 @@ func (self *StatManager) RegisterARCmail(filename string) (error) {
 
 func (self *StatManager) RegisterFile(filename string) (error) {
 	log.Printf("Stat: RegisterFile: %s", filename)
+	stat.TicReceived += 1
 	return nil
 }
 

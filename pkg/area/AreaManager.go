@@ -22,20 +22,26 @@ func NewAreaManager(conn *sql.DB, mm *msg.MessageManager) (*AreaManager) {
 	return am
 }
 
-func (self *AreaManager) checkSchema() error {
-	sqlStmt := "CREATE TABLE IF NOT EXISTS area (" +
+func (self *AreaManager) checkSchema() {
+	query1 := "CREATE TABLE IF NOT EXISTS area (" +
 		    "    areaId INTEGER NOT NULL PRIMARY KEY," +
 		    "    areaName CHAR(64) NOT NULL," +
 		    "    areaType CHAR(64) NOT NULL," +
 		    "    areaPath CHAR(64) NOT NULL," +
 		    "    areaSummary CHAR(64) NOT NULL," +
-		    "    areaOrder INTEGER NOT NULL," +
-		    "    UNIQUE(areaName)" +
+		    "    areaOrder INTEGER NOT NULL" +
 		    ")"
-	log.Printf("sqlStmt = %s", sqlStmt)
-	_, err1 := self.conn.Exec(sqlStmt)
-	log.Printf("createSchema: err = %v", err1)
-	return err1
+	log.Printf("sqlStmt = %s", query1)
+	if _, err := self.conn.Exec(query1); err != nil {
+		log.Printf("Error create \"area\" storage: err = %+v", err)
+	}
+
+	/* Create index on msgHash */
+	query2 := "CREATE INDEX \"idx_area_areaName\" ON \"area\" (\"areaName\" ASC)"
+	if _, err := self.conn.Exec(query2); err != nil {
+		log.Printf("Error create \"area\" storage: err = %+v", err)
+	}
+
 }
 
 func (self *AreaManager) Rescan() {
@@ -52,7 +58,6 @@ func (self *AreaManager) Rescan() {
 		a := NewArea()
 		a.SetName(area.Name)
 		a.MessageCount = area.Count
-		self.Register(a)
 	}
 
 }

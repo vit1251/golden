@@ -53,7 +53,7 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	/* Get message headers */
 	messageManager := master.MessageManager
 	msgHeaders, err2 := messageManager.GetMessageHeaders(echoTag)
-	if (err2 != nil) {
+	if err2 != nil {
 		response := fmt.Sprintf("Fail on GetMessageHeaders where echoTag is %s: err = %+v", echoTag, err2)
 		http.Error(w, response, http.StatusInternalServerError)
 		return

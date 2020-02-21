@@ -1,10 +1,11 @@
 package file
 
 import (
-	"os"
 	"bufio"
+	"github.com/vit1251/golden/pkg/packet"
 	"io"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -63,15 +64,20 @@ func (self *TicParser) prcessLine(newLine string) {
 func (self *TicParser) Parse(stream io.Reader) error {
 	cacheStream := bufio.NewReader(stream)
 	for {
-		newLine, err2 := cacheStream.ReadString('\n')
+		newLine, err2 := cacheStream.ReadBytes('\n')
 		if err2 == nil {
 		} else if err2 == io.EOF {
 			break
 		} else {
 			return err2
 		}
-		newLine = strings.Trim(newLine, "\r\n ")
-		self.prcessLine(newLine)
+		newRow, err3 := packet.DecodeText(newLine)
+		if err3 != nil {
+			return err3
+		}
+		newStr := string(newRow)
+		newStr = strings.Trim(newStr, "\r\n ")
+		self.prcessLine(newStr)
 	}
 	return nil
 }

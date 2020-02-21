@@ -3,6 +3,7 @@ package file
 import (
 	"database/sql"
 	"log"
+	"time"
 )
 
 type FileManager struct {
@@ -34,8 +35,7 @@ func (self *FileManager) checkSchema() error {
 		"    areaType CHAR(64) NOT NULL," +
 		"    areaPath CHAR(64) NOT NULL," +
 		"    areaSummary CHAR(64) NOT NULL," +
-		"    areaOrder INTEGER NOT NULL," +
-		"    UNIQUE(areaName)" +
+		"    areaOrder INTEGER NOT NULL" +
 		")"
 	log.Printf("sqlStmt = %s", sqlStmt)
 	self.conn.Exec(sqlStmt)
@@ -45,10 +45,17 @@ func (self *FileManager) checkSchema() error {
 		"    fileId INTEGER NOT NULL PRIMARY KEY," +
 		"    fileName CHAR(64) NOT NULL," +
 		"    fileArea CHAR(64) NOT NULL," +
+		"    fileTime INTEGER NOT NULL," +
 		"    fileDesc TEXT" +
 		")"
 	log.Printf("sqlStmt = %s", sqlStmt1)
 	self.conn.Exec(sqlStmt1)
+
+	/* Create index on msgHash */
+	query3 := "CREATE INDEX \"idx_file_fileArea\" ON \"file\" (\"fileArea\" ASC)"
+	if _, err := self.conn.Exec(query3); err != nil {
+		log.Printf("Error create \"file\" storage: err = %+v", err)
+	}
 
 	return nil
 }
@@ -83,20 +90,16 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 	return areas, nil
 }
 
-func (self *FileManager) CreateFileArea(a *FileArea) error {
+func (self *FileManager) CreateArea(a *FileArea) error {
 
 	log.Printf("Create file area: %+v", a)
 
-	/* Insert new one area */
-	sqlStmt1 := "INSERT INTO `file` ( `areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder` ) VALUES ( ?, '', '', '', 0 )"
-	stmt1, err2 := self.conn.Prepare(sqlStmt1)
-	if err2 != nil {
-		return err2
-	}
-	_, err3 := stmt1.Exec(a.Name)
-	log.Printf("err3 = %+v", err3)
-	if err3 != nil {
-		return err3
+	/* Prepare SQL request */
+	query := "INSERT INTO `filearea` (`areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder`) VALUES ( ?, '', '', '', 0)"
+
+	/* Create area */
+	if _, err := self.conn.Exec(query, a.Name); err != nil {
+		return err
 	}
 
 	return nil
@@ -147,18 +150,25 @@ func (self *FileManager) CheckFileExists(tic *TicFile) (bool, error) {
 
 func (self *FileManager) RegisterFile(tic *TicFile) (error) {
 
+	var unixTime int64 = time.Now().Unix()
+
 	/* Insert new one area */
-	sqlStmt1 := "INSERT INTO `file` ( `fileName`, `fileArea`, `fileDesc` ) VALUES ( ?, ?, ? )"
+	sqlStmt1 := "INSERT INTO `file` ( `fileName`, `fileArea`, `fileDesc`, `fileTime` ) VALUES ( ?, ?, ?, ? )"
 	stmt1, err2 := self.conn.Prepare(sqlStmt1)
 	if err2 != nil {
 		return err2
 	}
-	_, err3 := stmt1.Exec(tic.File, tic.Area, tic.Desc)
+	_, err3 := stmt1.Exec(tic.File, tic.Area, tic.Desc, unixTime )
 	log.Printf("err3 = %+v", err3)
 	if err3 != nil {
 		return err3
 	}
 
 	return nil
+}
+
+func (self *FileManager) GetArea(area string) (*FileArea, error) {
+	// TODO - implement search area here ...
+	return nil, nil
 }
 

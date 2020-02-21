@@ -83,7 +83,7 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	/* Update view counter */
 	err5 := messageManager.ViewMessageByHash(echoTag, msgHash)
 	if err5 != nil {
-		response := fmt.Sprintf("Fail on ViewMessageByHash on messageManager")
+		response := fmt.Sprintf("Fail on ViewMessageByHash on messageManager: err = %+v", err5)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}

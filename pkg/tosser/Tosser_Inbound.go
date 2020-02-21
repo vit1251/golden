@@ -2,10 +2,12 @@ package tosser
 
 import (
 	"errors"
+	"github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
+	"github.com/vit1251/golden/pkg/timezone"
 	"io"
 	"log"
 	"os"
@@ -114,6 +116,14 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 			areaName = "NETMAIL"
 		}
 
+		/* Search area */
+		// TODO - a, _ := self.AreaManager.GetAreaByName(areaName)
+
+		/* Auto create area */
+		a := area.NewArea()
+		a.Name = strings.ToUpper(areaName)
+		self.AreaManager.Register(a)
+
 		/* Decode message */
 		charsetKludge := msgBody.GetKludge("CHRS", "CP866 2")
 		charset := self.parseCharsetKludge(charsetKludge)
@@ -133,6 +143,22 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 			//source := msgidParts[0]
 			msgHash = msgidParts[1]
 		}
+
+		/* Determine zone */
+		zone := msgBody.GetKludge("TZUTC", " 0300")
+		log.Printf("zone = %+v", zone)
+		zone = strings.Trim(zone, " \t")
+		zParser := timezone.NewTimeZoneParser()
+		msgZone, err10 := zParser.Parse(zone)
+		if err10 != nil {
+			return err10
+		}
+		log.Printf("Message zone: zone = %+v", msgZone)
+		newZoneTime := msgHeader.Time.In(msgZone)
+		log.Printf("newZoneTime = %+v", newZoneTime)
+		newLocalTime := newZoneTime.Local()
+		log.Printf("newLocalTime = %+v", newLocalTime)
+		msgHeader.Time = &newLocalTime
 
 //		/* Determine reply */
 //		reply := msgBody.GetKludge("REPLY", "")
@@ -244,20 +270,31 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	}
 	log.Printf("tic = %+v", tic)
 
-	/* Create area */
-	fa := file.NewFileArea()
-	fa.Name = tic.Area
-
-	self.FileManager.CreateFileArea(fa)
-
-	/* Check area exists */
-	boxBasePath, err1 := self.SetupManager.Get("main", "FileBox", "")
+	/* Search area */
+	fa, err1 := self.FileManager.GetArea(tic.Area)
 	if err1 != nil {
 		panic(err1)
 	}
-	inboxBasePath, err2 := self.SetupManager.Get("main", "Inbound", "")
+
+	/* Create area */
+	if fa == nil {
+		/* Prepare area */
+		newFa := file.NewFileArea()
+		newFa.Name = tic.Area
+		/* Create area */
+		if err := self.FileManager.CreateArea(newFa); err != nil {
+			log.Printf("Unable to create area %s: err = %+v", tic.Area, err)
+		}
+	}
+
+	/* Check area exists */
+	boxBasePath, err2 := self.SetupManager.Get("main", "FileBox", "")
 	if err2 != nil {
 		panic(err2)
+	}
+	inboxBasePath, err3 := self.SetupManager.Get("main", "Inbound", "")
+	if err3 != nil {
+		panic(err3)
 	}
 
 	areaLocation := path.Join(boxBasePath, tic.Area)
@@ -265,11 +302,11 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 
 	inboxTicLocation := path.Join(inboxBasePath, tic.File)
 
-	areaTicLocation := path.Join(areaLocation, tic.File)
+	areaFileLocation := path.Join(areaLocation, tic.File)
 	log.Printf("Area path %+v", areaLocation)
 
 	/* Move in area*/
-	os.Rename(inboxTicLocation, areaTicLocation)
+	os.Rename(inboxTicLocation, areaFileLocation)
 
 	/* Register file */
 	self.FileManager.RegisterFile(tic)
@@ -278,7 +315,8 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	self.StatManager.RegisterFile(tic.File)
 
 	/* Remove TIC descriptor */
-	os.Remove(item.AbsolutePath)
+	areaTicLocation := path.Join(areaLocation, item.Name)
+	os.Rename(item.AbsolutePath, areaTicLocation)
 
 	return nil
 }

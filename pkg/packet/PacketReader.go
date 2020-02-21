@@ -1,11 +1,11 @@
 package packet
 
 import (
-	"io"
-	"os"
-	"log"
 	"bufio"
 	"errors"
+	"io"
+	"log"
+	"os"
 )
 
 type PacketReader struct {
@@ -154,7 +154,7 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 		return nil, err5
 	} else {
 		if pktVersion != 2 {
-			return nil, errors.New("Invalid pkt version")
+			return nil, errors.New("invalid packet version")
 		}
 	}
 
@@ -205,7 +205,7 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 		pktHeader.auxNet = value
 	}
 
-	/* Read capatiblity bytes (2 byte) */
+	/* Read capability bytes (2 byte) */
 	if capByte1, capByte2, err14 := self.readPacketHeaderCapatiblityBytes(); err14 != nil {
 		return nil, err14
 	} else {
@@ -225,9 +225,9 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 		pktHeader.capabilityWord = value
 	}
 
-	/* Check capatibility */
+	/* Check capability */
 	if ok := pktHeader.IsCapatiblity(); !ok {
-		return nil, errors.New("Packet capatiblity error")
+		return nil, errors.New("packet capability error")
 	}
 
 	/* Read additional zone info (2 byte) */
@@ -287,7 +287,7 @@ func (self *PacketReader) ReadMessageHeader() (*PacketMessageHeader, error) {
 		} else if value == 2 {
 			/* Valid */
 		} else {
-			return nil, errors.New("Invalid packet message version")
+			return nil, errors.New("invalid packet message version")
 		}
 	}
 

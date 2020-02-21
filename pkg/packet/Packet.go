@@ -71,7 +71,7 @@ type PacketHeader struct {
 	majorProductRev     uint8
 }
 
-func NewPacketHeader() (*PacketHeader) {
+func NewPacketHeader() *PacketHeader {
 	ph := new(PacketHeader)
 	ph.capatiblityByte1 = 0
 	ph.capatiblityByte2 = 1
