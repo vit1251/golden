@@ -15,7 +15,6 @@ type Area struct {
 func NewArea() *Area {
 	a := new(Area)
 	a.Charset = "CP866"
-	a.Summary = "Без описания"
 	a.Flag = "A"
 	return a
 }

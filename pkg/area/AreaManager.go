@@ -114,7 +114,7 @@ func (self *AreaManager) GetAreas() ([]*Area, error) {
 	var areas []*Area
 
 	/* Restore parameters */
-	sqlStmt := "SELECT `areaName` FROM `area`"
+	sqlStmt := "SELECT `areaName`, `areaSummary` FROM `area`"
 	rows, err2 := self.conn.Query(sqlStmt)
 	if err2 != nil {
 		return nil, err2
@@ -123,14 +123,20 @@ func (self *AreaManager) GetAreas() ([]*Area, error) {
 	for rows.Next() {
 
 		var areaName string
+		var areaSummary string
 
-		err3 := rows.Scan(&areaName)
+		err3 := rows.Scan(&areaName, &areaSummary)
 		if err3 != nil {
 			return nil, err3
 		}
 
+		if areaSummary == "" {
+			areaSummary = "Нет описания"
+		}
+
 		area := NewArea()
 		area.Name = areaName
+		area.Summary = areaSummary
 
 		areas = append(areas, area)
 

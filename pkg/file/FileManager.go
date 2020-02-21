@@ -11,7 +11,8 @@ type FileManager struct {
 }
 
 type FileArea struct {
-	Name string /* */
+	Name string
+	Summary string
 }
 
 func NewFileArea() *FileArea {
@@ -65,7 +66,7 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 	var areas []*FileArea
 
 	/* Restore parameters */
-	sqlStmt := "SELECT `areaName` FROM `filearea`"
+	sqlStmt := "SELECT `areaName`, `areaSummary` FROM `filearea`"
 	rows, err2 := self.conn.Query(sqlStmt)
 	if err2 != nil {
 		return nil, err2
@@ -74,14 +75,21 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 	for rows.Next() {
 
 		var areaName string
+		var areaSummary string
 
-		err3 := rows.Scan(&areaName)
+		err3 := rows.Scan(&areaName, &areaSummary)
 		if err3 != nil {
 			return nil, err3
 		}
 
+		/**/
+		if areaSummary == "" {
+			areaSummary = "Нет описания"
+		}
+
 		area := NewFileArea()
 		area.Name = areaName
+		area.Summary = areaSummary
 
 		areas = append(areas, area)
 
@@ -115,10 +123,11 @@ func (self *FileManager) GetFileHeaders(echoTag string) ([]*TicFile, error) {
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `fileName`, `fileDesc` FROM `file` WHERE `fileArea` = $1"
+	sqlStmt := "SELECT `fileName`, `fileDesc`, `fileTime` FROM `file` WHERE `fileArea` = $1"
 	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
 	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag)
 	if err1 != nil {
+		log.Printf("error on query: err = %+v", err1)
 		return nil, err1
 	}
 	defer rows.Close()
@@ -126,15 +135,20 @@ func (self *FileManager) GetFileHeaders(echoTag string) ([]*TicFile, error) {
 
 		var fileName string
 		var fileDesc string
+		var fileTime *int64
 
-		err2 := rows.Scan(&fileName, &fileDesc)
-		if err2 != nil{
+		err2 := rows.Scan(&fileName, &fileDesc, &fileTime)
+		if err2 != nil {
+			log.Printf("error on scan: err = %+v", err2)
 			return nil, err2
 		}
 
 		tic := NewTicFile()
 		tic.Desc = fileDesc
 		tic.File = fileName
+		if fileTime != nil {
+			tic.SetUnixTime(*fileTime)
+		}
 
 		result = append(result, tic)
 	}

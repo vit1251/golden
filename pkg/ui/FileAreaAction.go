@@ -1,11 +1,11 @@
 package ui
 
 import (
+	"fmt"
 	"github.com/vit1251/golden/pkg/common"
+	"html/template"
 	"net/http"
 	"path/filepath"
-	"html/template"
-	"fmt"
 )
 
 type FileAreaAction struct {
@@ -13,7 +13,7 @@ type FileAreaAction struct {
 	tmpl     *template.Template
 }
 
-func NewFileAreaAction() (*FileAreaAction) {
+func NewFileAreaAction() *FileAreaAction {
 	aa := new(FileAreaAction)
 
 	/* Prepare cache */

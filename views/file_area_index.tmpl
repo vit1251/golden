@@ -10,6 +10,7 @@
 {{ range .Areas }}
             <a class="table-row" href="/file/{{ .Name }}">
                 <div class="table-cell">{{ .Name }}</div>
+                <div class="table-cell">{{ .Summary }}</div>
             </a>
 {{ end }}
         </div>
