@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/vit1251/golden/pkg/common"
 	"html/template"
 	"net/http"
 	"path/filepath"
@@ -27,6 +28,14 @@ func NewNetmailAction() (*NetmailAction) {
 }
 
 func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	master := common.GetMaster()
+	msgHeaders, err1 := master.NetmailManager.GetMessageHeaders()
+	if err1 != nil {
+		panic(err1)
+	}
+
 	outParams := make(map[string]interface{})
+	outParams["msgHeaders"] = msgHeaders
 	self.tmpl.ExecuteTemplate(w, "layout", outParams)
 }

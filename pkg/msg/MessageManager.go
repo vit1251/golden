@@ -141,11 +141,12 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 		var to string
 		var msgDate int64
 		var viewCount int
+
 		err2 := rows.Scan(&ID, &msgHash, &subject, &viewCount, &from, &to, &msgDate)
 		if err2 != nil{
 			return nil, err2
 		}
-		log.Printf("subject = %q", subject)
+
 		msg := NewMessage()
 		if msgHash != nil {
 			msg.SetMsgID(*msgHash)
@@ -156,6 +157,7 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 		msg.SetTo(to)
 		msg.SetUnixTime(msgDate)
 		msg.SetViewCount(viewCount)
+
 		result = append(result, msg)
 
 	}

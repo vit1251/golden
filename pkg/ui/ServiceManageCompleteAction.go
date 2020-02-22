@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/mailer"
@@ -8,20 +9,20 @@ import (
 	"net/http"
 )
 
-type ServiceManageCompleteAction struct {
+type ApiServiceStartAction struct {
 	Action
 }
 
-func NewServiceManageCompleteAction() *ServiceManageCompleteAction {
-	smac := new(ServiceManageCompleteAction)
+func NewApiServiceStartAction() *ApiServiceStartAction {
+	smac := new(ApiServiceStartAction)
 	return smac
 }
 
-func (self *ServiceManageCompleteAction) Start() {
+func (self *ApiServiceStartAction) Start() {
 	go self.Run()
 }
 
-func (self *ServiceManageCompleteAction) Run() error {
+func (self *ApiServiceStartAction) Run() error {
 
 	master := common.GetMaster()
 
@@ -73,13 +74,15 @@ func (self *ServiceManageCompleteAction) Run() error {
 	return nil
 }
 
-func (self *ServiceManageCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *ApiServiceStartAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* ... */
 	self.Start()
 
-	/* Redirect */
-	newLocation := fmt.Sprintf("/service")
-	http.Redirect(w, r, newLocation, 303)
+	p := make(map[string]interface{})
+	p["code"] = 0
 
+	/* Response */
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(p)
 }

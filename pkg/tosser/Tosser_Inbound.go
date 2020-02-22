@@ -64,7 +64,7 @@ func (self *Tosser) decodeMessageBody(msgBody []byte, charset string) (string, e
 	return result, nil
 }
 
-func (self *Tosser) ProcessPacket(name string) (error) {
+func (self *Tosser) ProcessPacket(name string) error {
 
 	/* Start new packet reader */
 	pr, err3 := packet.NewPacketReader(name)
@@ -154,11 +154,13 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 			return err10
 		}
 		log.Printf("Message zone: zone = %+v", msgZone)
-		newZoneTime := msgHeader.Time.In(msgZone)
-		log.Printf("newZoneTime = %+v", newZoneTime)
-		newLocalTime := newZoneTime.Local()
-		log.Printf("newLocalTime = %+v", newLocalTime)
-		msgHeader.Time = &newLocalTime
+
+		log.Printf("orig: msgTime = %+v", msgHeader.Time)
+		msgTime, err11 := msgHeader.Time.CreateTime(msgZone)
+		if err11 != nil {
+			return err11
+		}
+		log.Printf("msgTime = %+v", msgTime)
 
 //		/* Determine reply */
 //		reply := msgBody.GetKludge("REPLY", "")
@@ -190,7 +192,7 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 			newMsg.SetFrom(msgHeader.FromUserName)
 			newMsg.SetTo(msgHeader.ToUserName)
 			newMsg.SetSubject(msgHeader.Subject)
-			newMsg.SetTime(msgHeader.Time)
+			newMsg.SetTime(msgTime)
 
 			newMsg.SetContent(newBody)
 
@@ -211,23 +213,43 @@ func (self *Tosser) ProcessPacket(name string) (error) {
 	return nil
 }
 
-func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) (error) {
+func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) error {
+
+	/**/
+	inbTempPath, err0 := self.SetupManager.Get("main", "TempInbound", "")
+	if err0 != nil {
+		panic(err0)
+	}
+
+	self.StatManager.RegisterPacket(item.AbsolutePath)
+
+	err1 := self.ProcessPacket(item.AbsolutePath)
+	if err1 != nil {
+		return err1
+	}
+
+	/* Construct new path */
+	newArcPath := path.Join(inbTempPath, item.Name)
+
+	/* Move in area*/
+	log.Printf("Move %s -> %s", item.AbsolutePath, newArcPath)
+	os.Rename(item.AbsolutePath, newArcPath)
+
+
 	return nil
 }
 
-func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
-
-	/* Update statistics */
+func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
 	self.StatManager.RegisterARCmail(item.AbsolutePath)
 
 	/**/
-	workOut, err0 := self.SetupManager.Get("main", "TempInbound", "")
+	newInbTempDir, err0 := self.SetupManager.Get("main", "TempInbound", "")
 	if err0 != nil {
 		panic(err0)
 	}
 
 	/* Unpack */
-	packets, err1 := Unpack(item.AbsolutePath, workOut)
+	packets, err1 := Unpack(item.AbsolutePath, newInbTempDir)
 	if err1 != nil {
 		return err1
 	}
@@ -244,13 +266,13 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) (error) {
 		log.Printf("error durng parse package: err = %+v", err3)
 	}
 
-	newInboundPath, err3 := self.SetupManager.Get("main", "TempInbound", "")
+	newInbTempDir, err3 := self.SetupManager.Get("main", "TempInbound", "")
 	if err3 != nil {
 		panic(err3)
 	}
 
 	/* Construct new path */
-	newArcPath := path.Join(newInboundPath, item.Name)
+	newArcPath := path.Join(newInbTempDir, item.Name)
 
 	/* Move in area*/
 	log.Printf("Move %s -> %s", item.AbsolutePath, newArcPath)

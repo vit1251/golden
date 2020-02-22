@@ -8,3 +8,5 @@ golden
 *.deb
 package
 *.exe
+work
+

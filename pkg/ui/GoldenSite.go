@@ -37,7 +37,7 @@ func (self *GoldenSite) Start() (error) {
 	self.WebSite.Register("/netmail/compose/complete", NewNetmailComposeCompleteAction())
 	self.WebSite.Register("/stat", NewStatAction())
 	self.WebSite.Register("/service", NewServiceManageAction())
-	self.WebSite.Register("/service/complete", NewServiceManageCompleteAction())
+	self.WebSite.Register("/api/service/start", NewApiServiceStartAction())
 	self.WebSite.Register("/setup", NewSetupAction())
 	self.WebSite.Register("/setup/complete", NewSetupCompleteAction())
 	//

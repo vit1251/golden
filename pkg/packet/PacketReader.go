@@ -3,6 +3,7 @@ package packet
 import (
 	"bufio"
 	"errors"
+	"github.com/vit1251/golden/pkg/timezone"
 	"io"
 	"log"
 	"os"
@@ -328,17 +329,10 @@ func (self *PacketReader) ReadMessageHeader() (*PacketMessageHeader, error) {
 		log.Printf("datetime = %s", value)
 
 		/* Create new one parser */
-		parser := NewDateParser()
-		if date, err1 := parser.Parse(value); err1 != nil {
+		parser := timezone.NewDateParser()
+		if stamp, err1 := parser.Parse(value); err1 != nil {
 		} else {
-			if date == nil {
-				// TODO - error handling ...
-			} else {
-				if stamp, err2 := date.Time(); err2 != nil {
-				} else {
-					msgHeader.Time = stamp
-				}
-			}
+			msgHeader.Time = stamp
 		}
 
 	}

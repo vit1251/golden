@@ -94,16 +94,10 @@ func (self *AreaManager) updateMsgCount(areas []*Area) {
 
 func (self *AreaManager) Register(a *Area) error {
 
-	/* Insert new one area */
-	sqlStmt1 := "INSERT INTO `area` ( `areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder` ) VALUES ( ?, '', '', '', 0 )"
-	stmt1, err2 := self.conn.Prepare(sqlStmt1)
-	if err2 != nil {
-		return err2
-	}
-	_, err3 := stmt1.Exec(a.Name)
-	log.Printf("err3 = %+v", err3)
-	if err3 != nil {
-		return err3
+	query1 := "INSERT INTO `area` ( `areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder` ) VALUES ( ?, '', '', '', 0 )"
+	if _, err := self.conn.Exec(query1, a.Name); err != nil {
+		log.Printf("Unable register new area = %+v", err)
+		return err
 	}
 
 	return nil

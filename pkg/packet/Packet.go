@@ -3,6 +3,7 @@ package packet
 import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/ftn"
+	"github.com/vit1251/golden/pkg/timezone"
 	"strconv"
 	"time"
 )
@@ -93,7 +94,7 @@ type PacketMessageHeader struct {
 	ToUserName    string
 	FromUserName  string
 	Subject       string
-	Time         *time.Time   /* Packet time */
+	Time          *timezone.FidoDate
 }
 
 func NewPacketMessageHeader() (*PacketMessageHeader) {

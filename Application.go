@@ -13,8 +13,11 @@ import (
 	"github.com/vit1251/golden/pkg/ui"
 	"go.uber.org/dig"
 	"log"
+	"os"
+	"os/signal"
 	"os/user"
 	"path/filepath"
+	"syscall"
 )
 
 type Application struct {
@@ -79,8 +82,9 @@ func (self *Application) Run() {
 	})
 
 	/* Initialize master container */
-	self.Container.Invoke(func(am *area.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.SetupManager, fm *file.FileManager, tm *tosser.TosserManager) {
+	self.Container.Invoke(func(nm *netmail.NetmailManager, am *area.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.SetupManager, fm *file.FileManager, tm *tosser.TosserManager) {
 		master := common.GetMaster()
+		master.NetmailManager = nm
 		master.SetupManager = setm
 		master.AreaManager = am
 		master.MessageManager = mm
@@ -91,10 +95,20 @@ func (self *Application) Run() {
 
 	/* Start Web-service */
 	newGoldenSite := ui.NewGoldenSite()
-	err := newGoldenSite.Start()
-	if err != nil {
-		panic(err)
-	}
+	go newGoldenSite.Start()
+
+	/* Wait sigs */
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	/* Block until a signal is received. */
+	<-sigs
+
+	/* Sync storage */
+	self.Container.Invoke(func(conn *sql.DB) {
+		log.Printf("Sync storage.")
+		conn.Close()
+	})
 
 	/* Wait */
 	log.Printf("Complete.")

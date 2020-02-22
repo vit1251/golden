@@ -1,4 +1,4 @@
-package packet
+package timezone
 
 import (
 	"time"
@@ -48,17 +48,9 @@ func (self FidoDate) FTSC() ([]byte) {
 	return result
 }
 
-func (self FidoDate) Time() (*time.Time, error) {
-
-	moscow, err := time.LoadLocation("Europe/Moscow")
-	if err != nil {
-		return nil, err
-	}
-
-	result := time.Date(self.year, self.month, self.day, self.hour, self.minute, self.sec, 0, moscow)
-
-	return &result, err
-
+func (self FidoDate) CreateTime(zone *time.Location) (*time.Time, error) {
+	result := time.Date(self.year, self.month, self.day, self.hour, self.minute, self.sec, 0, zone)
+	return &result, nil
 }
 
 type DateParser struct {
@@ -79,7 +71,7 @@ func (self *DateParser) parseSpace() (error) {
 	if value == ' ' {
 		/* Parse space complete */
 	} else {
-		return errors.New("Fail parse space")
+		return errors.New("unable parse space")
 	}
 	return nil
 }
@@ -92,7 +84,7 @@ func (self *DateParser) parseChar(ch byte) (error) {
 	if value == ch {
 		/* Parse char complete */
 	} else {
-		return errors.New("Fail parse char")
+		return errors.New("unable parse char")
 	}
 	return nil
 }

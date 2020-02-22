@@ -10,16 +10,11 @@ import (
 
 type ServiceManageAction struct {
 	Action
+	tmpl *template.Template
 }
 
 func NewServiceManageAction() *ServiceManageAction {
 	sma := new(ServiceManageAction)
-	return sma
-}
-
-func (self *ServiceManageAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	master := common.GetMaster()
 
 	lp := filepath.Join("views", "layout.tmpl")
 	fp := filepath.Join("views", "service_index.tmpl")
@@ -27,6 +22,14 @@ func (self *ServiceManageAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		panic(err)
 	}
+	sma.tmpl = tmpl
+
+	return sma
+}
+
+func (self *ServiceManageAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	master := common.GetMaster()
 
 	/* Setup manager operation */
 	setupManager := master.SetupManager
@@ -36,6 +39,6 @@ func (self *ServiceManageAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	/* Render */
 	outParams := make(map[string]interface{})
 	outParams["Params"] = params
-	tmpl.ExecuteTemplate(w, "layout", outParams)
+	self.tmpl.ExecuteTemplate(w, "layout", outParams)
 }
 

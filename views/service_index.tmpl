@@ -5,12 +5,21 @@
 
     <div class="col-12 main">
 
-        <h1>Start new instance of mailer service?</h1>
+        <h1>Services</h1>
 
-        <form method="post" action="/service/complete">
-            <button>Start</button>
-        </form>
+        <div class="services">
+
+            <div class="service-item" data-service-id="MailerService">
+                <span class="service-status">-</span>
+                <span class="service-start">Start</span>
+                <span class="service-stop">Stop</span>
+                <span>Mailer Service</span>
+            </div>
+
+        </div>
 
     </div>
+
+</div>
 
 {{ end }}
