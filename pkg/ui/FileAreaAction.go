@@ -31,8 +31,6 @@ func NewFileAreaAction() *FileAreaAction {
 func (self *FileAreaAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	master := common.GetMaster()
-
-	/* Get area manager */
 	fileAreaManager := master.FileManager
 
 	/* Get message area */

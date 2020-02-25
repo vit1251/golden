@@ -47,7 +47,7 @@ func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
-	log.Printf("area = %v", area)
+	log.Printf("area = %+v", area)
 
 	/* Get message area */
 	areas, err1 := areaManager.GetAreas()

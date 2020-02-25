@@ -12,6 +12,7 @@ type FileManager struct {
 
 type FileArea struct {
 	Name string
+	Path string
 	Summary string
 }
 
@@ -66,7 +67,7 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 	var areas []*FileArea
 
 	/* Restore parameters */
-	sqlStmt := "SELECT `areaName`, `areaSummary` FROM `filearea`"
+	sqlStmt := "SELECT `areaName`, `areaPath`, `areaSummary` FROM `filearea`"
 	rows, err2 := self.conn.Query(sqlStmt)
 	if err2 != nil {
 		return nil, err2
@@ -75,9 +76,10 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 	for rows.Next() {
 
 		var areaName string
+		var areaPath string
 		var areaSummary string
 
-		err3 := rows.Scan(&areaName, &areaSummary)
+		err3 := rows.Scan(&areaName, &areaPath, &areaSummary)
 		if err3 != nil {
 			return nil, err3
 		}
@@ -89,6 +91,7 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 
 		area := NewFileArea()
 		area.Name = areaName
+		area.Path = areaPath
 		area.Summary = areaSummary
 
 		areas = append(areas, area)
@@ -103,10 +106,10 @@ func (self *FileManager) CreateArea(a *FileArea) error {
 	log.Printf("Create file area: %+v", a)
 
 	/* Prepare SQL request */
-	query := "INSERT INTO `filearea` (`areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder`) VALUES ( ?, '', '', '', 0)"
+	query := "INSERT INTO `filearea` (`areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder`) VALUES ( ?, '', ?, ?, 0)"
 
 	/* Create area */
-	if _, err := self.conn.Exec(query, a.Name); err != nil {
+	if _, err := self.conn.Exec(query, a.Name, a.Path, a.Summary); err != nil {
 		return err
 	}
 
@@ -181,8 +184,40 @@ func (self *FileManager) RegisterFile(tic *TicFile) (error) {
 	return nil
 }
 
-func (self *FileManager) GetArea(area string) (*FileArea, error) {
-	// TODO - implement search area here ...
-	return nil, nil
+func (self *FileManager) GetAreaByName(areaName string) (*FileArea, error) {
+
+	var result *FileArea
+
+	query1 := "SELECT `areaName`, `areaPath`, `areaSummary` FROM `filearea` WHERE `areaName` = $1"
+	log.Printf("query = %s params = %s", query1, areaName)
+	rows, err2 := self.conn.Query(query1, areaName)
+	if err2 != nil {
+		return nil, err2
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+
+		var areaName1 string
+		var areaPath1 string
+		var areaSummary1 string
+
+		err3 := rows.Scan(&areaName1, &areaPath1, &areaSummary1)
+		if err3 != nil {
+			return nil, err3
+		}
+
+		log.Printf("row: areaName = %s areaPath = %s areaSummary = %s", areaName1, areaPath1, areaSummary1)
+
+		area := NewFileArea()
+		area.Name = areaName1
+		area.Path = areaPath1
+		area.Summary = areaSummary1
+
+		result = area
+
+	}
+
+	return result, nil
 }
 

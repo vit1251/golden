@@ -37,7 +37,7 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	if err1 != nil {
 		panic(err1)
 	}
-	log.Printf("area = %v", area)
+	log.Printf("area = %+v", area)
 	//
 	to := r.Form.Get("to")
 	subj := r.Form.Get("subject")

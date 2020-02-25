@@ -54,7 +54,7 @@ func (self *AreaManager) Rescan() {
 
 	/* Reset areas */
 	for _, area := range areas {
-		log.Printf("area = %q", area)
+		log.Printf("rescan: area = %+v", area)
 		a := NewArea()
 		a.SetName(area.Name)
 		a.MessageCount = area.Count

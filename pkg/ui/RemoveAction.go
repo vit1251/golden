@@ -1,19 +1,19 @@
 package ui
 
 import (
-	"github.com/vit1251/golden/pkg/common"
-	"net/http"
 	"github.com/gorilla/mux"
-	"path/filepath"
+	"github.com/vit1251/golden/pkg/common"
 	"html/template"
 	"log"
+	"net/http"
+	"path/filepath"
 )
 
 type RemoveAction struct {
 	Action
 }
 
-func NewRemoveAction() (*RemoveAction) {
+func NewRemoveAction() *RemoveAction {
 	ra:=new(RemoveAction)
 	return ra
 }
@@ -40,7 +40,7 @@ func (self *RemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err1 != nil {
 		panic(err1)
 	}
-	log.Printf("area = %v", area)
+	log.Printf("area = %+v", area)
 
 	//
 	msgHash := vars["msgid"]

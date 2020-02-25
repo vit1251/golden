@@ -161,6 +161,7 @@ func (self *Tosser) ProcessPacket(name string) error {
 			return err11
 		}
 		log.Printf("msgTime = %+v", msgTime)
+		log.Printf("msgTime (Local) = %+v", msgTime.Local())
 
 //		/* Determine reply */
 //		reply := msgBody.GetKludge("REPLY", "")
@@ -293,23 +294,12 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	log.Printf("tic = %+v", tic)
 
 	/* Search area */
-	fa, err1 := self.FileManager.GetArea(tic.Area)
+	fa, err1 := self.FileManager.GetAreaByName(tic.Area)
 	if err1 != nil {
 		panic(err1)
 	}
 
-	/* Create area */
-	if fa == nil {
-		/* Prepare area */
-		newFa := file.NewFileArea()
-		newFa.Name = tic.Area
-		/* Create area */
-		if err := self.FileManager.CreateArea(newFa); err != nil {
-			log.Printf("Unable to create area %s: err = %+v", tic.Area, err)
-		}
-	}
-
-	/* Check area exists */
+	/* Prepare area directory */
 	boxBasePath, err2 := self.SetupManager.Get("main", "FileBox", "")
 	if err2 != nil {
 		panic(err2)
@@ -318,9 +308,20 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	if err3 != nil {
 		panic(err3)
 	}
-
 	areaLocation := path.Join(boxBasePath, tic.Area)
 	os.MkdirAll(areaLocation, 0755)
+
+	/* Create area */
+	if fa == nil {
+		/* Prepare area */
+		newFa := file.NewFileArea()
+		newFa.Name = tic.Area
+		newFa.Path = areaLocation
+		/* Create area */
+		if err := self.FileManager.CreateArea(newFa); err != nil {
+			log.Printf("Unable to create area %s: err = %+v", tic.Area, err)
+		}
+	}
 
 	inboxTicLocation := path.Join(inboxBasePath, tic.File)
 

@@ -6,11 +6,11 @@
     <div class="col-12 main">
 
         <div class="table">
-{{ range .Files }}
-            <a class="table-row" href="#/file/#/file/{{ .File }}/download">
-                <div class="table-cell">{{ .File }}</div>
-                <div class="table-cell">{{ .Desc }}</div>
-                <div class="table-cell message-header-date">{{ .DateWritten }}</div>
+{{ range $areaFile := .Files }}
+            <a class="table-row" href="/file/{{ $.Area.Name }}/tic/{{ $areaFile.File }}/view">
+                <div class="table-cell">{{ $areaFile.File }}</div>
+                <div class="table-cell">{{ $areaFile.Desc }}</div>
+                <div class="table-cell message-header-date">{{ $areaFile.DateWritten }}</div>
             </a>
 {{ end }}
         </div>

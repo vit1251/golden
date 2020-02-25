@@ -42,7 +42,7 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err1 != nil {
 		panic(err1)
 	}
-	log.Printf("area = %v", area)
+	log.Printf("area = %+v", area)
 
 	/* Get message area */
 	areas, err2 := areaManager.GetAreas()

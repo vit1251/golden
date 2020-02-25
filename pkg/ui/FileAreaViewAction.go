@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/common"
 	"html/template"
@@ -32,23 +33,33 @@ func NewFileAreaViewAction() (*FileAreaViewAction) {
 func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	master := common.GetMaster()
+	fileManager := master.FileManager
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
-	/* Get area manager */
-	fileManager := master.FileManager
-
-	files, err1 := fileManager.GetFileHeaders(echoTag)
+	/* Get message area */
+	area, err1 := fileManager.GetAreaByName(echoTag)
 	if err1 != nil {
-		// TODO - process error
+		response := fmt.Sprintf("Fail on GetAreaByName on FileManager")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+	log.Printf("area = %+v", area)
+
+	files, err2 := fileManager.GetFileHeaders(echoTag)
+	if err2 != nil {
+		response := fmt.Sprintf("Fail on GetFileHeaders on FileManager")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
 	log.Printf("files = %+v", files)
 
-	/* Rener */
+	/* Render */
 	outParams := make(map[string]interface{})
+	outParams["Area"] = area
 	outParams["Files"] = files
 	self.tmpl.ExecuteTemplate(w, "layout", outParams)
 }
