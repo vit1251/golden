@@ -54,7 +54,7 @@ func (self *FileManager) checkSchema() error {
 	self.conn.Exec(sqlStmt1)
 
 	/* Create index on msgHash */
-	query3 := "CREATE INDEX \"idx_file_fileArea\" ON \"file\" (\"fileArea\" ASC)"
+	query3 := "CREATE INDEX IF NOT EXISTS \"idx_file_fileArea\" ON \"file\" (\"fileArea\" ASC)"
 	if _, err := self.conn.Exec(query3); err != nil {
 		log.Printf("Error create \"file\" storage: err = %+v", err)
 	}
