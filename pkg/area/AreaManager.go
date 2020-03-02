@@ -37,7 +37,7 @@ func (self *AreaManager) checkSchema() {
 	}
 
 	/* Create index on msgHash */
-	query2 := "CREATE INDEX \"idx_area_areaName\" ON \"area\" (\"areaName\" ASC)"
+	query2 := "CREATE UNIQUE INDEX IF NOT EXISTS \"uniq_area_areaName\" ON \"area\" (\"areaName\" ASC)"
 	if _, err := self.conn.Exec(query2); err != nil {
 		log.Printf("Error create \"area\" storage: err = %+v", err)
 	}

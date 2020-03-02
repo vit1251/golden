@@ -134,7 +134,7 @@ func (self *StatManager) checkSchema() {
 	log.Printf("query = %s", query1)
 	self.conn.Exec(query1)
 
-	query2 := "CREATE UNIQUE INDEX \"uniq_stat_statDate\" ON \"stat\" (\"statDate\" ASC)"
+	query2 := "CREATE UNIQUE INDEX IF NOT EXISTS \"uniq_stat_statDate\" ON \"stat\" (\"statDate\" ASC)"
 	log.Printf("query = %s", query2)
 	self.conn.Exec(query2)
 
