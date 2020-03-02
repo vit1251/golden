@@ -2,6 +2,7 @@ package common
 
 import (
 	"github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
@@ -18,6 +19,7 @@ type GoldenMaster struct {
 	StatManager    *stat.StatManager
 	TosserManager  *tosser.TosserManager
 	NetmailManager *netmail.NetmailManager
+	CharsetManager *charset.CharsetManager
 }
 
 var master *GoldenMaster

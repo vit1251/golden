@@ -1,24 +1,25 @@
 package msg
 
 import (
-	"time"
 	"strings"
+	"time"
 )
 
 type Message struct {
 	ID          string
+	MsgID       string
 	Hash        string
 	Area        string
 	From        string
 	To          string
 	Subject     string
 	Content     string
-	UnixTime    int64 /* Unit time stampe */
+	UnixTime    int64
 	DateWritten *time.Time
 	ViewCount   int
 }
 
-func NewMessage() (*Message) {
+func NewMessage() *Message {
 	msg := new(Message)
 	return msg
 }
@@ -31,8 +32,8 @@ func (self *Message) SetID(id string) {
 	self.ID = id
 }
 
-func (self *Message) SetMsgID(msgHash string) {
-	self.Hash = msgHash
+func (self *Message) SetMsgID(msgId string) {
+	self.MsgID = msgId
 }
 
 func (self *Message) SetArea(area string) {
@@ -71,4 +72,8 @@ func (self *Message) SetTime(ptm *time.Time) {
 
 func (self *Message) SetViewCount(count int) {
 	self.ViewCount = count
+}
+
+func (self *Message) SetMsgHash(hash string) {
+	self.Hash = hash
 }

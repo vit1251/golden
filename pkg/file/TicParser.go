@@ -2,7 +2,7 @@ package file
 
 import (
 	"bufio"
-	"github.com/vit1251/golden/pkg/packet"
+	"github.com/vit1251/golden/pkg/charset"
 	"io"
 	"log"
 	"os"
@@ -12,12 +12,14 @@ import (
 type TicParserHandler func(string)
 
 type TicParser struct {
-	TicFile *TicFile
+	TicFile  *TicFile
 	Handlers map[string]TicParserHandler
+	cm       *charset.CharsetManager
 }
 
-func NewTicParser() (*TicParser) {
+func NewTicParser(cm *charset.CharsetManager) *TicParser {
 	tp := new(TicParser)
+	tp.cm = cm
 	tp.TicFile = new(TicFile)
 	tp.Handlers = make(map[string]TicParserHandler)
 	tp.Handlers["Area"] = tp.processArea
@@ -62,6 +64,7 @@ func (self *TicParser) prcessLine(newLine string) {
 }
 
 func (self *TicParser) Parse(stream io.Reader) error {
+
 	cacheStream := bufio.NewReader(stream)
 	for {
 		newLine, err2 := cacheStream.ReadBytes('\n')
@@ -71,7 +74,7 @@ func (self *TicParser) Parse(stream io.Reader) error {
 		} else {
 			return err2
 		}
-		newRow, err3 := packet.DecodeText(newLine)
+		newRow, err3 := self.cm.DecodeText(newLine)
 		if err3 != nil {
 			return err3
 		}

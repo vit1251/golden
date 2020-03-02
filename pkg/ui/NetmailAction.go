@@ -35,7 +35,16 @@ func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		panic(err1)
 	}
 
+	var actions []*UserAction
+	action1 := NewUserAction()
+	action1.Link = "/netmail/compose"
+	action1.Icon = "/static/img/icon/quote-50.png"
+	action1.Label = "Compose"
+	actions = append(actions, action1)
+
+	/* Render */
 	outParams := make(map[string]interface{})
+	outParams["Actions"] = actions
 	outParams["msgHeaders"] = msgHeaders
 	self.tmpl.ExecuteTemplate(w, "layout", outParams)
 }

@@ -3,17 +3,20 @@ package tosser
 import (
 	"fmt"
 	uuid "github.com/satori/go.uuid"
+	"github.com/vit1251/golden/pkg/charset"
+	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/setup"
 	"hash/crc32"
 	"log"
 	"path"
-	"time"
 )
 
 type TosserManager struct {
 	SetupManager *setup.SetupManager
+	MessageManager *msg.MessageManager
+	CharsetManager *charset.CharsetManager
 }
 
 type NetmailMessage struct {
@@ -25,20 +28,23 @@ type NetmailMessage struct {
 }
 
 type EchoMessage struct {
-	Subject string
-	To string
-	From string
-	Body string
+	Subject  string
+	To       string
+	From     string
+	Body     string
 	AreaName string
+	Reply    string
 }
 
 func (m *EchoMessage) SetSubject(subj string) {
 	m.Subject = subj
 }
 
-func NewTosserManager(sm *setup.SetupManager) *TosserManager {
+func NewTosserManager(cm *charset.CharsetManager, mm* msg.MessageManager, sm *setup.SetupManager) *TosserManager {
 	tm := new(TosserManager)
+	tm.CharsetManager = cm
 	tm.SetupManager = sm
+	tm.MessageManager = mm
 	return tm
 }
 
@@ -105,16 +111,31 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 		return err
 	}
 
+	/* Encode message headers */
+	newSubject, err1 := self.CharsetManager.EncodeText([]rune(em.Subject))
+	if err1 != nil {
+		return err1
+	}
+	newTo, err2 := self.CharsetManager.EncodeText([]rune(em.To))
+	if err2 != nil {
+		return err2
+	}
+	newFrom, err3 := self.CharsetManager.EncodeText([]rune(realName))
+	if err3 != nil {
+		return err3
+	}
+
 	/* Prepare packet message */
 	msgHeader := packet.NewPacketMessageHeader()
 	msgHeader.OrigAddr.SetAddr(myAddr)
 	msgHeader.DestAddr.SetAddr(bossAddr)
-	msgHeader.SetAttribute("Direct")
-	msgHeader.SetToUserName(em.To)
-	msgHeader.SetFromUserName(realName)
-	msgHeader.SetSubject(em.Subject)
-	var now time.Time = time.Now()
-	msgHeader.SetTime(&now)
+	msgHeader.SetAttribute(packet.PacketAttrDirect)
+	msgHeader.SetToUserName(newTo)
+	msgHeader.SetFromUserName(newFrom)
+	msgHeader.SetSubject(newSubject)
+	var now *fidotime.FidoDate = fidotime.NewFidoDate()
+	now.SetNow()
+	msgHeader.SetTime(now)
 
 	if err := pw.WriteMessageHeader(msgHeader); err != nil {
 		return err
@@ -128,7 +149,7 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	//	}
 
 	/* Construct message content */
-	msgContent := msg.NewMessageContent()
+	msgContent := self.MessageManager.NewMessageContent()
 
 	msgContent.SetCharset("CP866")
 
@@ -156,6 +177,9 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", myAddr, hs))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
 	msgBody.AddKludge("TID", "golden/win 1.2.9 2020-02-25 10:30 MSK (master)")
+	if em.Reply != "" {
+		msgBody.AddKludge("REPLY", em.Reply)
+	}
 	//
 	msgBody.SetRaw(rawMsg)
 	//
@@ -224,16 +248,31 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 		return err
 	}
 
+	/* Encode message */
+	newSubject, err1 := self.CharsetManager.EncodeText([]rune(nm.Subject))
+	if err1 != nil {
+		return err1
+	}
+	newTo, err2 := self.CharsetManager.EncodeText([]rune(nm.To))
+	if err2 != nil {
+		return err2
+	}
+	newFrom, err3 := self.CharsetManager.EncodeText([]rune(params.FromName))
+	if err3 != nil {
+		return err3
+	}
+
 	/* Prepare packet message */
 	msgHeader := packet.NewPacketMessageHeader()
 	msgHeader.OrigAddr.SetAddr(params.From)
 	msgHeader.DestAddr.SetAddr(nm.ToAddr)
-	msgHeader.SetAttribute("Direct")
-	msgHeader.SetToUserName(nm.To)
-	msgHeader.SetFromUserName(params.FromName)
-	msgHeader.SetSubject(nm.Subject)
-	var now time.Time = time.Now()
-	msgHeader.SetTime(&now)
+	msgHeader.SetAttribute(packet.PacketAttrDirect)
+	msgHeader.SetToUserName(newTo)
+	msgHeader.SetFromUserName(newFrom)
+	msgHeader.SetSubject(newSubject)
+	var now *fidotime.FidoDate = fidotime.NewFidoDate()
+	now.SetNow()
+	msgHeader.SetTime(now)
 
 	if err := pw.WriteMessageHeader(msgHeader); err != nil {
 		return err
@@ -247,7 +286,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	//	}
 
 	/* Construct message content */
-	msgContent := msg.NewMessageContent()
+	msgContent := self.MessageManager.NewMessageContent()
 	msgContent.SetCharset("CP866")
 	msgContent.AddLine(nm.Body)
 	msgContent.AddLine("")

@@ -2,6 +2,7 @@ package file
 
 import (
 	"database/sql"
+	"github.com/vit1251/golden/pkg/storage"
 	"log"
 	"time"
 )
@@ -21,9 +22,9 @@ func NewFileArea() *FileArea {
 	return fa
 }
 
-func NewFileManager(conn *sql.DB) *FileManager {
+func NewFileManager(sm *storage.StorageManager) *FileManager {
 	fm := new(FileManager)
-	fm.conn = conn
+	fm.conn = sm.GetConnection()
 	fm.checkSchema()
 	return fm
 }

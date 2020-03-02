@@ -3,6 +3,7 @@ package stat
 import (
 	"database/sql"
 	"fmt"
+	"github.com/vit1251/golden/pkg/storage"
 	"log"
 	"time"
 )
@@ -29,12 +30,12 @@ type Stat struct {
 
 }
 
-func NewStatManager(conn *sql.DB) *StatManager {
-	sm := new(StatManager)
-	sm.conn = conn
-	sm.checkSchema()
-	sm.createStat()
-	return sm
+func NewStatManager(sm *storage.StorageManager) *StatManager {
+	statm := new(StatManager)
+	statm.conn = sm.GetConnection()
+	statm.checkSchema()
+	statm.createStat()
+	return statm
 }
 
 func (self *StatManager) RegisterNetmail(filename string) (error) {

@@ -2,7 +2,7 @@ package packet
 
 import (
 	"bufio"
-	"github.com/vit1251/golden/pkg/timezone"
+	"github.com/vit1251/golden/pkg/fidotime"
 	"os"
 )
 
@@ -240,7 +240,7 @@ func (self *PacketWriter) WriteMessageHeader(msgHeader *PacketMessageHeader) (er
 	}
 
 	/* Read datetime */
-	newFidoDate := timezone.NewFidoDate()
+	newFidoDate := fidotime.NewFidoDate()
 	newFidoDate.SetNow()
 	var pktDateTime []byte = newFidoDate.FTSC()
 	if err9_0 := self.binaryStreamWriter.WriteBytes(pktDateTime); err9_0 != nil {

@@ -3,6 +3,7 @@ package setup
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/vit1251/golden/pkg/storage"
 	"log"
 )
 
@@ -28,36 +29,36 @@ type SetupManager struct {
 	conn *sql.DB
 }
 
-func NewSetupManager(conn *sql.DB) *SetupManager {
-	sm := new(SetupManager)
-	sm.conn = conn
-	sm.checkSchema()
+func NewSetupManager(sm *storage.StorageManager) *SetupManager {
+	sem := new(SetupManager)
+	sem.conn = sm.GetConnection()
+	sem.checkSchema()
 	/* Set parameter */
-	sm.Register("main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
-	sm.Register("main", "Origin", "Origin was provide BBS station name and network address")
-	sm.Register("main", "TearLine", "Tearline provide person sign in all their messages")
-	sm.Register("main", "Inbound", "Directory where store incoming packets")
-	sm.Register("main", "TempInbound", "Directory where should be process incoming packets")
-	sm.Register("main", "TempOutbound", "Directory where process outbound packet")
-	sm.Register("main", "Outbound", "Directory where store outbound packet")
-	sm.Register("main", "Address", "FidoNet network point address (i.e. POINT address)")
-	sm.Register("main", "NetAddr", "FidoNet network BOSS address (example: f24.n5023.z2.binkp.net:24554)")
-	sm.Register("main", "Password", "FidoNet point password")
-	sm.Register("main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
-	sm.Register("main", "Country", "Country where user is seat")
-	sm.Register("main", "City", "City where user is seat")
-	sm.Register("main", "FileBox", "Directory where store inbound file area files")
+	sem.Register("main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
+	sem.Register("main", "Origin", "Origin was provide BBS station name and network address")
+	sem.Register("main", "TearLine", "Tearline provide person sign in all their messages")
+	sem.Register("main", "Inbound", "Directory where store incoming packets")
+	sem.Register("main", "TempInbound", "Directory where should be process incoming packets")
+	sem.Register("main", "TempOutbound", "Directory where process outbound packet")
+	sem.Register("main", "Outbound", "Directory where store outbound packet")
+	sem.Register("main", "Address", "FidoNet network point address (i.e. POINT address)")
+	sem.Register("main", "NetAddr", "FidoNet network BOSS address (example: f24.n5023.z2.binkp.net:24554)")
+	sem.Register("main", "Password", "FidoNet point password")
+	sem.Register("main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
+	sem.Register("main", "Country", "Country where user is seat")
+	sem.Register("main", "City", "City where user is seat")
+	sem.Register("main", "FileBox", "Directory where store inbound file area files")
 
 	/* Recover default parameters */
-	sm.restoreDefault()
+	sem.restoreDefault()
 
 	/* Overwrite user parameters */
-	err2 := sm.Restore()
+	err2 := sem.Restore()
 	if err2 != nil {
 		panic(err2)
 	}
 
-	return sm
+	return sem
 }
 
 func (self *SetupManager) GetParams() ([]*SetupParam) {

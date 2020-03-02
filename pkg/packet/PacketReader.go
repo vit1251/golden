@@ -3,7 +3,7 @@ package packet
 import (
 	"bufio"
 	"errors"
-	"github.com/vit1251/golden/pkg/timezone"
+	"github.com/vit1251/golden/pkg/fidotime"
 	"io"
 	"log"
 	"os"
@@ -294,43 +294,53 @@ func (self *PacketReader) ReadMessageHeader() (*PacketMessageHeader, error) {
 
 	/* Read origination node (2 byte) */
 	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
+		return nil, err
 	} else {
 		msgHeader.OrigAddr.Node = value
 	}
 	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
+		return nil, err
 	} else {
 		msgHeader.DestAddr.Node = value
 	}
 	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
+		return nil, err
 	} else {
 		msgHeader.OrigAddr.Net = value
 	}
 	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
+		return nil, err
 	} else {
 		msgHeader.DestAddr.Net = value
 	}
 
 	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
+		return nil, err
+	} else {
 		msgHeader.Attributes = value
 	}
 
 	/* Read unused cost fields (2bytes) */
 	if _, err := self.binaryStreamReader.ReadUINT8(); err != nil {
+		return nil, err
 	} else {
 	}
 	if _, err := self.binaryStreamReader.ReadUINT8(); err != nil {
+		return nil, err
 	} else {
 	}
 
 	/* Read datetime */
 	if value, err := self.binaryStreamReader.ReadBytes(20); err != nil {
+		return nil, err
 	} else {
 
 		log.Printf("datetime = %s", value)
 
 		/* Create new one parser */
-		parser := timezone.NewDateParser()
+		parser := fidotime.NewDateParser()
 		if stamp, err1 := parser.Parse(value); err1 != nil {
+			return nil, err1
 		} else {
 			msgHeader.Time = stamp
 		}
@@ -338,32 +348,23 @@ func (self *PacketReader) ReadMessageHeader() (*PacketMessageHeader, error) {
 	}
 	/* Read "To" (var bytes) */
 	if value, err := self.binaryStreamReader.ReadZString(); err != nil {
+		return nil, err
 	} else {
-//		log.Printf("ToUserName = %s", value)
-		if content, err1 := DecodeText(value); err1 != nil {
-		} else {
-			msgHeader.ToUserName = string(content)
-		}
+		msgHeader.ToUserName = value
 	}
 
 	/* Read "From" (var bytes) */
 	if value, err := self.binaryStreamReader.ReadZString(); err != nil {
+		return nil, err
 	} else {
-//		log.Printf("FromUserName = %s", value)
-		if content, err1 := DecodeText(value); err1 != nil {
-		} else {
-			msgHeader.FromUserName = string(content)
-		}
+		msgHeader.FromUserName = value
 	}
 
 	/* Read "Subject" */
 	if value, err := self.binaryStreamReader.ReadZString(); err != nil {
+		return nil, err
 	} else {
-//		log.Printf("Subject = %s", value)
-		if content, err1 := DecodeText(value); err1 != nil {
-		} else {
-			msgHeader.Subject = string(content)
-		}
+		msgHeader.Subject = value
 	}
 
 	return msgHeader, nil

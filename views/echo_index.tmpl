@@ -6,6 +6,8 @@
 
     <div class="col-12 main">
 
+{{ template "actions" . }}
+
         <div class="table">
 {{ range .Areas }}
             <a class="table-row" href="/echo/{{ .Name }}">

@@ -2,10 +2,9 @@ package packet
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/ftn"
-	"github.com/vit1251/golden/pkg/timezone"
 	"strconv"
-	"time"
 )
 
 type NetAddr struct {
@@ -88,43 +87,50 @@ func (self PacketHeader) IsCapatiblity() (bool) {
 }
 
 type PacketMessageHeader struct {
-	OrigAddr      NetAddr
-	DestAddr      NetAddr
-	Attributes    uint16
-	ToUserName    string
-	FromUserName  string
-	Subject       string
-	Time          *timezone.FidoDate
+	OrigAddr        NetAddr
+	DestAddr        NetAddr
+	Attributes      uint16
+	ToUserName    []byte
+	FromUserName  []byte
+	Subject       []byte
+	Time           *fidotime.FidoDate
 }
 
-func NewPacketMessageHeader() (*PacketMessageHeader) {
+func NewPacketMessageHeader() *PacketMessageHeader {
 	msgHeader := new(PacketMessageHeader)
 	return msgHeader
 }
 
-func (self *PacketMessageHeader) UnsetAttribute(attribute string) (error) {
+type PacketAttr int8
+
+const (
+	PacketAttrDirect PacketAttr = 0x01
+)
+
+func (self *PacketMessageHeader) UnsetAttribute(attr PacketAttr) error {
 	return nil
 }
 
-func (self *PacketMessageHeader) SetAttribute(attribute string) (error) {
+func (self *PacketMessageHeader) SetAttribute(attr PacketAttr) error {
 	return nil
 }
 
-func (self *PacketMessageHeader) SetToUserName(ToUserName string) (error) {
+func (self *PacketMessageHeader) SetToUserName(ToUserName []byte) error {
 	self.ToUserName = ToUserName
 	return nil
 }
 
-func (self *PacketMessageHeader) SetFromUserName(FromUserName string) (error) {
+func (self *PacketMessageHeader) SetFromUserName(FromUserName []byte) error {
 	self.FromUserName = FromUserName
 	return nil
 }
 
-func (self *PacketMessageHeader) SetSubject(Subject string) (error) {
-	self.Subject = Subject
+func (self *PacketMessageHeader) SetSubject(s []byte) error {
+	self.Subject = s
 	return nil
 }
 
-func (self *PacketMessageHeader) SetTime(t *time.Time) (error) {
+func (self *PacketMessageHeader) SetTime(t *fidotime.FidoDate) error {
+	self.Time = t
 	return nil
 }

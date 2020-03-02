@@ -8,6 +8,8 @@
 
         <h1>{{ .Area.Name }}</h1>
 
+{{ template "actions" . }}
+
         <div class="table">
 {{ range $msgHeader := .Headers }}
             <a class="table-row" href="/echo/{{ $.Area.Name }}/message/{{ $msgHeader.Hash }}/view">

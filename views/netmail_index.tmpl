@@ -7,16 +7,7 @@
 
         <h1>{{ .Area.Name }}</h1>
 
-    <div class="actions">
-        <div class="action-cover">
-            <a href="/netmail/compose" class="btn btn-info">
-                <div class="action">
-                    <img src="/static/img/icon/quote-50.png">
-                    <span>Compose</span>
-                </div>
-            </a>
-        </div>
-    </div>
+{{ template "actions" . }}
 
         <table width="100%">
             <tbody>

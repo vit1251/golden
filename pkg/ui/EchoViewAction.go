@@ -88,8 +88,22 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	/* Create actions */
+	var actions []*UserAction
+	action1 := NewUserAction()
+	action1.Link = fmt.Sprintf("/echo/%s//message/%s/reply", area.Name, msg.Hash)
+	action1.Icon = "/static/img/icon/quote-50.png"
+	action1.Label = "Reply"
+	actions = append(actions, action1)
+	action2 := 	NewUserAction()
+	action2.Link = fmt.Sprintf("/echo/%s/message/%s/remove", area.Name, msg.Hash)
+	action2.Icon = "/static/img/icon/remove-50.png"
+	action2.Label = "Delete"
+	actions = append(actions, action2)
+
 	/* Render */
 	outParams := make(map[string]interface{})
+	outParams["Actions"] = actions
 	outParams["Area"] = area
 	outParams["Headers"] = msgHeaders
 	outParams["Msg"] = msg

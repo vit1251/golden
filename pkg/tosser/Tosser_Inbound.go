@@ -7,7 +7,7 @@ import (
 	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
-	"github.com/vit1251/golden/pkg/timezone"
+	"github.com/vit1251/golden/pkg/fidotime"
 	"io"
 	"log"
 	"os"
@@ -41,7 +41,7 @@ func (self *Tosser) decodeMessageBody(msgBody []byte, charset string) (string, e
 
 	if charset == "CP866" {
 
-		if unicodeBody, err1 := packet.DecodeText(msgBody); err1 == nil {
+		if unicodeBody, err1 := self.CharsetManager.DecodeText(msgBody); err1 == nil {
 			result = string(unicodeBody)
 		} else {
 			return result, err1
@@ -137,6 +137,7 @@ func (self *Tosser) ProcessPacket(name string) error {
 		/* Determine msgid */
 		msgid := msgBody.GetKludge("MSGID", "")
 		msgid = strings.Trim(msgid, " ")
+		log.Printf("msgid = %s", msgid)
 		msgidParts := strings.Split(msgid, " ")
 		var msgHash string
 		if len(msgidParts) == 2 {
@@ -144,11 +145,16 @@ func (self *Tosser) ProcessPacket(name string) error {
 			msgHash = msgidParts[1]
 		}
 
+		/* Determine reply */
+		reply := msgBody.GetKludge("REPLY", "")
+		reply = strings.Trim(reply, " ")
+		log.Printf("reply = %s", reply)
+
 		/* Determine zone */
 		zone := msgBody.GetKludge("TZUTC", " 0300")
 		log.Printf("zone = %+v", zone)
 		zone = strings.Trim(zone, " \t")
-		zParser := timezone.NewTimeZoneParser()
+		zParser := fidotime.NewTimeZoneParser()
 		msgZone, err10 := zParser.Parse(zone)
 		if err10 != nil {
 			return err10
@@ -163,17 +169,6 @@ func (self *Tosser) ProcessPacket(name string) error {
 		log.Printf("msgTime = %+v", msgTime)
 		log.Printf("msgTime (Local) = %+v", msgTime.Local())
 
-//		/* Determine reply */
-//		reply := msgBody.GetKludge("REPLY", "")
-//		reply = strings.Trim(reply, " ")
-//		log.Printf("reply = %s", reply)
-//		replyParts := strings.Split(reply, " ")
-//		var replyHash string
-//		if len(replyParts) == 2 {
-//			//source := replyParts[0]
-//			replyHash = replyParts[1]
-//		}
-
 		/* Check unique item */
 		exists, err9 := self.MessageManager.IsMessageExistsByHash(areaName, msgHash)
 		if err9 != nil {
@@ -186,13 +181,28 @@ func (self *Tosser) ProcessPacket(name string) error {
 
 		} else {
 
+			/* Decode headers */
+			newSubject, err1 := self.CharsetManager.DecodeText(msgHeader.Subject)
+			if err1 != nil {
+				return err1
+			}
+			newFrom, err2 := self.CharsetManager.DecodeText(msgHeader.FromUserName)
+			if err2 != nil {
+				return err2
+			}
+			newTo, err3 := self.CharsetManager.DecodeText(msgHeader.ToUserName)
+			if err3 != nil {
+				return err3
+			}
+
 			/* Create msgapi.Message */
 			newMsg := new(msg.Message)
-			newMsg.SetMsgID(msgHash)
+			newMsg.SetMsgID(msgid)
+			newMsg.SetMsgHash(msgHash)
 			newMsg.SetArea(areaName)
-			newMsg.SetFrom(msgHeader.FromUserName)
-			newMsg.SetTo(msgHeader.ToUserName)
-			newMsg.SetSubject(msgHeader.Subject)
+			newMsg.SetFrom(string(newFrom))
+			newMsg.SetTo(string(newTo))
+			newMsg.SetSubject(string(newSubject))
 			newMsg.SetTime(msgTime)
 
 			newMsg.SetContent(newBody)
@@ -286,7 +296,7 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
 func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 
 	/* Parse */
-	newTicParser := file.NewTicParser()
+	newTicParser := file.NewTicParser(self.CharsetManager)
 	tic, err1 := newTicParser.ParseFile(item.AbsolutePath)
 	if err1 != nil {
 		return err1

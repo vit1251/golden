@@ -1,4 +1,4 @@
-package timezone
+package fidotime
 
 import (
 	"time"

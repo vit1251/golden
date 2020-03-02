@@ -5,24 +5,7 @@
 
     <div class="col-12 main">
 
-    <div class="actions">
-        <div class="action-cover">
-            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/reply" class="btn btn-info">
-                <div class="action">
-                    <img src="/static/img/icon/quote-50.png">
-                    <span>Reply</span>
-                </div>
-            </a>
-        </div>
-        <div class="action-cover">
-            <a href="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/remove" class="btn btn-info">
-                <div class="action">
-                    <img src="/static/img/icon/remove-50.png">
-                    <span>Remove</span>
-                </div>
-            </a>
-        </div>
-    </div>
+{{ template "actions" . }}
 
         <div class="msg-header" style="border-bottom: 1px solid blue">
             <div class="row">

@@ -2,6 +2,7 @@ package netmail
 
 import (
 	"database/sql"
+	"github.com/vit1251/golden/pkg/storage"
 	"log"
 )
 
@@ -9,9 +10,9 @@ type NetmailManager struct {
 	conn *sql.DB
 }
 
-func NewNetmailManager(conn *sql.DB) *NetmailManager {
+func NewNetmailManager(sm *storage.StorageManager) *NetmailManager {
 	nm := new(NetmailManager)
-	nm.conn = conn
+	nm.conn = sm.GetConnection()
 	nm.checkSchema()
 	return nm
 }

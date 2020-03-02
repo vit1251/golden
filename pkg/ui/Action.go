@@ -4,9 +4,9 @@ import (
 )
 
 type Action struct {
-	Site *WebSite
+	Site *GoldenSite
 }
 
-func (self *Action) SetSite(webSite *WebSite) {
+func (self *Action) SetSite(webSite *GoldenSite) {
 	self.Site = webSite
 }

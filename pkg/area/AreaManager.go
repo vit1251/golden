@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/storage"
 	"log"
 )
 
@@ -12,10 +13,9 @@ type AreaManager struct {
 	conn *sql.DB
 }
 
-func NewAreaManager(conn *sql.DB, mm *msg.MessageManager) (*AreaManager) {
-	log.Printf("NewAreaManager: conn = %+v", conn)
+func NewAreaManager(sm *storage.StorageManager, mm *msg.MessageManager) (*AreaManager) {
 	am := new(AreaManager)
-	am.conn = conn
+	am.conn = sm.GetConnection()
 	am.MessageManager = mm
 	am.checkSchema()
 	am.Rescan()

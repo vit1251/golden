@@ -1,17 +1,60 @@
 package ui
 
 import (
+	"github.com/gorilla/mux"
 	"log"
+	"net/http"
+	"time"
 )
 
+type IAction interface {
+	SetSite(webSite *GoldenSite)
+	ServeHTTP(w http.ResponseWriter, r *http.Request)
+}
+
+type Route struct {
+	pattern  string        /* Regilar expression         */
+	action   IAction       /* Processing callback        */
+}
+
+type WebSite struct {
+	routes          []Route
+	rtr             *mux.Router
+}
+
 type GoldenSite struct {
-	WebSite *WebSite   /* Web site common type   */
+	WebSite *WebSite /* Web site common type   */
+	rtr     *mux.Router
 }
 
 func NewGoldenSite() (*GoldenSite) {
+
 	site := new(GoldenSite)
-	site.WebSite = NewWebSite()
+
+	/* Create router */
+	rtr := mux.NewRouter()
+	staticDir := "./static"
+	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
+	site.rtr = rtr
+
 	return site
+}
+
+func (self *GoldenSite) Register(pattern string, a IAction) {
+
+	/* Register owner */
+	a.SetSite(self)
+
+	/* Register */
+	actionFunc := a.ServeHTTP
+	self.rtr.HandleFunc(pattern, actionFunc)
+
+	/* Create router */
+	//	r := Route{}
+	//	r.pattern = pattern
+	//	r.action = a
+	//	self.routes = append(self.routes, r)
+
 }
 
 func (self *GoldenSite) Start() (error) {
@@ -19,31 +62,41 @@ func (self *GoldenSite) Start() (error) {
 	log.Printf("Golden web service start")
 
 	/* Register actions */
-	self.WebSite.Register("/", NewWelcomeAction())
-	self.WebSite.Register("/echo", NewAreaAction())
-	self.WebSite.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}", NewEchoAction())
-	self.WebSite.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", NewEchoUpdateAction())
-	self.WebSite.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", NewEchoComposeAction())
-	self.WebSite.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose/complete", NewEchoComposeCompleteAction())
-	self.WebSite.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/view", NewEchoViewAction())
-	self.WebSite.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply", NewEchoReplyAction())
-	self.WebSite.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply/complete", NewReplyCompleteAction())
-	self.WebSite.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove", NewRemoveAction())
-	self.WebSite.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", NewRemoveCompleteAction())
-	self.WebSite.Register("/file", NewFileAreaAction())
-	self.WebSite.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}", NewFileAreaViewAction())
-	self.WebSite.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/view", NewFileAreaDownloadAction())
-	self.WebSite.Register("/netmail", NewNetmailAction())
-	self.WebSite.Register("/netmail/compose", NewNetmailComposeAction())
-	self.WebSite.Register("/netmail/compose/complete", NewNetmailComposeCompleteAction())
-	self.WebSite.Register("/stat", NewStatAction())
-	self.WebSite.Register("/service", NewServiceManageAction())
-	self.WebSite.Register("/api/service/start", NewApiServiceStartAction())
-	self.WebSite.Register("/setup", NewSetupAction())
-	self.WebSite.Register("/setup/complete", NewSetupCompleteAction())
+	self.Register("/", NewWelcomeAction())
+	self.Register("/echo", NewAreaAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}", NewEchoAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", NewEchoUpdateAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", NewEchoComposeAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose/complete", NewEchoComposeCompleteAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/view", NewEchoViewAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply", NewEchoReplyAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply/complete", NewReplyCompleteAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove", NewRemoveAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", NewRemoveCompleteAction())
+	self.Register("/file", NewFileAreaAction())
+	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}", NewFileAreaViewAction())
+	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/view", NewFileAreaDownloadAction())
+	self.Register("/netmail", NewNetmailAction())
+	self.Register("/netmail/compose", NewNetmailComposeAction())
+	self.Register("/netmail/compose/complete", NewNetmailComposeCompleteAction())
+	self.Register("/stat", NewStatAction())
+	self.Register("/service", NewServiceManageAction())
+	self.Register("/api/service/start", NewApiServiceStartAction())
+	self.Register("/setup", NewSetupAction())
+	self.Register("/setup/complete", NewSetupCompleteAction())
+
 	//
-	err := self.WebSite.Start()
-	//
+	INTERFACE := "127.0.0.1:8080"
+
+	srv := &http.Server{
+		Handler:      self.rtr,
+		Addr:         INTERFACE,
+		// Good practice: enforce timeouts for servers you create!
+		WriteTimeout: 10 * time.Minute,
+		ReadTimeout:  10 * time.Minute,
+	}
+	err := srv.ListenAndServe()
+
 	return err
 }
 

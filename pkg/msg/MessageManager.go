@@ -3,16 +3,20 @@ package msg
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/vit1251/golden/pkg/charset"
+	"github.com/vit1251/golden/pkg/storage"
 	"log"
 )
 
 type MessageManager struct {
 	conn *sql.DB
+	cm   *charset.CharsetManager
 }
 
-func NewMessageManager(conn *sql.DB) *MessageManager {
+func NewMessageManager(sm *storage.StorageManager, cm *charset.CharsetManager) *MessageManager {
 	mm := new(MessageManager)
-	mm.conn = conn
+	mm.conn = sm.GetConnection()
+	mm.cm = cm
 	mm.checkSchema()
 	return mm
 }
@@ -21,6 +25,7 @@ func (self *MessageManager) checkSchema() {
 
 	query1 :=  "CREATE TABLE IF NOT EXISTS message (" +
 		    "    msgId INTEGER NOT NULL PRIMARY KEY," +
+		    "    msgMsgId CHAR(16) NOT NULL," +
 		    "    msgHash CHAR(16) NOT NULL," +
 			"    msgDate INTEGER NOT NULL," +
 			"    msgViewCount INTEGER DEFAULT 0," +
@@ -149,7 +154,7 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 
 		msg := NewMessage()
 		if msgHash != nil {
-			msg.SetMsgID(*msgHash)
+			msg.SetMsgHash(*msgHash)
 		}
 		msg.SetSubject(subject)
 		msg.SetID(ID)
@@ -177,7 +182,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `msgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	sqlStmt := "SELECT `msgId`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
 	log.Printf("sql = %+v params = ( %+v, %+v )", sqlStmt, echoTag, msgHash)
 	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag, msgHash)
 	if err1 != nil {
@@ -187,27 +192,32 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 	for rows.Next() {
 
 		var ID string
+		var msgMsgId string
 		var msgHash *string
 		var subject string
 		var from string
 		var to string
 		var content string
-		err2 := rows.Scan(&ID, &msgHash, &subject, &from, &to, &content)
+		err2 := rows.Scan(&ID, &msgMsgId, &msgHash, &subject, &from, &to, &content)
 		if err2 != nil{
 			return nil, err2
 		}
 		log.Printf("subject = %q", subject)
-		msg := NewMessage()
-		msg.Subject = subject
-		msg.ID = ID
-		if msgHash != nil {
-			msg.Hash = *msgHash
-		}
-		msg.From = from
-		msg.To = to
-		msg.Content = content
-		result = msg
 
+		/**/
+		msg := NewMessage()
+		msg.SetMsgID(msgMsgId)
+		msg.SetSubject(subject)
+		msg.SetID(ID)
+		if msgHash != nil {
+			msg.SetMsgHash(*msgHash)
+		}
+		msg.SetFrom(from)
+		msg.SetTo(to)
+		msg.SetContent(content)
+
+		//
+		result = msg
 	}
 
 	ConnTransaction.Commit()
@@ -303,9 +313,9 @@ func (self *MessageManager) Write(msg *Message) (error) {
 
 	/* Step 3. Make prepare SQL insert query */
 	sqlStmt := "INSERT INTO message "+
-	           "    (msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate) " +
+	           "    (msgMsgId, msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate) " +
 	           "  VALUES " + 
-	           "    (?, ?, ?, ?, ?, ?, ?)"
+	           "    (?, ?, ?, ?, ?, ?, ?, ?)"
 	log.Printf("sql = %q", sqlStmt)
 	stmt, err3 := ConnTransaction.Prepare(sqlStmt)
 	if err3 != nil {
@@ -314,7 +324,7 @@ func (self *MessageManager) Write(msg *Message) (error) {
 	defer stmt.Close()
 
 	/* Step 4. Invoke prepare SQL insert query */
-	_, err4 := stmt.Exec(msg.Hash, msg.Area, msg.From, msg.To, msg.Subject, msg.Content, msg.UnixTime)
+	_, err4 := stmt.Exec(msg.MsgID, msg.Hash, msg.Area, msg.From, msg.To, msg.Subject, msg.Content, msg.UnixTime)
 	if err4 != nil {
 		return err4
 	}

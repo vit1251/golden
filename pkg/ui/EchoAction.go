@@ -1,13 +1,13 @@
 package ui
 
 import (
-	"github.com/vit1251/golden/pkg/common"
-	"net/http"
-	"github.com/gorilla/mux"
-	"path/filepath"
-	"html/template"
 	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/common"
+	"html/template"
 	"log"
+	"net/http"
+	"path/filepath"
 )
 
 type EchoAction struct {
@@ -63,8 +63,17 @@ func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Printf("msg = %+v", msg)
 	}
 
-	/* Rener */
+	/* Context actions */
+	var actions []*UserAction
+	action1 := NewUserAction()
+	action1.Link = fmt.Sprintf("/echo/%s/message/compose", area.Name)
+	action1.Icon = "/static/img/icon/quote-50.png"
+	action1.Label = "Compose"
+	actions = append(actions, action1)
+
+	/* Render */
 	outParams := make(map[string]interface{})
+	outParams["Actions"] = actions
 	outParams["Area"] = area
 	outParams["Headers"] = msgHeaders
 	self.tmpl.ExecuteTemplate(w, "layout", outParams)

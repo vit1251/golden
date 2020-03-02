@@ -1,11 +1,11 @@
 package ui
 
 import (
-	"github.com/vit1251/golden/pkg/common"
+	version2 "github.com/vit1251/golden/pkg/version"
 	"net/http"
-//	"github.com/gorilla/mux"
-	"path/filepath"
 	"html/template"
+	//	"github.com/gorilla/mux"
+	"path/filepath"
 )
 
 type WelcomeAction struct {
@@ -28,7 +28,7 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Get dependency injection manager */
-	version := common.GetVersion()
+	version := version2.GetVersion()
 
 	/* Render */
 	outParams := make(map[string]interface{})

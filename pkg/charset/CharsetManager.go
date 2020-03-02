@@ -1,11 +1,19 @@
-package packet
+package charset
 
 import (
-//	"log"
 	"golang.org/x/text/encoding/charmap"
 )
 
-func DecodeText(source []byte) ([]rune, error) {
+type CharsetManager struct {
+
+}
+
+func NewCharsetManager() *CharsetManager {
+	cm := new(CharsetManager)
+	return cm
+}
+
+func (self *CharsetManager) DecodeText(source []byte) ([]rune, error) {
 
 	var result []rune
 
@@ -19,7 +27,7 @@ func DecodeText(source []byte) ([]rune, error) {
 	return result, nil
 }
 
-func EncodeText(source []rune) ([]byte, error) {
+func (self *CharsetManager) EncodeText(source []rune) ([]byte, error) {
 
 	var result []byte
 

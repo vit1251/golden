@@ -1,3 +1,20 @@
+{{ define "actions" }}
+    <div class="actions">
+
+{{ range $action := .Actions }}
+	<div class="action-cover">
+	    <a href="{{ $action.Link }}" class="btn btn-info">
+	        <div class="action">
+	            <img src="{{ $action.Icon }}" alt="{{ $action.Label }}">
+	            <span>{{ $action.Label }}</span>
+	        </div>
+	    </a>
+	</div>
+{{ end }}
+
+    </div>
+{{ end }}
+
 {{define "layout"}}
 <!DOCTYPE html>
 <html>
