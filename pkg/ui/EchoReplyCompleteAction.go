@@ -53,7 +53,7 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	to := r.Form.Get("to")
 	subj := r.Form.Get("subject")
 	body := r.Form.Get("body")
-	log.Printf("to = %s subj = %s body = %s reply = %s", to, subj, body)
+	log.Printf("to = %s subj = %s body = %s", to, subj, body)
 
 	/* Create message */
 	em := master.TosserManager.NewEchoMessage()

@@ -2,10 +2,14 @@ package file
 
 import (
 	"bytes"
+	"github.com/vit1251/golden/pkg/charset"
 	"testing"
 )
 
 func TestTicParserParse1(t *testing.T) {
+
+	/* Charset manager */
+	cm := charset.NewCharsetManager()
 
 	/* Create TIC description */
 	sampleTic := bytes.NewBuffer(nil)
@@ -27,7 +31,7 @@ func TestTicParserParse1(t *testing.T) {
 	sampleTic.WriteString("Path 2:5023/24 1578762108 Sat Jan 11 12:01:48 2020 [Filin+/32 1.7b]\n")
 
 	/* Parse */
-	ticParser :=  NewTicParser()
+	ticParser := NewTicParser(cm)
 	err := ticParser.Parse(sampleTic)
 	if err != nil {
 		t.Errorf("msg = %+v", err)
