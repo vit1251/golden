@@ -8,12 +8,14 @@ import (
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/setup"
+	"go.uber.org/dig"
 	"hash/crc32"
 	"log"
 	"path"
 )
 
 type TosserManager struct {
+	Container *dig.Container
 	SetupManager *setup.SetupManager
 	MessageManager *msg.MessageManager
 	CharsetManager *charset.CharsetManager
@@ -40,11 +42,15 @@ func (m *EchoMessage) SetSubject(subj string) {
 	m.Subject = subj
 }
 
-func NewTosserManager(cm *charset.CharsetManager, mm* msg.MessageManager, sm *setup.SetupManager) *TosserManager {
+func NewTosserManager(c *dig.Container) *TosserManager {
 	tm := new(TosserManager)
-	tm.CharsetManager = cm
-	tm.SetupManager = sm
-	tm.MessageManager = mm
+	tm.Container = c
+	//
+	c.Invoke(func(cm *charset.CharsetManager, sm *setup.SetupManager, mm *msg.MessageManager) {
+		tm.CharsetManager = cm
+		tm.SetupManager = sm
+		tm.MessageManager = mm
+	})
 	return tm
 }
 
@@ -331,4 +337,9 @@ func (self *TosserManager) NewEchoMessage() *EchoMessage {
 func (self *TosserManager) NewNetmailMessage() *NetmailMessage {
 	nm := new(NetmailMessage)
 	return nm
+}
+
+func (self *TosserManager) Toss() {
+	newTosser := NewTosser(self.Container)
+	newTosser.Toss()
 }

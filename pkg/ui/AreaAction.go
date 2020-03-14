@@ -1,39 +1,28 @@
 package ui
 
 import (
-	"github.com/vit1251/golden/pkg/common"
+	"fmt"
+	"github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/ui/views"
 	"net/http"
 	"path/filepath"
-	"html/template"
-	"fmt"
 )
 
 type AreaAction struct {
 	Action
-	tmpl     *template.Template
 }
 
 func NewAreaAction() (*AreaAction) {
 	aa := new(AreaAction)
-
-	/* Prepare cache */
-	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "echo_index.tmpl")
-	tmpl, err := template.ParseFiles(lp, fp)
-	if err != nil {
-		panic(err)
-	}
-	aa.tmpl = tmpl
-
 	return aa
 }
 
 func (self *AreaAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
-
-	/* Get area manager */
-	areaManager := master.AreaManager
+	var areaManager *area.AreaManager
+	self.Container.Invoke(func(am *area.AreaManager) {
+		areaManager = am
+	})
 
 	/* Get message area */
 	areas, err1 := areaManager.GetAreas()
@@ -44,8 +33,16 @@ func (self *AreaAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Render */
-	outParams := make(map[string]interface{})
-	outParams["Areas"] = areas
-	self.tmpl.ExecuteTemplate(w, "layout", outParams)
-
+	doc := views.NewDocument()
+	layoutPath := filepath.Join("views", "layout.tmpl")
+	doc.SetLayout(layoutPath)
+	pagePath := filepath.Join("views", "echo_index.tmpl")
+	doc.SetPage(pagePath)
+	doc.SetParam("Areas", areas)
+	err2 := doc.Render(w)
+	if err2 != nil {
+		response := fmt.Sprintf("Fail on Render")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
 }

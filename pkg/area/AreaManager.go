@@ -5,18 +5,23 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/storage"
+	"go.uber.org/dig"
 	"log"
 )
 
 type AreaManager struct {
 	MessageManager *msg.MessageManager
-	conn *sql.DB
+	conn           *sql.DB
+	Container      *dig.Container
 }
 
-func NewAreaManager(sm *storage.StorageManager, mm *msg.MessageManager) (*AreaManager) {
+func NewAreaManager(c *dig.Container) *AreaManager {
 	am := new(AreaManager)
-	am.conn = sm.GetConnection()
-	am.MessageManager = mm
+	am.Container = c
+	c.Invoke(func(sm *storage.StorageManager, mm *msg.MessageManager) {
+		am.conn = sm.GetConnection()
+		am.MessageManager = mm
+	})
 	am.checkSchema()
 	am.Rescan()
 	return am

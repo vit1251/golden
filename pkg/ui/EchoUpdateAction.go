@@ -1,9 +1,10 @@
 package ui
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/common"
-	"html/template"
+	area2 "github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/ui/views"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -11,27 +12,19 @@ import (
 
 type EchoUpdateAction struct {
 	Action
-	tmpl  *template.Template
 }
 
 func NewEchoUpdateAction() *EchoUpdateAction {
 	ea := new(EchoUpdateAction)
-
-	/* Prepare cache */
-	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "echo_update.tmpl")
-	tmpl, err := template.ParseFiles(lp, fp)
-	if err != nil {
-		panic(err)
-	}
-	ea.tmpl = tmpl
-
 	return ea
 }
 
 func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
+	var areaManager *area2.AreaManager
+	self.Container.Invoke(func(am *area2.AreaManager) {
+		areaManager = am
+	})
 
 	//
 	vars := mux.Vars(r)
@@ -39,7 +32,6 @@ func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	areaManager := master.AreaManager
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
@@ -47,7 +39,17 @@ func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	log.Printf("area = %+v", area)
 
 	/* Render */
-	outParams := make(map[string]interface{})
-	outParams["Area"] = area
-	self.tmpl.ExecuteTemplate(w, "layout", outParams)
+	doc := views.NewDocument()
+	layoutPath := filepath.Join("views", "layout.tmpl")
+	doc.SetLayout(layoutPath)
+	pagePath := filepath.Join("views", "echo_update.tmpl")
+	doc.SetPage(pagePath)
+	doc.SetParam("Area", area)
+	err2 := doc.Render(w)
+	if err2 != nil {
+		response := fmt.Sprintf("Fail on Render: err = %+v", err2)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+
 }

@@ -8,18 +8,17 @@
 
 {{ template "actions" . }}
 
-        <div class="table">
-{{ range .Areas }}
-            <a class="table-row" href="/echo/{{ .Name }}">
-                <div class="table-cell">{{ .Name }}</div>
-                <div class="table-cell">{{ .Summary }}</div>
-                <div class="table-cell">
-{{ if .NewMessageCount }}
-                    <span class="message-item-new">{{ .NewMessageCount }}</span>
+        <div class="table" width="100%">
+{{ range $area := .Areas }}
+            <a class="table-row" href="/echo/{{ $area.Name }}" style="color: white">
+                <div class="table-cell">{{ $area.Name }}</div>
+                <div class="table-cell">{{ $area.Summary }}</div>
+                <div class="table-cell" style="text-align: right">
+{{ if $area.NewMessageCount }}
+                        <span style="font-weight: bold">{{ $area.NewMessageCount }}</span>
+                        <span> / </span>
 {{ end }}
-                </div>
-                <div class="table-cell">
-                    {{ .MessageCount }}
+                        <span class="">{{ $area.MessageCount }}</span>
                 </div>
             </a>
 {{ end }}

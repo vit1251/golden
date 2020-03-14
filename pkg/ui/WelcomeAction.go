@@ -1,10 +1,10 @@
 package ui
 
 import (
+	"fmt"
+	"github.com/vit1251/golden/pkg/ui/views"
 	version2 "github.com/vit1251/golden/pkg/version"
 	"net/http"
-	"html/template"
-	//	"github.com/gorilla/mux"
 	"path/filepath"
 )
 
@@ -12,27 +12,27 @@ type WelcomeAction struct {
 	Action
 }
 
-func NewWelcomeAction() (*WelcomeAction) {
+func NewWelcomeAction() *WelcomeAction {
 	wa := new(WelcomeAction)
 	return wa
 }
 
 func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	/* Prepare cache */
-	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "welcome.tmpl")
-	tmpl, err := template.ParseFiles(lp, fp)
-	if err != nil {
-		panic(err)
-	}
-
 	/* Get dependency injection manager */
 	version := version2.GetVersion()
 
 	/* Render */
-	outParams := make(map[string]interface{})
-	outParams["Version"] = version
-	tmpl.ExecuteTemplate(w, "layout", outParams)
+	doc := views.NewDocument()
+	layoutPath := filepath.Join("views", "layout.tmpl")
+	doc.SetLayout(layoutPath)
+	pagePath := filepath.Join("views", "welcome.tmpl")
+	doc.SetPage(pagePath)
+	doc.SetParam("Version", version)
+	if err := doc.Render(w); err != nil {
+		response := fmt.Sprintf("Fail on Render: err = %+v", err)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
 
 }

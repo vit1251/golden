@@ -1,12 +1,13 @@
 package ui
 
 import (
+	"go.uber.org/dig"
 )
 
 type Action struct {
-	Site *GoldenSite
+	Container *dig.Container
 }
 
-func (self *Action) SetSite(webSite *GoldenSite) {
-	self.Site = webSite
+func (self *Action) SetContainer(c *dig.Container) {
+	self.Container = c
 }

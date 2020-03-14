@@ -7,6 +7,7 @@ import (
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/stat"
+	"go.uber.org/dig"
 )
 
 type Tosser struct {
@@ -18,14 +19,16 @@ type Tosser struct {
 	CharsetManager *charset.CharsetManager
 }
 
-func NewTosser(cm *charset.CharsetManager, am *area.AreaManager, mm *msg.MessageManager, sm* stat.StatManager, setupm*setup.SetupManager, fm*file.FileManager) *Tosser {
+func NewTosser(c *dig.Container) *Tosser {
 	tosser := new(Tosser)
-	tosser.CharsetManager = cm
-	tosser.AreaManager = am
-	tosser.MessageManager = mm
-	tosser.StatManager = sm
-	tosser.SetupManager = setupm
-	tosser.FileManager = fm
+	c.Invoke(func(cm *charset.CharsetManager, am *area.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.SetupManager, fm *file.FileManager) {
+		tosser.CharsetManager = cm
+		tosser.AreaManager = am
+		tosser.MessageManager = mm
+		tosser.StatManager = sm
+		tosser.SetupManager = setm
+		tosser.FileManager = fm
+	})
 	return tosser
 }
 

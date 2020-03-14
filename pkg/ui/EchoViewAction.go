@@ -3,9 +3,10 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/common"
+	area2 "github.com/vit1251/golden/pkg/area"
 	msgProc "github.com/vit1251/golden/pkg/msg"
-	"html/template"
+	"github.com/vit1251/golden/pkg/ui/views"
+	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -13,26 +14,21 @@ import (
 
 type EchoViewAction struct {
 	Action
-	tmpl     *template.Template
 }
 
 func NewEchoViewAction() *EchoViewAction {
-	va:=new(EchoViewAction)
-
-	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "echo_msg_view.tmpl")
-	tmpl, err := template.ParseFiles(lp, fp)
-	if err != nil {
-		panic(err)
-	}
-	va.tmpl = tmpl
-
+	va := new(EchoViewAction)
 	return va
 }
 
 func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
+	var areaManager *area2.AreaManager
+	var messageManager *msgProc.MessageManager
+	self.Container.Invoke(func(am *area2.AreaManager, mm *msgProc.MessageManager) {
+		areaManager = am
+		messageManager = mm
+	})
 
 	//
 	vars := mux.Vars(r)
@@ -40,7 +36,6 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	areaManager := master.AreaManager
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
@@ -48,7 +43,6 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("area = %+v", area)
 
 	//
-	messageManager := master.MessageManager
 	msgHeaders, err112 := messageManager.GetMessageHeaders(echoTag)
 	if err112 != nil {
 		response := fmt.Sprintf("Fail on GetAreas")
@@ -89,24 +83,34 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Create actions */
-	var actions []*UserAction
-	action1 := NewUserAction()
+	var actions []*widgets.UserAction
+	action1 := widgets.NewUserAction()
 	action1.Link = fmt.Sprintf("/echo/%s//message/%s/reply", area.Name, msg.Hash)
 	action1.Icon = "/static/img/icon/quote-50.png"
 	action1.Label = "Reply"
 	actions = append(actions, action1)
-	action2 := 	NewUserAction()
+	action2 := 	widgets.NewUserAction()
 	action2.Link = fmt.Sprintf("/echo/%s/message/%s/remove", area.Name, msg.Hash)
 	action2.Icon = "/static/img/icon/remove-50.png"
 	action2.Label = "Delete"
 	actions = append(actions, action2)
 
 	/* Render */
-	outParams := make(map[string]interface{})
-	outParams["Actions"] = actions
-	outParams["Area"] = area
-	outParams["Headers"] = msgHeaders
-	outParams["Msg"] = msg
-	outParams["Content"] = outDoc
-	self.tmpl.ExecuteTemplate(w, "layout", outParams)
+	doc := views.NewDocument()
+	layoutPath := filepath.Join("views", "layout.tmpl")
+	doc.SetLayout(layoutPath)
+	pagePath := filepath.Join("views", "echo_msg_view.tmpl")
+	doc.SetPage(pagePath)
+	doc.SetParam("Actions", actions)
+	doc.SetParam("Area", area)
+	doc.SetParam("Headers", msgHeaders)
+	doc.SetParam("Msg", msg)
+	doc.SetParam("Content", outDoc)
+	err6 := doc.Render(w)
+	if err6 != nil {
+		response := fmt.Sprintf("Fail on Render: err = %+v", err6)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+
 }

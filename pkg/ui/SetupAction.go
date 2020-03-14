@@ -1,12 +1,12 @@
 package ui
 
 import (
-	"github.com/vit1251/golden/pkg/common"
-	"net/http"
-//	"github.com/gorilla/mux"
-	"path/filepath"
-	"html/template"
+	"fmt"
+	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/ui/views"
 	"log"
+	"net/http"
+	"path/filepath"
 )
 
 type SetupAction struct {
@@ -20,22 +20,26 @@ func NewSetupAction() (*SetupAction) {
 
 func (self *SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
-
-	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "setup.tmpl")
-	tmpl, err := template.ParseFiles(lp, fp)
-	if err != nil {
-		panic(err)
-	}
-
 	/* Setup manager operation */
-	setupManager := master.SetupManager
+	var setupManager *setup.SetupManager
+	self.Container.Invoke(func(sm *setup.SetupManager) {
+		setupManager = sm
+	})
+
 	params := setupManager.GetParams()
 	log.Printf("params = %+v", params)
 
 	/* Render */
-	outParams := make(map[string]interface{})
-	outParams["Params"] = params
-	tmpl.ExecuteTemplate(w, "layout", outParams)
+	doc := views.NewDocument()
+	layoutPath := filepath.Join("views", "layout.tmpl")
+	doc.SetLayout(layoutPath)
+	pagePath := filepath.Join("views", "setup.tmpl")
+	doc.SetPage(pagePath)
+	doc.SetParam("Params", params)
+	if err := doc.Render(w); err != nil {
+		response := fmt.Sprintf("Fail on Render: err = %+v", err)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+
 }

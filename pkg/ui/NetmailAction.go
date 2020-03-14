@@ -1,50 +1,59 @@
 package ui
 
 import (
-	"github.com/vit1251/golden/pkg/common"
-	"html/template"
+	"fmt"
+	"github.com/vit1251/golden/pkg/netmail"
+	"github.com/vit1251/golden/pkg/ui/views"
+	"github.com/vit1251/golden/pkg/ui/widgets"
 	"net/http"
 	"path/filepath"
 )
 
 type NetmailAction struct {
 	Action
-	tmpl     *template.Template
 }
 
 func NewNetmailAction() (*NetmailAction) {
 	nm := new(NetmailAction)
-
-	/* Cache HTML page template */
-	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "netmail_index.tmpl")
-	tmpl, err1 := template.ParseFiles(lp, fp)
-	if err1 != nil {
-		panic(err1)
-	}
-	nm.tmpl = tmpl
-
 	return nm
 }
 
 func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
-	msgHeaders, err1 := master.NetmailManager.GetMessageHeaders()
+	var netmailManager *netmail.NetmailManager
+	self.Container.Invoke(func(nm *netmail.NetmailManager) {
+		netmailManager = nm
+	})
+
+	/* Message headers */
+	msgHeaders, err1 := netmailManager.GetMessageHeaders()
 	if err1 != nil {
-		panic(err1)
+		response := fmt.Sprintf("Fail on GetMessageHeaders on NetmailManager: err = %+v", err1)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
 
-	var actions []*UserAction
-	action1 := NewUserAction()
+	/* Create menu actions */
+	var actions []*widgets.UserAction
+	action1 := widgets.NewUserAction()
 	action1.Link = "/netmail/compose"
 	action1.Icon = "/static/img/icon/quote-50.png"
 	action1.Label = "Compose"
 	actions = append(actions, action1)
 
 	/* Render */
-	outParams := make(map[string]interface{})
-	outParams["Actions"] = actions
-	outParams["msgHeaders"] = msgHeaders
-	self.tmpl.ExecuteTemplate(w, "layout", outParams)
+	doc := views.NewDocument()
+	layoutPath := filepath.Join("views", "layout.tmpl")
+	doc.SetLayout(layoutPath)
+	pagePath := filepath.Join("views", "netmail_index.tmpl")
+	doc.SetPage(pagePath)
+	doc.SetParam("Actions", actions)
+	doc.SetParam("msgHeaders", msgHeaders)
+	err3 := doc.Render(w)
+	if err3 != nil {
+		response := fmt.Sprintf("Fail on Render: err = %+v", err3)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+
 }

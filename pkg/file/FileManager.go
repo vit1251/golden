@@ -12,9 +12,10 @@ type FileManager struct {
 }
 
 type FileArea struct {
-	Name string
-	Path string
+	Name    string
+	Path    string
 	Summary string
+	Count   int
 }
 
 func NewFileArea() *FileArea {
@@ -100,6 +101,42 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 	}
 
 	return areas, nil
+}
+
+func (self *FileManager) GetAreas2() ([]*FileArea, error) {
+
+	var result []*FileArea
+
+	/* Step 2. Start SQL transaction */
+	ConnTransaction, err := self.conn.Begin()
+	if err != nil {
+		return nil, err
+	}
+
+	sqlStmt := "SELECT `fileArea`, count(`fileName`) AS `msgCount` FROM `file` GROUP BY `fileArea` ORDER BY `fileArea` ASC"
+	rows, err1 := ConnTransaction.Query(sqlStmt)
+	if err1 != nil {
+		return nil, err1
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var name string
+		var count int
+		err2 := rows.Scan(&name, &count)
+		if err2 != nil{
+			return nil, err2
+		}
+
+		area := NewFileArea()
+		area.Name = name
+		area.Count = count
+
+		result = append(result, area)
+	}
+
+	ConnTransaction.Commit()
+
+	return result, nil
 }
 
 func (self *FileManager) CreateArea(a *FileArea) error {

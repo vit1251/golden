@@ -27,8 +27,8 @@ def check(c):
 
 @task(default=True)
 def build(c):
-    c.run('go build -o golden .', echo=True)
+    c.run('go build -o golden.exe .', echo=True)
 
 @task
 def debug(c):
-    c.run('./golden >golden_service.log 2>golden_service_err.log', echo=True)
+    c.run('golden.exe >golden_service.log 2>golden_service_err.log', echo=True)

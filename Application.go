@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/charset"
-	"github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
@@ -44,7 +43,9 @@ func (self *Application) Run() {
 	if err := self.Container.Provide(msg.NewMessageManager); err != nil {
 		panic(err)
 	}
-	if err := self.Container.Provide(area.NewAreaManager); err != nil {
+	if err := self.Container.Provide(func() *area.AreaManager {
+		return area.NewAreaManager(self.Container)
+	}); err != nil {
 		panic(err)
 	}
 	if err := self.Container.Provide(file.NewFileManager); err != nil {
@@ -61,27 +62,19 @@ func (self *Application) Run() {
 	}
 
 	/* Check periodic message */
-	self.Container.Invoke(func(cm*charset.CharsetManager, am *area.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.SetupManager, fm *file.FileManager) {
-		newTosser := tosser.NewTosser(cm, am, mm, sm, setm, fm)
+	self.Container.Invoke(func() {
+		newTosser := tosser.NewTosser(self.Container)
 		newTosser.Toss()
 	})
 
-	/* Initialize and start application */
-	self.Container.Invoke(func(cm *charset.CharsetManager, nm *netmail.NetmailManager, am *area.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.SetupManager, fm *file.FileManager, tm *tosser.TosserManager) {
-		master := common.GetMaster()
-		master.CharsetManager = cm
-		master.NetmailManager = nm
-		master.SetupManager = setm
-		master.AreaManager = am
-		master.MessageManager = mm
-		master.FileManager = fm
-		master.StatManager = sm
-		master.TosserManager = tm
+	/* Start tossing */
+	self.Container.Invoke(func(tm *tosser.TosserManager) {
+		tm.Toss()
 	})
 
 	/* Start service */
 	self.Container.Invoke(func() {
-		newGoldenSite := ui.NewGoldenSite()
+		newGoldenSite := ui.NewGoldenSite(self.Container)
 		go newGoldenSite.Start()
 	})
 

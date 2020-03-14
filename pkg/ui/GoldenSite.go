@@ -2,13 +2,14 @@ package ui
 
 import (
 	"github.com/gorilla/mux"
+	"go.uber.org/dig"
 	"log"
 	"net/http"
 	"time"
 )
 
 type IAction interface {
-	SetSite(webSite *GoldenSite)
+	SetContainer(c *dig.Container)
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
@@ -23,13 +24,15 @@ type WebSite struct {
 }
 
 type GoldenSite struct {
-	WebSite *WebSite /* Web site common type   */
-	rtr     *mux.Router
+	Container *dig.Container
+	WebSite   *WebSite         /* Web site common type   */
+	rtr       *mux.Router
 }
 
-func NewGoldenSite() (*GoldenSite) {
+func NewGoldenSite(c *dig.Container) *GoldenSite {
 
 	site := new(GoldenSite)
+	site.Container = c
 
 	/* Create router */
 	rtr := mux.NewRouter()
@@ -43,7 +46,7 @@ func NewGoldenSite() (*GoldenSite) {
 func (self *GoldenSite) Register(pattern string, a IAction) {
 
 	/* Register owner */
-	a.SetSite(self)
+	a.SetContainer(self.Container)
 
 	/* Register */
 	actionFunc := a.ServeHTTP
@@ -80,6 +83,7 @@ func (self *GoldenSite) Start() (error) {
 	self.Register("/netmail/compose", NewNetmailComposeAction())
 	self.Register("/netmail/compose/complete", NewNetmailComposeCompleteAction())
 	self.Register("/stat", NewStatAction())
+	self.Register("/stat/image", NewStatImageAction())
 	self.Register("/service", NewServiceManageAction())
 	self.Register("/api/service/start", NewApiServiceStartAction())
 	self.Register("/setup", NewSetupAction())

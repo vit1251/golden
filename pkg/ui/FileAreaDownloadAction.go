@@ -3,7 +3,7 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/file"
 	"io"
 	"log"
 	"net/http"
@@ -22,15 +22,17 @@ func NewFileAreaDownloadAction() *FileAreaDownloadAction {
 
 func (self *FileAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
-	fileManager := master.FileManager
+	var fileManager *file.FileManager
+	self.Container.Invoke(func(fm *file.FileManager) {
+		fileManager = fm
+	})
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
-	file := vars["file"]
-	log.Printf("file = %v", file)
+	newFile := vars["file"]
+	log.Printf("file = %v", newFile)
 
 	/* Get message area */
 	area, err1 := fileManager.GetAreaByName(echoTag)
@@ -42,7 +44,7 @@ func (self *FileAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	log.Printf("area = %+v", area)
 
 	/* Path */
-	path := filepath.Join(area.Path, file)
+	path := filepath.Join(area.Path, newFile)
 
 	/* Open original file */
 	stream, err2 := os.Open(path)

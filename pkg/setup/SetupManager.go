@@ -61,7 +61,7 @@ func NewSetupManager(sm *storage.StorageManager) *SetupManager {
 	return sem
 }
 
-func (self *SetupManager) GetParams() ([]*SetupParam) {
+func (self *SetupManager) GetParams() []*SetupParam {
 	return self.Params
 }
 

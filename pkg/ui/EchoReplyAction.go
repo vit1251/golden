@@ -1,35 +1,33 @@
 package ui
 
 import (
-	"github.com/vit1251/golden/pkg/common"
-	"github.com/vit1251/golden/pkg/msg"
-	"net/http"
-	"github.com/gorilla/mux"
-	"path/filepath"
-	"html/template"
 	"fmt"
+	"github.com/gorilla/mux"
+	area2 "github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/ui/views"
 	"log"
+	"net/http"
+	"path/filepath"
 )
 
 type EchoReplyAction struct {
 	Action
 }
 
-func NewEchoReplyAction() (*EchoReplyAction) {
+func NewEchoReplyAction() *EchoReplyAction {
 	ra := new(EchoReplyAction)
 	return ra
 }
 
 func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
-
-	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "echo_msg_reply.tmpl")
-	tmpl, err := template.ParseFiles(lp, fp)
-	if err != nil {
-		panic(err)
-	}
+	var areaManager *area2.AreaManager
+	var messageManager *msg.MessageManager
+	self.Container.Invoke(func(am *area2.AreaManager, mm *msg.MessageManager) {
+		areaManager = am
+		messageManager = mm
+	})
 
 	//
 	vars := mux.Vars(r)
@@ -37,7 +35,6 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	areaManager := master.AreaManager
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
@@ -54,7 +51,6 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	//
 	msgHash := vars["msgid"]
-	messageManager := master.MessageManager
 	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
@@ -69,10 +65,20 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	newContent := mtp.Content()
 
 	/* Render */
-	outParams := make(map[string]interface{})
-	outParams["Areas"] = areas
-	outParams["Area"] = area
-	outParams["Msg"] = origMsg
-	outParams["Content"] = newContent
-	tmpl.ExecuteTemplate(w, "layout", outParams)
+	doc := views.NewDocument()
+	layoutPath := filepath.Join("views", "layout.tmpl")
+	doc.SetLayout(layoutPath)
+	pagePath := filepath.Join("views", "echo_msg_reply.tmpl")
+	doc.SetPage(pagePath)
+	doc.SetParam("Areas", areas)
+	doc.SetParam("Area", area)
+	doc.SetParam("Msg", origMsg)
+	doc.SetParam("Content", newContent)
+	err4 := doc.Render(w)
+	if err4 != nil {
+		response := fmt.Sprintf("Fail on Render: err = %+v", err4)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+
 }

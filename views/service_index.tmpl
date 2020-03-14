@@ -3,22 +3,25 @@
 
 <div class="row">
 
-    <div class="col-12 main">
+    <h1>Services</h1>
 
-        <h1>Services</h1>
-
-        <div class="services">
-
-            <div class="service-item" data-service-id="MailerService">
-                <span class="service-status">-</span>
-                <span class="service-start">Start</span>
-                <span class="service-stop">Stop</span>
-                <span>Mailer Service</span>
-            </div>
-
-        </div>
-
-    </div>
+    <table class="table" width="100%">
+{{ range $service := .Services }}
+        <tr>
+            <td>
+                <div data-service="{{ $service.Class }}" class="service-start btn">
+                    <img src="/static/img/service/start-btn.png">
+                </div>
+            </td>
+            <td>
+                <span>{{ $service.Label }}</span>
+            </td>
+            <td>
+                <span></span>
+            </td>
+        </tr>
+{{ end }}
+    </table>
 
 </div>
 

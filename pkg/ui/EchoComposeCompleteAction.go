@@ -3,7 +3,8 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/common"
+	area2 "github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/tosser"
 	"log"
 	"net/http"
 )
@@ -19,7 +20,12 @@ func NewEchoComposeCompleteAction() (*EchoComposeCompleteAction) {
 
 func (self *EchoComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
+	var areaManager *area2.AreaManager
+	var tosserManager *tosser.TosserManager
+	self.Container.Invoke(func(am *area2.AreaManager, tm *tosser.TosserManager) {
+		areaManager = am
+		tosserManager = tm
+	})
 
 	//
 	vars := mux.Vars(r)
@@ -33,7 +39,6 @@ func (self *EchoComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	areaManager := master.AreaManager
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
@@ -47,14 +52,14 @@ func (self *EchoComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.
 	log.Printf("to = %s subj = %s body = %s", to, subj, body)
 
 	/* Create message */
-	em := master.TosserManager.NewEchoMessage()
+	em := tosserManager.NewEchoMessage()
 	em.Subject = subj
 	em.Body = body
 	em.AreaName = area.Name
 	em.To = to
 
 	/* Delivery message */
-	err3 := master.TosserManager.WriteEchoMessage(em)
+	err3 := tosserManager.WriteEchoMessage(em)
 	if err3 != nil {
 		panic(err3)
 	}

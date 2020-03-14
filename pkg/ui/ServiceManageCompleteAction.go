@@ -3,8 +3,9 @@ package ui
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/mailer"
+	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/tosser"
 	"log"
 	"net/http"
 )
@@ -24,12 +25,10 @@ func (self *ApiServiceStartAction) Start() {
 
 func (self *ApiServiceStartAction) Run() error {
 
-	master := common.GetMaster()
-
-	/* Get setup manager */
-	setupManager := master.SetupManager
-	params := setupManager.GetParams()
-	log.Printf("params = %+v", params)
+	var setupManager *setup.SetupManager
+	self.Container.Invoke(func(sm *setup.SetupManager) {
+		setupManager = sm
+	})
 
 	/* Construct node address */
 	netAddr, err1 := setupManager.Get("main", "NetAddr", "")
@@ -61,7 +60,7 @@ func (self *ApiServiceStartAction) Run() error {
 	newAddress := fmt.Sprintf("%s@fidonet", address)
 
 	/* Get parameters */
-	m := mailer.NewMailer(master.SetupManager)
+	m := mailer.NewMailer(setupManager)
 	m.SetTempOutbound(TempOutbound)
 	m.SetServerAddr(netAddr)
 	m.SetInboundDirectory(inb)
@@ -71,18 +70,39 @@ func (self *ApiServiceStartAction) Run() error {
 	m.Start()
 	m.Wait()
 
+	/* Complete start tosser */
+
+
 	return nil
 }
 
 func (self *ApiServiceStartAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	r.ParseForm()
+
+	service := r.PostForm.Get("service")
+	log.Printf("service = %s", service)
+
 	/* ... */
-	self.Start()
+	if service == "tosser" {
 
-	p := make(map[string]interface{})
-	p["code"] = 0
+		self.Container.Invoke(func(tm *tosser.TosserManager) {
+			tm.Toss()
+		})
 
-	/* Response */
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(p)
+		p := make(map[string]interface{})
+		p["code"] = 0
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(p)
+
+	} else if service == "mailer" {
+
+		self.Start()
+
+		p := make(map[string]interface{})
+		p["code"] = 0
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(p)
+
+	}
 }

@@ -2,44 +2,34 @@ package ui
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/common"
+	stat2 "github.com/vit1251/golden/pkg/stat"
+	"github.com/vit1251/golden/pkg/ui/views"
 	"net/http"
-	"html/template"
-	//	"github.com/gorilla/mux"
-	//	msgProc "github.com/vit1251/golden/pkg/msg"
 	"path/filepath"
-	//	"log"
 )
 
 type StatAction struct {
 	Action
-	tmpl     *template.Template   /* Page template cache   */
 }
 
-func NewStatAction() (*StatAction) {
-
-	/* New statistics action */
+func NewStatAction() *StatAction {
 	sa := new(StatAction)
-
-	/* Cache HTML page template */
-	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "stat_index.tmpl")
-	tmpl, err1 := template.ParseFiles(lp, fp)
-	if err1 != nil {
-		panic(err1)
-	}
-	sa.tmpl = tmpl
-
 	return sa
 }
 
 func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
+	var statManager *stat2.StatManager
+	self.Container.Invoke(func(sm *stat2.StatManager) {
+		statManager = sm
+	})
 
-	stat, err1 := master.StatManager.GetStat()
+	/* Get statistics */
+	stat, err1 := statManager.GetStat()
 	if err1 != nil {
-		panic(err1)
+		response := fmt.Sprintf("Fail GetStat on StatManager: err = %+v", err1)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
 
 	/* Create statistics */
@@ -73,7 +63,15 @@ func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 //	Status["Time Online"] = "N/A"
 
 	/* Render */
-	outParams := make(map[string]interface{})
-	outParams["Status"] = Status
-	self.tmpl.ExecuteTemplate(w, "layout", outParams)
+	doc := views.NewDocument()
+	layoutPath := filepath.Join("views", "layout.tmpl")
+	doc.SetLayout(layoutPath)
+	pagePath := filepath.Join("views", "stat_index.tmpl")
+	doc.SetPage(pagePath)
+	doc.SetParam("Status", Status)
+	if err := doc.Render(w); err != nil {
+		response := fmt.Sprintf("Fail on Render: err = %+v", err)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
 }

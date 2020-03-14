@@ -1,9 +1,11 @@
 package ui
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/common"
-	"html/template"
+	area2 "github.com/vit1251/golden/pkg/area"
+	msg2 "github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/ui/views"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -20,14 +22,12 @@ func NewRemoveAction() *RemoveAction {
 
 func (self *RemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
-
-	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "echo_msg_remove.tmpl")
-	tmpl, err := template.ParseFiles(lp, fp)
-	if err != nil {
-		panic(err)
-	}
+	var areaManager *area2.AreaManager
+	var messageManager *msg2.MessageManager
+	self.Container.Invoke(func(am *area2.AreaManager, mm *msg2.MessageManager) {
+		areaManager = am
+		messageManager = mm
+	})
 
 	//
 	vars := mux.Vars(r)
@@ -35,7 +35,6 @@ func (self *RemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	areaManager := master.AreaManager
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
@@ -44,16 +43,26 @@ func (self *RemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	//
 	msgHash := vars["msgid"]
-	messageManager := master.MessageManager
 	msg, err2 := messageManager.GetMessageByHash(echoTag, msgHash)
-	if (err2 != nil) {
-		panic(err2)
+	if err2 != nil {
+		response := fmt.Sprintf("Fail on GetMessageByHash on MessageManager: err = %+v", err2)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
 
-	//
-	outParams := make(map[string]interface{})
-	outParams["Area"] = area
-	outParams["Msg"] = msg
-	tmpl.ExecuteTemplate(w, "layout", outParams)
+	/* Render */
+	doc := views.NewDocument()
+	layoutPath := filepath.Join("views", "layout.tmpl")
+	doc.SetLayout(layoutPath)
+	pagePath := filepath.Join("views", "echo_msg_remove.tmpl")
+	doc.SetPage(pagePath)
+	doc.SetParam("Area", area)
+	doc.SetParam("Msg", msg)
+	err3 := doc.Render(w)
+	if err3 != nil {
+		response := fmt.Sprintf("Fail on Render: err = %+v", err3)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
 
 }

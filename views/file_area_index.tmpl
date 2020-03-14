@@ -6,11 +6,14 @@
 
     <div class="col-12 main">
 
-        <div class="table">
-{{ range .Areas }}
-            <a class="table-row" href="/file/{{ .Name }}">
-                <div class="table-cell">{{ .Name }}</div>
-                <div class="table-cell">{{ .Summary }}</div>
+        <div class="table" width="100%">
+{{ range $area := .Areas }}
+            <a class="table-row" href="/file/{{ $area.Name }}" style="color: white">
+                <div class="table-cell">{{ $area.Name }}</div>
+                <div class="table-cell">{{ $area.Summary }}</div>
+                <div class="table-cell" style="text-align: right">
+                    <span>{{ $area.Count }}</span>
+                </div>
             </a>
 {{ end }}
         </div>

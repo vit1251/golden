@@ -3,7 +3,9 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/common"
+	area2 "github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/tosser"
 	"log"
 	"net/http"
 )
@@ -19,7 +21,14 @@ func NewReplyCompleteAction() (*ReplyCompleteAction) {
 
 func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
+	var areaManager *area2.AreaManager
+	var messageManager *msg.MessageManager
+	var tosserManager *tosser.TosserManager
+	self.Container.Invoke(func(am *area2.AreaManager, mm *msg.MessageManager, tm *tosser.TosserManager) {
+		areaManager = am
+		messageManager = mm
+		tosserManager = tm
+	})
 
 	//
 	err := r.ParseForm()
@@ -32,7 +41,7 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	/* Recover area */
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
-	areaManager := master.AreaManager
+
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
@@ -41,7 +50,6 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	/* Recover message */
 	msgHash := vars["msgid"]
-	messageManager := master.MessageManager
 	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
@@ -56,7 +64,7 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	log.Printf("to = %s subj = %s body = %s", to, subj, body)
 
 	/* Create message */
-	em := master.TosserManager.NewEchoMessage()
+	em := tosserManager.NewEchoMessage()
 	em.Subject = subj
 	em.Body = body
 	em.AreaName = area.Name
@@ -64,7 +72,7 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	em.Reply = origMsg.MsgID
 
 	/* Delivery message */
-	err4 := master.TosserManager.WriteEchoMessage(em)
+	err4 := tosserManager.WriteEchoMessage(em)
 	if err4 != nil {
 		panic(err4)
 	}

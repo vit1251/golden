@@ -1,35 +1,18 @@
-
 * {
-	-border: 1px solid red;
+    box-sizing: border-box;
 }
 
 body {
-    background-color: #000000;
-    color: #AAAAAA;
-    font-family: monospace;
-    font-size: 19px;
+    padding: 0px;
 }
 
 a {
     text-decoration: none;
 }
 
-.container {
-    width: 100%;
-    display: flex;
-}
-
 .arealist-items {
     flex-basis: 20%;
     flex-shrink: 0;
-}
-.main {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 80%;
-    flex-shrink: 0;
-    flex-grow: 0;
-    height: 100%;
 }
 
 .message-header-items {
@@ -42,7 +25,7 @@ a {
     flex-shrink: 0;
     flex-grow: 0;
     white-space: pre-wrap;
-    line-height: 1;
+    font-family: "Courier New", monospace;
 }
 
 .input {
@@ -169,27 +152,6 @@ a.message-item-wrap {
 	display: flex;
 	width: 64px;
 	height: 64px;
-}
-
-.btn {
-	text-align: center;
-	white-space: nowrap;
-	vertical-align: middle;
-	padding: .375rem .75rem;
-	font-size: 1rem;
-	line-height: 1.5;
-}
-
-.btn-warning {
-	color: #212529;
-	background-color: #ffc107;
-	border-color: #ffc107;
-}
-
-.btn-warning:hover {
-	color: #212529;
-	background-color: #e0a800;
-	border-color: #d39e00;
 }
 
 .table {

@@ -1,38 +1,30 @@
 package ui
 
 import (
-	"github.com/vit1251/golden/pkg/common"
-	"net/http"
-	"github.com/gorilla/mux"
-	"path/filepath"
-	"html/template"
 	"fmt"
+	"github.com/gorilla/mux"
+	area2 "github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/ui/views"
 	"log"
+	"net/http"
+	"path/filepath"
 )
 
 type EchoComposeAction struct {
 	Action
-	tmpl *template.Template
 }
 
-func NewEchoComposeAction() (*EchoComposeAction) {
+func NewEchoComposeAction() *EchoComposeAction {
 	ca := new(EchoComposeAction)
-
-	//
-	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "echo_msg_compose.tmpl")
-	tmpl, err := template.ParseFiles(lp, fp)
-	if err != nil {
-		panic(err)
-	}
-	ca.tmpl = tmpl
-
 	return ca
 }
 
 func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
+	var areaManager *area2.AreaManager
+	self.Container.Invoke(func(am *area2.AreaManager) {
+		areaManager = am
+	})
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
@@ -40,7 +32,7 @@ func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	log.Printf("echoTag = %v", echoTag)
 
 	/* Search echo area */
-	areaManager := master.AreaManager
+
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreaByName")
@@ -58,8 +50,18 @@ func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	}
 
 	/* Render */
-	outParams := make(map[string]interface{})
-	outParams["Areas"] = areas
-	outParams["Area"] = area
-	self.tmpl.ExecuteTemplate(w, "layout", outParams)
+	doc := views.NewDocument()
+	layoutPath := filepath.Join("views", "layout.tmpl")
+	doc.SetLayout(layoutPath)
+	pagePath := filepath.Join("views", "echo_msg_compose.tmpl")
+	doc.SetPage(pagePath)
+	doc.SetParam("Areas", areas)
+	doc.SetParam("Area", area)
+	err2 := doc.Render(w)
+	if err2 != nil {
+		response := fmt.Sprintf("Fail on Render: err = %+v", err2)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+
 }

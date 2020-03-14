@@ -3,8 +3,8 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/common"
-	"html/template"
+	"github.com/vit1251/golden/pkg/file"
+	"github.com/vit1251/golden/pkg/ui/views"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -12,28 +12,20 @@ import (
 
 type FileAreaViewAction struct {
 	Action
-	tmpl  *template.Template
 }
 
-func NewFileAreaViewAction() (*FileAreaViewAction) {
+func NewFileAreaViewAction() *FileAreaViewAction {
 	fa := new(FileAreaViewAction)
-
-	/* Prepare cache */
-	lp := filepath.Join("views", "layout.tmpl")
-	fp := filepath.Join("views", "file_area_view.tmpl")
-	tmpl, err := template.ParseFiles(lp, fp)
-	if err != nil {
-		panic(err)
-	}
-	fa.tmpl = tmpl
 	return fa
 }
 
 
 func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	master := common.GetMaster()
-	fileManager := master.FileManager
+	var fileManager *file.FileManager
+	self.Container.Invoke(func(fm *file.FileManager) {
+		fileManager = fm
+	})
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
@@ -58,8 +50,17 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	log.Printf("files = %+v", files)
 
 	/* Render */
-	outParams := make(map[string]interface{})
-	outParams["Area"] = area
-	outParams["Files"] = files
-	self.tmpl.ExecuteTemplate(w, "layout", outParams)
+	doc := views.NewDocument()
+	layoutPath := filepath.Join("views", "layout.tmpl")
+	doc.SetLayout(layoutPath)
+	pagePath := filepath.Join("views", "file_area_view.tmpl")
+	doc.SetPage(pagePath)
+	doc.SetParam("Area", area)
+	doc.SetParam("Files", files)
+	err3 := doc.Render(w)
+	if err3 != nil {
+		response := fmt.Sprintf("Fail on Render: err = %+v", err3)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
 }
