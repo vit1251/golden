@@ -356,15 +356,17 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 
 func (self *Tosser) ProcessInbound() error {
 
+	log.Printf("ProcessInbound")
+
 	/* New mailer inbound */
 	mi := mailer.NewMailerInbound(self.SetupManager)
-
 
 	/* Scan inbound */
 	items, err2 := mi.Scan()
 	if err2 != nil {
 		return err2
 	}
+	log.Printf("items = %+v", items)
 
 	for _, item := range items {
 		if item.Type == mailer.TypeNetmail {

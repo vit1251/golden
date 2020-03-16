@@ -110,8 +110,42 @@ func (self *MessageManager) GetAreaList2() ([]*Area, error) {
 			return nil, err2
 		}
 		a := NewArea()
-		a.Name = name
+		a.SetName(name)
 		a.Count = count
+		result = append(result, a)
+	}
+
+	ConnTransaction.Commit()
+
+	return result, nil
+}
+
+func (self *MessageManager) GetAreaList3() ([]*Area, error) {
+
+	var result []*Area
+
+	/* Step 2. Start SQL transaction */
+	ConnTransaction, err := self.conn.Begin()
+	if err != nil {
+		return nil, err
+	}
+
+	sqlStmt := "SELECT `msgArea`, count(`msgId`) AS `msgCount` FROM `message` WHERE `msgViewCount` = 0 GROUP BY `msgArea` ORDER BY `msgArea` ASC"
+	rows, err1 := ConnTransaction.Query(sqlStmt)
+	if err1 != nil {
+		return nil, err1
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var name string
+		var count int
+		err2 := rows.Scan(&name, &count)
+		if err2 != nil{
+			return nil, err2
+		}
+		a := NewArea()
+		a.SetName(name)
+		a.MsgNewCount = count
 		result = append(result, a)
 	}
 

@@ -86,6 +86,8 @@ func (self *ApiServiceStartAction) ServeHTTP(w http.ResponseWriter, r *http.Requ
 	/* ... */
 	if service == "tosser" {
 
+		log.Printf("Start tosser")
+
 		self.Container.Invoke(func(tm *tosser.TosserManager) {
 			tm.Toss()
 		})

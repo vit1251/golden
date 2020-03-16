@@ -57,7 +57,10 @@ func (self *Application) Run() {
 	if err := self.Container.Provide(netmail.NewNetmailManager); err != nil {
 		panic(err)
 	}
-	if err := self.Container.Provide(tosser.NewTosserManager); err != nil {
+	if err := self.Container.Provide(func() *tosser.TosserManager {
+		result := tosser.NewTosserManager(self.Container)
+		return result
+	}); err != nil {
 		panic(err)
 	}
 
@@ -65,11 +68,6 @@ func (self *Application) Run() {
 	self.Container.Invoke(func() {
 		newTosser := tosser.NewTosser(self.Container)
 		newTosser.Toss()
-	})
-
-	/* Start tossing */
-	self.Container.Invoke(func(tm *tosser.TosserManager) {
-		tm.Toss()
 	})
 
 	/* Start service */

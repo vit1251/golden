@@ -67,34 +67,46 @@ func (self *AreaManager) Rescan() {
 
 }
 
-func (self *AreaManager) updateMsgCount(areas []*Area) {
+func (self *AreaManager) updateMsgCount(areas []*Area) error {
 
-	var msgCount int
-	var msgNewCount int
+	log.Printf("areas = %+v", areas)
 
-	for _, area := range areas {
-		msgs, err1 := self.MessageManager.GetMessageHeaders(area.Name)
-		if err1 != nil {
-			panic(err1)
-		}
-
-		/* Reset counter */
-		msgCount = 0
-		msgNewCount = 0
-		
-		/* Restart*/
-		for _, m := range msgs {
-			if m.ViewCount > 0 {
-				msgCount += 1
-			} else {
-				msgCount += 1
-				msgNewCount += 1
-			}
-		}
-		area.MessageCount = msgCount
-		area.NewMessageCount = msgNewCount
+	/* Get message count */
+	areas2, err1 := self.MessageManager.GetAreaList2()
+	if err1 != nil {
+		log.Printf("err1 = %+v", err1)
+		return err1
 	}
 
+	/* Get message new count */
+	areas3, err2 := self.MessageManager.GetAreaList3()
+	if err2 != nil {
+		log.Printf("err2 = %+v", err2)
+		return err2
+	}
+
+	/* Update original areas values */
+	for _, area := range areas {
+
+		/* Search area count */
+		for _, area2 := range areas2 {
+			if area2.Name == area.Name {
+				log.Printf("area = %+v area2 = %+v", area.Name, area2.Name)
+				area.MessageCount = area2.Count
+			}
+		}
+
+		/* Search area new count */
+		for _, area3 := range areas3 {
+			if area3.Name == area.Name {
+				log.Printf("area = %+v area3 = %+v", area.Name, area3.Name)
+				area.NewMessageCount = area3.MsgNewCount
+			}
+		}
+
+	}
+
+	return nil
 }
 
 func (self *AreaManager) Register(a *Area) error {
@@ -113,7 +125,7 @@ func (self *AreaManager) GetAreas() ([]*Area, error) {
 	var areas []*Area
 
 	/* Restore parameters */
-	sqlStmt := "SELECT `areaName`, `areaSummary` FROM `area`"
+	sqlStmt := "SELECT `areaName`, `areaSummary` FROM `area` ORDER BY `areaName` ASC"
 	rows, err2 := self.conn.Query(sqlStmt)
 	if err2 != nil {
 		return nil, err2

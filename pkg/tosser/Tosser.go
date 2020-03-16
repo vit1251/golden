@@ -8,6 +8,7 @@ import (
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/stat"
 	"go.uber.org/dig"
+	"log"
 )
 
 type Tosser struct {
@@ -33,6 +34,15 @@ func NewTosser(c *dig.Container) *Tosser {
 }
 
 func (self *Tosser) Toss() {
-	self.ProcessInbound()
-	self.ProcessOutbound()
+
+	log.Printf("Toss")
+
+	err1 := self.ProcessInbound()
+	if err1 != nil {
+		log.Printf("err = %+v", err1)
+	}
+	err2 := self.ProcessOutbound()
+	if err2 != nil {
+		log.Printf("err = %+v", err2)
+	}
 }

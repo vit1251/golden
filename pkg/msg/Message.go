@@ -1,6 +1,7 @@
 package msg
 
 import (
+	"github.com/xeonx/timeago"
 	"strings"
 	"time"
 )
@@ -76,4 +77,12 @@ func (self *Message) SetViewCount(count int) {
 
 func (self *Message) SetMsgHash(hash string) {
 	self.Hash = hash
+}
+
+func (self *Message) Age() string {
+	var result string = "-"
+	if self.DateWritten != nil {
+		result = timeago.English.Format(*self.DateWritten)
+	}
+	return result
 }

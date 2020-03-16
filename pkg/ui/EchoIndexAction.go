@@ -8,16 +8,16 @@ import (
 	"path/filepath"
 )
 
-type AreaAction struct {
+type EchoIndexAction struct {
 	Action
 }
 
-func NewAreaAction() (*AreaAction) {
-	aa := new(AreaAction)
+func NewEchoIndexAction() *EchoIndexAction {
+	aa := new(EchoIndexAction)
 	return aa
 }
 
-func (self *AreaAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var areaManager *area.AreaManager
 	self.Container.Invoke(func(am *area.AreaManager) {

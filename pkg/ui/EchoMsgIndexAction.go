@@ -12,16 +12,16 @@ import (
 	"path/filepath"
 )
 
-type EchoAction struct {
+type EchoMsgIndexAction struct {
 	Action
 }
 
-func NewEchoAction() *EchoAction {
-	ea := new(EchoAction)
+func NewEchoMsgIndexAction() *EchoMsgIndexAction {
+	ea := new(EchoMsgIndexAction)
 	return ea
 }
 
-func (self *EchoAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var areaManager *area.AreaManager
 	var messageManager *msg.MessageManager

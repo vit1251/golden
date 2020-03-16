@@ -10,6 +10,7 @@ require (
 	github.com/sanylcs/uuencode v0.0.0-20161224062037-797cde56591b
 	github.com/satori/go.uuid v1.2.0
 	github.com/wcharczuk/go-chart v2.0.1+incompatible
+	github.com/xeonx/timeago v1.0.0-rc4
 	go.uber.org/dig v1.8.0
 	golang.org/x/image v0.0.0-20200119044424-58c23975cae1 // indirect
 	golang.org/x/text v0.3.2
