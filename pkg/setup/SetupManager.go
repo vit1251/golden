@@ -111,14 +111,14 @@ func (self *SetupManager) Audit(msg string) (error) {
 
 }
 
-func (self *SetupManager) restoreDefault() (error) {
+func (self *SetupManager) restoreDefault() error {
 
 	/* Step 1. Initialize parameters */
 	self.Set("main", "RealName", "Alice Cooper")
 	self.Set("main", "Country", "Russia")
 	self.Set("main", "City", "Moscow")
 	self.Set("main", "Origin", "Yo Adrian, I Did It! (c) Rocky II")
-	self.Set("main", "TearLine", "Golden/WIN 1.2.9 2020-02-25 10:30 MSK (master)")
+	self.Set("main", "TearLine", "Golden/WIN 1.2.10 2020-03-16 10:00 MSK (master)")
 	self.Set("main", "Address", "2:5030/1592.15")
 	self.Set("main", "Link", "2:5030/1592.0")
 	self.Set("main", "Inbound", "/var/spool/ftn/inb")

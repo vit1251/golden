@@ -182,7 +182,7 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	msgBody.AddKludge("CHRS", "CP866 2")
 	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", myAddr, hs))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
-	msgBody.AddKludge("TID", "golden/win 1.2.9 2020-02-25 10:30 MSK (master)")
+	msgBody.AddKludge("TID", "golden/win 1.2.10 2020-03-16 10:00 MSK (master)")
 	if em.Reply != "" {
 		msgBody.AddKludge("REPLY", em.Reply)
 	}
@@ -314,7 +314,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	msgBody.AddKludge("CHRS", "CP866 2")
 	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", params.From, hs))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
-	msgBody.AddKludge("TID", "golden/win 1.2.9 2020-02-25 10:30 MSK (master)")
+	msgBody.AddKludge("TID", "golden/win 1.2.10 2020-03-16 10:00 MSK (master)")
 	msgBody.AddKludge("FMPT", fmt.Sprintf("%d", msgHeader.OrigAddr.Point))
 	msgBody.AddKludge("TOPT", fmt.Sprintf("%d", msgHeader.DestAddr.Point))
 

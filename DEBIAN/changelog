@@ -1,3 +1,12 @@
+gpoint (1.2.10-1) stable; urgency=medium
+* Fix charset error in message header: To, From, Subject
+* Add "@REPLY" kludge in reply action
+* Chart with RX/TX message statistics
+* UI redesign based on widget
+* Service manual start
+* Common style fix: user action button, message compose, setup input
+* Area index counter metric performance improve
+-- Vitold Sedyshev <vit1251@gmail.com> Mon, 16 Mar 2020 10:00:00 +0300
 gpoint (1.2.9-1) stable; urgency=medium
 * Исправлена ошибка возникающая при открытия конференций с символом "_" в названии.
 gpoint (1.2.8-1) stable; urgency=medium
