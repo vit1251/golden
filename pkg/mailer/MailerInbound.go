@@ -37,11 +37,11 @@ func (self *MailerInboundRec) SetName(name string) {
 	self.Name = name
 }
 
-func NewMailerInboundRec() (*MailerInboundRec) {
+func NewMailerInboundRec() *MailerInboundRec {
 	return new(MailerInboundRec)
 }
 
-func NewMailerInbound(sm *setup.SetupManager) (*MailerInbound) {
+func NewMailerInbound(sm *setup.SetupManager) *MailerInbound {
 	mi := new(MailerInbound)
 	mi.SetupManager = sm
 	return mi

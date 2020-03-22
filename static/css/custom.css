@@ -1,0 +1,8 @@
+@font-face {
+  font-family: "PT Mono";
+  src: url('/static/font/PTMono-Regular.ttf');
+}
+
+body {
+  font-family: "PT Mono";
+}

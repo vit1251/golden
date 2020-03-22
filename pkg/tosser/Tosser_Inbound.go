@@ -3,11 +3,11 @@ package tosser
 import (
 	"errors"
 	"github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
-	"github.com/vit1251/golden/pkg/fidotime"
 	"io"
 	"log"
 	"os"
@@ -111,7 +111,7 @@ func (self *Tosser) ProcessPacket(name string) error {
 		}
 
 		/* Determine area */
-		var areaName string = msgBody.GetArea()
+		areaName := msgBody.GetArea()
 		if areaName == "" {
 			areaName = "NETMAIL"
 		}

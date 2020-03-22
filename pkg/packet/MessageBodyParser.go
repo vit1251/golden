@@ -59,34 +59,26 @@ func (self *MessageBodyParser) processKludge() {
 }
 
 func (self *MessageBodyParser) processKludgeByte(value byte) {
-	if self.kludgeState == MBPK_STATE_OPTIONAL {
-		if value == '\x01' {
-			self.kludgeState = MBPK_STATE_NAME
-		} else {
-			/* Unread byte */
-			self.message = append(self.message, value)
-			/* Debug message */
-			self.state = MBP_STATE_BODY
-		}
-	} else if self.kludgeState == MBPK_STATE_NAME {
-		if value == '\x0A' || value == '\x0D' {
+
+	if self.kludgeState == MBPK_STATE_NAME {
+		if value == '\x0D' {
 			self.processKludge()
-			self.kludgeState = MBPK_STATE_OPTIONAL
+			self.state = MBP_STATE_BODY
 		} else if value == ':' || value == ' ' {
 			self.kludgeState = MBPK_STATE_VALUE
 		} else {
 			self.kludgeName = append(self.kludgeName, value)
 		}
 	} else if self.kludgeState == MBPK_STATE_VALUE {
-		if value == '\x0A' || value == '\x0D' {
+		if value == '\x0D' {
 			/* Reset kludge cache */
 			self.processKludge()
-			/* Set new state */
-			self.kludgeState = MBPK_STATE_OPTIONAL
+			self.state = MBP_STATE_BODY
 		} else {
 			self.kludgeValue = append(self.kludgeValue, value)
 		}
 	}
+
 }
 
 func (self *MessageBodyParser) processMessageByte(value byte) {
@@ -99,6 +91,10 @@ func (self *MessageBodyParser) processMessageByte(value byte) {
 func (self *MessageBodyParser) Parse(msg []byte) (*MessageBody, error) {
 
 	stream := bytes.NewBuffer(msg)
+	var newLine bool = true
+	var firstLine bool = true
+	var line []byte
+	self.state = MBP_STATE_BODY
 
 	for {
 		value, err1 := stream.ReadByte()
@@ -111,13 +107,43 @@ func (self *MessageBodyParser) Parse(msg []byte) (*MessageBody, error) {
 				log.Fatal(err1)
 			}
 		}
-		if self.state == MBP_STATE_KLUDGE {
+
+		log.Printf("body = %c", value)
+
+		if self.state == MBP_STATE_BODY {
+
+			if newLine && value == '\x01' {
+
+				self.state = MBP_STATE_KLUDGE
+				self.kludgeState = MBPK_STATE_NAME
+
+			} else if value == '\x0D' {
+				newLine = true
+				if firstLine {
+					if bytes.HasPrefix(line, []byte("AREA:")) {
+						var areaName string = string(line[5:])
+						log.Printf("areaName = %+v", areaName)
+						self.result.SetArea(areaName)
+						self.message = nil
+					}
+					firstLine = false
+				} else {
+					self.processMessageByte(value)
+				}
+			} else {
+				if firstLine {
+					line = append(line, value)
+				}
+				newLine = false
+				self.processMessageByte(value)
+			}
+
+		} else if self.state == MBP_STATE_KLUDGE {
 			self.processKludgeByte(value)
-		} else if self.state == MBP_STATE_BODY {
-			self.processMessageByte(value)
 		} else {
-		    // eror
+			panic("unknown state")
 		}
+
 	}
 
 	/* Message body */
