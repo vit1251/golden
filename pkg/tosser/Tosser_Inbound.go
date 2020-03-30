@@ -121,7 +121,7 @@ func (self *Tosser) ProcessPacket(name string) error {
 
 		/* Auto create area */
 		a := area.NewArea()
-		a.Name = strings.ToUpper(areaName)
+		a.SetName(areaName)
 		self.AreaManager.Register(a)
 
 		/* Decode message */

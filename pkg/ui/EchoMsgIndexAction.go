@@ -56,12 +56,18 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	}
 
 	/* Context actions */
-	var actions []*widgets.UserAction
-	action1 := widgets.NewUserAction()
-	action1.Link = fmt.Sprintf("/echo/%s/message/compose", newArea.Name)
+	mw := widgets.NewMenuWidget()
+	
+	action1 := widgets.NewMenuAction()
+	action1.Link = fmt.Sprintf("/echo/%s/message/compose", newArea.Name())
 	action1.Icon = "/static/img/icon/quote-50.png"
 	action1.Label = "Compose"
-	actions = append(actions, action1)
+	mw.Add(action1)
+
+	action2 := widgets.NewMenuAction()
+	action2.Link = fmt.Sprintf("/echo/%s/update", newArea.Name())
+	action2.Label = "Settings"
+	mw.Add(action2)
 
 	/* Render */
 	doc := views.NewDocument()
@@ -69,7 +75,7 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	doc.SetLayout(layoutPath)
 	pagePath := filepath.Join("views", "echo_msg_index.tmpl")
 	doc.SetPage(pagePath)
-	doc.SetParam("Actions", actions)
+	doc.SetParam("Actions", mw.Actions())
 	doc.SetParam("Area", newArea)
 	doc.SetParam("Headers", msgHeaders)
 	err3 := doc.Render(w)

@@ -2,6 +2,7 @@ package ui
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/ui/api"
 	"go.uber.org/dig"
 	"log"
 	"net/http"
@@ -69,6 +70,7 @@ func (self *GoldenSite) Start() (error) {
 	self.Register("/echo", NewEchoIndexAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}", NewEchoMsgIndexAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", NewEchoUpdateAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update/complete", NewEchoUpdateCompleteAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", NewEchoComposeAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose/complete", NewEchoComposeCompleteAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/view", NewEchoViewAction())
@@ -83,7 +85,7 @@ func (self *GoldenSite) Start() (error) {
 	self.Register("/netmail/compose", NewNetmailComposeAction())
 	self.Register("/netmail/compose/complete", NewNetmailComposeCompleteAction())
 	self.Register("/stat", NewStatAction())
-	self.Register("/stat/image", NewStatImageAction())
+	self.Register("/stat/image", api.NewAPIStatAction())
 	self.Register("/service", NewServiceManageAction())
 	self.Register("/api/service/start", NewApiServiceStartAction())
 	self.Register("/setup", NewSetupAction())

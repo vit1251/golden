@@ -83,17 +83,18 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Create actions */
-	var actions []*widgets.UserAction
-	action1 := widgets.NewUserAction()
-	action1.Link = fmt.Sprintf("/echo/%s//message/%s/reply", area.Name, msg.Hash)
+	mw := widgets.NewMenuWidget()
+	action1 := widgets.NewMenuAction()
+	action1.Link = fmt.Sprintf("/echo/%s//message/%s/reply", area.Name(), msg.Hash)
 	action1.Icon = "/static/img/icon/quote-50.png"
 	action1.Label = "Reply"
-	actions = append(actions, action1)
-	action2 := 	widgets.NewUserAction()
-	action2.Link = fmt.Sprintf("/echo/%s/message/%s/remove", area.Name, msg.Hash)
+	mw.Add(action1)
+
+	action2 := widgets.NewMenuAction()
+	action2.Link = fmt.Sprintf("/echo/%s/message/%s/remove", area.Name(), msg.Hash)
 	action2.Icon = "/static/img/icon/remove-50.png"
 	action2.Label = "Delete"
-	actions = append(actions, action2)
+	mw.Add(action2)
 
 	/* Render */
 	doc := views.NewDocument()
@@ -101,7 +102,7 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	doc.SetLayout(layoutPath)
 	pagePath := filepath.Join("views", "echo_msg_view.tmpl")
 	doc.SetPage(pagePath)
-	doc.SetParam("Actions", actions)
+	doc.SetParam("Actions", mw.Actions())
 	doc.SetParam("Area", area)
 	doc.SetParam("Headers", msgHeaders)
 	doc.SetParam("Msg", msg)

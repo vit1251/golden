@@ -3,7 +3,7 @@ package msg
 import "strings"
 
 type Area struct {
-	Name        string
+	name        string
 	Count       int
 	MsgNewCount int
 }
@@ -13,6 +13,10 @@ func NewArea() *Area {
 	return a
 }
 
+func (self *Area) Name() string {
+	return self.name
+}
+
 func (self *Area) SetName(name string) {
-	self.Name = strings.ToUpper(name)
+	self.name = strings.ToUpper(name)
 }

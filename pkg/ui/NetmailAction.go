@@ -34,12 +34,12 @@ func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Create menu actions */
-	var actions []*widgets.UserAction
-	action1 := widgets.NewUserAction()
+	mw := widgets.NewMenuWidget()
+	action1 := widgets.NewMenuAction()
 	action1.Link = "/netmail/compose"
 	action1.Icon = "/static/img/icon/quote-50.png"
 	action1.Label = "Compose"
-	actions = append(actions, action1)
+	mw.Add(action1)
 
 	/* Render */
 	doc := views.NewDocument()
@@ -47,7 +47,7 @@ func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	doc.SetLayout(layoutPath)
 	pagePath := filepath.Join("views", "netmail_index.tmpl")
 	doc.SetPage(pagePath)
-	doc.SetParam("Actions", actions)
+	doc.SetParam("Actions", mw.Actions())
 	doc.SetParam("msgHeaders", msgHeaders)
 	err3 := doc.Render(w)
 	if err3 != nil {

@@ -3,7 +3,7 @@ package area
 import "strings"
 
 type Area struct {
-	Name            string     /* Echo name              */
+	name            string     /* Echo name              */
 	Summary         string     /* Echo summary           */
 	Charset         string     /* Echo charset           */
 	Flag            string     /* Echo marker            */
@@ -19,6 +19,10 @@ func NewArea() *Area {
 	return a
 }
 
+func (self *Area) Name() string {
+	return self.name
+}
+
 func (self *Area) SetName(name string) {
-	self.Name = strings.ToUpper(name)
+	self.name = strings.ToUpper(name)
 }

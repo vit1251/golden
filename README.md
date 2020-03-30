@@ -1,24 +1,17 @@
-# golden
+# Golden Point 1.x
 
-Golden Point is Fido message processor
+Golden Point is Fido point package
 
-You SHOULD have modern Golang installation:
+## Usage guide
 
-    # cd /opt
-    # wget https://dl.google.com/go/go1.13.4.linux-amd64.tar.gz
-    # tar xf go1.13.4.linux-amd64.tar.gz 
-    # rm -rf /usr/local/go
-    # mv /opt/go /usr/local
+You MAY open Golden Point over Web-browser and open address http://127.0.0.1:8080/
 
-## Installation instrustion
+## Contributors
 
-You SHOULD clone source code:
+ * Vitold Sedyshev <>
+ * 
 
-    # mkdir -p /srv/golden-1.0.0
-    # git clone https://github.com/vit1251/golden
+## Credits
 
-You SHOULD make application by next command:
-
-    # ./setup.sh
-
-You MAY open browser and navigate address http://127.0.0.1:8080/
+ * https://gionkunz.github.io/chartist-js/index.html
+ * https://icofont.com/icons

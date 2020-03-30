@@ -7,6 +7,7 @@ import (
 	"github.com/vit1251/golden/pkg/storage"
 	"go.uber.org/dig"
 	"log"
+	"strings"
 )
 
 type AreaManager struct {
@@ -59,9 +60,13 @@ func (self *AreaManager) Rescan() {
 
 	/* Reset areas */
 	for _, area := range areas {
+
 		log.Printf("rescan: area = %+v", area)
+
+		var areaName string = area.Name()
+
 		a := NewArea()
-		a.SetName(area.Name)
+		a.SetName(areaName)
 		a.MessageCount = area.Count
 	}
 
@@ -77,6 +82,7 @@ func (self *AreaManager) updateMsgCount(areas []*Area) error {
 		log.Printf("err1 = %+v", err1)
 		return err1
 	}
+	log.Printf("areas = %+v", areas2)
 
 	/* Get message new count */
 	areas3, err2 := self.MessageManager.GetAreaList3()
@@ -84,22 +90,27 @@ func (self *AreaManager) updateMsgCount(areas []*Area) error {
 		log.Printf("err2 = %+v", err2)
 		return err2
 	}
+	log.Printf("areas = %+v", areas3)
 
 	/* Update original areas values */
 	for _, area := range areas {
 
 		/* Search area count */
 		for _, area2 := range areas2 {
-			if area2.Name == area.Name {
-				log.Printf("area = %+v area2 = %+v", area.Name, area2.Name)
+			var areaName string = area.Name()
+			var area2Name string = area2.Name()
+			if strings.EqualFold(areaName, area2Name) {
+				log.Printf("area = '%+v' area2 = '%+v'", area.Name, area2.Name)
 				area.MessageCount = area2.Count
 			}
 		}
 
 		/* Search area new count */
 		for _, area3 := range areas3 {
-			if area3.Name == area.Name {
-				log.Printf("area = %+v area3 = %+v", area.Name, area3.Name)
+			var areaName string = area.Name()
+			var area3Name string = area3.Name()
+			if strings.EqualFold(areaName, area3Name) {
+				log.Printf("area = '%+v' area3 = '%+v'", area.Name, area3.Name)
 				area.NewMessageCount = area3.MsgNewCount
 			}
 		}
@@ -146,7 +157,7 @@ func (self *AreaManager) GetAreas() ([]*Area, error) {
 		}
 
 		area := NewArea()
-		area.Name = areaName
+		area.SetName(areaName)
 		area.Summary = areaSummary
 
 		areas = append(areas, area)
@@ -182,7 +193,7 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 		}
 
 		area := NewArea()
-		area.Name = areaName
+		area.SetName(areaName)
 
 		result = area
 
@@ -190,5 +201,16 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 
 	return result, nil
 
+}
+
+func (self *AreaManager) Update(area *Area) error {
+
+	sqlStmt := "UPDATE `area` SET `areaSummary` = ? WHERE `areaName` = ?"
+	self.conn.Exec(sqlStmt,
+			area.Summary,
+			area.Name(),
+		)
+
+	return nil
 }
 

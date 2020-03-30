@@ -55,7 +55,7 @@ func (self *EchoComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.
 	em := tosserManager.NewEchoMessage()
 	em.Subject = subj
 	em.Body = body
-	em.AreaName = area.Name
+	em.AreaName = area.Name()
 	em.To = to
 
 	/* Delivery message */

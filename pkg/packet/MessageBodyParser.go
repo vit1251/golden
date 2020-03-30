@@ -108,8 +108,6 @@ func (self *MessageBodyParser) Parse(msg []byte) (*MessageBody, error) {
 			}
 		}
 
-		log.Printf("body = %c", value)
-
 		if self.state == MBP_STATE_BODY {
 
 			if newLine && value == '\x01' {

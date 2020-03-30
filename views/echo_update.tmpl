@@ -8,6 +8,14 @@
 
         <h1>Setup {{ .Area.Name }}</h1>
 
+        <form action="/echo/{{ .Area.Name }}/update/complete" method="post">
+
+        <input type="text" name="summary" value="{{ .Area.Summary }}">
+
+        <button>Save</button>
+
+        </form>
+
     </div>
 
 </div>
