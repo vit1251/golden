@@ -100,7 +100,7 @@ func (self *AreaManager) updateMsgCount(areas []*Area) error {
 			var areaName string = area.Name()
 			var area2Name string = area2.Name()
 			if strings.EqualFold(areaName, area2Name) {
-				log.Printf("area = '%+v' area2 = '%+v'", area.Name, area2.Name)
+				log.Printf("area = '%+v' area2 = '%+v'", areaName, area2Name)
 				area.MessageCount = area2.Count
 			}
 		}
@@ -110,7 +110,7 @@ func (self *AreaManager) updateMsgCount(areas []*Area) error {
 			var areaName string = area.Name()
 			var area3Name string = area3.Name()
 			if strings.EqualFold(areaName, area3Name) {
-				log.Printf("area = '%+v' area3 = '%+v'", area.Name, area3.Name)
+				log.Printf("area = '%+v' area3 = '%+v'", areaName, area3Name)
 				area.NewMessageCount = area3.MsgNewCount
 			}
 		}
