@@ -33,7 +33,6 @@ type Stat struct {
 func NewStatManager(sm *storage.StorageManager) *StatManager {
 	statm := new(StatManager)
 	statm.conn = sm.GetConnection()
-	statm.checkSchema()
 	statm.createStat()
 	return statm
 }
@@ -163,25 +162,6 @@ func (self *StatManager) RegisterMessage() error {
 	statDate := self.makeToday()
 	self.conn.Exec(query1, statDate)
 	return nil
-}
-
-func (self *StatManager) checkSchema() {
-
-	query1 := "CREATE TABLE IF NOT EXISTS `stat` (" +
-		"    statId INTEGER NOT NULL PRIMARY KEY," +
-		"    statDate CHAR(10) NOT NULL," +
-		"    statMessageRXcount INTEGER DEFAULT 0," +
-		"    statMessageTXcount INTEGER DEFAULT 0," +
-		"    statFileRXcount INTEGER DEFAULT 0," +
-		"    statFileTXcount INTEGER DEFAULT 0" +
-		")"
-	log.Printf("query = %s", query1)
-	self.conn.Exec(query1)
-
-	query2 := "CREATE UNIQUE INDEX IF NOT EXISTS \"uniq_stat_statDate\" ON \"stat\" (\"statDate\" ASC)"
-	log.Printf("query = %s", query2)
-	self.conn.Exec(query2)
-
 }
 
 func (self *StatManager) makeToday() string {

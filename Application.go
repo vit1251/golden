@@ -4,6 +4,7 @@ import (
 	"github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/file"
+	"github.com/vit1251/golden/pkg/installer"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/setup"
@@ -31,6 +32,9 @@ func NewApplication() *Application {
 func (self *Application) Run() {
 
 	/* Create managers */
+	if err := self.Container.Provide(installer.NewMigrationManager); err != nil {
+		panic(err)
+	}
 	if err := self.Container.Provide(charset.NewCharsetManager); err != nil {
 		panic(err)
 	}
@@ -63,6 +67,11 @@ func (self *Application) Run() {
 	}); err != nil {
 		panic(err)
 	}
+
+	/* Migrations */
+	self.Container.Invoke(func(mm *installer.MigrationManager) {
+		mm.Check()
+	})
 
 	/* Check periodic message */
 	self.Container.Invoke(func() {

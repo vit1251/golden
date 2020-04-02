@@ -13,26 +13,7 @@ type NetmailManager struct {
 func NewNetmailManager(sm *storage.StorageManager) *NetmailManager {
 	nm := new(NetmailManager)
 	nm.conn = sm.GetConnection()
-	nm.checkSchema()
 	return nm
-}
-
-func (self *NetmailManager) checkSchema() error {
-
-	sqlStmt := "CREATE TABLE IF NOT EXISTS netmail (" +
-		"    nmId INTEGER NOT NULL PRIMARY KEY," +
-		"    nmHash CHAR(64) NOT NULL," +
-		"    nmFrom CHAR(64) NOT NULL," +
-		"    nmTo CHAR(64) NOT NULL," +
-		"    nmSubject CHAR(512) NOT NULL," +
-		"    nmBody TEXT NOT NULL," +
-		"    nmDate INTEGER NOT NULL," +
-		"    nmViewCount INTEGER DEFAULT 0" +
-		")"
-	self.conn.Exec(sqlStmt)
-
-	return nil
-
 }
 
 func (self *NetmailManager) GetMessageHeaders() ([]*NetmailMessage, error) {

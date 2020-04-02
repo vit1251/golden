@@ -26,42 +26,7 @@ func NewFileArea() *FileArea {
 func NewFileManager(sm *storage.StorageManager) *FileManager {
 	fm := new(FileManager)
 	fm.conn = sm.GetConnection()
-	fm.checkSchema()
 	return fm
-}
-
-func (self *FileManager) checkSchema() error {
-
-	/* Create file area */
-	sqlStmt := "CREATE TABLE IF NOT EXISTS filearea (" +
-		"    areaId INTEGER NOT NULL PRIMARY KEY," +
-		"    areaName CHAR(64) NOT NULL," +
-		"    areaType CHAR(64) NOT NULL," +
-		"    areaPath CHAR(64) NOT NULL," +
-		"    areaSummary CHAR(64) NOT NULL," +
-		"    areaOrder INTEGER NOT NULL" +
-		")"
-	log.Printf("sqlStmt = %s", sqlStmt)
-	self.conn.Exec(sqlStmt)
-
-	/* Create file */
-	sqlStmt1 := "CREATE TABLE IF NOT EXISTS file (" +
-		"    fileId INTEGER NOT NULL PRIMARY KEY," +
-		"    fileName CHAR(64) NOT NULL," +
-		"    fileArea CHAR(64) NOT NULL," +
-		"    fileTime INTEGER NOT NULL," +
-		"    fileDesc TEXT" +
-		")"
-	log.Printf("sqlStmt = %s", sqlStmt1)
-	self.conn.Exec(sqlStmt1)
-
-	/* Create index on msgHash */
-	query3 := "CREATE INDEX IF NOT EXISTS \"idx_file_fileArea\" ON \"file\" (\"fileArea\" ASC)"
-	if _, err := self.conn.Exec(query3); err != nil {
-		log.Printf("Error create \"file\" storage: err = %+v", err)
-	}
-
-	return nil
 }
 
 func (self *FileManager) GetAreas() ([]*FileArea, error) {

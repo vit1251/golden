@@ -2,9 +2,11 @@ package setup
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
+	"runtime"
 )
 
 type ParamType int
@@ -32,7 +34,6 @@ type SetupManager struct {
 func NewSetupManager(sm *storage.StorageManager) *SetupManager {
 	sem := new(SetupManager)
 	sem.conn = sm.GetConnection()
-	sem.checkSchema()
 	/* Set parameter */
 	sem.Register("main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
 	sem.Register("main", "Origin", "Origin was provide BBS station name and network address")
@@ -113,34 +114,56 @@ func (self *SetupManager) Audit(msg string) (error) {
 
 func (self *SetupManager) restoreDefault() error {
 
-	/* Step 1. Initialize parameters */
 	self.Set("main", "RealName", "Alice Cooper")
 	self.Set("main", "Country", "Russia")
 	self.Set("main", "City", "Moscow")
 	self.Set("main", "Origin", "Yo Adrian, I Did It! (c) Rocky II")
-	self.Set("main", "TearLine", "Golden/WIN 1.2.10 2020-03-16 10:00 MSK (master)")
 	self.Set("main", "Address", "2:5030/1592.15")
 	self.Set("main", "Link", "2:5030/1592.0")
-	self.Set("main", "Inbound", "/var/spool/ftn/inb")
-	self.Set("main", "Outbound", "/var/spool/ftn/outb")
-	self.Set("main", "FileBox", "/var/spool/ftn/files")
 
-	return nil
-}
+	ver := "1.2.10"
+	stamp := "2020-03-16 10:00 MSK"
+	branch := "master"
 
-func (self *SetupManager) checkSchema() error {
+	if runtime.GOOS == "windows" {
 
-	/* Step 1. Create "settings" store */
-	sqlStmt1 := "CREATE TABLE IF NOT EXISTS settings (" +
-		    "    section CHAR(64) NOT NULL," +
-		    "    name CHAR(64) NOT NULL," +
-		    "    value CHAR(64) NOT NULL," +
-		    "    UNIQUE(section, name)" +
-		    ")"
+		/* Tearline */
+		arch := "WIN"
 
-	log.Printf("sql = %s", sqlStmt1)
+		//newTearline := "Golden/WIN 1.2.10 2020-03-16 10:00 MSK (master)"
+		newTearline := fmt.Sprintf("Golden/%s %s %s (%s)", arch, ver, stamp, branch)
+		self.Set("main", "TearLine", newTearline)
 
-	self.conn.Exec(sqlStmt1)
+		/* Directory */
+		self.Set("main", "Inbound", ".\\Inbound")
+		self.Set("main", "Outbound", ".\\Outbound")
+		self.Set("main", "FileBox", ".\\Files")
+
+	} else if runtime.GOOS == "linux" {
+
+		arch := "LNX"
+		//newTearline := "Golden/WIN 1.2.10 2020-03-16 10:00 MSK (master)"
+		newTearline := fmt.Sprintf("Golden/%s %s %s (%s)", arch, ver, stamp, branch)
+		self.Set("main", "TearLine", newTearline)
+
+		/* Directory */
+		self.Set("main", "Inbound", "/var/spool/ftn/inb")
+		self.Set("main", "Outbound", "/var/spool/ftn/outb")
+		self.Set("main", "FileBox", "/var/spool/ftn/files")
+
+	} else {
+
+		arch := "UNKNOWN"
+		//newTearline := "Golden/WIN 1.2.10 2020-03-16 10:00 MSK (master)"
+		newTearline := fmt.Sprintf("Golden/%s %s %s (%s)", arch, ver, stamp, branch)
+		self.Set("main", "TearLine", newTearline)
+
+		/* Directory */
+		self.Set("main", "Inbound", "/var/spool/ftn/inb")
+		self.Set("main", "Outbound", "/var/spool/ftn/outb")
+		self.Set("main", "FileBox", "/var/spool/ftn/files")
+
+	}
 
 	return nil
 }

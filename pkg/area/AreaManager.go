@@ -23,32 +23,10 @@ func NewAreaManager(c *dig.Container) *AreaManager {
 		am.conn = sm.GetConnection()
 		am.MessageManager = mm
 	})
-	am.checkSchema()
 	am.Rescan()
 	return am
 }
 
-func (self *AreaManager) checkSchema() {
-	query1 := "CREATE TABLE IF NOT EXISTS area (" +
-		    "    areaId INTEGER NOT NULL PRIMARY KEY," +
-		    "    areaName CHAR(64) NOT NULL," +
-		    "    areaType CHAR(64) NOT NULL," +
-		    "    areaPath CHAR(64) NOT NULL," +
-		    "    areaSummary CHAR(64) NOT NULL," +
-		    "    areaOrder INTEGER NOT NULL" +
-		    ")"
-	log.Printf("sqlStmt = %s", query1)
-	if _, err := self.conn.Exec(query1); err != nil {
-		log.Printf("Error create \"area\" storage: err = %+v", err)
-	}
-
-	/* Create index on msgHash */
-	query2 := "CREATE UNIQUE INDEX IF NOT EXISTS \"uniq_area_areaName\" ON \"area\" (\"areaName\" ASC)"
-	if _, err := self.conn.Exec(query2); err != nil {
-		log.Printf("Error create \"area\" storage: err = %+v", err)
-	}
-
-}
 
 func (self *AreaManager) Rescan() {
 
