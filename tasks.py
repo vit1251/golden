@@ -8,7 +8,7 @@ def clean(c):
 
 @task
 def depend(c):
-    c.run('go get -v', echo=True)
+    c.run('go get -v -u', echo=True)
 
 @task
 def package(c):
@@ -27,7 +27,22 @@ def check(c):
 
 @task(default=True)
 def build(c):
-    c.run('go build -o golden.exe .', echo=True)
+    c.run('go build -o golden-win32-i386-1.2.11-386.exe .', echo=True, env={"GOOS": "windows", "GOARCH": "386", "CGO_ENABLED": "1"})
+    c.run('go build -o golden-win32-i386-1.2.11-amd64.exe .', echo=True, env={"GOOS": "windows", "GOARCH": "amd64", "CGO_ENABLED": "1"})
+
+def build2(c):
+    c.run('go build -o golden-linux-i386-1.2.11-amd64.exe .', echo=True, env={"GOOS": "linux", "GOARCH": "amd64", "CGO_ENABLED": "1"})
+    c.run('go build -o golden-darwin-i386-1.2.11-amd64.exe .', echo=True, env={"GOOS": "darwin", "GOARCH": "amd64", "CGO_ENABLED": "1"})
+
+@task
+def package(c):
+    """ Create 
+    """
+    package_name = "GoldenPoint-win32-x64-1.43.2.zip"
+    c.run('7z a -tzip {package_name} golden-win32-i386-1.2.11-386.exe'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
+    c.run('7z a -tzip {package_name} golden-win32-i386-1.2.11-amd64.exe'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
+    c.run('7z a -tzip {package_name} README.md'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
+    c.run('7z a -tzip {package_name} LICENSE'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
 
 @task
 def debug(c):

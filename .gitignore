@@ -9,4 +9,4 @@ golden
 package
 *.exe
 work
-
+*.zip
