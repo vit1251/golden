@@ -41,7 +41,7 @@ func (self *Application) Run() {
 	if err := self.Container.Provide(storage.NewStorageManager); err != nil {
 		panic(err)
 	}
-	if err := self.Container.Provide(setup.NewSetupManager); err != nil {
+	if err := self.Container.Provide(setup.NewConfigManager); err != nil {
 		panic(err)
 	}
 	if err := self.Container.Provide(msg.NewMessageManager); err != nil {

@@ -25,8 +25,8 @@ func (self *ApiServiceStartAction) Start() {
 
 func (self *ApiServiceStartAction) Run() error {
 
-	var setupManager *setup.SetupManager
-	self.Container.Invoke(func(sm *setup.SetupManager) {
+	var setupManager *setup.ConfigManager
+	self.Container.Invoke(func(sm *setup.ConfigManager) {
 		setupManager = sm
 	})
 

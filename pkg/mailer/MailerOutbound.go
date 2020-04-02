@@ -8,7 +8,7 @@ import (
 )
 
 type MailerOutbound struct {
-	SetupManager *setup.SetupManager
+	SetupManager *setup.ConfigManager
 }
 
 type Item struct {
@@ -26,7 +26,7 @@ func (self *MailerOutbound) TransmitFile(filename string) {
 	log.Printf("Schedule to transmit %s", filename)
 }
 
-func NewMailerOutbound(sm *setup.SetupManager) *MailerOutbound {
+func NewMailerOutbound(sm *setup.ConfigManager) *MailerOutbound {
 	mo := new(MailerOutbound)
 	mo.SetupManager = sm
 	return mo

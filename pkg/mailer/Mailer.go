@@ -51,10 +51,10 @@ type Mailer struct {
 	recvUnix          int
 	recvName          string
 	TempOutbound      string
-	SetupManager     *setup.SetupManager
+	SetupManager     *setup.ConfigManager
 }
 
-func NewMailer(sm *setup.SetupManager) (*Mailer) {
+func NewMailer(sm *setup.ConfigManager) (*Mailer) {
 	m := new(Mailer)
 	m.inDataFrames = make(chan Frame)
 	m.outDataFrames = make(chan Frame)

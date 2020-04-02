@@ -9,7 +9,7 @@ import (
 )
 
 type MailerInbound struct {
-	SetupManager	*setup.SetupManager
+	SetupManager	*setup.ConfigManager
 }
 
 type MailerInboundRecType int
@@ -41,7 +41,7 @@ func NewMailerInboundRec() *MailerInboundRec {
 	return new(MailerInboundRec)
 }
 
-func NewMailerInbound(sm *setup.SetupManager) *MailerInbound {
+func NewMailerInbound(sm *setup.ConfigManager) *MailerInbound {
 	mi := new(MailerInbound)
 	mi.SetupManager = sm
 	return mi

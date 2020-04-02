@@ -6,6 +6,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
+	"os"
 	"runtime"
 )
 
@@ -13,7 +14,7 @@ type ParamType int
 
 const ParamString ParamType = 1
 
-type SetupParam struct {
+type ConfigValue struct {
 	Summary    string         /* Parameter summary     */
 	Section    string         /* Parameter section     */
 	Name       string         /* Parameter name        */
@@ -22,17 +23,17 @@ type SetupParam struct {
 	Type       ParamType      /* Parameter value type  */
 }
 
-func (self *SetupParam) SetValue(value string) {
+func (self *ConfigValue) SetValue(value string) {
 	self.Value = value
 }
 
-type SetupManager struct {
-	Params []*SetupParam
+type ConfigManager struct {
+	Params []*ConfigValue
 	conn *sql.DB
 }
 
-func NewSetupManager(sm *storage.StorageManager) *SetupManager {
-	sem := new(SetupManager)
+func NewConfigManager(sm *storage.StorageManager) *ConfigManager {
+	sem := new(ConfigManager)
 	sem.conn = sm.GetConnection()
 	/* Set parameter */
 	sem.Register("main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
@@ -62,11 +63,11 @@ func NewSetupManager(sm *storage.StorageManager) *SetupManager {
 	return sem
 }
 
-func (self *SetupManager) GetParams() []*SetupParam {
+func (self *ConfigManager) GetParams() []*ConfigValue {
 	return self.Params
 }
 
-func (self *SetupManager) Set(section string, name string, value string) (error) {
+func (self *ConfigManager) Set(section string, name string, value string) (error) {
 
 	var updateCount int = 0
 
@@ -76,13 +77,16 @@ func (self *SetupManager) Set(section string, name string, value string) (error)
 			updateCount += 1
 		}
 	}
-
-	log.Printf("Update %s parameter %d times", name, updateCount)
+	if updateCount == 0 {
+		log.Printf("config: parameter %s in section %s does not exists", name, section)
+	} else {
+		log.Printf("config: parameter %s in section %s update %d time(s)", name, section, updateCount)
+	}
 
 	return nil
 }
 
-func (self *SetupManager) Get(section string, name string, defaultValue string) (string, error) {
+func (self *ConfigManager) Get(section string, name string, defaultValue string) (string, error) {
 	var result string = defaultValue
 	for _, param := range self.Params {
 		if param.Section == section && param.Name == name {
@@ -92,9 +96,9 @@ func (self *SetupManager) Get(section string, name string, defaultValue string) 
 	return result, nil
 }
 
-func (self *SetupManager) Register(section string, name string, summary string) (error) {
+func (self *ConfigManager) Register(section string, name string, summary string) (error) {
 
-	param := new(SetupParam)
+	param := new(ConfigValue)
 	param.Section = section
 	param.Name = name
 	param.Summary = summary
@@ -104,7 +108,7 @@ func (self *SetupManager) Register(section string, name string, summary string) 
 	return nil
 }
 
-func (self *SetupManager) Audit(msg string) (error) {
+func (self *ConfigManager) Audit(msg string) (error) {
 
 	/* Store audit message in parameter storage */
 
@@ -112,7 +116,7 @@ func (self *SetupManager) Audit(msg string) (error) {
 
 }
 
-func (self *SetupManager) restoreDefault() error {
+func (self *ConfigManager) restoreDefault() error {
 
 	self.Set("main", "RealName", "Alice Cooper")
 	self.Set("main", "Country", "Russia")
@@ -135,9 +139,17 @@ func (self *SetupManager) restoreDefault() error {
 		self.Set("main", "TearLine", newTearline)
 
 		/* Directory */
-		self.Set("main", "Inbound", ".\\Inbound")
-		self.Set("main", "Outbound", ".\\Outbound")
-		self.Set("main", "FileBox", ".\\Files")
+		inboundDir := ".\\Inbound"
+		os.MkdirAll(inboundDir, os.ModePerm)
+		self.Set("main", "Inbound", inboundDir)
+
+		outboundDir := ".\\Outbound"
+		os.MkdirAll(outboundDir, os.ModePerm)
+		self.Set("main", "Outbound", outboundDir)
+
+		boxDir := ".\\Files"
+		os.MkdirAll(outboundDir, os.ModePerm)
+		self.Set("main", "FileBox", boxDir)
 
 	} else if runtime.GOOS == "linux" {
 
@@ -147,9 +159,17 @@ func (self *SetupManager) restoreDefault() error {
 		self.Set("main", "TearLine", newTearline)
 
 		/* Directory */
-		self.Set("main", "Inbound", "/var/spool/ftn/inb")
-		self.Set("main", "Outbound", "/var/spool/ftn/outb")
-		self.Set("main", "FileBox", "/var/spool/ftn/files")
+		inboundDir := "/var/spool/ftn/inb"
+		os.MkdirAll(inboundDir, os.ModePerm)
+		self.Set("main", "Inbound", inboundDir)
+
+		outboundDir := "/var/spool/ftn/outb"
+		os.MkdirAll(outboundDir, os.ModePerm)
+		self.Set("main", "Outbound", outboundDir)
+
+		boxDir := "/var/spool/ftn/files"
+		os.MkdirAll(outboundDir, os.ModePerm)
+		self.Set("main", "FileBox", boxDir)
 
 	} else {
 
@@ -159,16 +179,24 @@ func (self *SetupManager) restoreDefault() error {
 		self.Set("main", "TearLine", newTearline)
 
 		/* Directory */
-		self.Set("main", "Inbound", "/var/spool/ftn/inb")
-		self.Set("main", "Outbound", "/var/spool/ftn/outb")
-		self.Set("main", "FileBox", "/var/spool/ftn/files")
+		inboundDir := "/var/spool/ftn/inb"
+		os.MkdirAll(inboundDir, os.ModePerm)
+		self.Set("main", "Inbound", inboundDir)
+
+		outboundDir := "/var/spool/ftn/outb"
+		os.MkdirAll(outboundDir, os.ModePerm)
+		self.Set("main", "Outbound", outboundDir)
+
+		boxDir := "/var/spool/ftn/files"
+		os.MkdirAll(outboundDir, os.ModePerm)
+		self.Set("main", "FileBox", boxDir)
 
 	}
 
 	return nil
 }
 
-func (self *SetupManager) Restore() error {
+func (self *ConfigManager) Restore() error {
 
 	/* Restore parameters */
 	sqlStmt := "SELECT `section`, `name`, `value` FROM `settings`"
@@ -193,7 +221,7 @@ func (self *SetupManager) Restore() error {
 	return nil
 }
 
-func (self *SetupManager) Store() (error) {
+func (self *ConfigManager) Store() (error) {
 
 	/* Prepare update query */
 	stmt1, err1 := self.conn.Prepare("UPDATE `settings` SET `value` = ? WHERE `section` = ? AND `name` = ?")

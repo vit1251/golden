@@ -16,7 +16,7 @@ import (
 
 type TosserManager struct {
 	Container *dig.Container
-	SetupManager *setup.SetupManager
+	SetupManager *setup.ConfigManager
 	MessageManager *msg.MessageManager
 	CharsetManager *charset.CharsetManager
 }
@@ -46,7 +46,7 @@ func NewTosserManager(c *dig.Container) *TosserManager {
 	tm := new(TosserManager)
 	tm.Container = c
 	//
-	c.Invoke(func(cm *charset.CharsetManager, sm *setup.SetupManager, mm *msg.MessageManager) {
+	c.Invoke(func(cm *charset.CharsetManager, sm *setup.ConfigManager, mm *msg.MessageManager) {
 		tm.CharsetManager = cm
 		tm.SetupManager = sm
 		tm.MessageManager = mm

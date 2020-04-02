@@ -14,7 +14,7 @@ import (
 type Tosser struct {
 	MessageManager *msg.MessageManager
 	StatManager    *stat.StatManager
-	SetupManager   *setup.SetupManager
+	SetupManager   *setup.ConfigManager
 	FileManager    *file.FileManager
 	AreaManager    *area.AreaManager
 	CharsetManager *charset.CharsetManager
@@ -22,7 +22,7 @@ type Tosser struct {
 
 func NewTosser(c *dig.Container) *Tosser {
 	tosser := new(Tosser)
-	c.Invoke(func(cm *charset.CharsetManager, am *area.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.SetupManager, fm *file.FileManager) {
+	c.Invoke(func(cm *charset.CharsetManager, am *area.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.ConfigManager, fm *file.FileManager) {
 		tosser.CharsetManager = cm
 		tosser.AreaManager = am
 		tosser.MessageManager = mm
