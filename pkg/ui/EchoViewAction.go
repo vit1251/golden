@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	area2 "github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/audio"
 	msgProc "github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/ui/views"
 	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
@@ -25,10 +27,15 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var areaManager *area2.AreaManager
 	var messageManager *msgProc.MessageManager
-	self.Container.Invoke(func(am *area2.AreaManager, mm *msgProc.MessageManager) {
+	var configManager *setup.ConfigManager
+	self.Container.Invoke(func(am *area2.AreaManager, mm *msgProc.MessageManager, cm *setup.ConfigManager) {
 		areaManager = am
 		messageManager = mm
+		configManager = cm
 	})
+
+	//
+	realName, _ := configManager.Get("main", "RealName", "")
 
 	//
 	vars := mux.Vars(r)
@@ -58,6 +65,13 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
+
+	/* Play */
+	if msg.To == realName {
+		audio.Play()
+	}
+
+
 	var content string
 	if msg != nil {
 		content = msg.GetContent()

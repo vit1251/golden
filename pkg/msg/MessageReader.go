@@ -4,7 +4,6 @@ import (
 	"html/template"
 	"log"
 	"strings"
-	"unicode"
 )
 
 // Message text is unbounded and null terminated (note exception below).
@@ -35,28 +34,16 @@ import (
 //   o FMPT <pt no> - origin point address
 //   o INTL <dest z:n/n> <orig z:n/n> - used for inter-zone address
 
-type MessageState int
-
-const MessageStateBody    = 1
-const MessageStateService = 2
-
 type MessageTextProcessor struct {
-	State    MessageState
-	result   string
+	html  string
+	raw   string
 }
 
 
 func NewMessageTextProcessor() *MessageTextProcessor {
 	mr := new(MessageTextProcessor)
-	mr.State = MessageStateBody
 	return mr
 }
-
-const (
-	LineNoQuote        = 0
-	LineQuoteLevel     = 1
-	LineQuoteBody      = 2
-)
 
 func (self *MessageTextProcessor) ParseQuoteLine(quoteLine string) (author string, quoteLevel string, msg string) {
 
@@ -66,80 +53,23 @@ func (self *MessageTextProcessor) ParseQuoteLine(quoteLine string) (author strin
 
 }
 
-func (self *MessageTextProcessor) processLine(oneLine string) string {
+func (self *MessageTextProcessor) processHtmlLine(oneLine string) string {
 
 	log.Printf("oneLine = %s", oneLine)
 
-	if strings.HasPrefix(oneLine, " * Origin: ") {
-		self.State = MessageStateService
-	}
-
-	var pureLine string
-	var quoteAuthor string
-	var startLine string
-	var quoteMarkers string
-	var quoteLine string
-	var quoteLevel int = 0
-	var quoteProbe bool = true
-
-	var state = LineNoQuote
-	for _, ch := range oneLine {
-
-		pureLine += string(ch)
-
-		if state == LineNoQuote {
-
-			if quoteProbe && quoteAuthor != "" && ch == '>' {
-
-				quoteLevel += 1
-				state = LineQuoteLevel
-				quoteMarkers += string(ch)
-
-			} else if unicode.IsUpper(ch) {
-				startLine += string(ch)
-				quoteAuthor = quoteAuthor + string(ch)
-			} else if unicode.IsSpace(ch) {
-				startLine += string(ch)
-			} else {
-				startLine += string(ch)
-				quoteProbe = false
-			}
-
-		} else if state == LineQuoteLevel {
-
-			if ch == '>' {
-
-				quoteLevel += 1
-				quoteMarkers += string(ch)
-
-			} else {
-
-				quoteLine += string(ch)
-				state = LineQuoteBody
-
-			}
-
-		} else if state == LineQuoteBody {
-
-			quoteLine += string(ch)
-
-		}
-	}
+	mlp := NewMessageLineParser()
+	ml := mlp.Parse(oneLine)
 
 	var newLine string 
 
-	if quoteLevel == 0 {
-
-		newLine = pureLine
-
+	if ml.QuoteLevel == 0 {
+		newLine = ml.PureLine
 	} else {
-
-		if quoteLevel % 2 == 0 {
-			newLine = "<span style='color: red'>" + startLine + quoteMarkers + quoteLine + "</span>"
+		if ml.QuoteLevel % 2 == 0 {
+			newLine = "<span style='color: red'>" + ml.QuoteStart + ml.QuoteAuthor + ml.QuoteMarkers + ml.QuoteLine + "</span>"
 		} else {
-			newLine = "<span style='color: green'>" + startLine +  quoteMarkers + quoteLine + "</span>"
+			newLine = "<span style='color: green'>" + ml.QuoteStart + ml.QuoteAuthor + ml.QuoteMarkers + ml.QuoteLine + "</span>"
 		}
-
 	}
 
 	return newLine
@@ -153,37 +83,21 @@ func (self *MessageTextProcessor) Prepare(msg string) error {
 	newMsg = strings.ReplaceAll(newMsg, "\x07", "&#8226;") // Bullet char
 
 	/* Process */
-	var oneLine string
+	tr := NewTextReader()
+	tr.Process(msg, func(oneLine string) {
+		var newHtmlLine string = self.processHtmlLine(oneLine)
+		var newLine = oneLine
+		self.html += newHtmlLine + "<br>"
+		self.raw += newLine + "\n"
+	})
 
-	for _, ch := range newMsg {
-
-		if ch == '\x0D' {
-			if self.State == MessageStateBody {
-				newLine := self.processLine(oneLine)
-				self.result += string(newLine) + "<br>"
-			} else {
-				log.Printf("Service line: row = %s", oneLine)
-			}
-
-			oneLine = ""
-
-		} else {
-			oneLine = oneLine + string(ch)
-		}
-	}
-
-	return nil
-}
-
-func (self *MessageTextProcessor) MakeReply() error {
-	// TODO - process each line and make quote ...
 	return nil
 }
 
 func (self *MessageTextProcessor) HTML() template.HTML {
-	return template.HTML(self.result)
+	return template.HTML(self.html)
 }
 
 func (self *MessageTextProcessor) Content() string {
-	return self.result
+	return self.raw
 }

@@ -2,10 +2,9 @@ package ui
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/ui/views"
+	"github.com/vit1251/golden/pkg/ui/widgets"
 	version2 "github.com/vit1251/golden/pkg/version"
 	"net/http"
-	"path/filepath"
 )
 
 type WelcomeAction struct {
@@ -23,16 +22,31 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	version := version2.GetVersion()
 
 	/* Render */
-	doc := views.NewDocument()
-	layoutPath := filepath.Join("views", "layout.tmpl")
-	doc.SetLayout(layoutPath)
-	pagePath := filepath.Join("views", "welcome.tmpl")
-	doc.SetPage(pagePath)
-	doc.SetParam("Version", version)
-	if err := doc.Render(w); err != nil {
-		response := fmt.Sprintf("Fail on Render: err = %+v", err)
-		http.Error(w, response, http.StatusInternalServerError)
-		return
+	bw := widgets.NewBaseWidget()
+
+	vBox := widgets.NewVBoxWidget()
+	bw.SetWidget(vBox)
+
+	mmw := widgets.NewMainMenuWidget()
+	vBox.Add(mmw)
+
+	imageWidget := widgets.NewImageWidget()
+	imageWidget.SetSource("/static/img/fido.gif")
+	vBox.Add(imageWidget)
+
+	nameWidget := widgets.NewDivWidget()
+	nameWidget.SetClass("welcomeHeader")
+	nameWidget.SetContent("Golden point")
+	vBox.Add(nameWidget)
+
+	versionWidget := widgets.NewDivWidget()
+	versionWidget.SetClass("welcomeVersion")
+	versionWidget.SetContent(fmt.Sprintf("Version %s", version))
+	vBox.Add(versionWidget)
+
+	if err := bw.Render(w); err != nil {
+		status := fmt.Sprintf("%+v", err)
+		http.Error(w, status, http.StatusInternalServerError)
 	}
 
 }

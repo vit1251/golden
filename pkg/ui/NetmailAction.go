@@ -3,10 +3,9 @@ package ui
 import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/netmail"
-	"github.com/vit1251/golden/pkg/ui/views"
 	"github.com/vit1251/golden/pkg/ui/widgets"
+	"log"
 	"net/http"
-	"path/filepath"
 )
 
 type NetmailAction struct {
@@ -32,28 +31,34 @@ func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
+	log.Printf("msgHeader = %+v", msgHeaders)
 
-	/* Create menu actions */
-	mw := widgets.NewMenuWidget()
-	action1 := widgets.NewMenuAction()
-	action1.Link = "/netmail/compose"
-	action1.Icon = "/static/img/icon/quote-50.png"
-	action1.Label = "Compose"
-	mw.Add(action1)
+	bw := widgets.NewBaseWidget()
 
-	/* Render */
-	doc := views.NewDocument()
-	layoutPath := filepath.Join("views", "layout.tmpl")
-	doc.SetLayout(layoutPath)
-	pagePath := filepath.Join("views", "netmail_index.tmpl")
-	doc.SetPage(pagePath)
-	doc.SetParam("Actions", mw.Actions())
-	doc.SetParam("msgHeaders", msgHeaders)
-	err3 := doc.Render(w)
-	if err3 != nil {
-		response := fmt.Sprintf("Fail on Render: err = %+v", err3)
-		http.Error(w, response, http.StatusInternalServerError)
-		return
+	vBox := widgets.NewVBoxWidget()
+	bw.SetWidget(vBox)
+
+	mmw := widgets.NewMainMenuWidget()
+	vBox.Add(mmw)
+
+	container := widgets.NewDivWidget()
+	container.SetClass("container")
+
+	containerVBox := widgets.NewVBoxWidget()
+
+	amw := widgets.NewActionMenuWidget().
+		Add(widgets.NewMenuAction().
+			SetLink("/netmail/compose").
+			SetIcon("icofont-edit").
+			SetLabel("Compose"))
+
+	containerVBox.Add(amw)
+	container.SetWidget(containerVBox)
+	vBox.Add(container)
+
+	if err := bw.Render(w); err != nil {
+		status := fmt.Sprintf("%+v", err)
+		http.Error(w, status, http.StatusInternalServerError)
 	}
 
 }

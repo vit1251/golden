@@ -2,9 +2,8 @@ package ui
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/ui/views"
+	"github.com/vit1251/golden/pkg/ui/widgets"
 	"net/http"
-	"path/filepath"
 )
 
 type NetmailComposeAction struct {
@@ -18,16 +17,39 @@ func NewNetmailComposeAction() (*NetmailComposeAction) {
 
 func (self *NetmailComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	doc := views.NewDocument()
-	layoutPath := filepath.Join("views", "layout.tmpl")
-	doc.SetLayout(layoutPath)
-	pagePath := filepath.Join("views", "netmail_compose.tmpl")
-	doc.SetPage(pagePath)
-	err1 := doc.Render(w)
-	if err1 != nil {
-		response := fmt.Sprintf("Fail on Render: err = %+v", err1)
-		http.Error(w, response, http.StatusInternalServerError)
-		return
+	bw := widgets.NewBaseWidget()
+
+	vBox := widgets.NewVBoxWidget().
+		Add(widgets.NewMainMenuWidget())
+
+	container := widgets.NewDivWidget().SetClass("container")
+	vBox.Add(container)
+
+	containerVBox := widgets.NewVBoxWidget()
+	container.SetWidget(containerVBox)
+
+	section := widgets.NewSectionWidget().
+		SetTitle("Create netmail message")
+
+	composeForm := widgets.NewFormWidget().
+		SetAction("/netmail/compose/complete").
+		SetMethod("POST")
+
+	composeForm.SetWidget(widgets.NewVBoxWidget().
+		Add(widgets.NewFormInputWidget().SetTitle("ToName").SetName("to").SetPlaceholder("Vitold Sedyshev")).
+		Add(widgets.NewFormInputWidget().SetTitle("ToAddr").SetName("to_addr").SetPlaceholder("2:5023/24.3752")).
+		Add(widgets.NewFormInputWidget().SetTitle("Subject").SetName("subject").SetPlaceholder("RE: Hello, world!")).
+		Add(widgets.NewFormTextWidget().SetName("body")).
+		Add(widgets.NewFormButtonWidget().SetType("submit").SetTitle("Send")))
+
+	section.SetWidget(composeForm)
+	containerVBox.Add(section)
+
+	bw.SetWidget(vBox)
+
+	if err := bw.Render(w); err != nil {
+		status := fmt.Sprintf("%+v", err)
+		http.Error(w, status, http.StatusInternalServerError)
 	}
 
 }

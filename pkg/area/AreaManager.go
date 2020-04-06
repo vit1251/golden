@@ -100,8 +100,10 @@ func (self *AreaManager) updateMsgCount(areas []*Area) error {
 
 func (self *AreaManager) Register(a *Area) error {
 
+	var areaName string = a.Name()
+
 	query1 := "INSERT INTO `area` ( `areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder` ) VALUES ( ?, '', '', '', 0 )"
-	if _, err := self.conn.Exec(query1, a.Name); err != nil {
+	if _, err := self.conn.Exec(query1, areaName); err != nil {
 		log.Printf("Unable register new area = %+v", err)
 		return err
 	}

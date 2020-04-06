@@ -58,11 +58,21 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	/* Detect sender */
+	cmap := msg.NewMessageAuthorParser()
+	ma, _ := cmap.Parse(origMsg.From)
+
 	/* Make reply content */
 	mtp := msg.NewMessageTextProcessor()
 	mtp.Prepare(origMsg.Content)
-	mtp.MakeReply()
 	newContent := mtp.Content()
+	log.Printf("reply: orig = %+v", newContent)
+
+	/* Message replay transform */
+	mrt := msg.NewMessageReplyTransformer()
+	mrt.SetAuthor(ma.QuoteName)
+	newContent2 := mrt.Transform(newContent)
+	log.Printf("reply: reply = %+v", newContent2)
 
 	/* Render */
 	doc := views.NewDocument()
@@ -73,7 +83,7 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	doc.SetParam("Areas", areas)
 	doc.SetParam("Area", area)
 	doc.SetParam("Msg", origMsg)
-	doc.SetParam("Content", newContent)
+	doc.SetParam("Content", newContent2)
 	err4 := doc.Render(w)
 	if err4 != nil {
 		response := fmt.Sprintf("Fail on Render: err = %+v", err4)

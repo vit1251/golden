@@ -51,49 +51,7 @@ func (self *Document) Render(w http.ResponseWriter) error {
 }
 
 func (self *Document) InitMenu() {
-	var menus []*widgets.MenuAction
-
-	if menuAction := widgets.NewMenuAction(); menuAction != nil {
-		menuAction.Link = "/"
-		menuAction.Label = "Home"
-		menus = append(menus, menuAction)
-	}
-
-	if menuAction := widgets.NewMenuAction(); menuAction != nil {
-		menuAction.Link = "/netmail"
-		menuAction.Label = "Netmail"
-		menus = append(menus, menuAction)
-	}
-
-	if menuAction := widgets.NewMenuAction(); menuAction != nil {
-		menuAction.Link = "/echo"
-		menuAction.Label = "Echomail"
-		menus = append(menus, menuAction)
-	}
-
-	if menuAction := widgets.NewMenuAction(); menuAction != nil {
-		menuAction.Link = "/file"
-		menuAction.Label = "Filebox"
-		menus = append(menus, menuAction)
-	}
-
-	if menuAction := widgets.NewMenuAction(); menuAction != nil {
-		menuAction.Link = "/stat"
-		menuAction.Label = "Statistics"
-		menus = append(menus, menuAction)
-	}
-
-	if menuAction := widgets.NewMenuAction(); menuAction != nil {
-		menuAction.Link = "/service"
-		menuAction.Label = "Service"
-		menus = append(menus, menuAction)
-	}
-
-	if menuAction := widgets.NewMenuAction(); menuAction != nil {
-		menuAction.Link = "/setup"
-		menuAction.Label = "Setup"
-		menus = append(menus, menuAction)
-	}
-
+	mmw := widgets.NewMainMenuWidget()
+	menus := mmw.Init()
 	self.SetParam("Menus", menus)
 }

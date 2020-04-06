@@ -32,8 +32,8 @@ def build(c):
     c.run('go build -o golden-windows-amd64.exe .', echo=True, env={"GOOS": "windows", "GOARCH": "amd64", "CGO_ENABLED": "1"})
 
 def build2(c):
-    c.run('go build -o golden-linux-i386-1.2.11-amd64.exe .', echo=True, env={"GOOS": "linux", "GOARCH": "amd64", "CGO_ENABLED": "1"})
-    c.run('go build -o golden-darwin-i386-1.2.11-amd64.exe .', echo=True, env={"GOOS": "darwin", "GOARCH": "amd64", "CGO_ENABLED": "1"})
+    c.run('go build -o golden-linux-amd64 .', echo=True, env={"GOOS": "linux", "GOARCH": "amd64", "CGO_ENABLED": "1"})
+    c.run('go build -o golden-darwin-amd64 .', echo=True, env={"GOOS": "darwin", "GOARCH": "amd64", "CGO_ENABLED": "1"})
 
 @task
 def package(c):
