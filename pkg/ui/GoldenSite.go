@@ -90,6 +90,7 @@ func (self *GoldenSite) Start() (error) {
 	self.Register("/api/service/start", NewApiServiceStartAction())
 	self.Register("/setup", NewSetupAction())
 	self.Register("/setup/complete", NewSetupCompleteAction())
+	self.Register("/help", NewHelpAction())
 
 	//
 	INTERFACE := "127.0.0.1:8080"

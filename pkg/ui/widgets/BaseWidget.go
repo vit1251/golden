@@ -20,13 +20,11 @@ func (self *BaseWidget) Render(w http.ResponseWriter) error {
 	w.Write([]byte("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n"))
 	w.Write([]byte("\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"))
 	w.Write([]byte("\t<title>Golden Point</title>\n"))
-	w.Write([]byte("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/chartist.css\">\n"))
 	w.Write([]byte("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/icofont.css\">\n"))
 	w.Write([]byte("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/main.css\">\n"))
 	w.Write([]byte("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/custom.css\">\n"))
 	w.Write([]byte("\t<script src=\"/static/js/jquery-3.4.1.min.js\"></script>\n"))
 	w.Write([]byte("\t<script src=\"/static/js/custom.js\"></script>\n"))
-	w.Write([]byte("\t<script src=\"/static/js/chartist.js\"></script>\n"))
 	w.Write([]byte("</head>\n"))
 	w.Write([]byte("<body class=\"dark\">\n"))
 

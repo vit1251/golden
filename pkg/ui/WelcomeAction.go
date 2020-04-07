@@ -47,6 +47,7 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)
 		http.Error(w, status, http.StatusInternalServerError)
+		return
 	}
 
 }

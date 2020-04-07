@@ -3,10 +3,9 @@ package ui
 import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/setup"
-	"github.com/vit1251/golden/pkg/ui/views"
+	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
 	"net/http"
-	"path/filepath"
 )
 
 type SetupAction struct {
@@ -30,16 +29,61 @@ func (self *SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("params = %+v", params)
 
 	/* Render */
-	doc := views.NewDocument()
-	layoutPath := filepath.Join("views", "layout.tmpl")
-	doc.SetLayout(layoutPath)
-	pagePath := filepath.Join("views", "setup.tmpl")
-	doc.SetPage(pagePath)
-	doc.SetParam("Params", params)
-	if err := doc.Render(w); err != nil {
-		response := fmt.Sprintf("Fail on Render: err = %+v", err)
-		http.Error(w, response, http.StatusInternalServerError)
+	bw := widgets.NewBaseWidget()
+
+	vBox := widgets.NewVBoxWidget()
+	bw.SetWidget(vBox)
+
+	mmw := widgets.NewMainMenuWidget()
+	vBox.Add(mmw)
+
+	setupForm := widgets.NewFormWidget().
+		SetMethod("POST").
+		SetAction("/setup/complete")
+
+	/* Add custom param field */
+	setupFormBox := widgets.NewVBoxWidget()
+	for _, param := range params {
+		log.Printf("param = %+v", param)
+		self.createInputField(setupFormBox,
+			param.Name,
+			param.Summary,
+			param.Value)
+	}
+	setupFormBox.Add(widgets.NewFormButtonWidget().SetTitle("Save").SetType("submit"))
+	setupForm.SetWidget(setupFormBox)
+
+	vBox.Add(setupForm)
+
+	if err := bw.Render(w); err != nil {
+		status := fmt.Sprintf("%+v", err)
+		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
+
+}
+
+func (self *SetupAction) createInputField(box *widgets.VBoxWidget, name string, summary string, value string) {
+
+	mainDiv := widgets.NewDivWidget().
+		SetClass("form-group row")
+
+	mainDivBox := widgets.NewVBoxWidget()
+	mainDiv.SetWidget(mainDivBox)
+
+	mainTitle := widgets.NewDivWidget().
+		SetClass("col-sm-2 col-form-label").
+		SetContent(name)
+
+	mainDivBox.Add(mainTitle)
+
+	mainInput := widgets.NewFormInputWidget().
+		SetTitle(summary).
+		SetName(name).
+		SetValue(value)
+
+	mainDivBox.Add(mainInput)
+
+	box.Add(mainDiv)
 
 }

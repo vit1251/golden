@@ -9,6 +9,7 @@ type FormInputWidget struct {
 	Title       string
 	Name        string
 	Placeholder string
+	Value       string
 }
 
 func NewFormInputWidget() *FormInputWidget {
@@ -19,7 +20,7 @@ func NewFormInputWidget() *FormInputWidget {
 func (self *FormInputWidget) Render(w http.ResponseWriter) error {
 	fmt.Fprintf(w, "<div>\n")
 	fmt.Fprintf(w, "\t<div>%s</div>\n", self.Title)
-	fmt.Fprintf(w, "\t<div><input type=\"text\" value=\"\" name=\"%s\" placeholder=\"%s\" />\n", self.Name, self.Placeholder)
+	fmt.Fprintf(w, "\t<div><input type=\"text\" value=\"%s\" name=\"%s\" placeholder=\"%s\" />\n", self.Value, self.Name, self.Placeholder)
 	fmt.Fprintf(w, "</div>\n")
 	return nil
 }
@@ -36,5 +37,10 @@ func (self *FormInputWidget) SetName(s string) *FormInputWidget {
 
 func (self *FormInputWidget) SetTitle(s string) *FormInputWidget {
 	self.Title = s
+	return self
+}
+
+func (self *FormInputWidget) SetValue(value string) *FormInputWidget {
+	self.Value = value
 	return self
 }

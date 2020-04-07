@@ -21,8 +21,9 @@ func (self *DivWidget) SetWidget(w IWidget) *DivWidget {
 	return self
 }
 
-func (self *DivWidget) SetContent(s string) {
+func (self *DivWidget) SetContent(s string) *DivWidget {
 	self.Content = s
+	return self
 }
 
 func NewDivWidget() *DivWidget {
