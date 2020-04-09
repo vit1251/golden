@@ -156,7 +156,7 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 	var result *Area
 
 	/* Restore parameters */
-	sqlStmt := "SELECT `areaName` FROM `area` WHERE `areaName` = ?"
+	sqlStmt := "SELECT `areaName`, `areaSummary` FROM `area` WHERE `areaName` = ?"
 	rows, err2 := self.conn.Query(sqlStmt, echoTag)
 	if err2 != nil {
 		return nil, err2
@@ -166,14 +166,16 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 	for rows.Next() {
 
 		var areaName string
+		var areaSummary string
 
-		err3 := rows.Scan(&areaName)
+		err3 := rows.Scan(&areaName, &areaSummary)
 		if err3 != nil {
 			return nil, err3
 		}
 
 		area := NewArea()
 		area.SetName(areaName)
+		area.Summary = areaSummary
 
 		result = area
 

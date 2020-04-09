@@ -8,16 +8,16 @@ import (
 	"net/http"
 )
 
-type RemoveCompleteAction struct {
+type EchoMsgRemoveCompleteAction struct {
 	Action
 }
 
-func NewRemoveCompleteAction() *RemoveCompleteAction {
-	rca := new(RemoveCompleteAction)
+func NewEchoMsgRemoveCompleteAction() *EchoMsgRemoveCompleteAction {
+	rca := new(EchoMsgRemoveCompleteAction)
 	return rca
 }
 
-func (self *RemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoMsgRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var messageManager *msg.MessageManager
 	self.Container.Invoke(func(mm *msg.MessageManager) {
@@ -43,4 +43,5 @@ func (self *RemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 	//
 	newLocation := fmt.Sprintf("/echo/%s", echoTag)
 	http.Redirect(w, r, newLocation, 303)
+
 }

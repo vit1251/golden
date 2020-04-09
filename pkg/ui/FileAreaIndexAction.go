@@ -47,7 +47,8 @@ func (self *FileAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Count"))))
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Count"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
 
 	for _, area := range areas {
 		log.Printf("area = %+v", area)

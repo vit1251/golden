@@ -2,9 +2,8 @@ package ui
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/ui/views"
+	"github.com/vit1251/golden/pkg/ui/widgets"
 	"net/http"
-	"path/filepath"
 )
 
 type ServiceManageAction struct {
@@ -23,30 +22,41 @@ func NewServiceManageAction() *ServiceManageAction {
 
 func (self *ServiceManageAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	/* Services */
-	var services []*ServiceInfo
+	bw := widgets.NewBaseWidget()
 
-	if si := new(ServiceInfo); si != nil {
-		si.Label = "Mailer Service"
-		si.Class = "mailer"
-		services = append(services, si)
-	}
-	if si := new(ServiceInfo); si != nil {
-		si.Label = "Tosser Service"
-		si.Class = "tosser"
-		services = append(services, si)
-	}
+	vBox := widgets.NewVBoxWidget()
+	bw.SetWidget(vBox)
 
-	/* Render */
-	doc := views.NewDocument()
-	layoutPath := filepath.Join("views", "layout.tmpl")
-	doc.SetLayout(layoutPath)
-	pagePath := filepath.Join("views", "service_index.tmpl")
-	doc.SetPage(pagePath)
-	doc.SetParam("Services", services)
-	if err := doc.Render(w); err != nil {
-		response := fmt.Sprintf("Fail on Render: err = %+v", err)
-		http.Error(w, response, http.StatusInternalServerError)
+	mmw := widgets.NewMainMenuWidget()
+	vBox.Add(mmw)
+
+	header := widgets.NewHeaderWidget()
+	header.SetTitle("Manual manage service")
+	vBox.Add(header)
+
+	mainForm := widgets.NewFormWidget().
+		SetAction("/service/complete").
+		SetMethod("POST")
+
+	mainFormContainer := widgets.NewVBoxWidget()
+	mainForm.SetWidget(mainFormContainer)
+
+	selectServiceWidget := widgets.NewFormSelectWidget().
+		SetName("service").
+		AddOption("Tosser Service", "tosser").
+		AddOption("Mailer Service", "mailer")
+	mainFormContainer.Add(selectServiceWidget)
+
+	submitButton := widgets.NewFormButtonWidget().
+		SetTitle("Start").
+		SetType("submit")
+	mainFormContainer.Add(submitButton)
+
+	vBox.Add(mainForm)
+
+	if err := bw.Render(w); err != nil {
+		status := fmt.Sprintf("%+v", err)
+		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
 

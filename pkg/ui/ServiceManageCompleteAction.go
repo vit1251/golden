@@ -10,20 +10,20 @@ import (
 	"net/http"
 )
 
-type ApiServiceStartAction struct {
+type ServiceManageCompleteAction struct {
 	Action
 }
 
-func NewApiServiceStartAction() *ApiServiceStartAction {
-	smac := new(ApiServiceStartAction)
+func NewServiceManageCompleteAction() *ServiceManageCompleteAction {
+	smac := new(ServiceManageCompleteAction)
 	return smac
 }
 
-func (self *ApiServiceStartAction) Start() {
+func (self *ServiceManageCompleteAction) Start() {
 	go self.Run()
 }
 
-func (self *ApiServiceStartAction) Run() error {
+func (self *ServiceManageCompleteAction) Run() error {
 
 	var setupManager *setup.ConfigManager
 	self.Container.Invoke(func(sm *setup.ConfigManager) {
@@ -76,7 +76,7 @@ func (self *ApiServiceStartAction) Run() error {
 	return nil
 }
 
-func (self *ApiServiceStartAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *ServiceManageCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 
@@ -106,5 +106,8 @@ func (self *ApiServiceStartAction) ServeHTTP(w http.ResponseWriter, r *http.Requ
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(p)
 
+	} else {
+		log.Printf("! Unkown service: name = %+v", service)
 	}
+
 }

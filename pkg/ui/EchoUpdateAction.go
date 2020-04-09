@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	area2 "github.com/vit1251/golden/pkg/area"
-	"github.com/vit1251/golden/pkg/ui/views"
+	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
 	"net/http"
-	"path/filepath"
 )
 
 type EchoUpdateAction struct {
@@ -38,17 +37,39 @@ func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 	log.Printf("area = %+v", area)
 
-	/* Render */
-	doc := views.NewDocument()
-	layoutPath := filepath.Join("views", "layout.tmpl")
-	doc.SetLayout(layoutPath)
-	pagePath := filepath.Join("views", "echo_update.tmpl")
-	doc.SetPage(pagePath)
-	doc.SetParam("Area", area)
-	err2 := doc.Render(w)
-	if err2 != nil {
-		response := fmt.Sprintf("Fail on Render: err = %+v", err2)
-		http.Error(w, response, http.StatusInternalServerError)
+	bw := widgets.NewBaseWidget()
+
+	vBox := widgets.NewVBoxWidget()
+	bw.SetWidget(vBox)
+
+	mmw := widgets.NewMainMenuWidget()
+	vBox.Add(mmw)
+
+	headerWidget := widgets.NewHeaderWidget().
+		SetTitle(fmt.Sprintf("Settings on area %s", area.Name()))
+
+	vBox.Add(headerWidget)
+
+	formWidget := widgets.NewFormWidget().
+		SetMethod("POST").
+		SetAction(fmt.Sprintf("/echo/%s/update/complete", area.Name()))
+	formVBox := widgets.NewVBoxWidget()
+	formWidget.SetWidget(formVBox)
+	vBox.Add(formWidget)
+
+	inputWidget := widgets.NewFormInputWidget().
+		SetTitle("Summary").SetName("summary").SetValue(area.Summary)
+
+	formVBox.Add(inputWidget)
+
+	btnWidget := widgets.NewFormButtonWidget().
+		SetTitle("Save")
+	formVBox.Add(btnWidget)
+
+	//
+	if err := bw.Render(w); err != nil {
+		status := fmt.Sprintf("%+v", err)
+		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
 

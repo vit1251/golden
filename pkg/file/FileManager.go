@@ -129,7 +129,7 @@ func (self *FileManager) GetFileHeaders(echoTag string) ([]*TicFile, error) {
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `fileName`, `fileDesc`, `fileTime` FROM `file` WHERE `fileArea` = $1"
+	sqlStmt := "SELECT `fileArea`, `fileName`, `fileDesc`, `fileTime` FROM `file` WHERE `fileArea` = $1"
 	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
 	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag)
 	if err1 != nil {
@@ -139,17 +139,19 @@ func (self *FileManager) GetFileHeaders(echoTag string) ([]*TicFile, error) {
 	defer rows.Close()
 	for rows.Next() {
 
+		var fileArea string
 		var fileName string
 		var fileDesc string
 		var fileTime *int64
 
-		err2 := rows.Scan(&fileName, &fileDesc, &fileTime)
+		err2 := rows.Scan(&fileArea, &fileName, &fileDesc, &fileTime)
 		if err2 != nil {
 			log.Printf("error on scan: err = %+v", err2)
 			return nil, err2
 		}
 
 		tic := NewTicFile()
+		tic.Area = fileArea
 		tic.Desc = fileDesc
 		tic.File = fileName
 		if fileTime != nil {
