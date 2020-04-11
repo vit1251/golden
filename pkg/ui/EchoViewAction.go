@@ -7,11 +7,9 @@ import (
 	"github.com/vit1251/golden/pkg/audio"
 	msgProc "github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/setup"
-	"github.com/vit1251/golden/pkg/ui/views"
 	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
 	"net/http"
-	"path/filepath"
 )
 
 type EchoViewAction struct {
@@ -56,6 +54,7 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
+	log.Printf("msgHeaders = %+v", msgHeaders)
 
 	//
 	msgHash := vars["msgid"]
@@ -70,7 +69,6 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if msg.To == realName {
 		audio.Play()
 	}
-
 
 	var content string
 	if msg != nil {
@@ -96,35 +94,61 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	/* Create actions */
-	mw := widgets.NewMenuWidget()
-	action1 := widgets.NewMenuAction()
-	action1.Link = fmt.Sprintf("/echo/%s//message/%s/reply", area.Name(), msg.Hash)
-	action1.Icon = "/static/img/icon/quote-50.png"
-	action1.Label = "Reply"
-	mw.Add(action1)
+	bw := widgets.NewBaseWidget()
 
-	action2 := widgets.NewMenuAction()
-	action2.Link = fmt.Sprintf("/echo/%s/message/%s/remove", area.Name(), msg.Hash)
-	action2.Icon = "/static/img/icon/remove-50.png"
-	action2.Label = "Delete"
-	mw.Add(action2)
+	vBox := widgets.NewVBoxWidget()
+	bw.SetWidget(vBox)
 
-	/* Render */
-	doc := views.NewDocument()
-	layoutPath := filepath.Join("views", "layout.tmpl")
-	doc.SetLayout(layoutPath)
-	pagePath := filepath.Join("views", "echo_msg_view.tmpl")
-	doc.SetPage(pagePath)
-	doc.SetParam("Actions", mw.Actions())
-	doc.SetParam("Area", area)
-	doc.SetParam("Headers", msgHeaders)
-	doc.SetParam("Msg", msg)
-	doc.SetParam("Content", outDoc)
-	err6 := doc.Render(w)
-	if err6 != nil {
-		response := fmt.Sprintf("Fail on Render: err = %+v", err6)
-		http.Error(w, response, http.StatusInternalServerError)
+	mmw := widgets.NewMainMenuWidget()
+	vBox.Add(mmw)
+
+	/* Context actions */
+	amw := widgets.NewActionMenuWidget().
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.Name(), msg.Hash)).
+			SetIcon("icofont-edit").
+			SetLabel("Reply")).
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.Name(), msg.Hash)).
+			SetIcon("icofont-remove").
+			SetLabel("Delete"))
+	vBox.Add(amw)
+
+	indexTable := widgets.NewTableWidget().
+		SetClass("table")
+
+	//                <div>{{ .Msg.From }}</div>
+	//                <div>{{ .Msg.To }}</div>
+	//                <div>{{ .Msg.Subject }}</div>
+
+
+	indexTable.AddRow(widgets.NewTableRowWidget().
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("FROM"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.From))))
+
+	indexTable.AddRow(widgets.NewTableRowWidget().
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("TO"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.To))))
+
+	indexTable.AddRow(widgets.NewTableRowWidget().
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("SUBJ"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Subject))))
+
+	indexTable.AddRow(widgets.NewTableRowWidget().
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("DATE"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
+			fmt.Sprintf("%s", msg.DateWritten)))))
+
+	vBox.Add(indexTable)
+
+	previewWidget := widgets.NewDivWidget().
+		SetClass("message-preview").
+		SetContent(string(outDoc))
+	vBox.Add(previewWidget)
+
+	if err := bw.Render(w); err != nil {
+		status := fmt.Sprintf("%+v", err)
+		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
 

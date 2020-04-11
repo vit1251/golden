@@ -6,7 +6,8 @@ import (
 )
 
 type FormTextWidget struct {
-	Name string
+	Name  string
+	value string
 }
 
 func (self *FormTextWidget) SetName(s string) *FormTextWidget {
@@ -21,8 +22,13 @@ func NewFormTextWidget() *FormTextWidget {
 
 func (self *FormTextWidget) Render(w http.ResponseWriter) error {
 	fmt.Fprintf(w, "<div>\n")
-	fmt.Fprintf(w, "\t<textarea name=\"%s\"></textarea>\n", self.Name)
+	fmt.Fprintf(w, "\t<textarea name=\"%s\">%s</textarea>\n", self.Name, self.value)
 	fmt.Fprintf(w, "</div>\n")
 	return nil
+}
+
+func (self *FormTextWidget) SetValue(content2 string) *FormTextWidget {
+	self.value = content2
+	return self
 }
 

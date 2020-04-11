@@ -15,6 +15,7 @@ type TableCelWidget struct {
 }
 
 type TableRowWidget struct {
+	class string
 	Cells []*TableCelWidget
 }
 
@@ -38,6 +39,11 @@ func (self *TableRowWidget) AddCell(cell *TableCelWidget) *TableRowWidget {
 	return self
 }
 
+func (self *TableRowWidget) SetClass(s string) *TableRowWidget {
+	self.class = s
+	return self
+}
+
 type TableWidget struct {
 	headers TableHeaderWidget
 	rows    []*TableRowWidget
@@ -57,7 +63,7 @@ func NewTableRowWidget() *TableRowWidget {
 func (self *TableWidget) Render(w http.ResponseWriter) error {
 	fmt.Fprintf(w, "<table class=\"%s\">\n", self.class)
 	for _, row := range self.rows {
-		fmt.Fprintf(w, "<tr>\n")
+		fmt.Fprintf(w, "<tr class=\"%s\">\n", row.class)
 		for _, cel := range row.Cells {
 			fmt.Fprintf(w, "<td class=\"%s\">\n", cel.class)
 			if cel.Widget != nil {

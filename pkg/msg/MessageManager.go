@@ -130,7 +130,7 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `msgId`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
+	sqlStmt := "SELECT `msgId`, `msgArea`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
 	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
 	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag)
 	if err1 != nil {
@@ -142,12 +142,13 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 		var ID string
 		var msgHash *string
 		var subject string
+		var area string
 		var from string
 		var to string
 		var msgDate int64
 		var viewCount int
 
-		err2 := rows.Scan(&ID, &msgHash, &subject, &viewCount, &from, &to, &msgDate)
+		err2 := rows.Scan(&ID, &area, &msgHash, &subject, &viewCount, &from, &to, &msgDate)
 		if err2 != nil{
 			return nil, err2
 		}
@@ -156,6 +157,7 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 		if msgHash != nil {
 			msg.SetMsgHash(*msgHash)
 		}
+		msg.SetArea(area)
 		msg.SetSubject(subject)
 		msg.SetID(ID)
 		msg.SetFrom(from)
@@ -182,7 +184,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `msgId`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	sqlStmt := "SELECT `msgId`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
 	log.Printf("sql = %+v params = ( %+v, %+v )", sqlStmt, echoTag, msgHash)
 	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag, msgHash)
 	if err1 != nil {
@@ -198,7 +200,9 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 		var from string
 		var to string
 		var content string
-		err2 := rows.Scan(&ID, &msgMsgId, &msgHash, &subject, &from, &to, &content)
+		var written int64
+
+		err2 := rows.Scan(&ID, &msgMsgId, &msgHash, &subject, &from, &to, &content, &written)
 		if err2 != nil{
 			return nil, err2
 		}
@@ -209,6 +213,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 		msg.SetMsgID(msgMsgId)
 		msg.SetSubject(subject)
 		msg.SetID(ID)
+		msg.SetUnixTime(written)
 		if msgHash != nil {
 			msg.SetMsgHash(*msgHash)
 		}

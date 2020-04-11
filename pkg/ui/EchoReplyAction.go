@@ -5,10 +5,9 @@ import (
 	"github.com/gorilla/mux"
 	area2 "github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/ui/views"
+	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
 	"net/http"
-	"path/filepath"
 )
 
 type EchoReplyAction struct {
@@ -41,14 +40,6 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("area = %+v", area)
 
-	/* Get message area */
-	areas, err2 := areaManager.GetAreas()
-	if err2 != nil {
-		response := fmt.Sprintf("Fail on GetAreas")
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
-
 	//
 	msgHash := vars["msgid"]
 	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
@@ -74,21 +65,41 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	newContent2 := mrt.Transform(newContent)
 	log.Printf("reply: reply = %+v", newContent2)
 
-	/* Render */
-	doc := views.NewDocument()
-	layoutPath := filepath.Join("views", "layout.tmpl")
-	doc.SetLayout(layoutPath)
-	pagePath := filepath.Join("views", "echo_msg_reply.tmpl")
-	doc.SetPage(pagePath)
-	doc.SetParam("Areas", areas)
-	doc.SetParam("Area", area)
-	doc.SetParam("Msg", origMsg)
-	doc.SetParam("Content", newContent2)
-	err4 := doc.Render(w)
-	if err4 != nil {
-		response := fmt.Sprintf("Fail on Render: err = %+v", err4)
-		http.Error(w, response, http.StatusInternalServerError)
+	//    <form method="post" action="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/reply/complete">
+	//        <div><input class="input" type="text" name="to" value="{{ .Msg.From }}">
+	//        <div><input class="input" type="text" value="{{ .Msg.Subject }}" name="subject">
+	//        <textarea class="input input-area" name="body">{{ .Content }}</textarea>
+	//        <button type="submit" name="action" value="send">Send</button>
+	//    </form>
+
+	bw := widgets.NewBaseWidget()
+
+	vBox := widgets.NewVBoxWidget()
+	bw.SetWidget(vBox)
+
+	mmw := widgets.NewMainMenuWidget()
+	vBox.Add(mmw)
+
+	formVBox := widgets.NewVBoxWidget()
+
+	formWidget := widgets.NewFormWidget()
+	formWidget.
+		SetMethod("POST").
+		SetAction(fmt.Sprintf("/echo/%s/message/%s/reply/complete", area.Name(), origMsg.Hash)).
+		SetWidget(formVBox)
+
+	formVBox.Add(widgets.NewFormInputWidget().SetTitle("TO").SetName("to").SetValue(origMsg.From))
+	formVBox.Add(widgets.NewFormInputWidget().SetTitle("SUBJ").SetName("subject").SetValue(fmt.Sprintf("RE: %s", origMsg.Subject)))
+	formVBox.Add(widgets.NewFormTextWidget().SetName("body").SetValue(newContent2))
+	formVBox.Add(widgets.NewFormButtonWidget().SetTitle("Compose").SetType("submit"))
+
+	vBox.Add(formWidget)
+
+	if err := bw.Render(w); err != nil {
+		status := fmt.Sprintf("%+v", err)
+		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
+
 
 }

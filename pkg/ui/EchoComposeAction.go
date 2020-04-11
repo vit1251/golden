@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	area2 "github.com/vit1251/golden/pkg/area"
-	"github.com/vit1251/golden/pkg/ui/views"
+	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
 	"net/http"
-	"path/filepath"
 )
 
 type EchoComposeAction struct {
@@ -41,26 +40,32 @@ func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	}
 	log.Printf("area = %+v", area)
 
-	/* Get message area */
-	areas, err1 := areaManager.GetAreas()
-	if err1 != nil {
-		response := fmt.Sprintf("Fail on GetAreas")
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
+	bw := widgets.NewBaseWidget()
 
-	/* Render */
-	doc := views.NewDocument()
-	layoutPath := filepath.Join("views", "layout.tmpl")
-	doc.SetLayout(layoutPath)
-	pagePath := filepath.Join("views", "echo_msg_compose.tmpl")
-	doc.SetPage(pagePath)
-	doc.SetParam("Areas", areas)
-	doc.SetParam("Area", area)
-	err2 := doc.Render(w)
-	if err2 != nil {
-		response := fmt.Sprintf("Fail on Render: err = %+v", err2)
-		http.Error(w, response, http.StatusInternalServerError)
+	vBox := widgets.NewVBoxWidget()
+	bw.SetWidget(vBox)
+
+	mmw := widgets.NewMainMenuWidget()
+	vBox.Add(mmw)
+
+	formVBox := widgets.NewVBoxWidget()
+
+	formWidget := widgets.NewFormWidget()
+	formWidget.
+		SetMethod("POST").
+		SetAction(fmt.Sprintf("/echo/%s/message/compose/complete", area.Name())).
+		SetWidget(formVBox)
+
+	formVBox.Add(widgets.NewFormInputWidget().SetTitle("TO").SetName("to"))
+	formVBox.Add(widgets.NewFormInputWidget().SetTitle("SUBJ").SetName("subject"))
+	formVBox.Add(widgets.NewFormTextWidget().SetName("body"))
+	formVBox.Add(widgets.NewFormButtonWidget().SetTitle("Compose").SetType("submit"))
+
+	vBox.Add(formWidget)
+
+	if err := bw.Render(w); err != nil {
+		status := fmt.Sprintf("%+v", err)
+		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
 

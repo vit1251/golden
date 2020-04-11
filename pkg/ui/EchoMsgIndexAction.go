@@ -5,11 +5,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/ui/views"
 	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
 	"net/http"
-	"path/filepath"
 )
 
 type EchoMsgIndexAction struct {
@@ -55,33 +53,62 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 		log.Printf("msg = %+v", msg)
 	}
 
+	// Views
+
+	bw := widgets.NewBaseWidget()
+
+	vBox := widgets.NewVBoxWidget()
+	bw.SetWidget(vBox)
+
+	mmw := widgets.NewMainMenuWidget()
+	vBox.Add(mmw)
+
 	/* Context actions */
-	mw := widgets.NewMenuWidget()
-	
-	action1 := widgets.NewMenuAction()
-	action1.Link = fmt.Sprintf("/echo/%s/message/compose", newArea.Name())
-	action1.Icon = "/static/img/icon/quote-50.png"
-	action1.Label = "Compose"
-	mw.Add(action1)
+	amw := widgets.NewActionMenuWidget().
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s/message/compose", newArea.Name())).
+			SetIcon("icofont-edit").
+			SetLabel("Compose")).
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s/update", newArea.Name())).
+			SetIcon("icofont-update").
+			SetLabel("Settings"))
 
-	action2 := widgets.NewMenuAction()
-	action2.Link = fmt.Sprintf("/echo/%s/update", newArea.Name())
-	action2.Label = "Settings"
-	mw.Add(action2)
+	vBox.Add(amw)
 
-	/* Render */
-	doc := views.NewDocument()
-	layoutPath := filepath.Join("views", "layout.tmpl")
-	doc.SetLayout(layoutPath)
-	pagePath := filepath.Join("views", "echo_msg_index.tmpl")
-	doc.SetPage(pagePath)
-	doc.SetParam("Actions", mw.Actions())
-	doc.SetParam("Area", newArea)
-	doc.SetParam("Headers", msgHeaders)
-	err3 := doc.Render(w)
-	if err3 != nil {
-		response := fmt.Sprintf("Fail on Render: err = %+v", err3)
-		http.Error(w, response, http.StatusInternalServerError)
+	indexTable := widgets.NewTableWidget().
+		SetClass("table")
+
+	indexTable.AddRow(widgets.NewTableRowWidget().
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Count"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
+
+	for _, msg := range msgHeaders {
+		log.Printf("msg = %+v", msg)
+		row := widgets.NewTableRowWidget().
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.From))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.To))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Subject))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Age()))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
+				SetContent("View").
+				SetLink(fmt.Sprintf("/echo/%s/message/%s/view", msg.Area, msg.Hash))))
+		//
+		row.SetClass("")
+		if msg.ViewCount == 0 {
+			row.SetClass("message-item-new")
+		}
+		//
+		indexTable.AddRow(row)
+	}
+
+	vBox.Add(indexTable)
+
+	if err := bw.Render(w); err != nil {
+		status := fmt.Sprintf("%+v", err)
+		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
 
