@@ -1,6 +1,7 @@
 
 from invoke import task
 from datetime import datetime
+from shutil import copyfile
 
 @task
 def clean(c):
@@ -25,6 +26,12 @@ def package(c):
 @task
 def check(c):
     c.run('go test ./...', echo=True)
+
+@task
+def prepare(c):
+    #c.run('npm install -g less', echo=True)
+    c.run('cd contrib && lessc main.less main.css', echo=True)
+    copyfile("contrib/main.css", "static/css/main.css")
 
 @task(default=True)
 def build(c):
