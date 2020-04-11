@@ -125,8 +125,8 @@ func (self *ConfigManager) restoreDefault() error {
 	self.Set("main", "Address", "2:5030/1592.15")
 	self.Set("main", "Link", "2:5030/1592.0")
 
-	ver := "1.2.10"
-	stamp := "2020-03-16 10:00 MSK"
+	ver := "1.2.11"
+	stamp := "2020-04-11 14:30 MSK"
 	branch := "master"
 
 	if runtime.GOOS == "windows" {
@@ -134,7 +134,6 @@ func (self *ConfigManager) restoreDefault() error {
 		/* Tearline */
 		arch := "WIN"
 
-		//newTearline := "Golden/WIN 1.2.10 2020-03-16 10:00 MSK (master)"
 		newTearline := fmt.Sprintf("Golden/%s %s %s (%s)", arch, ver, stamp, branch)
 		self.Set("main", "TearLine", newTearline)
 
@@ -154,7 +153,6 @@ func (self *ConfigManager) restoreDefault() error {
 	} else if runtime.GOOS == "linux" {
 
 		arch := "LNX"
-		//newTearline := "Golden/WIN 1.2.10 2020-03-16 10:00 MSK (master)"
 		newTearline := fmt.Sprintf("Golden/%s %s %s (%s)", arch, ver, stamp, branch)
 		self.Set("main", "TearLine", newTearline)
 
@@ -174,7 +172,6 @@ func (self *ConfigManager) restoreDefault() error {
 	} else {
 
 		arch := "UNKNOWN"
-		//newTearline := "Golden/WIN 1.2.10 2020-03-16 10:00 MSK (master)"
 		newTearline := fmt.Sprintf("Golden/%s %s %s (%s)", arch, ver, stamp, branch)
 		self.Set("main", "TearLine", newTearline)
 

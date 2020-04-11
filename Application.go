@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/file"
@@ -30,6 +31,12 @@ func NewApplication() *Application {
 }
 
 func (self *Application) Run() {
+
+	/* Parse parameters */
+	var servicePort int
+	flag.IntVar(&servicePort, "P", 8080, "Set HTTP service port")
+	flag.Parse()
+	log.Printf("servicePort - %+v", servicePort)
 
 	/* Create managers */
 	if err := self.Container.Provide(installer.NewMigrationManager); err != nil {
@@ -82,6 +89,7 @@ func (self *Application) Run() {
 	/* Start service */
 	self.Container.Invoke(func() {
 		newGoldenSite := ui.NewGoldenSite(self.Container)
+		newGoldenSite.SetPort(servicePort)
 		go newGoldenSite.Start()
 	})
 

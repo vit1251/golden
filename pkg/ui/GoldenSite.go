@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/ui/api"
 	"go.uber.org/dig"
@@ -26,13 +27,17 @@ type WebSite struct {
 
 type GoldenSite struct {
 	Container *dig.Container
-	WebSite   *WebSite         /* Web site common type   */
+	port      int
+	WebSite   *WebSite /* Web site common type   */
 	rtr       *mux.Router
+	addr      string
 }
 
 func NewGoldenSite(c *dig.Container) *GoldenSite {
 
 	site := new(GoldenSite)
+	site.addr = "127.0.0.1"
+	site.port = 8080
 	site.Container = c
 
 	/* Create router */
@@ -92,12 +97,11 @@ func (self *GoldenSite) Start() (error) {
 	self.Register("/setup/complete", NewSetupCompleteAction())
 	self.Register("/help", NewHelpAction())
 
-	//
-	INTERFACE := "127.0.0.1:8080"
+	serviceAddr := fmt.Sprintf("%s:%d", self.addr, self.port)
 
 	srv := &http.Server{
 		Handler:      self.rtr,
-		Addr:         INTERFACE,
+		Addr:         serviceAddr,
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 10 * time.Minute,
 		ReadTimeout:  10 * time.Minute,
@@ -115,4 +119,8 @@ func (self *GoldenSite) Stop() (error) {
 //	webSite.Stop()
 
 	return nil
+}
+
+func (self *GoldenSite) SetPort(port int) {
+	self.port = port
 }

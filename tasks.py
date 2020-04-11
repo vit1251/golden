@@ -13,15 +13,15 @@ def depend(c):
     c.run('go get -v -u', echo=True)
 
 @task
-def package(c):
+def package(c, version="1.2.11"):
     c.run('install -m 0755 -d ./package')
     c.run('install -m 0755 -d ./package/DEBIAN')
     c.run('install -m 0755 -d ./package/usr/local/bin')
     c.run('install -m 0755 -d ./dist')
     c.run('cp ./DEBIAN/control ./package/DEBIAN/control')
     c.run('cp ./golden ./package/usr/local/bin/golden')
-    c.run('dpkg-deb -v --build ./package golden-1.2.3.deb')
-    c.run('cp ./golden-1.2.3.deb ./dist/golden-1.2.3.deb')
+    c.run('dpkg-deb -v --build ./package golden-{version}.deb'.format(version=version))
+    c.run('cp ./golden-{version}.deb ./dist/golden-{version}.deb'.format(version=version))
 
 @task
 def check(c):
@@ -53,6 +53,7 @@ def package(c):
     c.run('7z a -tzip {package_name} golden-windows-amd64.exe'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
     c.run('7z a -tzip {package_name} README.md'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
     c.run('7z a -tzip {package_name} LICENSE'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
+    c.run('7z a -tzip {package_name} static'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
 
 @task
 def debug(c):
