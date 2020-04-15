@@ -20,14 +20,14 @@ type Stat struct {
 	NetmailReceived  int
 	NetmailSent      int
 
-	Dupe int
+	PacketReceived   int
+	PacketSent       int
 
-	PacketReceived  int
-	PacketSent      int
+	MessageReceived  int
+	MessageSent      int
 
-	MessageReceived int
-	MessageSent     int
-
+	SessionIn        int
+	SessionOut       int
 }
 
 func NewStatManager(sm *storage.StorageManager) *StatManager {
@@ -58,48 +58,20 @@ func (self *StatManager) RegisterFile(filename string) (error) {
 	return nil
 }
 
+func (self *StatManager) RegisterSession(in int, out int) error {
+
+	self.createStat()
+
+	query1 := "UPDATE `stat` SET `statFileRXcount` = `statFileRXcount` + 1 WHERE `statDate` = ?"
+	statDate := self.makeToday()
+	self.conn.Exec(query1, statDate)
+
+	return nil
+}
+
 type SummaryRow struct {
 	Date string
 	Value int
-}
-
-func (self *StatManager) GetMessageSummary() ([]SummaryRow, error) {
-
-	var result []SummaryRow
-	var statMessageRXcount int
-	var statDate string
-
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return nil, err
-	}
-
-	sqlStmt := "SELECT `statDate`, `statMessageRXcount` FROM `stat` ORDER BY `statDate` DESC LIMIT 14"
-
-	rows, err1 := ConnTransaction.Query(sqlStmt)
-	if err1 != nil {
-		return nil, err1
-	}
-	defer rows.Close()
-	for rows.Next() {
-
-		err2 := rows.Scan(&statDate, &statMessageRXcount)
-		if err2 != nil{
-			return nil, err2
-		}
-		log.Printf("statDate = %s value = %d", statDate, statMessageRXcount)
-		sr := SummaryRow{
-			Date: statDate,
-			Value: statMessageRXcount,
-		}
-		result = append([]SummaryRow{sr}, result...)
-
-	}
-
-	ConnTransaction.Commit()
-
-	return result, nil
 }
 
 func (self *StatManager) GetStatRow(statDate string) (*Stat, error) {

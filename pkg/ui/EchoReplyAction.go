@@ -89,8 +89,8 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		SetWidget(formVBox)
 
 	formVBox.Add(widgets.NewFormInputWidget().SetTitle("TO").SetName("to").SetValue(origMsg.From))
-	formVBox.Add(widgets.NewFormInputWidget().SetTitle("SUBJ").SetName("subject").SetValue(fmt.Sprintf("RE: %s", origMsg.Subject)))
-	formVBox.Add(widgets.NewFormTextWidget().SetName("body").SetValue(newContent2))
+	formVBox.Add(widgets.NewFormInputWidget().SetClass("echomail-input").SetTitle("SUBJ").SetName("subject").SetValue(fmt.Sprintf("RE: %s", origMsg.Subject)))
+	formVBox.Add(widgets.NewFormTextWidget().SetClass("echomail-text").SetName("body").SetValue(newContent2))
 	formVBox.Add(widgets.NewFormButtonWidget().SetTitle("Compose").SetType("submit"))
 
 	vBox.Add(formWidget)

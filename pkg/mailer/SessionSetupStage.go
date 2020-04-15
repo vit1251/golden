@@ -1,21 +1,12 @@
 package mailer
 
 import (
-	"bufio"
 	"bytes"
 	"fmt"
 	"log"
-	"net"
 	"runtime"
 	"time"
 )
-
-func (self *Mailer) openSession(host string) (error) {
-
-
-
-	return nil
-}
 
 func (self *Mailer) GetPlatform() string {
 	if runtime.GOOS == "windows" {
@@ -67,73 +58,4 @@ func (self *Mailer) parseInfoOptFrame(rawOptions []byte)  {
 			}
 		}
 	}
-}
-
-func (self *Mailer) processSessionSetupState() error {
-	if self.sessionSetupState == SessionSetupConnInitState {
-		/* Switch state */
-		self.SetSessionSetupState(SessionSetupWaitConnState)
-		/* Start connection */
-		if conn, err := net.DialTimeout("tcp", self.ServerAddr, time.Millisecond*1200); err != nil {
-			log.Printf("Report no connection")
-			self.SetSessionSetupState(SessionSetupExitState)
-		} else {
-			/* Save connection */
-			self.conn = conn
-			/* Create reader and writer */
-			self.reader = bufio.NewReader(conn)
-			self.writer = bufio.NewWriter(conn)
-			/* Start frame processing */
-			go self.processRX()
-			go self.processTX()
-			/* Connection establish routine: send info and out address */
-			//self.writeInfo("SYS", "Vitold Station")
-			//self.writeInfo("ZYZ", "Vitold Sedyshev")
-			//self.writeInfo("LOC", "Saint-Petersburg, Russia")
-			self.writeInfo("NDL", "115200,TCP,BINKP")
-			self.writeInfo("TIME", self.GetTime())
-			self.writeInfo("OS", self.GetPlatform())
-			appName := "GoldenMailer"
-			appVersion := self.GetVersion()
-			self.writeInfo("VER", fmt.Sprintf("%s/%s", appName, appVersion))
-			self.writeAddress(self.addr)
-			// TODO - setup timeout ...
-			/* Change state */
-			self.SetSessionSetupState(SessionSetupWaitAddrState)
-		}
-	} else if self.sessionSetupState == SessionSetupWaitAddrState {
-		nextFrame := <-self.inDataFrames
-		if nextFrame.Command {
-			if nextFrame.CommandFrame.CommandID == M_NUL {
-				key, value, err1 := self.parseInfoFrame(nextFrame.CommandFrame.Body)
-				if err1 != nil {
-					panic(err1)
-				}
-				log.Printf("Remote side option: name = %s value = %s", key, value)
-				if bytes.Equal(key, []byte("OPT")) {
-					self.parseInfoOptFrame(value)
-				}
-			} else if nextFrame.CommandFrame.CommandID == M_ADR {
-				self.SetSessionSetupState(SessionSetupAuthRemoteState)
-				self.writePassword(self.respAuthorization)
-				self.SetSessionSetupState(SessionSetupIfSecureState)
-			} else {
-				log.Panicf("Unexpected Frame in state: %v", self.sessionSetupState)
-			}
-		}
-	} else if self.sessionSetupState == SessionSetupIfSecureState {
-		nextFrame := <-self.inDataFrames
-		log.Printf("Auth complete: frame = %+v", nextFrame)
-		if nextFrame.Command {
-			if nextFrame.CommandFrame.CommandID == M_OK {
-				self.SetProtocolState(FileTransferState)
-				self.SetFileTransferState(FileTransferInitTransferState)
-			}
-		} else {
-			log.Panicf("Unexpected frame")
-		}
-	} else {
-		log.Panicf("Wrong session setup state: %v", self.sessionSetupState)
-	}
-	return nil
 }

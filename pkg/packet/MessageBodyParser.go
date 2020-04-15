@@ -32,30 +32,30 @@ type MessageBodyParser struct {
 	result       *MessageBody
 }
 
-func NewMessageBodyParser() (*MessageBodyParser, error) {
+func NewMessageBodyParser() *MessageBodyParser {
 	mp := new(MessageBodyParser)
 	mp.result = NewMessageBody()
 	mp.state = MBP_STATE_KLUDGE
 	mp.kludgeState = MBPK_STATE_NAME
-	return mp, nil
+	return mp
 }
 
 func (self *MessageBodyParser) processKludge() {
+
 	//
 	log.Printf("Meet kludge: name = %v value = %v", self.kludgeName, self.kludgeValue)
+
 	//
 	var name string = string(self.kludgeName)
 	var value string = string(self.kludgeValue)
+
 	//
-	if name == "AREA" {
-		self.result.SetArea(value)
-	} else {
-		self.result.AddKludge(name, value)
-	}
+    self.result.AddKludge(name, value)
+
 	//
 	self.kludgeName = nil // make([]byte, 0)
 	self.kludgeValue = nil // make([]byte, 0)
-	//
+
 }
 
 func (self *MessageBodyParser) processKludgeByte(value byte) {

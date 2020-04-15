@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	area2 "github.com/vit1251/golden/pkg/area"
 	"log"
@@ -52,5 +53,6 @@ func (self *EchoUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.R
 	}
 
 	/* Render */
-
+	newLocation := fmt.Sprintf("/echo/%s", echoTag)
+	http.Redirect(w, r, newLocation, 303)
 }

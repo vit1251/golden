@@ -58,7 +58,7 @@ func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	formVBox.Add(widgets.NewFormInputWidget().SetTitle("TO").SetName("to"))
 	formVBox.Add(widgets.NewFormInputWidget().SetTitle("SUBJ").SetName("subject"))
-	formVBox.Add(widgets.NewFormTextWidget().SetName("body"))
+	formVBox.Add(widgets.NewFormTextWidget().SetClass("echomail-text").SetName("body"))
 	formVBox.Add(widgets.NewFormButtonWidget().SetTitle("Compose").SetType("submit"))
 
 	vBox.Add(formWidget)

@@ -2,13 +2,13 @@ package mailer
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"github.com/vit1251/golden/pkg/setup"
 	"io"
 	"log"
 	"net"
 	"os"
+	"time"
 )
 
 type CommandFrame struct {
@@ -27,31 +27,31 @@ type Frame struct {
 }
 
 type Mailer struct {
-	protocolState     ProtocolState          /* Protocol state      */
-	sessionSetupState SessionSetupStageState /* Session setup state */
-	transferState     FileTransferStageState /* Mailer state         */
-	rxState           RxState                /* */
-	txState           TxState                /* */
+	activeState       IMailerState           /* Mailer state                */
+	sessionSetupState SessionSetupStageState /* Session setup state         */
+	transferState     FileTransferStageState /* Mailer state                */
+	rxState           RxState                /*                             */
+	txState           TxState                /*                             */
 	inDataFrames      chan Frame             /* RX processing Frame routine */
 	outDataFrames     chan Frame             /* TX processing Frame routine */
-	conn              net.Conn               /* Network address */
-	reader            *bufio.Reader          /* Network address */
-	writer            *bufio.Writer          /* Network address */
-	sessionComplete   chan bool              /* Network address */
-	addr              string                 /* Network address */
-	secret            string                 /* Secret password */
-	ServerAddr        string
-	inboundDirectory  string /* */
-	outboundDirectory string
-	respAuthorization string
-	outStream         *os.File
-	writeSize         int
-	size              int
-	connComplete      chan int
-	recvUnix          int
-	recvName          string
-	TempOutbound      string
-	SetupManager     *setup.ConfigManager
+	conn              net.Conn               /* Network address             */
+	reader            *bufio.Reader          /* Network address             */
+	writer            *bufio.Writer          /* Network address             */
+	sessionComplete   chan bool              /* Network address             */
+	addr              string                 /* Network address             */
+	secret            string                 /* Secret password             */
+	ServerAddr        string                 /*  */
+	inboundDirectory  string                 /*   */
+	outboundDirectory string                 /*   */
+	respAuthorization string                 /*   */
+	outStream         *os.File               /*    */
+	writeSize         int                    /*    */
+	size              int                    /*  */
+	connComplete      chan int               /*  */
+	recvUnix          int                    /*  */
+	recvName          string                 /*   */
+	TempOutbound      string                 /*  */
+	SetupManager     *setup.ConfigManager    /*   */
 }
 
 func NewMailer(sm *setup.ConfigManager) (*Mailer) {
@@ -85,36 +85,36 @@ func (self *Mailer) SetSecret(secret string) {
 }
 
 func (self *Mailer) Start() {
-	/* Setup start state */
-	self.SetProtocolState(SessionSetupState)
-	self.SetSessionSetupState(SessionSetupConnInitState)
-	/* Process state */
-	go self.run()
-}
 
-func (self *Mailer) processState() error {
-	if self.protocolState == SessionSetupState {
-		return self.processSessionSetupState()
-	} else if self.protocolState == FileTransferState {
-		return self.processFileTransferState()
-	}
-	return errors.New("wrong mailer state")
+	/* Start state */
+	self.activeState = NewMailerStateCreateConnection()
+
+	/* Play! */
+	go self.run()
+
 }
 
 func (self *Mailer) run() {
+	mailerStart := time.Now()
+	log.Printf("Start mailer routine")
 	for {
-		log.Printf("Process state: protocolState = %v", self.protocolState.String())
-		self.processState()
+		log.Printf("mailer: process state %s", self.activeState)
+		newState := self.activeState.Process(self)
+		log.Printf("mailer: chage state: %s -> %s", self.activeState, newState)
+		self.activeState = newState
+		/* Stop processing when done */
+		if newState == nil {
+			log.Printf("mailer: No more processing")
+			break
+		}
 	}
+	log.Printf("Stop mailer routine")
+	elapsed := time.Since(mailerStart)
+	log.Printf("Mailer session: %+v", elapsed)
 }
 
 func (self *Mailer) Wait() {
 	<- self.connComplete
-}
-
-func (self *Mailer) SetProtocolState(state ProtocolState) {
-	log.Printf("Set protocol state: %s", state.String())
-	self.protocolState = state
 }
 
 func (self *Mailer) SetSessionSetupState(state SessionSetupStageState) {

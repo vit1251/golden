@@ -64,6 +64,122 @@ func (self *Tosser) decodeMessageBody(msgBody []byte, charset string) (string, e
 	return result, nil
 }
 
+func (self *Tosser) processNewMessage(msgHeader *packet.PacketMessageHeader, rawBody []byte) error {
+
+	msgParser := packet.NewMessageBodyParser()
+	msgBody, err8 := msgParser.Parse(rawBody)
+	if err8 != nil {
+		return err8
+	}
+
+	/* Determine area */
+	areaName := msgBody.GetArea()
+	if areaName == "" {
+		areaName = "NETMAIL"
+	}
+
+	/* Search area */
+	// TODO - a, _ := self.AreaManager.GetAreaByName(areaName)
+
+	/* Auto create area */
+	a := area.NewArea()
+	a.SetName(areaName)
+	self.AreaManager.Register(a)
+
+	/* Decode message */
+	charsetKludge := msgBody.GetKludge("CHRS", "CP866 2")
+	charset := self.parseCharsetKludge(charsetKludge)
+
+	/* Decode message body */
+	newBody, err9 := self.decodeMessageBody(msgBody.RAW, charset)
+	if err9 != nil {
+		return err9
+	}
+
+	/* Determine msgid */
+	msgid := msgBody.GetKludge("MSGID", "")
+	msgid = strings.Trim(msgid, " ")
+	log.Printf("msgid = %s", msgid)
+	msgidParts := strings.Split(msgid, " ")
+	var msgHash string
+	if len(msgidParts) == 2 {
+		//source := msgidParts[0]
+		msgHash = msgidParts[1]
+	}
+
+	/* Determine reply */
+	reply := msgBody.GetKludge("REPLY", "")
+	reply = strings.Trim(reply, " ")
+	log.Printf("reply = %s", reply)
+
+	/* Determine zone */
+	zone := msgBody.GetKludge("TZUTC", " 0300")
+	log.Printf("zone = %+v", zone)
+	zone = strings.Trim(zone, " \t")
+	zParser := fidotime.NewTimeZoneParser()
+	msgZone, err10 := zParser.Parse(zone)
+	if err10 != nil {
+		return err10
+	}
+	log.Printf("Message zone: zone = %+v", msgZone)
+
+	log.Printf("orig: msgTime = %+v", msgHeader.Time)
+	msgTime, err11 := msgHeader.Time.CreateTime(msgZone)
+	if err11 != nil {
+		return err11
+	}
+	log.Printf("msgTime = %+v", msgTime)
+	log.Printf("msgTime (Local) = %+v", msgTime.Local())
+
+	/* Check unique item */
+	exists, err9 := self.MessageManager.IsMessageExistsByHash(areaName, msgHash)
+	if err9 != nil {
+		return err9
+	}
+	if exists {
+
+		log.Printf("Message %s already exists", msgHash)
+		self.StatManager.RegisterDupe()
+
+	} else {
+
+		/* Decode headers */
+		newSubject, err1 := self.CharsetManager.DecodeText(msgHeader.Subject)
+		if err1 != nil {
+			return err1
+		}
+		newFrom, err2 := self.CharsetManager.DecodeText(msgHeader.FromUserName)
+		if err2 != nil {
+			return err2
+		}
+		newTo, err3 := self.CharsetManager.DecodeText(msgHeader.ToUserName)
+		if err3 != nil {
+			return err3
+		}
+
+		/* Create msgapi.Message */
+		newMsg := new(msg.Message)
+		newMsg.SetMsgID(msgid)
+		newMsg.SetMsgHash(msgHash)
+		newMsg.SetArea(areaName)
+		newMsg.SetFrom(string(newFrom))
+		newMsg.SetTo(string(newTo))
+		newMsg.SetSubject(string(newSubject))
+		newMsg.SetTime(msgTime)
+
+		newMsg.SetContent(newBody)
+
+		/* Store message */
+		err := self.MessageManager.Write(newMsg)
+		log.Printf("err = %v", err)
+
+		/* Update counter */
+		self.StatManager.RegisterMessage()
+	}
+
+	return nil
+}
+
 func (self *Tosser) ProcessPacket(name string) error {
 
 	/* Start new packet reader */
@@ -101,120 +217,10 @@ func (self *Tosser) ProcessPacket(name string) error {
 		}
 
 		/* Process message */
-		msgParser, err7 := packet.NewMessageBodyParser()
-		if err7 != nil {
-			return err7
-		}
-		msgBody, err8 := msgParser.Parse(rawBody)
-		if err8 != nil {
-			return err8
-		}
+		self.processNewMessage(msgHeader, rawBody)
 
-		/* Determine area */
-		areaName := msgBody.GetArea()
-		if areaName == "" {
-			areaName = "NETMAIL"
-		}
-
-		/* Search area */
-		// TODO - a, _ := self.AreaManager.GetAreaByName(areaName)
-
-		/* Auto create area */
-		a := area.NewArea()
-		a.SetName(areaName)
-		self.AreaManager.Register(a)
-
-		/* Decode message */
-		charsetKludge := msgBody.GetKludge("CHRS", "CP866 2")
-		charset := self.parseCharsetKludge(charsetKludge)
-
-		/* Decode message body */
-		newBody, err9 := self.decodeMessageBody(msgBody.RAW, charset)
-		if err9 != nil {
-			return err9
-		}
-
-		/* Determine msgid */
-		msgid := msgBody.GetKludge("MSGID", "")
-		msgid = strings.Trim(msgid, " ")
-		log.Printf("msgid = %s", msgid)
-		msgidParts := strings.Split(msgid, " ")
-		var msgHash string
-		if len(msgidParts) == 2 {
-			//source := msgidParts[0]
-			msgHash = msgidParts[1]
-		}
-
-		/* Determine reply */
-		reply := msgBody.GetKludge("REPLY", "")
-		reply = strings.Trim(reply, " ")
-		log.Printf("reply = %s", reply)
-
-		/* Determine zone */
-		zone := msgBody.GetKludge("TZUTC", " 0300")
-		log.Printf("zone = %+v", zone)
-		zone = strings.Trim(zone, " \t")
-		zParser := fidotime.NewTimeZoneParser()
-		msgZone, err10 := zParser.Parse(zone)
-		if err10 != nil {
-			return err10
-		}
-		log.Printf("Message zone: zone = %+v", msgZone)
-
-		log.Printf("orig: msgTime = %+v", msgHeader.Time)
-		msgTime, err11 := msgHeader.Time.CreateTime(msgZone)
-		if err11 != nil {
-			return err11
-		}
-		log.Printf("msgTime = %+v", msgTime)
-		log.Printf("msgTime (Local) = %+v", msgTime.Local())
-
-		/* Check unique item */
-		exists, err9 := self.MessageManager.IsMessageExistsByHash(areaName, msgHash)
-		if err9 != nil {
-			return err9
-		}
-		if exists {
-
-			log.Printf("Message %s already exists", msgHash)
-			self.StatManager.RegisterDupe()
-
-		} else {
-
-			/* Decode headers */
-			newSubject, err1 := self.CharsetManager.DecodeText(msgHeader.Subject)
-			if err1 != nil {
-				return err1
-			}
-			newFrom, err2 := self.CharsetManager.DecodeText(msgHeader.FromUserName)
-			if err2 != nil {
-				return err2
-			}
-			newTo, err3 := self.CharsetManager.DecodeText(msgHeader.ToUserName)
-			if err3 != nil {
-				return err3
-			}
-
-			/* Create msgapi.Message */
-			newMsg := new(msg.Message)
-			newMsg.SetMsgID(msgid)
-			newMsg.SetMsgHash(msgHash)
-			newMsg.SetArea(areaName)
-			newMsg.SetFrom(string(newFrom))
-			newMsg.SetTo(string(newTo))
-			newMsg.SetSubject(string(newSubject))
-			newMsg.SetTime(msgTime)
-
-			newMsg.SetContent(newBody)
-
-			/* Store message */
-			err := self.MessageManager.Write(newMsg)
-			log.Printf("err = %v", err)
-
-			/* Update counter */
-			self.StatManager.RegisterMessage()
-			msgCount += 1
-		}
+		/* Update message count */
+		msgCount += 1
 
 	}
 

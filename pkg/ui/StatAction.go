@@ -73,13 +73,13 @@ func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	self.createMetric(statWidget,
 			"Total Message",
-			fmt.Sprintf("%d", stat.MessageReceived),
+		fmt.Sprintf("%d", stat.MessageReceived),
 			fmt.Sprintf("%d", stat.MessageSent))
 
 	self.createMetric(statWidget,
 			"Total session count",
-			"-",
-			"-")
+			fmt.Sprintf("%d", stat.SessionIn),
+			fmt.Sprintf("%d", stat.SessionOut))
 
 	self.createMetric(statWidget,
 		"Total session time",

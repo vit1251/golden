@@ -9,6 +9,7 @@ import (
 	"github.com/vit1251/golden/pkg/stat"
 	"go.uber.org/dig"
 	"log"
+	"time"
 )
 
 type Tosser struct {
@@ -35,7 +36,8 @@ func NewTosser(c *dig.Container) *Tosser {
 
 func (self *Tosser) Toss() {
 
-	log.Printf("Toss")
+	tosserStart := time.Now()
+	log.Printf("Start tosser session")
 
 	err1 := self.ProcessInbound()
 	if err1 != nil {
@@ -45,4 +47,8 @@ func (self *Tosser) Toss() {
 	if err2 != nil {
 		log.Printf("err = %+v", err2)
 	}
+
+	log.Printf("Stop tosser session")
+	elapsed := time.Since(tosserStart)
+	log.Printf("Tosser session: %+v", elapsed)
 }

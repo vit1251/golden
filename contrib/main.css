@@ -261,6 +261,23 @@ body {
 a {
   text-decoration: none;
 }
+input {
+  border: 1px solid #808080;
+  background-color: #000000;
+  color: #C0C0C0;
+  font-family: monospace;
+  font-size: 19px;
+  width: 100%;
+}
+textarea {
+  border: 1px solid #808080;
+  background-color: #000000;
+  color: #C0C0C0;
+  font-family: monospace;
+  font-size: 19px;
+  width: 100%;
+  height: 320px;
+}
 .message-header-items {
   flex-basis: 50vh;
   flex-shrink: 0;
@@ -272,17 +289,6 @@ a {
   flex-grow: 0;
   white-space: pre-wrap;
   font-family: "Courier New", monospace;
-}
-.input {
-  border: 1px solid #808080;
-  background-color: #000000;
-  color: #C0C0C0;
-  font-family: monospace;
-  font-size: 19px;
-}
-.input-area {
-  width: 100%;
-  height: 320px;
 }
 a.message-item-wrap:hover {
   color: #FFFFFF;
@@ -378,4 +384,8 @@ a.message-item-wrap {
 .echo-index-item-count-new {
   text-align: right;
   font-weight: bold;
+}
+.echomail-text {
+  background-color: #000000;
+  color: #C0C0C0;
 }
