@@ -51,6 +51,7 @@ func (self *NetmailManager) GetMessageHeaders() ([]*NetmailMessage, error) {
 		msg := NewNetmailMessage()
 		if msgHash != nil {
 			msg.SetMsgID(*msgHash)
+			msg.SetHash(*msgHash)
 		}
 		msg.SetSubject(subject)
 		msg.SetID(ID)
@@ -66,4 +67,46 @@ func (self *NetmailManager) GetMessageHeaders() ([]*NetmailMessage, error) {
 	ConnTransaction.Commit()
 
 	return result, nil
+}
+
+func (self *NetmailManager) Write(msg *NetmailMessage) error {
+
+		/* Step 2. Start SQL transaction */
+		ConnTransaction, err := self.conn.Begin()
+		if err != nil {
+			return err
+		}
+
+		/* Step 3. Make prepare SQL insert query */
+		sqlStmt := "INSERT INTO `netmail` " +
+			"    (nmMsgId, nmHash, nmFrom, nmTo, nmSubject, nmBody, nmDate) " +
+			"  VALUES " +
+			"    (?, ?, ?, ?, ?, ?, ?)"
+		log.Printf("sql = %q", sqlStmt)
+		stmt, err3 := ConnTransaction.Prepare(sqlStmt)
+		if err3 != nil {
+			return err3
+		}
+		defer stmt.Close()
+
+		/* Step 4. Invoke prepare SQL insert query */
+		_, err4 := stmt.Exec(msg.MsgID, msg.Hash, msg.From, msg.To, msg.Subject, msg.Content, msg.UnixTime)
+		if err4 != nil {
+			return err4
+		}
+
+		/* Step 5. Commit SQL transaction */
+		ConnTransaction.Commit()
+
+		return nil
+
+}
+
+func (self *NetmailManager) GetMessageByHash(hash string) (*NetmailMessage, error) {
+
+	return nil, nil
+}
+
+func (self *NetmailManager) ViewMessageByHash(hash string) error {
+	return nil
 }

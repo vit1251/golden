@@ -5,6 +5,7 @@ import (
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/stat"
 	"go.uber.org/dig"
@@ -19,17 +20,19 @@ type Tosser struct {
 	FileManager    *file.FileManager
 	AreaManager    *area.AreaManager
 	CharsetManager *charset.CharsetManager
+	NetmailManager *netmail.NetmailManager
 }
 
 func NewTosser(c *dig.Container) *Tosser {
 	tosser := new(Tosser)
-	c.Invoke(func(cm *charset.CharsetManager, am *area.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.ConfigManager, fm *file.FileManager) {
+	c.Invoke(func(cm *charset.CharsetManager, am *area.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.ConfigManager, fm *file.FileManager, nm *netmail.NetmailManager) {
 		tosser.CharsetManager = cm
 		tosser.AreaManager = am
 		tosser.MessageManager = mm
 		tosser.StatManager = sm
 		tosser.SetupManager = setm
 		tosser.FileManager = fm
+		tosser.NetmailManager = nm
 	})
 	return tosser
 }

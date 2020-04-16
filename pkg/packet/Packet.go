@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/ftn"
+	"log"
 	"strconv"
 )
 
@@ -75,10 +76,18 @@ func NewPacketHeader() *PacketHeader {
 	ph := new(PacketHeader)
 	ph.capatiblityByte1 = 0
 	ph.capatiblityByte2 = 1
-	ph.pktPassword = []byte("\x00\x00\x00\x00\x00\x00\x00\x00")
+	ph.pktPassword = make([]byte, 8)
 	ph.auxNet = 0
 	ph.capabilityWord = 1
 	return ph
+}
+
+func (self *PacketHeader) SetPassword(password string) {
+	newPasswordSize := 8
+	newPassword := make([]byte, newPasswordSize)
+	copy(newPassword, password)
+	log.Printf("newPass: str = %s raw = %+v", newPassword, newPassword)
+	self.pktPassword = newPassword
 }
 
 func (self PacketHeader) IsCapatiblity() (bool) {

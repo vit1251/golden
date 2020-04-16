@@ -56,6 +56,35 @@ func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	container.SetWidget(containerVBox)
 	vBox.Add(container)
 
+	indexTable := widgets.NewTableWidget().
+		SetClass("table")
+
+	indexTable.
+		SetClass("echo-index-items").
+		AddRow(widgets.NewTableRowWidget().
+			SetClass("echo-index-header").
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Count"))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
+
+	for _, msg := range msgHeaders {
+		log.Printf("msg = %+v", msg)
+		row := widgets.NewTableRowWidget()
+
+		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.From)))
+		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.To)))
+		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Subject)))
+
+		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
+			SetContent("View").
+			SetLink(fmt.Sprintf("/netmail/%s/view", msg.Hash))))
+
+		indexTable.AddRow(row)
+	}
+
+	vBox.Add(indexTable)
+
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)
 		http.Error(w, status, http.StatusInternalServerError)

@@ -75,6 +75,10 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	if err1 != nil {
 		return err1
 	}
+	password, err2 := self.SetupManager.Get("main", "Password", ".")
+	if err2 != nil {
+		return err2
+	}
 
 	pktName := self.makePacketName()
 	name := path.Join(outb, pktName)
@@ -112,6 +116,7 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	pktHeader := packet.NewPacketHeader()
 	pktHeader.OrigAddr.SetAddr(myAddr)
 	pktHeader.DestAddr.SetAddr(bossAddr)
+	pktHeader.SetPassword(password)
 
 	if err := pw.WritePacketHeader(pktHeader); err != nil {
 		return err

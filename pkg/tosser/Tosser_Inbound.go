@@ -7,6 +7,7 @@ import (
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/packet"
 	"io"
 	"log"
@@ -75,11 +76,78 @@ func (self *Tosser) processNewMessage(msgHeader *packet.PacketMessageHeader, raw
 	/* Determine area */
 	areaName := msgBody.GetArea()
 	if areaName == "" {
-		areaName = "NETMAIL"
+		return self.processNewDirectMessage(msgHeader, msgBody)
+	} else {
+		return self.processNewEchoMessage(msgHeader, msgBody)
 	}
 
-	/* Search area */
-	// TODO - a, _ := self.AreaManager.GetAreaByName(areaName)
+	return nil
+}
+
+func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeader, msgBody *packet.MessageBody) error {
+
+	log.Printf("direct: msg = %+v", msgHeader)
+
+	/* Decode headers */
+	newSubject, err1 := self.CharsetManager.DecodeText(msgHeader.Subject)
+	if err1 != nil {
+		return err1
+	}
+	newFrom, err2 := self.CharsetManager.DecodeText(msgHeader.FromUserName)
+	if err2 != nil {
+		return err2
+	}
+	newTo, err3 := self.CharsetManager.DecodeText(msgHeader.ToUserName)
+	if err3 != nil {
+		return err3
+	}
+
+	/* Populate message */
+	newMsg := netmail.NewNetmailMessage()
+
+	newMsg.SetFrom(string(newFrom))
+	newMsg.SetTo(string(newTo))
+	newMsg.SetSubject(string(newSubject))
+
+	// TODO - populate message ...
+
+	/* Decode message */
+	charsetKludge := msgBody.GetKludge("CHRS", "CP866 2")
+	charset := self.parseCharsetKludge(charsetKludge)
+
+	/* Determine msgid */
+	msgid := msgBody.GetKludge("MSGID", "")
+	msgid = strings.Trim(msgid, " ")
+	log.Printf("msgid = %s", msgid)
+	msgidParts := strings.Split(msgid, " ")
+	var msgHash string
+	if len(msgidParts) == 2 {
+		//source := msgidParts[0]
+		msgHash = msgidParts[1]
+	}
+
+	newMsg.SetMsgID(msgid)
+	newMsg.SetHash(msgHash)
+
+	/* Decode message body */
+	newBody, err9 := self.decodeMessageBody(msgBody.RAW, charset)
+	if err9 != nil {
+		return err9
+	}
+
+	newMsg.SetContent(newBody)
+
+	/* Write message */
+	err := self.NetmailManager.Write(newMsg)
+	log.Printf("err = %v", err)
+
+	return nil
+
+}
+
+func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader, msgBody *packet.MessageBody) error {
+
+	areaName := msgBody.GetArea()
 
 	/* Auto create area */
 	a := area.NewArea()
@@ -137,45 +205,43 @@ func (self *Tosser) processNewMessage(msgHeader *packet.PacketMessageHeader, raw
 		return err9
 	}
 	if exists {
-
 		log.Printf("Message %s already exists", msgHash)
 		self.StatManager.RegisterDupe()
-
-	} else {
-
-		/* Decode headers */
-		newSubject, err1 := self.CharsetManager.DecodeText(msgHeader.Subject)
-		if err1 != nil {
-			return err1
-		}
-		newFrom, err2 := self.CharsetManager.DecodeText(msgHeader.FromUserName)
-		if err2 != nil {
-			return err2
-		}
-		newTo, err3 := self.CharsetManager.DecodeText(msgHeader.ToUserName)
-		if err3 != nil {
-			return err3
-		}
-
-		/* Create msgapi.Message */
-		newMsg := new(msg.Message)
-		newMsg.SetMsgID(msgid)
-		newMsg.SetMsgHash(msgHash)
-		newMsg.SetArea(areaName)
-		newMsg.SetFrom(string(newFrom))
-		newMsg.SetTo(string(newTo))
-		newMsg.SetSubject(string(newSubject))
-		newMsg.SetTime(msgTime)
-
-		newMsg.SetContent(newBody)
-
-		/* Store message */
-		err := self.MessageManager.Write(newMsg)
-		log.Printf("err = %v", err)
-
-		/* Update counter */
-		self.StatManager.RegisterMessage()
+		return nil
 	}
+
+	/* Decode headers */
+	newSubject, err1 := self.CharsetManager.DecodeText(msgHeader.Subject)
+	if err1 != nil {
+		return err1
+	}
+	newFrom, err2 := self.CharsetManager.DecodeText(msgHeader.FromUserName)
+	if err2 != nil {
+		return err2
+	}
+	newTo, err3 := self.CharsetManager.DecodeText(msgHeader.ToUserName)
+	if err3 != nil {
+		return err3
+	}
+
+	/* Create msgapi.Message */
+	newMsg := new(msg.Message)
+	newMsg.SetMsgID(msgid)
+	newMsg.SetMsgHash(msgHash)
+	newMsg.SetArea(areaName)
+	newMsg.SetFrom(string(newFrom))
+	newMsg.SetTo(string(newTo))
+	newMsg.SetSubject(string(newSubject))
+	newMsg.SetTime(msgTime)
+
+	newMsg.SetContent(newBody)
+
+	/* Store message */
+	err := self.MessageManager.Write(newMsg)
+	log.Printf("err = %v", err)
+
+	/* Update counter */
+	self.StatManager.RegisterMessage()
 
 	return nil
 }
