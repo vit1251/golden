@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/stat"
 	"github.com/vit1251/golden/pkg/tosser"
 	"log"
 	"net/http"
@@ -19,8 +20,10 @@ func NewNetmailComposeCompleteAction() (*NetmailComposeCompleteAction) {
 func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var tosserManager *tosser.TosserManager
-	self.Container.Invoke(func(tm *tosser.TosserManager) {
+	var statManager *stat.StatManager
+	self.Container.Invoke(func(tm *tosser.TosserManager, sm *stat.StatManager) {
 		tosserManager = tm
+		statManager = sm
 	})
 
 	/* Parse */
@@ -45,7 +48,15 @@ func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 
 	/* Delivery message */
 	if err := tosserManager.WriteNetmailMessage(nm); err != nil {
-		panic(err)
+		log.Printf("Fail on WriteNetmailMessage: err = %+v", err)
+	}
+
+	/* Register packet */
+	if err := statManager.RegisterOutPacket(); err != nil {
+		log.Printf("Fail on RegisterInPacket: err = %+v", err)
+	}
+	if err := statManager.RegisterOutMessage(); err != nil {
+		log.Printf("Fail on RegisterOutMessage: err = %+v", err)
 	}
 
 	/* Redirect */

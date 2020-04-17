@@ -22,4 +22,5 @@ func (mm *MigrationManager) Check() {
 	new(Migration_20200402_0003).Up(mm.conn)
 	new(Migration_20200402_0004).Up(mm.conn)
 	new(Migration_20200402_0005).Up(mm.conn)
+	new(Migration_20200417_0006).Up(mm.conn)
 }

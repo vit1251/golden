@@ -126,6 +126,27 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 		msgHash = msgidParts[1]
 	}
 
+	/* Determine zone */
+	zone := msgBody.GetKludge("TZUTC", " 0300")
+	log.Printf("zone = %+v", zone)
+	zone = strings.Trim(zone, " \t")
+	zParser := fidotime.NewTimeZoneParser()
+	msgZone, err10 := zParser.Parse(zone)
+	if err10 != nil {
+		return err10
+	}
+	log.Printf("Message zone: zone = %+v", msgZone)
+
+	log.Printf("orig: msgTime = %+v", msgHeader.Time)
+	msgTime, err11 := msgHeader.Time.CreateTime(msgZone)
+	if err11 != nil {
+		return err11
+	}
+	log.Printf("msgTime = %+v", msgTime)
+	log.Printf("msgTime (Local) = %+v", msgTime.Local())
+
+	newMsg.SetTime(msgTime)
+
 	newMsg.SetMsgID(msgid)
 	newMsg.SetHash(msgHash)
 
@@ -241,7 +262,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	log.Printf("err = %v", err)
 
 	/* Update counter */
-	self.StatManager.RegisterMessage()
+	self.StatManager.RegisterInMessage()
 
 	return nil
 }
@@ -304,7 +325,7 @@ func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) error {
 		panic(err0)
 	}
 
-	self.StatManager.RegisterPacket(item.AbsolutePath)
+	self.StatManager.RegisterInPacket()
 
 	err1 := self.ProcessPacket(item.AbsolutePath)
 	if err1 != nil {
@@ -323,7 +344,6 @@ func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) error {
 }
 
 func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
-	self.StatManager.RegisterARCmail(item.AbsolutePath)
 
 	/**/
 	newInbTempDir, err0 := self.SetupManager.Get("main", "TempInbound", "")
@@ -340,9 +360,10 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
 	for _, p := range packets {
 		log.Printf("-- Process FTN packets %+v", packets)
 
-		/**/
-		err2 := self.StatManager.RegisterPacket(p)
-		log.Printf("error durng report stat package: err = %+v", err2)
+		/* Register packet */
+		if err := self.StatManager.RegisterInPacket(); err != nil {
+			log.Printf("Fail on RegisterInPacket: err = %+v", err)
+		}
 
 		/**/
 		err3 := self.ProcessPacket(p)
@@ -417,7 +438,7 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	self.FileManager.RegisterFile(tic)
 
 	/* Register status */
-	self.StatManager.RegisterFile(tic.File)
+	self.StatManager.RegisterInFile(tic.File)
 
 	/* Remove TIC descriptor */
 	areaTicLocation := path.Join(areaLocation, item.Name)

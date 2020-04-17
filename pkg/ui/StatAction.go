@@ -61,10 +61,15 @@ func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			fmt.Sprintf("%d", stat.TicReceived),
 			fmt.Sprintf("%d", stat.TicSent))
 
-	self.createMetric(statWidget,
-			"Total Echomail",
-			fmt.Sprintf("%d", stat.EchomailReceived),
-			fmt.Sprintf("%d", stat.EchomailSent))
+	//self.createMetric(statWidget,
+	//		"Total Echomail",
+	//		fmt.Sprintf("%d", stat.EchomailReceived),
+	//		fmt.Sprintf("%d", stat.EchomailSent))
+	//
+	//self.createMetric(statWidget,
+	//	"Total Netmail",
+	//	fmt.Sprintf("%d", stat.NetmailReceived),
+	//	fmt.Sprintf("%d", stat.NetmailSent))
 
 	self.createMetric(statWidget,
 			"Total Packet",
@@ -81,10 +86,10 @@ func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			fmt.Sprintf("%d", stat.SessionIn),
 			fmt.Sprintf("%d", stat.SessionOut))
 
-	self.createMetric(statWidget,
-		"Total session time",
-		"N/A",
-		"N/A")
+	//self.createMetric(statWidget,
+	//	"Total session time",
+	//	"N/A",
+	//	"N/A")
 
 	vBox.Add(statWidget)
 

@@ -35,17 +35,17 @@ func (self *NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	msgHash := vars["msgid"]
 	msg, err3 := netmailManager.GetMessageByHash(msgHash)
 	if err3 != nil {
-		response := fmt.Sprintf("Fail on GetAreas")
+		response := fmt.Sprintf("Fail on GetMessageByHash")
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
-
-	var content string
-	if msg != nil {
-		content = msg.GetContent()
-	} else {
-		content = "!! Unable restore message !!"
+	if msg == nil {
+		response := fmt.Sprintf("Fail on GetMessageByHash")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
+	content := msg.GetContent()
+
 	//
 	mtp := msgProc.NewMessageTextProcessor()
 	err4 := mtp.Prepare(content)
@@ -99,10 +99,10 @@ func (self *NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("SUBJ"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Subject))))
 
-//	indexTable.AddRow(widgets.NewTableRowWidget().
-//		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("DATE"))).
-//		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
-//			fmt.Sprintf("%s", msg.DateWritten)))))
+	indexTable.AddRow(widgets.NewTableRowWidget().
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("DATE"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
+			fmt.Sprintf("%s", msg.DateWritten)))))
 
 	vBox.Add(indexTable)
 

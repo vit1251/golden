@@ -45,6 +45,15 @@ func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	mmw := widgets.NewMainMenuWidget()
 	vBox.Add(mmw)
 
+	/* Context actions */
+	amw := widgets.NewActionMenuWidget().
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s/remove", area.Name())).
+			SetIcon("icofont-remove").
+			SetLabel("Remove echo"))
+
+	vBox.Add(amw)
+
 	headerWidget := widgets.NewHeaderWidget().
 		SetTitle(fmt.Sprintf("Settings on area %s", area.Name()))
 

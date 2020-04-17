@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/stat"
 	"github.com/vit1251/golden/pkg/tosser"
 	"log"
 	"net/http"
@@ -26,8 +27,10 @@ func (self *ServiceManageCompleteAction) Start() {
 func (self *ServiceManageCompleteAction) Run() error {
 
 	var setupManager *setup.ConfigManager
-	self.Container.Invoke(func(sm *setup.ConfigManager) {
+	var statManager *stat.StatManager
+	self.Container.Invoke(func(sm *setup.ConfigManager, sm2 *stat.StatManager) {
 		setupManager = sm
+		statManager = sm2
 	})
 
 	/* Construct node address */
@@ -68,10 +71,14 @@ func (self *ServiceManageCompleteAction) Run() error {
 	m.SetAddr(newAddress)
 	m.SetSecret(password)
 	m.Start()
+
+	/* Wait complete */
 	m.Wait()
 
 	/* Complete start tosser */
-
+	if err := statManager.RegisterOutSession(); err != nil {
+		log.Printf("Fail on mailer routine: err = %+v", err)
+	}
 
 	return nil
 }

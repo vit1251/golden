@@ -111,6 +111,9 @@ func (self *Mailer) run() {
 	log.Printf("Stop mailer routine")
 	elapsed := time.Since(mailerStart)
 	log.Printf("Mailer session: %+v", elapsed)
+
+	/* Close connection */
+	close(self.connComplete)
 }
 
 func (self *Mailer) Wait() {

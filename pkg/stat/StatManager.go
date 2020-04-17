@@ -37,17 +37,7 @@ func NewStatManager(sm *storage.StorageManager) *StatManager {
 	return statm
 }
 
-func (self *StatManager) RegisterNetmail(filename string) (error) {
-	self.createStat()
-	return nil
-}
-
-func (self *StatManager) RegisterARCmail(filename string) (error) {
-	self.createStat()
-	return nil
-}
-
-func (self *StatManager) RegisterFile(filename string) (error) {
+func (self *StatManager) RegisterInFile(filename string) (error) {
 
 	self.createStat()
 
@@ -58,14 +48,8 @@ func (self *StatManager) RegisterFile(filename string) (error) {
 	return nil
 }
 
-func (self *StatManager) RegisterSession(in int, out int) error {
-
+func (self *StatManager) RegisterOutFile(filename string) (error) {
 	self.createStat()
-
-	query1 := "UPDATE `stat` SET `statFileRXcount` = `statFileRXcount` + 1 WHERE `statDate` = ?"
-	statDate := self.makeToday()
-	self.conn.Exec(query1, statDate)
-
 	return nil
 }
 
@@ -76,8 +60,7 @@ type SummaryRow struct {
 
 func (self *StatManager) GetStatRow(statDate string) (*Stat, error) {
 
-	var statMessageRXcount int64
-	var statMessageTXcount int64
+	var result *Stat = new(Stat)
 
 	/* Step 2. Start SQL transaction */
 	ConnTransaction, err := self.conn.Begin()
@@ -85,7 +68,7 @@ func (self *StatManager) GetStatRow(statDate string) (*Stat, error) {
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `statMessageRXcount`, `statMessageTXcount` FROM `stat` WHERE `statDate` = $1"
+	sqlStmt := "SELECT `statMessageRXcount`, `statMessageTXcount`, `statSessionIn`, `statSessionOut`, `statFileRXcount`, `statFileTXcount`, `statPacketIn`, `statPacketOut` FROM `stat` WHERE `statDate` = $1"
 	log.Printf("sql = %q echoTag = %q", sqlStmt, statDate)
 	rows, err1 := ConnTransaction.Query(sqlStmt, statDate)
 	if err1 != nil {
@@ -94,20 +77,32 @@ func (self *StatManager) GetStatRow(statDate string) (*Stat, error) {
 	defer rows.Close()
 	for rows.Next() {
 
-		err2 := rows.Scan(&statMessageRXcount, &statMessageTXcount)
+		var statMessageInCount int64
+		var statMessageOutCount int64
+		var statSessionInCount int64
+		var statSessionOutCount int64
+		var statFileInCount int64
+		var statFileOutCount int64
+		var statPacketInCount int64
+		var statPacketOutCount int64
+
+		err2 := rows.Scan(&statMessageInCount, &statMessageOutCount, &statSessionInCount, &statSessionOutCount, &statFileInCount, &statFileOutCount, &statPacketInCount, &statPacketOutCount)
 		if err2 != nil{
 			return nil, err2
 		}
 
+		result.MessageReceived = int(statMessageInCount)
+		result.MessageSent = int(statMessageOutCount)
+		result.SessionIn = int(statSessionInCount)
+		result.SessionOut = int(statSessionOutCount)
+		result.TicReceived = int(statFileInCount)
+		result.TicSent = int(statFileOutCount)
+		result.PacketReceived = int(statPacketInCount)
+		result.PacketSent = int(statPacketOutCount)
+
 	}
 
 	ConnTransaction.Commit()
-
-	result := new(Stat)
-	result.MessageReceived = int(statMessageRXcount)
-	result.MessageSent = int(statMessageTXcount)
-	//result.TicReceived = statFileRXcount
-	//result.TicSent = statFileTXcount
 
 	return result, nil
 }
@@ -118,8 +113,19 @@ func (self *StatManager) GetStat() (*Stat, error) {
 	return stat, err
 }
 
-func (self *StatManager) RegisterPacket(p string) error {
+func (self *StatManager) RegisterInPacket() error {
 	self.createStat()
+	query1 := "UPDATE `stat` SET `statPacketIn` = `statPacketIn` + 1 WHERE `statDate` = ?"
+	statDate := self.makeToday()
+	self.conn.Exec(query1, statDate)
+	return nil
+}
+
+func (self *StatManager) RegisterOutPacket() error {
+	self.createStat()
+	query1 := "UPDATE `stat` SET `statPacketOut` = `statPacketOut` + 1 WHERE `statDate` = ?"
+	statDate := self.makeToday()
+	self.conn.Exec(query1, statDate)
 	return nil
 }
 
@@ -128,9 +134,17 @@ func (self *StatManager) RegisterDupe() error {
 	return nil
 }
 
-func (self *StatManager) RegisterMessage() error {
+func (self *StatManager) RegisterInMessage() error {
 	self.createStat()
 	query1 := "UPDATE `stat` SET `statMessageRXcount` = `statMessageRXcount` + 1 WHERE `statDate` = ?"
+	statDate := self.makeToday()
+	self.conn.Exec(query1, statDate)
+	return nil
+}
+
+func (self *StatManager) RegisterOutMessage() error {
+	self.createStat()
+	query1 := "UPDATE `stat` SET `statMessageTXcount` = `statMessageTXcount` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
 	self.conn.Exec(query1, statDate)
 	return nil
@@ -148,4 +162,26 @@ func (self *StatManager) createStat() {
 	statDate := self.makeToday()
 	log.Printf("Create stat on %s", statDate)
 	self.conn.Exec(query1, statDate)
+}
+
+func (self *StatManager) RegisterInSession() error {
+
+	self.createStat()
+
+	query1 := "UPDATE `stat` SET `statSessionIn` = `statSessionIn` + 1 WHERE `statDate` = ?"
+	statDate := self.makeToday()
+	self.conn.Exec(query1, statDate)
+
+	return nil
+}
+
+func (self *StatManager) RegisterOutSession() error {
+
+	self.createStat()
+
+	query1 := "UPDATE `stat` SET `statSessionOut` = `statSessionOut` + 1 WHERE `statDate` = ?"
+	statDate := self.makeToday()
+	self.conn.Exec(query1, statDate)
+
+	return nil
 }

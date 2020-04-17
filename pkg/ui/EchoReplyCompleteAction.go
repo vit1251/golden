@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	area2 "github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/stat"
 	"github.com/vit1251/golden/pkg/tosser"
 	"log"
 	"net/http"
@@ -24,10 +25,12 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	var areaManager *area2.AreaManager
 	var messageManager *msg.MessageManager
 	var tosserManager *tosser.TosserManager
-	self.Container.Invoke(func(am *area2.AreaManager, mm *msg.MessageManager, tm *tosser.TosserManager) {
+	var statManager *stat.StatManager
+	self.Container.Invoke(func(am *area2.AreaManager, mm *msg.MessageManager, tm *tosser.TosserManager, sm *stat.StatManager) {
 		areaManager = am
 		messageManager = mm
 		tosserManager = tm
+		statManager = sm
 	})
 
 	//
@@ -75,6 +78,14 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	err4 := tosserManager.WriteEchoMessage(em)
 	if err4 != nil {
 		panic(err4)
+	}
+
+	/* Register packet */
+	if err := statManager.RegisterOutPacket(); err != nil {
+		log.Printf("Fail on RegisterInPacket: err = %+v", err)
+	}
+	if err := statManager.RegisterOutMessage(); err != nil {
+		log.Printf("Fail on RegisterOutMessage: err = %+v", err)
 	}
 
 	//

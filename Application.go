@@ -32,6 +32,14 @@ func NewApplication() *Application {
 
 func (self *Application) Run() {
 
+	stream, err1 := os.OpenFile("debug.log", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	if err1 != nil {
+		log.Printf("Error while open debug.log: err = %+v", err1)
+	}
+	defer stream.Close()
+	log.SetOutput(stream)
+	log.SetFlags(log.Ltime|log.Ldate)
+
 	/* Parse parameters */
 	var servicePort int
 	flag.IntVar(&servicePort, "P", 8080, "Set HTTP service port")
