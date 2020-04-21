@@ -35,6 +35,7 @@ func (self *MailerStateReceive) Process(mailer *Mailer) IMailerState {
 			//
 			if mailer.outStream != nil {
 				mailer.outStream.Close()
+				mailer.InFileCount += 1
 			}
 			//
 			log.Printf("Start receive: row = %s", nextFrame.CommandFrame.Body)

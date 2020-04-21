@@ -41,3 +41,13 @@ func NewStorageManager() *StorageManager {
 
 	return sm
 }
+
+func (self *StorageManager) Query(sql string, params []interface{}, cb func()) {
+
+}
+
+func (self *StorageManager) Exec(query string, params []interface{}, f func(err error)) {
+	log.Printf("sql = %+v params = %+v", query, params)
+	_, err1 := self.conn.Exec(query, params...)
+	f(err1)
+}

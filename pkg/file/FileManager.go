@@ -12,10 +12,18 @@ type FileManager struct {
 }
 
 type FileArea struct {
-	Name    string
+	name    string
 	Path    string
 	Summary string
 	Count   int
+}
+
+func (self *FileArea) SetName(name string) {
+	self.name = name
+}
+
+func (self *FileArea) Name() string {
+	return self.name
 }
 
 func NewFileArea() *FileArea {
@@ -57,7 +65,7 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 		}
 
 		area := NewFileArea()
-		area.Name = areaName
+		area.SetName(areaName)
 		area.Path = areaPath
 		area.Summary = areaSummary
 
@@ -93,7 +101,7 @@ func (self *FileManager) GetAreas2() ([]*FileArea, error) {
 		}
 
 		area := NewFileArea()
-		area.Name = name
+		area.SetName(name)
 		area.Count = count
 
 		result = append(result, area)
@@ -215,7 +223,7 @@ func (self *FileManager) GetAreaByName(areaName string) (*FileArea, error) {
 		log.Printf("row: areaName = %s areaPath = %s areaSummary = %s", areaName1, areaPath1, areaSummary1)
 
 		area := NewFileArea()
-		area.Name = areaName1
+		area.SetName(areaName1)
 		area.Path = areaPath1
 		area.Summary = areaSummary1
 

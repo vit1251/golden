@@ -6,6 +6,7 @@ import (
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/installer"
+	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/setup"
@@ -62,6 +63,11 @@ func (self *Application) Run() {
 	if err := self.Container.Provide(msg.NewMessageManager); err != nil {
 		panic(err)
 	}
+	if err := self.Container.Provide(func() *mailer.MailerManager {
+		return mailer.NewMailerManager(self.Container)
+	}); err != nil {
+		panic(err)
+	}
 	if err := self.Container.Provide(func() *area.AreaManager {
 		return area.NewAreaManager(self.Container)
 	}); err != nil {
@@ -100,6 +106,11 @@ func (self *Application) Run() {
 		newGoldenSite.SetPort(servicePort)
 		go newGoldenSite.Start()
 	})
+	self.Container.Invoke(func(mm *mailer.MailerManager) {
+		mm.Start()
+	})
+
+	/* Start mailer */
 
 	/* Wait sigs */
 	sigs := make(chan os.Signal, 1)

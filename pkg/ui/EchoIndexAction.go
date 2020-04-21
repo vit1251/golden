@@ -32,18 +32,6 @@ func (self *EchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//             <a class="table-row" href="/echo/{{ $area.Name }}" style="color: white">
-	//                <div class="table-cell">{{ $area.Name }}</div>
-	//                <div class="table-cell">{{ $area.Summary }}</div>
-	//                <div class="table-cell" style="text-align: right">
-	//{{ if $area.NewMessageCount }}
-	//                        <span style="font-weight: bold">{{ $area.NewMessageCount }}</span>
-	//                        <span> / </span>
-	//{{ end }}
-	//                        <span class="">{{ $area.MessageCount }}</span>
-	//                </div>
-	//            </a>
-
 	bw := widgets.NewBaseWidget()
 
 	vBox := widgets.NewVBoxWidget()

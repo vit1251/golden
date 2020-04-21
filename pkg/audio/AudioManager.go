@@ -6,12 +6,29 @@ import (
 	"github.com/faiface/beep/speaker"
 	"log"
 	"os"
+	path2 "path"
 	"time"
 )
 
-func Play() {
+type AudioManager struct {
+	basePath string
+}
 
-	path := "C:\\WORK\\golden\\static\\audio\\snd_toyou.mp3"
+func NewAudioManager() *AudioManager {
+	am := new(AudioManager)
+//	am.basePath = "C:\\WORK\\golden\\static\\audio\\modern"
+//	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	am.basePath = path2.Join(dir, "static", "audio", "modern")
+	return am
+}
+
+func (self *AudioManager) Play(name string) {
+
+	path := path2.Join(self.basePath, name)
 
 	f, err := os.Open(path)
 	if err != nil {

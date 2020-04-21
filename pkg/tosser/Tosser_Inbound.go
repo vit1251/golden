@@ -418,7 +418,7 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	if fa == nil {
 		/* Prepare area */
 		newFa := file.NewFileArea()
-		newFa.Name = tic.Area
+		newFa.SetName(tic.Area)
 		newFa.Path = areaLocation
 		/* Create area */
 		if err := self.FileManager.CreateArea(newFa); err != nil {

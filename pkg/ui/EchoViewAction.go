@@ -67,7 +67,8 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Play */
 	if msg.To == realName {
-		audio.Play()
+		am := audio.NewAudioManager()
+		am.Play("short-notice.mp3")
 	}
 
 	var content string

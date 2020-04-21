@@ -57,6 +57,19 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	mmw := widgets.NewMainMenuWidget()
 	vBox.Add(mmw)
 
+	/* Context actions */
+	amw := widgets.NewActionMenuWidget().
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/file/%s/compose", area.Name())).
+			SetIcon("icofont-edit").
+			SetLabel("Compose")).
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/file/%s/update", area.Name())).
+			SetIcon("icofont-update").
+			SetLabel("Settings"))
+
+	vBox.Add(amw)
+
 	indexTable := widgets.NewTableWidget().
 		SetClass("table")
 

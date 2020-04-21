@@ -9,7 +9,8 @@ import (
 )
 
 type StatManager struct {
-	conn *sql.DB
+	conn           *sql.DB
+	storageManager *storage.StorageManager
 }
 
 type Stat struct {
@@ -32,23 +33,26 @@ type Stat struct {
 
 func NewStatManager(sm *storage.StorageManager) *StatManager {
 	statm := new(StatManager)
+	statm.storageManager = sm
 	statm.conn = sm.GetConnection()
 	statm.createStat()
 	return statm
 }
 
-func (self *StatManager) RegisterInFile(filename string) (error) {
-
+func (self *StatManager) RegisterInFile(filename string) error {
 	self.createStat()
-
-	query1 := "UPDATE `stat` SET `statFileRXcount` = `statFileRXcount` + 1 WHERE `statDate` = ?"
+	//
+	query := "UPDATE `stat` SET `statFileRXcount` = `statFileRXcount` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
-	self.conn.Exec(query1, statDate)
-
+	var params []interface{}
+	params = append(params, statDate)
+	self.storageManager.Exec(query, params, func(err error) {
+		log.Printf("Error: err = %+v", err)
+	})
 	return nil
 }
 
-func (self *StatManager) RegisterOutFile(filename string) (error) {
+func (self *StatManager) RegisterOutFile(filename string) error {
 	self.createStat()
 	return nil
 }
@@ -115,17 +119,27 @@ func (self *StatManager) GetStat() (*Stat, error) {
 
 func (self *StatManager) RegisterInPacket() error {
 	self.createStat()
-	query1 := "UPDATE `stat` SET `statPacketIn` = `statPacketIn` + 1 WHERE `statDate` = ?"
+	//
+	query := "UPDATE `stat` SET `statPacketIn` = `statPacketIn` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
-	self.conn.Exec(query1, statDate)
+	var params []interface{}
+	params = append(params, statDate)
+	self.storageManager.Exec(query, params, func(err error) {
+		log.Printf("Error: err = %+v", err)
+	})
 	return nil
 }
 
 func (self *StatManager) RegisterOutPacket() error {
 	self.createStat()
-	query1 := "UPDATE `stat` SET `statPacketOut` = `statPacketOut` + 1 WHERE `statDate` = ?"
+	//
+	query := "UPDATE `stat` SET `statPacketOut` = `statPacketOut` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
-	self.conn.Exec(query1, statDate)
+	var params []interface{}
+	params = append(params, statDate)
+	self.storageManager.Exec(query, params, func(err error) {
+		log.Printf("Error: err = %+v", err)
+	})
 	return nil
 }
 
@@ -136,17 +150,27 @@ func (self *StatManager) RegisterDupe() error {
 
 func (self *StatManager) RegisterInMessage() error {
 	self.createStat()
-	query1 := "UPDATE `stat` SET `statMessageRXcount` = `statMessageRXcount` + 1 WHERE `statDate` = ?"
+	//
+	query := "UPDATE `stat` SET `statMessageRXcount` = `statMessageRXcount` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
-	self.conn.Exec(query1, statDate)
+	var params []interface{}
+	params = append(params, statDate)
+	self.storageManager.Exec(query, params, func(err error) {
+		log.Printf("Error: err = %+v", err)
+	})
 	return nil
 }
 
 func (self *StatManager) RegisterOutMessage() error {
 	self.createStat()
-	query1 := "UPDATE `stat` SET `statMessageTXcount` = `statMessageTXcount` + 1 WHERE `statDate` = ?"
+	/* Update statistic */
+	query := "UPDATE `stat` SET `statMessageTXcount` = `statMessageTXcount` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
-	self.conn.Exec(query1, statDate)
+	var params []interface{}
+	params = append(params, statDate)
+	self.storageManager.Exec(query, params, func(err error) {
+		log.Printf("Error: err = %+v", err)
+	})
 	return nil
 }
 
@@ -158,30 +182,40 @@ func (self *StatManager) makeToday() string {
 }
 
 func (self *StatManager) createStat() {
-	query1 := "INSERT INTO `stat` (`statDate`) VALUES ( ? )"
+	/* Update statistic */
+	query := "INSERT INTO `stat` (`statDate`) VALUES ( ? )"
 	statDate := self.makeToday()
-	log.Printf("Create stat on %s", statDate)
-	self.conn.Exec(query1, statDate)
+	var params []interface{}
+	params = append(params, statDate)
+	self.storageManager.Exec(query, params, func(err error) {
+		log.Printf("Error: err = %+v", err)
+	})
 }
 
 func (self *StatManager) RegisterInSession() error {
-
+	/* Initialize statistic record */
 	self.createStat()
-
-	query1 := "UPDATE `stat` SET `statSessionIn` = `statSessionIn` + 1 WHERE `statDate` = ?"
+	/* Update statistic */
+	query := "UPDATE `stat` SET `statSessionIn` = `statSessionIn` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
-	self.conn.Exec(query1, statDate)
-
+	var params []interface{}
+	params = append(params, statDate)
+	self.storageManager.Exec(query, params, func(err error) {
+		log.Printf("Error: err = %+v", err)
+	})
 	return nil
 }
 
 func (self *StatManager) RegisterOutSession() error {
-
+	/* Initialize statistic record */
 	self.createStat()
-
-	query1 := "UPDATE `stat` SET `statSessionOut` = `statSessionOut` + 1 WHERE `statDate` = ?"
+	/* Update statistic */
+	query := "UPDATE `stat` SET `statSessionOut` = `statSessionOut` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
-	self.conn.Exec(query1, statDate)
-
+	var params []interface{}
+	params = append(params, statDate)
+	self.storageManager.Exec(query, params, func(err error) {
+		log.Printf("Error: err = %+v", err)
+	})
 	return nil
 }

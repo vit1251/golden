@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/vit1251/golden/pkg/setup"
-	"io"
 	"log"
 	"net"
 	"os"
@@ -51,7 +50,9 @@ type Mailer struct {
 	recvUnix          int                    /*  */
 	recvName          string                 /*   */
 	TempOutbound      string                 /*  */
-	SetupManager     *setup.ConfigManager    /*   */
+	SetupManager      *setup.ConfigManager   /*   */
+	InFileCount       int
+	OutFileCount      int
 }
 
 func NewMailer(sm *setup.ConfigManager) (*Mailer) {
@@ -139,59 +140,6 @@ func (self *Mailer) SetInboundDirectory(inb string) {
 
 func (self *Mailer) SetOutboundDirectory(outb string) {
 	self.outboundDirectory = outb
-}
-
-func (self *Mailer) Transmit(i Item) error {
-
-	/* Open stream */
-	stream, err1 := os.Open(i.AbsolutePath)
-	if err1 != nil {
-		return err1
-	}
-	defer stream.Close()
-
-	/* Some status */
-	streamInfo, err2 := stream.Stat()
-	if err2 != nil {
-		return err2
-	}
-
-	/* Transmit header */
-	// p0018ea8.WE0 39678 1579714843 0
-	streamSize := streamInfo.Size()
-	streamTime := streamInfo.ModTime().Unix()
-	fileStat := fmt.Sprintf("%s %d %d %d", i.Name, streamSize, streamTime, 0)
-	log.Printf("TX %s", fileStat)
-	self.writeHeader(fileStat)
-
-	/* Transmit chunk */
-	var outSize int = int(streamSize)
-	for {
-
-		/* Calculate transmit chunk */
-		chunkSize := Min(outSize, 4096)
-		chunk := make([]byte, chunkSize)
-
-		/* Read */
-		_, err3 := io.ReadFull(stream, chunk)
-		if err3 != nil {
-			return err3
-		}
-
-		/* Transmit chunk */
-		self.writeData(chunk)
-
-		/* Update TX size */
-		outSize -= chunkSize
-		if outSize == 0 {
-			log.Printf("Transmit complete!")
-			break
-		}
-	}
-
-	/* Check error */
-
-	return nil
 }
 
 func Min(x, y int) int {
