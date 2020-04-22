@@ -12,12 +12,14 @@ import (
 )
 
 type MailerManager struct {
-	Container *dig.Container
+	Container    *dig.Container
+	AudioManager *audio.AudioManager
 }
 
 func NewMailerManager(c *dig.Container) *MailerManager {
 	mm := new(MailerManager)
 	mm.Container = c
+	mm.AudioManager = audio.NewAudioManager()
 	return mm
 }
 
@@ -29,7 +31,7 @@ func (self *MailerManager) run() {
 
 	/* Update duration parse */
 	dp := fidotime.NewDurationParser()
-	d, err1 := dp.Parse("10m")
+	d, err1 := dp.Parse("5m")
 	if err1 != nil {
 		log.Printf("Error parse")
 		d = time.Minute * 15
@@ -108,8 +110,9 @@ func (self *MailerManager) processMailer() error {
 
 	/* Audio play */
 	if m.InFileCount > 0 {
-		am := audio.NewAudioManager()
-		am.Play("you-have-new-message.mp3")
+		self.AudioManager.Play("you-have-new-message.mp3")
+	} else {
+		self.AudioManager.Play("i-demand-attention.mp3")
 	}
 
 	return nil
