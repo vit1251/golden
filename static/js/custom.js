@@ -37,9 +37,19 @@ class Application {
         }, 1000);
     }
 
+    registerKeyboard() {
+        Mousetrap.bind('ctrl+left', () => {
+            console.log('Search prev message');
+        });
+        Mousetrap.bind('ctrl+right', () => {
+            console.log('Search next message');
+        });
+    }
+
     run() {
         this.registerHandler();
         this.setupClock();
+        this.registerKeyboard();
     }
 
 }
