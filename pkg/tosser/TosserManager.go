@@ -12,6 +12,7 @@ import (
 	"hash/crc32"
 	"log"
 	"path"
+	"time"
 )
 
 type TosserManager struct {
@@ -55,16 +56,11 @@ func NewTosserManager(c *dig.Container) *TosserManager {
 }
 
 func (self *TosserManager) makePacketName() string {
-	/* Message UUID */
-	u1 := uuid.NewV4()
-	//	u1, err4 := uuid.NewV4()
-	//	if err4 != nil {
-	//		return err4
-	//	}
-
-	/* Create packet name */
-	pktName := fmt.Sprintf("%s.pkt", u1)
-
+	now := time.Now()
+	unixTime := now.Unix()
+	log.Printf("unixTime: dec = %d hex = %x", unixTime, unixTime)
+	pktName := fmt.Sprintf("%08x.pkt", unixTime)
+	log.Printf("pktName: name = %s", pktName)
 	return pktName
 }
 
