@@ -2,6 +2,7 @@
 from invoke import task
 from datetime import datetime
 from shutil import copyfile
+from platform import system as platform_system
 
 @task
 def clean(c):
@@ -33,14 +34,54 @@ def prepare(c):
     c.run('cd contrib && lessc main.less main.css', echo=True)
     copyfile("contrib/main.css", "static/css/main.css")
 
+@task
+def build_w32(c):
+    platform_system_name = platform_system()
+    if platform_system_name == "Windows":
+        env = {
+            "GOOS": "windows",
+            "GOARCH": "386",
+            "CGO_ENABLED": "1",
+        }
+        c.run('go build -o golden-windows-386.exe .', echo=True, env=env)
+
+@task
+def build_w64(c):
+    env = {
+        "GOOS": "windows",
+        "GOARCH": "amd64",
+        "CGO_ENABLED": "1",
+        "CC": "x86_64-w64-mingw32-gcc",
+        "CXX": "x86_64-w64-mingw32-g++",
+    }
+    c.run('go build -o golden-windows-amd64.exe .', echo=True, env=env)
+
+@task
+def build_linux(c):
+    env = {
+        "GOOS": "linux",
+        "GOARCH": "amd64",
+        "CGO_ENABLED": "1"
+    }
+    c.run('go build -o golden-linux-amd64 .', echo=True, env=env)
+
+@task
+def build_darwin(c):
+    platform_system_name = platform_system()
+    if platform_system_name == "Darwin":
+        env = {
+            "GOOS": "darwin",
+            "GOARCH": "amd64",
+            "CGO_ENABLED": "1"
+        }
+        c.run('go build -o golden-darwin-amd64 .', echo=True, env=env)
+
 @task(default=True)
 def build(c):
-    c.run('go build -o golden-windows-386.exe .', echo=True, env={"GOOS": "windows", "GOARCH": "386", "CGO_ENABLED": "1"})
-    c.run('go build -o golden-windows-amd64.exe .', echo=True, env={"GOOS": "windows", "GOARCH": "amd64", "CGO_ENABLED": "1"})
-
-def build2(c):
-    c.run('go build -o golden-linux-amd64 .', echo=True, env={"GOOS": "linux", "GOARCH": "amd64", "CGO_ENABLED": "1"})
-    c.run('go build -o golden-darwin-amd64 .', echo=True, env={"GOOS": "darwin", "GOARCH": "amd64", "CGO_ENABLED": "1"})
+    build_w32(c)
+    build_w64(c)
+    build_linux(c)
+    build_darwin(c)
 
 @task
 def package(c):
@@ -49,12 +90,28 @@ def package(c):
     now = datetime.now()
     stamp = now.strftime("%Y%m%d%H%M%S")
     package_name = "GoldenPoint-windows-{stamp}.zip".format(stamp=stamp)
-    c.run('7z a -tzip {package_name} golden-windows-386.exe'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
-    c.run('7z a -tzip {package_name} golden-windows-amd64.exe'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
-    c.run('7z a -tzip {package_name} README.md'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
-    c.run('7z a -tzip {package_name} LICENSE'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
-    c.run('7z a -tzip {package_name} static'.format(package_name=package_name), echo=True, env={"PATH": "C:\\Program Files\\7-Zip"})
+    #
+    platform_system_name = platform_system()
+    if platform_system_name == "Darwin":
+        env = {
+            "PATH": "C:\\Program Files\\7-Zip",
+        }
+        c.run('7z a -tzip {package_name} golden-windows-386.exe'.format(package_name=package_name), echo=True, env=env, warn=True)
+        c.run('7z a -tzip {package_name} golden-linux-amd64'.format(package_name=package_name), echo=True, env=env, warn=True)
+        c.run('7z a -tzip {package_name} golden-windows-amd64.exe'.format(package_name=package_name), echo=True, env=env, warn=True)
+        c.run('7z a -tzip {package_name} README.md'.format(package_name=package_name), echo=True, env=env, warn=True)
+        c.run('7z a -tzip {package_name} LICENSE'.format(package_name=package_name), echo=True, env=env, warn=True)
+        c.run('7z a -tzip {package_name} static'.format(package_name=package_name), echo=True, env=env, warn=True)
+    elif platform_system_name == "Linux":
+        c.run('zip {package_name} golden-windows-386.exe'.format(package_name=package_name), echo=True, warn=True)
+        c.run('zip {package_name} golden-linux-amd64'.format(package_name=package_name), echo=True, warn=True)
+        c.run('zip {package_name} golden-windows-amd64.exe'.format(package_name=package_name), echo=True, warn=True)
+        c.run('zip {package_name} README.md'.format(package_name=package_name), echo=True, warn=True)
+        c.run('zip {package_name} LICENSE'.format(package_name=package_name), echo=True, warn=True)
+        c.run('zip -r {package_name} static'.format(package_name=package_name), echo=True, warn=True)
+    else:
+        raise RuntimeError('Unknown system {platform_system_name}'.format(platform_system_name=platform_system_name))
 
 @task
 def debug(c):
-    c.run('golden.exe >golden_service.log 2>golden_service_err.log', echo=True)
+    c.run('golden.exe', echo=True)

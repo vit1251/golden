@@ -1,12 +1,12 @@
 .idea
-__main__
 *.log
 go.sum
 *.pkt
-golden
 *.bak
 *.deb
 package
-*.exe
 work
 *.zip
+golden-linux-amd64
+golden-windows-386.exe
+golden-windows-amd64.exe
