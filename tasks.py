@@ -58,23 +58,37 @@ def build_w64(c):
 
 @task
 def build_linux(c):
-    env = {
-        "GOOS": "linux",
-        "GOARCH": "amd64",
-        "CGO_ENABLED": "1"
-    }
-    c.run('go build -o golden-linux-amd64 .', echo=True, env=env)
+    platform_system_name = platform_system()
+    if platform_system_name == "Windows":
+        pass
+    elif platform_system_name == "Darwin":
+        pass
+    elif platform_system_name == "Linux":
+        env = {
+            "GOOS": "linux",
+            "GOARCH": "amd64",
+            "CGO_ENABLED": "1"
+        }
+        c.run('go build -o golden-linux-amd64 .', echo=True, env=env)
+    else:
+        raise RuntimeError('Unknown system {platform_system_name}'.format(platform_system_name=platform_system_name))
 
 @task
 def build_darwin(c):
     platform_system_name = platform_system()
-    if platform_system_name == "Darwin":
+    if platform_system_name == "Windows":
+        pass
+    elif platform_system_name == "Linux":
+        pass
+    elif platform_system_name == "Darwin":
         env = {
             "GOOS": "darwin",
             "GOARCH": "amd64",
             "CGO_ENABLED": "1"
         }
         c.run('go build -o golden-darwin-amd64 .', echo=True, env=env)
+    else:
+        raise RuntimeError('Unknown system {platform_system_name}'.format(platform_system_name=platform_system_name))
 
 @task(default=True)
 def build(c):
@@ -88,11 +102,13 @@ def package(c):
     """ Create 
     """
     now = datetime.now()
-    stamp = now.strftime("%Y%m%d%H%M%S")
-    package_name = "GoldenPoint-windows-{stamp}.zip".format(stamp=stamp)
+    stamp = now.strftime("%Y%m%d")
+    package_name = "GoldenPoint-{stamp}.zip".format(stamp=stamp)
     #
     platform_system_name = platform_system()
     if platform_system_name == "Darwin":
+        pass
+    elif platform_system_name == "Windows":
         env = {
             "PATH": "C:\\Program Files\\7-Zip",
         }
