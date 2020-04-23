@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -36,7 +37,7 @@ type Mailer struct {
 	conn              net.Conn               /* Network address             */
 	reader            *bufio.Reader          /* Network address             */
 	writer            *bufio.Writer          /* Network address             */
-	sessionComplete   chan bool              /* Network address             */
+	wait              sync.WaitGroup         /* Add wait */
 	addr              string                 /* Network address             */
 	secret            string                 /* Secret password             */
 	ServerAddr        string                 /*  */
@@ -96,6 +97,10 @@ func (self *Mailer) Start() {
 }
 
 func (self *Mailer) run() {
+
+	/* Add wait */
+	self.wait.Add(1)
+
 	mailerStart := time.Now()
 	log.Printf("Start mailer routine")
 	for {
@@ -114,11 +119,12 @@ func (self *Mailer) run() {
 	log.Printf("Mailer session: %+v", elapsed)
 
 	/* Close connection */
-	close(self.connComplete)
+	self.wait.Done()
+
 }
 
 func (self *Mailer) Wait() {
-	<- self.connComplete
+	self.wait.Wait()
 }
 
 func (self *Mailer) SetSessionSetupState(state SessionSetupStageState) {

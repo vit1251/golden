@@ -9,14 +9,16 @@ import (
 )
 
 type MessageManager struct {
-	conn *sql.DB
-	cm   *charset.CharsetManager
+	conn           *sql.DB
+	CharsetManager *charset.CharsetManager
+	StorageManager *storage.StorageManager
 }
 
 func NewMessageManager(sm *storage.StorageManager, cm *charset.CharsetManager) *MessageManager {
 	mm := new(MessageManager)
 	mm.conn = sm.GetConnection()
-	mm.cm = cm
+	mm.CharsetManager = cm
+	mm.StorageManager = sm
 	return mm
 }
 
@@ -310,32 +312,25 @@ func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string
 
 func (self *MessageManager) Write(msg *Message) (error) {
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return err
-	}
-
 	/* Step 3. Make prepare SQL insert query */
-	sqlStmt := "INSERT INTO message "+
-	           "    (msgMsgId, msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate) " +
-	           "  VALUES " + 
-	           "    (?, ?, ?, ?, ?, ?, ?, ?)"
-	log.Printf("sql = %q", sqlStmt)
-	stmt, err3 := ConnTransaction.Prepare(sqlStmt)
-	if err3 != nil {
-		return err3
-	}
-	defer stmt.Close()
+	query1 := "INSERT INTO message " +
+	           "(msgMsgId, msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate) " +
+	           "VALUES " +
+	           "(?, ?, ?, ?, ?, ?, ?, ?)"
 
-	/* Step 4. Invoke prepare SQL insert query */
-	_, err4 := stmt.Exec(msg.MsgID, msg.Hash, msg.Area, msg.From, msg.To, msg.Subject, msg.Content, msg.UnixTime)
-	if err4 != nil {
-		return err4
-	}
+	var params []interface{}
+	params = append(params, msg.MsgID)
+	params = append(params, msg.Hash)
+	params = append(params, msg.Area)
+	params = append(params, msg.From)
+	params = append(params, msg.To)
+	params = append(params, msg.Subject)
+	params = append(params, msg.Content)
+	params = append(params, msg.UnixTime)
 
-	/* Step 5. Commit SQL transaction */
-	ConnTransaction.Commit()
+	self.StorageManager.Exec(query1, params, func(err error) {
+		log.Printf("Insert complete with: err = %+v", err)
+	})
 
 	return nil
 

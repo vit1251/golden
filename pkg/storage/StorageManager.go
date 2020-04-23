@@ -5,6 +5,7 @@ import (
 	"log"
 	"os/user"
 	"path/filepath"
+	"time"
 )
 
 type StorageManager struct {
@@ -48,6 +49,9 @@ func (self *StorageManager) Query(sql string, params []interface{}, cb func()) {
 
 func (self *StorageManager) Exec(query string, params []interface{}, f func(err error)) {
 	log.Printf("sql = %+v params = %+v", query, params)
+	start := time.Now()
 	_, err1 := self.conn.Exec(query, params...)
+	age := time.Since(start)
+	log.Printf("exec duation: duration = %+v", age)
 	f(err1)
 }

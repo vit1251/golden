@@ -66,9 +66,23 @@ func (self *EchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.Summary)))
 
 		if area.NewMessageCount > 0 {
-			cell := widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(fmt.Sprintf("%d / %d", area.NewMessageCount, area.MessageCount)))
-			cell.SetClass("echo-index-item-count-new")
+
+			hBox := widgets.NewVBoxWidget()
+
+			newMsgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.NewMessageCount))
+			separator := widgets.NewTextWidgetWithText(" / ")
+			msgCount :=	widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.MessageCount))
+
+			newMsgCount.SetClass("echo-index-item-count-new")
+
+			hBox.Add(newMsgCount)
+			hBox.Add(separator)
+			hBox.Add(msgCount)
+
+			cell := widgets.NewTableCellWidget().SetWidget(hBox)
+			cell.SetClass("echo-index-item-count")
 			row.AddCell(cell)
+
 		} else {
 			cell := widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.MessageCount)))
 			cell.SetClass("echo-index-item-count")

@@ -13,7 +13,7 @@ type MessageContent struct {
 
 func (self *MessageManager) NewMessageContent() *MessageContent {
 	mc := new(MessageContent)
-	mc.cm = self.cm
+	mc.cm = self.CharsetManager
 	return mc
 }
 

@@ -52,6 +52,7 @@ func (self *FileAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	for _, area := range areas {
 		log.Printf("area = %+v", area)
+
 		indexTable.AddRow(widgets.NewTableRowWidget().
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.Name()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.Summary))).
@@ -59,7 +60,7 @@ func (self *FileAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 				fmt.Sprintf("%d", area.Count)))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
 				SetContent("View").
-				SetLink(fmt.Sprintf("/file/%s", area.Name)))))
+				SetLink(fmt.Sprintf("/file/%s", area.Name())))))
 	}
 
 	vBox.Add(indexTable)

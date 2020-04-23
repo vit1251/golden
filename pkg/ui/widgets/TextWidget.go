@@ -7,6 +7,7 @@ import (
 
 type TextWidget struct {
 	content string
+	class string
 }
 
 func NewTextWidget() *TextWidget {
@@ -20,7 +21,12 @@ func NewTextWidgetWithText(content string) *TextWidget {
 	return tw
 }
 
+func (self *TextWidget) SetClass(class string) *TextWidget {
+	self.class = class
+	return self
+}
+
 func (self *TextWidget) Render(w http.ResponseWriter) error {
-	fmt.Fprintf(w, "%s", self.content)
+	fmt.Fprintf(w, "<span class=\"%s\">%s</span>", self.class, self.content)
 	return nil
 }
