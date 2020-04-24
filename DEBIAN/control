@@ -1,5 +1,5 @@
 Package: gpoint
-Version: 1.2.11-1
+Version: 1.2.12-1
 Section: misc
 Architecture: amd64
 Depends:

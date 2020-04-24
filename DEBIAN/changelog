@@ -1,3 +1,15 @@
+gpoint (1.2.12-1) stable; urgency=medium
+ - Create TearLine and Origin variable template (enhancement)
+ - Fix cross compilation scenario (bug)
+ - Update audio events (enhancement)
+ - Automatic mailer delivery (enhancement)
+ - Statistics improvements (enhancement)
+ - Store logging message in debug.log (enhancement)
+ - Outbound package name too long (bug)
+ - Binkp TCP connection not closed (bug)
+ - Netmail receive as Echomail (bug)
+ - Outgoing packets are not password signed (bug)
+ - Wrong message kludge parser (bug)
 gpoint (1.2.11-1) stable; urgency=medium
  - Customize HTTP service port enhancement
  - Implement basic audio event enhancement

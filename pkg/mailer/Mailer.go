@@ -186,5 +186,5 @@ func (self *Mailer) writeHeader(stat string) error {
 }
 
 func (self *Mailer) GetVersion() string {
-	return "1.2.11"
+	return "1.2.12"
 }

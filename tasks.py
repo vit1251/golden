@@ -14,7 +14,7 @@ def depend(c):
     c.run('go get -v -u', echo=True)
 
 @task
-def package(c, version="1.2.11"):
+def package(c, version="1.2.12-1"):
     c.run('install -m 0755 -d ./package')
     c.run('install -m 0755 -d ./package/DEBIAN')
     c.run('install -m 0755 -d ./package/usr/local/bin')

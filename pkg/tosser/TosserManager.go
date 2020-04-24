@@ -160,6 +160,7 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	t := tmpl.NewTemplate()
 	newTearLine, _ := t.Render(TearLine)
 	newOrigin, _ := t.Render(Origin)
+	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
 
 	/* Construct message content */
 	msgContent := self.MessageManager.NewMessageContent()
@@ -189,7 +190,7 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	msgBody.AddKludge("CHRS", "CP866 2")
 	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", myAddr, hs))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
-	msgBody.AddKludge("TID", "golden/win 1.2.11 2020-04-11 14:30 MSK (master)")
+	msgBody.AddKludge("TID", newTID)
 	if em.Reply != "" {
 		msgBody.AddKludge("REPLY", em.Reply)
 	}
@@ -302,6 +303,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	t := tmpl.NewTemplate()
 	newTearLine, _ := t.Render(params.TearLine)
 	newOrigin, _ := t.Render(params.Origin)
+	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
 
 	/* Construct message content */
 	msgContent := self.MessageManager.NewMessageContent()
@@ -326,7 +328,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	msgBody.AddKludge("CHRS", "CP866 2")
 	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", params.From, hs))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
-	msgBody.AddKludge("TID", "golden/win 1.2.11 2020-04-11 14:30 MSK (master)")
+	msgBody.AddKludge("TID", newTID)
 	msgBody.AddKludge("FMPT", fmt.Sprintf("%d", msgHeader.OrigAddr.Point))
 	msgBody.AddKludge("TOPT", fmt.Sprintf("%d", msgHeader.DestAddr.Point))
 
