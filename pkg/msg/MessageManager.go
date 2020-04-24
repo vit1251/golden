@@ -16,7 +16,6 @@ type MessageManager struct {
 
 func NewMessageManager(sm *storage.StorageManager, cm *charset.CharsetManager) *MessageManager {
 	mm := new(MessageManager)
-	mm.conn = sm.GetConnection()
 	mm.CharsetManager = cm
 	mm.StorageManager = sm
 	return mm
@@ -26,30 +25,18 @@ func (self *MessageManager) GetAreaList() ([]string, error) {
 
 	var result []string
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return nil, err
-	}
+	query1 := "SELECT DISTINCT(`msgArea`) AS `name` FROM `message` ORDER BY `name` ASC"
+	var params []interface{}
 
-	/* Step 3. Make SQL query */
-	sqlStmt := "SELECT DISTINCT(`msgArea`) AS `name` FROM `message` ORDER BY `name` ASC"
-	rows, err1 := ConnTransaction.Query(sqlStmt)
-	if err1 != nil {
-		return nil, err1
-	}
-	defer rows.Close()
-	for rows.Next() {
+	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
 		var name string
 		err2 := rows.Scan(&name)
-		if err2 != nil{
-			return nil, err2
+		if err2 != nil {
+			return err2
 		}
 		result = append(result, name)
-	}
-
-	/* Step 4. Release SQL transaction */
-	ConnTransaction.Commit()
+		return nil
+	})
 
 	return result, nil
 }
@@ -58,32 +45,22 @@ func (self *MessageManager) GetAreaList2() ([]*Area, error) {
 
 	var result []*Area
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return nil, err
-	}
+	query1 := "SELECT `msgArea`, count(`msgId`) AS `msgCount` FROM `message` GROUP BY `msgArea` ORDER BY `msgArea` ASC"
+	var params []interface{}
 
-	sqlStmt := "SELECT `msgArea`, count(`msgId`) AS `msgCount` FROM `message` GROUP BY `msgArea` ORDER BY `msgArea` ASC"
-	rows, err1 := ConnTransaction.Query(sqlStmt)
-	if err1 != nil {
-		return nil, err1
-	}
-	defer rows.Close()
-	for rows.Next() {
+	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
 		var name string
 		var count int
 		err2 := rows.Scan(&name, &count)
-		if err2 != nil{
-			return nil, err2
+		if err2 != nil {
+			return err2
 		}
 		a := NewArea()
 		a.SetName(name)
 		a.Count = count
 		result = append(result, a)
-	}
-
-	ConnTransaction.Commit()
+		return nil
+	})
 
 	return result, nil
 }
@@ -92,32 +69,23 @@ func (self *MessageManager) GetAreaList3() ([]*Area, error) {
 
 	var result []*Area
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return nil, err
-	}
+	query1 := "SELECT `msgArea`, count(`msgId`) AS `msgCount` FROM `message` WHERE `msgViewCount` = 0 GROUP BY `msgArea` ORDER BY `msgArea` ASC"
+	var params []interface{}
 
-	sqlStmt := "SELECT `msgArea`, count(`msgId`) AS `msgCount` FROM `message` WHERE `msgViewCount` = 0 GROUP BY `msgArea` ORDER BY `msgArea` ASC"
-	rows, err1 := ConnTransaction.Query(sqlStmt)
-	if err1 != nil {
-		return nil, err1
-	}
-	defer rows.Close()
-	for rows.Next() {
+	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
 		var name string
 		var count int
+
 		err2 := rows.Scan(&name, &count)
 		if err2 != nil{
-			return nil, err2
+			return err2
 		}
 		a := NewArea()
 		a.SetName(name)
 		a.MsgNewCount = count
 		result = append(result, a)
-	}
-
-	ConnTransaction.Commit()
+		return nil
+	})
 
 	return result, nil
 }
@@ -126,20 +94,11 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 
 	var result []*Message
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return nil, err
-	}
+	query1 := "SELECT `msgId`, `msgArea`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
+	var params []interface{}
+	params = append(params, echoTag)
 
-	sqlStmt := "SELECT `msgId`, `msgArea`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
-	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
-	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag)
-	if err1 != nil {
-		return nil, err1
-	}
-	defer rows.Close()
-	for rows.Next() {
+	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var ID string
 		var msgHash *string
@@ -152,7 +111,7 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 
 		err2 := rows.Scan(&ID, &area, &msgHash, &subject, &viewCount, &from, &to, &msgDate)
 		if err2 != nil{
-			return nil, err2
+			return err2
 		}
 
 		msg := NewMessage()
@@ -169,9 +128,8 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 
 		result = append(result, msg)
 
-	}
-
-	ConnTransaction.Commit()
+		return nil
+	})
 
 	return result, nil
 }
@@ -180,20 +138,12 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 
 	var result *Message
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return nil, err
-	}
+	query1 := "SELECT `msgId`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	var params []interface{}
+	params = append(params, echoTag)
+	params = append(params, msgHash)
 
-	sqlStmt := "SELECT `msgId`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
-	log.Printf("sql = %+v params = ( %+v, %+v )", sqlStmt, echoTag, msgHash)
-	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag, msgHash)
-	if err1 != nil {
-		return nil, err1
-	}
-	defer rows.Close()
-	for rows.Next() {
+	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var ID string
 		var msgMsgId string
@@ -204,9 +154,9 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 		var content string
 		var written int64
 
-		err2 := rows.Scan(&ID, &msgMsgId, &msgHash, &subject, &from, &to, &content, &written)
-		if err2 != nil{
-			return nil, err2
+		err1 := rows.Scan(&ID, &msgMsgId, &msgHash, &subject, &from, &to, &content, &written)
+		if err1 != nil{
+			return err1
 		}
 		log.Printf("subject = %q", subject)
 
@@ -223,54 +173,40 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 		msg.SetTo(to)
 		msg.SetContent(content)
 
-		//
+		/* Save result */
 		result = msg
-	}
 
-	ConnTransaction.Commit()
+		return nil
+	})
 
 	return result, nil
 }
 
-func (self *MessageManager) ViewMessageByHash(echoTag string, msgHash string) (error) {
+func (self *MessageManager) ViewMessageByHash(echoTag string, msgHash string) error {
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return err
-	}
+	query1 := "UPDATE `message` SET `msgViewCount` = `msgViewCount` + 1 WHERE `msgArea` = $1 AND `msgHash` = $2"
+	var params []interface{}
+	params = append(params, echoTag)
+	params = append(params, msgHash)
 
-	sqlStmt := "UPDATE `message` SET `msgViewCount` = `msgViewCount` + 1 WHERE `msgArea` = $1 AND `msgHash` = $2"
-	log.Printf("sql = %+v params = ( %+v, %+v )", sqlStmt, echoTag, msgHash)
-	result, err3 := ConnTransaction.Exec(sqlStmt, echoTag, msgHash)
-	if err3 != nil {
-		return err3
-	}
-	log.Printf("result = %+v", result)
-
-	ConnTransaction.Commit()
+	self.StorageManager.Exec(query1, params, func(err error) {
+		log.Printf("Insert complete with: err = %+v", err)
+	})
 
 	return nil
 
 }
 
-func (self *MessageManager) RemoveMessageByHash(echoTag string, msgHash string) (error) {
+func (self *MessageManager) RemoveMessageByHash(echoTag string, msgHash string) error {
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return err
-	}
+	query1 := "DELETE FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	var params []interface{}
+	params = append(params, echoTag)
+	params = append(params, msgHash)
 
-	sqlStmt := "DELETE FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
-	log.Printf("sql = %+v params = ( %+v, %+v )", sqlStmt, echoTag, msgHash)
-	result, err3 := ConnTransaction.Exec(sqlStmt, echoTag, msgHash)
-	if err3 != nil {
-		return err3
-	}
-	log.Printf("result = %+v", result)
-
-	ConnTransaction.Commit()
+	self.StorageManager.Exec(query1, params, func(err error) {
+		log.Printf("Insert complete with: err = %+v", err)
+	})
 
 	return nil
 }
@@ -279,33 +215,22 @@ func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string
 
 	var result bool = false
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return result, err
-	}
+	query1 := "SELECT `msgId` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	var params []interface{}
+	params = append(params, echoTag)
+	params = append(params, msgHash)
 
-	sqlStmt := "SELECT `msgId` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
-	log.Printf("sql = %+v params = ( %+v, %+v )", sqlStmt, echoTag, msgHash)
-	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag, msgHash)
-	if err1 != nil {
-		return result, err1
-	}
-	defer rows.Close()
-	for rows.Next() {
-
+	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
 		var ID string
-		err2 := rows.Scan(&ID)
-		if err2 != nil{
-			return result, err2
+		err1 := rows.Scan(&ID)
+		if err1 != nil {
+			return err1
 		}
 		if ID != "" {
 			result = true
 		}
-
-	}
-
-	ConnTransaction.Commit()
+		return nil
+	})
 
 	return result, nil
 }

@@ -4,6 +4,17 @@ from datetime import datetime
 from shutil import copyfile
 from platform import system as platform_system
 
+CONFIG = "Release"
+#CONFIG = "Debug"
+
+if CONFIG == "Release":
+    version="1.2.12-1"
+elif CONFIG == "Debug":
+    now = datetime.now()
+    version = now.strftime("%Y%m%d")
+else:
+    raise RuntimeError("Unknown CONFIG")
+
 @task
 def clean(c):
     c.run('rm -rf ./package')
@@ -17,9 +28,8 @@ def depend(c):
 def package_win(c):
     """ Create Windows ZIP package
     """
-    now = datetime.now()
-    stamp = now.strftime("%Y%m%d")
-    package_name = "GoldenPoint-{stamp}.zip".format(stamp=stamp)
+
+    package_name = "GoldenPoint-{version}.zip".format(version=version)
     #
     platform_system_name = platform_system()
     if platform_system_name == "Darwin":
@@ -46,8 +56,8 @@ def package_win(c):
 
 
 @task
-def package_linux(c, version="1.2.11-1"):
-    """ Create Debian DEB package
+def package_linux(c):
+    """ Create Debian package
     """
     c.run('install -m 0755 -d ./package')
     c.run('install -m 0755 -d ./package/DEBIAN')
@@ -149,4 +159,12 @@ def build(c):
 
 @task
 def debug(c):
-    c.run('golden.exe', echo=True)
+    platform_system_name = platform_system()
+    if platform_system_name == "Windows":
+        c.run('golden.exe', echo=True)
+    elif platform_system_name == "Linux":
+        pass
+    elif platform_system_name == "Darwin":
+        pass
+    else:
+        raise RuntimeError('Unknown system {platform_system_name}'.format(platform_system_name=platform_system_name))

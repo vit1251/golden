@@ -8,6 +8,7 @@ import (
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/tmpl"
 	"go.uber.org/dig"
 	"hash/crc32"
 	"log"
@@ -155,6 +156,12 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	//		return err4
 	//	}
 
+	/* Prepare new message */
+	t := tmpl.NewTemplate()
+	newTearLine, _ := t.Render(TearLine)
+	newOrigin, _ := t.Render(Origin)
+	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
+
 	/* Construct message content */
 	msgContent := self.MessageManager.NewMessageContent()
 
@@ -162,8 +169,8 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 
 	msgContent.AddLine(em.Body)
 	msgContent.AddLine("")
-	msgContent.AddLine(fmt.Sprintf("--- %s", TearLine))
-	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", Origin, myAddr))
+	msgContent.AddLine(fmt.Sprintf("--- %s", newTearLine))
+	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", newOrigin, myAddr))
 
 	rawMsg := msgContent.Pack()
 
@@ -183,7 +190,7 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	msgBody.AddKludge("CHRS", "CP866 2")
 	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", myAddr, hs))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
-	msgBody.AddKludge("TID", "golden/win 1.2.11 2020-04-11 14:30 MSK (master)")
+	msgBody.AddKludge("TID", newTID)
 	if em.Reply != "" {
 		msgBody.AddKludge("REPLY", em.Reply)
 	}
@@ -292,13 +299,19 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	//		return err4
 	//	}
 
+	/* Prepare new message */
+	t := tmpl.NewTemplate()
+	newTearLine, _ := t.Render(params.TearLine)
+	newOrigin, _ := t.Render(params.Origin)
+	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
+
 	/* Construct message content */
 	msgContent := self.MessageManager.NewMessageContent()
 	msgContent.SetCharset("CP866")
 	msgContent.AddLine(nm.Body)
 	msgContent.AddLine("")
-	msgContent.AddLine(fmt.Sprintf("--- %s", params.TearLine))
-	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", params.Origin, params.From))
+	msgContent.AddLine(fmt.Sprintf("--- %s", newTearLine))
+	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", newOrigin, params.From))
 	rawMsg := msgContent.Pack()
 
 	/* Calculate checksumm */
@@ -315,7 +328,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	msgBody.AddKludge("CHRS", "CP866 2")
 	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", params.From, hs))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
-	msgBody.AddKludge("TID", "golden/win 1.2.11 2020-04-11 14:30 MSK (master)")
+	msgBody.AddKludge("TID", newTID)
 	msgBody.AddKludge("FMPT", fmt.Sprintf("%d", msgHeader.OrigAddr.Point))
 	msgBody.AddKludge("TOPT", fmt.Sprintf("%d", msgHeader.DestAddr.Point))
 
