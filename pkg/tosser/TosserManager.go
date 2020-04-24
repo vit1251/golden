@@ -8,6 +8,7 @@ import (
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/tmpl"
 	"go.uber.org/dig"
 	"hash/crc32"
 	"log"
@@ -155,6 +156,11 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	//		return err4
 	//	}
 
+	/* Prepare new message */
+	t := tmpl.NewTemplate()
+	newTearLine, _ := t.Render(TearLine)
+	newOrigin, _ := t.Render(Origin)
+
 	/* Construct message content */
 	msgContent := self.MessageManager.NewMessageContent()
 
@@ -162,8 +168,8 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 
 	msgContent.AddLine(em.Body)
 	msgContent.AddLine("")
-	msgContent.AddLine(fmt.Sprintf("--- %s", TearLine))
-	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", Origin, myAddr))
+	msgContent.AddLine(fmt.Sprintf("--- %s", newTearLine))
+	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", newOrigin, myAddr))
 
 	rawMsg := msgContent.Pack()
 
@@ -292,13 +298,18 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	//		return err4
 	//	}
 
+	/* Prepare new message */
+	t := tmpl.NewTemplate()
+	newTearLine, _ := t.Render(params.TearLine)
+	newOrigin, _ := t.Render(params.Origin)
+
 	/* Construct message content */
 	msgContent := self.MessageManager.NewMessageContent()
 	msgContent.SetCharset("CP866")
 	msgContent.AddLine(nm.Body)
 	msgContent.AddLine("")
-	msgContent.AddLine(fmt.Sprintf("--- %s", params.TearLine))
-	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", params.Origin, params.From))
+	msgContent.AddLine(fmt.Sprintf("--- %s", newTearLine))
+	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", newOrigin, params.From))
 	rawMsg := msgContent.Pack()
 
 	/* Calculate checksumm */
