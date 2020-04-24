@@ -5,13 +5,16 @@ import (
 	"path"
 )
 
-type Migration_20200424_0007 struct {
+type Migration_000102 struct {
+	IMigration
 }
 
-func (self *Migration_20200424_0007) Up(conn *sql.DB) {
-
+func (self *Migration_000102) Up(conn *sql.DB) error {
 	query1 := "INSERT INTO `settings` (`section`,`name`,`value`) VALUES (?,?,?)"
-	conn.Exec(query1, "main", "RealName", "Alice Cooper")
+	if _, err := conn.Exec(query1, "main", "RealName", "Alice Cooper"); err != nil {
+		return err
+	}
+
 	conn.Exec(query1, "main", "Country", "Russia")
 	conn.Exec(query1, "main", "City", "Moscow")
 	conn.Exec(query1, "main", "Origin", "Yo Adrian, I Did It! (c) Rocky II")
@@ -26,4 +29,5 @@ func (self *Migration_20200424_0007) Up(conn *sql.DB) {
 	conn.Exec(query1, "main", "FileBox", path.Join(".", "Files"))
 	conn.Exec(query1, "main", "Password", "")
 
+	return nil
 }
