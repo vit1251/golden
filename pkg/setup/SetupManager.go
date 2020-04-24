@@ -47,6 +47,8 @@ func NewConfigManager(sm *storage.StorageManager) *ConfigManager {
 	sem.Register("main", "Country", "Country where user is seat")
 	sem.Register("main", "City", "City where user is seat")
 	sem.Register("main", "FileBox", "Directory where store inbound file area files")
+	sem.Register("main", "Nodelist", "Directory where store nodelist")
+	sem.Register("main", "Pointlist", "Directory where store pointlist")
 	/* Overwrite user parameters */
 	err2 := sem.Restore()
 	if err2 != nil {
