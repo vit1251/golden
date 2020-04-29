@@ -48,6 +48,17 @@ func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	mmw := widgets.NewMainMenuWidget()
 	vBox.Add(mmw)
 
+
+	container := widgets.NewDivWidget()
+	container.SetClass("container")
+
+	containerVBox := widgets.NewVBoxWidget()
+
+	container.SetWidget(containerVBox)
+
+	vBox.Add(container)
+
+
 	formVBox := widgets.NewVBoxWidget()
 
 	formWidget := widgets.NewFormWidget()
@@ -61,7 +72,7 @@ func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	formVBox.Add(widgets.NewFormTextWidget().SetClass("echomail-text").SetName("body"))
 	formVBox.Add(widgets.NewFormButtonWidget().SetTitle("Compose").SetType("submit"))
 
-	vBox.Add(formWidget)
+	containerVBox.Add(formWidget)
 
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)

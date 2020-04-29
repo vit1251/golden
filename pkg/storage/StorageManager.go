@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"os/user"
@@ -45,10 +46,16 @@ func NewStorageManager() *StorageManager {
 
 func (self *StorageManager) Query(query string, params []interface{}, f func(rows *sql.Rows) error) error {
 	var errRes error = nil
+
+	parentContext := context.Background()
+	ctx, cancel := context.WithTimeout(parentContext, 5*time.Second)
+	defer cancel()
+
 	log.Printf("sql = %+v params = %+v", query, params)
 	start := time.Now()
-	rows, err1 := self.conn.Query(query, params...)
+	rows, err1 := self.conn.QueryContext(ctx, query, params...)
 	if err1 != nil {
+		panic(err1)
 		return err1
 	}
 	defer rows.Close()

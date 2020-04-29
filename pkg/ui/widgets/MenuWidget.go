@@ -31,6 +31,9 @@ func (self *MenuWidget) Render(w http.ResponseWriter) error {
 		fmt.Fprintf(w, "\t\t<a class=\"nav-link\" href=\"%s\">\n", item.Link)
 		fmt.Fprintf(w, "\t\t\t<div class=\"tab\">\n")
 		fmt.Fprintf(w, "\t\t\t\t<span class=\"tab-label\">%s</span>\n", item.Label)
+		if item.Metric > 0 {
+			fmt.Fprintf(w, "\t\t\t\t<span class=\"badge\">%d</span>\n", item.Metric)
+		}
 		fmt.Fprintf(w, "\t\t\t</div>\n")
 		fmt.Fprintf(w, "\t\t</a>\n")
 	}

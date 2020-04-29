@@ -1,6 +1,8 @@
 package widgets
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type MainMenuWidget struct {
 	mw *MenuWidget
@@ -18,48 +20,59 @@ func (self *MainMenuWidget) Init() []*MenuAction {
 	var menus []*MenuAction
 
 	if menuAction := NewMenuAction(); menuAction != nil {
+		menuAction.ID = "mainMenuHome"
 		menuAction.Link = "/"
 		menuAction.Label = "Home"
 		menus = append(menus, menuAction)
 	}
 
 	if menuAction := NewMenuAction(); menuAction != nil {
+		menuAction.ID = "mainMenuDirect"
 		menuAction.Link = "/netmail"
 		menuAction.Label = "Netmail"
+		menuAction.Metric = -1
 		menus = append(menus, menuAction)
 	}
 
 	if menuAction := NewMenuAction(); menuAction != nil {
+		menuAction.ID = "mainMenuEcho"
 		menuAction.Link = "/echo"
 		menuAction.Label = "Echomail"
+		menuAction.Metric = -1
 		menus = append(menus, menuAction)
 	}
 
 	if menuAction := NewMenuAction(); menuAction != nil {
+		menuAction.ID = "mainMenuFile"
 		menuAction.Link = "/file"
 		menuAction.Label = "Filebox"
+		menuAction.Metric = -1
 		menus = append(menus, menuAction)
 	}
 
 	if menuAction := NewMenuAction(); menuAction != nil {
+		menuAction.ID = "mainMenuStat"
 		menuAction.Link = "/stat"
 		menuAction.Label = "Statistics"
 		menus = append(menus, menuAction)
 	}
 
 	if menuAction := NewMenuAction(); menuAction != nil {
+		menuAction.ID = "mainMenuService"
 		menuAction.Link = "/service"
 		menuAction.Label = "Service"
 		menus = append(menus, menuAction)
 	}
 
 	if menuAction := NewMenuAction(); menuAction != nil {
+		menuAction.ID = "mainMenuSetup"
 		menuAction.Link = "/setup"
 		menuAction.Label = "Setup"
 		menus = append(menus, menuAction)
 	}
 
 	if menuAction := NewMenuAction(); menuAction != nil {
+		menuAction.ID = "mainMenuHelp"
 		menuAction.Link = "/help"
 		menuAction.Label = "Help"
 		menus = append(menus, menuAction)
@@ -71,4 +84,14 @@ func (self *MainMenuWidget) Init() []*MenuAction {
 func (self *MainMenuWidget) Render(w http.ResponseWriter) error {
 	self.mw.Render(w)
 	return nil
+}
+
+func (self *MainMenuWidget) SetParam(ID string, value int) {
+	//log.Printf("Set: name = %s value = %d", ID, value)
+	for _, a := range self.mw.actions {
+		//log.Printf("compare: %s == %s", a.ID, ID)
+		if a.ID == ID {
+			a.Metric = value
+		}
+	}
 }

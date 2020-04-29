@@ -1,9 +1,11 @@
 package widgets
 
 type MenuAction struct {
-	Link  string
-	Icon  string
-	Label string
+	Link   string
+	Icon   string
+	Label  string
+	Metric int
+	ID     string
 }
 
 func (self *MenuAction) SetLink(s string) *MenuAction {

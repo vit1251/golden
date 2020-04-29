@@ -2,6 +2,9 @@ package ui
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/file"
+	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
@@ -19,6 +22,16 @@ func NewSetupAction() (*SetupAction) {
 
 func (self *SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	/* Calculate summary */
+	var newDirectMsgCount int
+	var newEchoMsgCount int
+	var newFileCount int
+	self.Container.Invoke(func(nm *netmail.NetmailManager, em *msg.MessageManager, fm *file.FileManager) {
+		newDirectMsgCount, _ = nm.GetMessageNewCount()
+		newEchoMsgCount, _ = em.GetMessageNewCount()
+		newFileCount, _ = fm.GetMessageNewCount()
+	})
+
 	/* Setup manager operation */
 	var setupManager *setup.ConfigManager
 	self.Container.Invoke(func(sm *setup.ConfigManager) {
@@ -35,7 +48,19 @@ func (self *SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	bw.SetWidget(vBox)
 
 	mmw := widgets.NewMainMenuWidget()
+	mmw.SetParam("mainMenuDirect", newDirectMsgCount)
+	mmw.SetParam("mainMenuEcho", newEchoMsgCount)
+	mmw.SetParam("mainMenuFile", newFileCount)
 	vBox.Add(mmw)
+
+	container := widgets.NewDivWidget()
+	container.SetClass("container")
+
+	containerVBox := widgets.NewVBoxWidget()
+
+	container.SetWidget(containerVBox)
+
+	vBox.Add(container)
 
 	setupForm := widgets.NewFormWidget().
 		SetMethod("POST").
@@ -53,7 +78,7 @@ func (self *SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	setupFormBox.Add(widgets.NewFormButtonWidget().SetTitle("Save").SetType("submit"))
 	setupForm.SetWidget(setupFormBox)
 
-	vBox.Add(setupForm)
+	containerVBox.Add(setupForm)
 
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)

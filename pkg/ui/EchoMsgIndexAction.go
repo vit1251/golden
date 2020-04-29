@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
 	"net/http"
@@ -20,6 +22,16 @@ func NewEchoMsgIndexAction() *EchoMsgIndexAction {
 }
 
 func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	/* Calculate summary */
+	var newDirectMsgCount int
+	var newEchoMsgCount int
+	var newFileCount int
+	self.Container.Invoke(func(nm *netmail.NetmailManager, em *msg.MessageManager, fm *file.FileManager) {
+		newDirectMsgCount, _ = nm.GetMessageNewCount()
+		newEchoMsgCount, _ = em.GetMessageNewCount()
+		newFileCount, _ = fm.GetMessageNewCount()
+	})
 
 	var areaManager *area.AreaManager
 	var messageManager *msg.MessageManager
@@ -61,7 +73,17 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	bw.SetWidget(vBox)
 
 	mmw := widgets.NewMainMenuWidget()
+	mmw.SetParam("mainMenuDirect", newDirectMsgCount)
+	mmw.SetParam("mainMenuEcho", newEchoMsgCount)
+	mmw.SetParam("mainMenuFile", newFileCount)
 	vBox.Add(mmw)
+
+	container := widgets.NewDivWidget()
+	container.SetClass("container")
+	vBox.Add(container)
+
+	containerVBox := widgets.NewVBoxWidget()
+	container.SetWidget(containerVBox)
 
 	/* Context actions */
 	amw := widgets.NewActionMenuWidget().
@@ -74,7 +96,7 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 			SetIcon("icofont-update").
 			SetLabel("Settings"))
 
-	vBox.Add(amw)
+	containerVBox.Add(amw)
 
 	indexTable := widgets.NewTableWidget().
 		SetClass("table")
@@ -95,6 +117,7 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Age()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
 				SetContent("View").
+				SetClass("btn").
 				SetLink(fmt.Sprintf("/echo/%s/message/%s/view", msg.Area, msg.Hash))))
 		//
 		row.SetClass("")
@@ -105,7 +128,7 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 		indexTable.AddRow(row)
 	}
 
-	vBox.Add(indexTable)
+	containerVBox.Add(indexTable)
 
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)

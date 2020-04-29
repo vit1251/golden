@@ -73,6 +73,8 @@ func (self *GoldenSite) Start() (error) {
 	self.Register("/", NewWelcomeAction())
 	self.Register("/echo", NewEchoIndexAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}", NewEchoMsgIndexAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", NewEchoRemoveAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove/complete", NewEchoRemoveCompleteAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", NewEchoUpdateAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update/complete", NewEchoUpdateCompleteAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", NewEchoComposeAction())

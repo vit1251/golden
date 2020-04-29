@@ -189,7 +189,18 @@ th {
 }
 /* default button */
 .btn {
+  padding: 0.2em 1.45em;
+  margin: 0.1em;
+  border: 0.15em solid #CCCCCC;
+  box-sizing: border-box;
   background-color: #30a4dc;
+  cursor: pointer;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
 }
 .dark {
   background-color: #151515;
@@ -360,6 +371,23 @@ a.message-item-wrap {
 .table-row:hover {
   background-color: #0000C0;
 }
+.direct-index-items {
+  border-spacing: 0px 8px;
+  width: 100%;
+}
+.direct-index-items td {
+  padding: 4px;
+}
+.direct-index-header {
+  background-color: #646464;
+}
+.echo-index-items {
+  border-spacing: 0px 8px;
+  width: 100%;
+}
+.echo-index-items td {
+  padding: 4px;
+}
 .echo-index-header {
   background-color: #646464;
 }
@@ -388,4 +416,14 @@ a.message-item-wrap {
 .echomail-text {
   background-color: #000000;
   color: #C0C0C0;
+}
+.file-index-items {
+  border-spacing: 0px 8px;
+  width: 100%;
+}
+.file-index-items td {
+  padding: 4px;
+}
+.file-index-header {
+  background-color: #646464;
 }

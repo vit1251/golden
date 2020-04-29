@@ -45,6 +45,15 @@ func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	mmw := widgets.NewMainMenuWidget()
 	vBox.Add(mmw)
 
+	container := widgets.NewDivWidget()
+	container.SetClass("container")
+
+	containerVBox := widgets.NewVBoxWidget()
+
+	container.SetWidget(containerVBox)
+
+	vBox.Add(container)
+
 	/* Context actions */
 	amw := widgets.NewActionMenuWidget().
 		Add(widgets.NewMenuAction().
@@ -52,19 +61,19 @@ func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 			SetIcon("icofont-remove").
 			SetLabel("Remove echo"))
 
-	vBox.Add(amw)
+	containerVBox.Add(amw)
 
 	headerWidget := widgets.NewHeaderWidget().
 		SetTitle(fmt.Sprintf("Settings on area %s", area.Name()))
 
-	vBox.Add(headerWidget)
+	containerVBox.Add(headerWidget)
 
 	formWidget := widgets.NewFormWidget().
 		SetMethod("POST").
 		SetAction(fmt.Sprintf("/echo/%s/update/complete", area.Name()))
 	formVBox := widgets.NewVBoxWidget()
 	formWidget.SetWidget(formVBox)
-	vBox.Add(formWidget)
+	containerVBox.Add(formWidget)
 
 	inputWidget := widgets.NewFormInputWidget().
 		SetTitle("Summary").SetName("summary").SetValue(area.Summary)

@@ -41,10 +41,18 @@ func (self *FileAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	mmw := widgets.NewMainMenuWidget()
 	vBox.Add(mmw)
 
+	container := widgets.NewDivWidget()
+	container.SetClass("container")
+
+	containerVBox := widgets.NewVBoxWidget()
+	container.SetWidget(containerVBox)
+	vBox.Add(container)
+
 	indexTable := widgets.NewTableWidget().
-		SetClass("table")
+		SetClass("file-index-items")
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
+		SetClass("file-index-header").
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Count"))).
@@ -60,10 +68,11 @@ func (self *FileAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 				fmt.Sprintf("%d", area.Count)))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
 				SetContent("View").
+				SetClass("btn").
 				SetLink(fmt.Sprintf("/file/%s", area.Name())))))
 	}
 
-	vBox.Add(indexTable)
+	containerVBox.Add(indexTable)
 
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)

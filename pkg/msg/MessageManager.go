@@ -260,3 +260,36 @@ func (self *MessageManager) Write(msg *Message) (error) {
 	return nil
 
 }
+
+func (self *MessageManager) GetMessageNewCount() (int, error) {
+
+	var newMessageCount int
+
+	query1 := "SELECT count(`msgId`) FROM `message` WHERE `msgViewCount` = 0"
+	var params []interface{}
+
+	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+
+		err1 := rows.Scan(&newMessageCount)
+		if err1 != nil {
+			return err1
+		}
+		return nil
+	})
+
+	return newMessageCount, nil
+}
+
+func (self *MessageManager) RemoveMessagesByAreaName(echoTag string) error {
+
+	query1 := "DELETE FROM `message` WHERE `msgArea` = $1"
+	var params []interface{}
+	params = append(params, echoTag)
+
+	self.StorageManager.Exec(query1, params, func(err error) {
+		log.Printf("Insert complete with: err = %+v", err)
+	})
+
+	return nil
+
+}

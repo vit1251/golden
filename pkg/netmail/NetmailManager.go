@@ -7,12 +7,12 @@ import (
 )
 
 type NetmailManager struct {
-	conn *sql.DB
+	StorageManager  *storage.StorageManager
 }
 
 func NewNetmailManager(sm *storage.StorageManager) *NetmailManager {
 	nm := new(NetmailManager)
-	nm.conn = sm.GetConnection()
+	nm.StorageManager = sm
 	return nm
 }
 
@@ -20,20 +20,10 @@ func (self *NetmailManager) GetMessageHeaders() ([]*NetmailMessage, error) {
 
 	var result []*NetmailMessage
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return nil, err
-	}
+	query1 := "SELECT `nmId`, `nmHash`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmDate` FROM `netmail` ORDER BY `nmDate` ASC, `nmId` ASC"
+	var params []interface{}
 
-	sqlStmt := "SELECT `nmId`, `nmHash`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmDate` FROM `netmail` ORDER BY `nmDate` ASC, `nmId` ASC"
-	log.Printf("sql = %q", sqlStmt)
-	rows, err1 := ConnTransaction.Query(sqlStmt)
-	if err1 != nil {
-		return nil, err1
-	}
-	defer rows.Close()
-	for rows.Next() {
+	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var ID string
 		var msgHash *string
@@ -45,7 +35,7 @@ func (self *NetmailManager) GetMessageHeaders() ([]*NetmailMessage, error) {
 
 		err2 := rows.Scan(&ID, &msgHash, &subject, &viewCount, &from, &to, &msgDate)
 		if err2 != nil{
-			return nil, err2
+			return err2
 		}
 
 		msg := NewNetmailMessage()
@@ -62,41 +52,30 @@ func (self *NetmailManager) GetMessageHeaders() ([]*NetmailMessage, error) {
 
 		result = append(result, msg)
 
-	}
-
-	ConnTransaction.Commit()
+		return nil
+	})
 
 	return result, nil
 }
 
 func (self *NetmailManager) Write(msg *NetmailMessage) error {
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return err
-	}
+	query1 := "INSERT INTO `netmail` " +
+		"(nmMsgId, nmHash, nmFrom, nmTo, nmSubject, nmBody, nmDate) " +
+		"VALUES " +
+		"(?, ?, ?, ?, ?, ?, ?)"
+	var params []interface{}
+	params = append(params, msg.MsgID)
+	params = append(params, msg.Hash)
+	params = append(params, msg.From)
+	params = append(params, msg.To)
+	params = append(params, msg.Subject)
+	params = append(params, msg.Content)
+	params = append(params, msg.UnixTime)
 
-	/* Step 3. Make prepare SQL insert query */
-	sqlStmt := "INSERT INTO `netmail` " +
-		"    (nmMsgId, nmHash, nmFrom, nmTo, nmSubject, nmBody, nmDate) " +
-		"  VALUES " +
-		"    (?, ?, ?, ?, ?, ?, ?)"
-	log.Printf("sql = %q", sqlStmt)
-	stmt, err3 := ConnTransaction.Prepare(sqlStmt)
-	if err3 != nil {
-		return err3
-	}
-	defer stmt.Close()
-
-	/* Step 4. Invoke prepare SQL insert query */
-	_, err4 := stmt.Exec(msg.MsgID, msg.Hash, msg.From, msg.To, msg.Subject, msg.Content, msg.UnixTime)
-	if err4 != nil {
-		return err4
-	}
-
-	/* Step 5. Commit SQL transaction */
-	ConnTransaction.Commit()
+	self.StorageManager.Exec(query1, params, func(err error) {
+		//return err
+	})
 
 	return nil
 }
@@ -105,20 +84,11 @@ func (self *NetmailManager) GetMessageByHash(msgHash string) (*NetmailMessage, e
 
 	var result *NetmailMessage
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
-	if err != nil {
-		return nil, err
-	}
+	query1 := "SELECT `nmId`, `nmHash`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmDate`, `nmBody` FROM `netmail` WHERE `nmHash` = ?"
+	var params []interface{}
+	params = append(params, msgHash)
 
-	sqlStmt := "SELECT `nmId`, `nmHash`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmDate`, `nmBody` FROM `netmail` WHERE `nmHash` = ?"
-	log.Printf("sql = %q", sqlStmt)
-	rows, err1 := ConnTransaction.Query(sqlStmt, msgHash)
-	if err1 != nil {
-		return nil, err1
-	}
-	defer rows.Close()
-	for rows.Next() {
+	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var ID string
 		var msgHash *string
@@ -131,7 +101,7 @@ func (self *NetmailManager) GetMessageByHash(msgHash string) (*NetmailMessage, e
 
 		err2 := rows.Scan(&ID, &msgHash, &subject, &viewCount, &from, &to, &msgDate, &body)
 		if err2 != nil{
-			return nil, err2
+			return err2
 		}
 
 		msg := NewNetmailMessage()
@@ -149,13 +119,40 @@ func (self *NetmailManager) GetMessageByHash(msgHash string) (*NetmailMessage, e
 
 		result = msg
 
-	}
-
-	ConnTransaction.Commit()
+		return nil
+	})
 
 	return result, nil
 }
 
-func (self *NetmailManager) ViewMessageByHash(hash string) error {
+func (self *NetmailManager) ViewMessageByHash(msgHash string) error {
+
+	query1 := "UPDATE `netmail` SET `nmViewCount` = `nmViewCount` + 1 WHERE `nmHash` = $1"
+	var params []interface{}
+	params = append(params, msgHash)
+
+	self.StorageManager.Exec(query1, params, func(err error) {
+		log.Printf("Insert complete with: err = %+v", err)
+	})
+
 	return nil
+}
+
+func (self *NetmailManager) GetMessageNewCount() (int, error) {
+
+	var newMessageCount int
+
+	query1 := "SELECT count(`nmId`) FROM `netmail` WHERE `nmViewCount` = 0"
+	var params []interface{}
+
+	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+
+		err1 := rows.Scan(&newMessageCount)
+		if err1 != nil {
+			return err1
+		}
+		return nil
+	})
+
+	return newMessageCount, nil
 }

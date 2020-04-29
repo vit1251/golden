@@ -5,7 +5,9 @@ import (
 	"github.com/gorilla/mux"
 	area2 "github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/audio"
-	msgProc "github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/file"
+	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
@@ -23,10 +25,20 @@ func NewEchoViewAction() *EchoViewAction {
 
 func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	/* Calculate summary */
+	var newDirectMsgCount int
+	var newEchoMsgCount int
+	var newFileCount int
+	self.Container.Invoke(func(nm *netmail.NetmailManager, em *msg.MessageManager, fm *file.FileManager) {
+		newDirectMsgCount, _ = nm.GetMessageNewCount()
+		newEchoMsgCount, _ = em.GetMessageNewCount()
+		newFileCount, _ = fm.GetMessageNewCount()
+	})
+
 	var areaManager *area2.AreaManager
-	var messageManager *msgProc.MessageManager
+	var messageManager *msg.MessageManager
 	var configManager *setup.ConfigManager
-	self.Container.Invoke(func(am *area2.AreaManager, mm *msgProc.MessageManager, cm *setup.ConfigManager) {
+	self.Container.Invoke(func(am *area2.AreaManager, mm *msg.MessageManager, cm *setup.ConfigManager) {
 		areaManager = am
 		messageManager = mm
 		configManager = cm
@@ -58,7 +70,7 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	//
 	msgHash := vars["msgid"]
-	msg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
+	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetAreas")
 		http.Error(w, response, http.StatusInternalServerError)
@@ -66,19 +78,19 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Play */
-	if msg.To == realName {
+	if origMsg.To == realName {
 		am := audio.NewAudioManager()
 		am.Play("short-notice.mp3")
 	}
 
 	var content string
-	if msg != nil {
-		content = msg.GetContent()
+	if origMsg != nil {
+		content = origMsg.GetContent()
 	} else {
 		content = "!! Unable restore message !!"
 	}
 	//
-	mtp := msgProc.NewMessageTextProcessor()
+	mtp := msg.NewMessageTextProcessor()
 	err4 := mtp.Prepare(content)
 	if err4 != nil {
 		response := fmt.Sprintf("Fail on Prepare on MessageTextProcessor")
@@ -101,19 +113,30 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	bw.SetWidget(vBox)
 
 	mmw := widgets.NewMainMenuWidget()
+	mmw.SetParam("mainMenuDirect", newDirectMsgCount)
+	mmw.SetParam("mainMenuEcho", newEchoMsgCount)
+	mmw.SetParam("mainMenuFile", newFileCount)
 	vBox.Add(mmw)
+
+	container := widgets.NewDivWidget()
+	container.SetClass("container")
+	vBox.Add(container)
+
+	containerVBox := widgets.NewVBoxWidget()
+	container.SetWidget(containerVBox)
+
 
 	/* Context actions */
 	amw := widgets.NewActionMenuWidget().
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.Name(), msg.Hash)).
+			SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.Name(), origMsg.Hash)).
 			SetIcon("icofont-edit").
 			SetLabel("Reply")).
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.Name(), msg.Hash)).
+			SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.Name(), origMsg.Hash)).
 			SetIcon("icofont-remove").
 			SetLabel("Delete"))
-	vBox.Add(amw)
+	containerVBox.Add(amw)
 
 	indexTable := widgets.NewTableWidget().
 		SetClass("table")
@@ -125,27 +148,27 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("FROM"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.From))))
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.From))))
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("TO"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.To))))
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.To))))
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("SUBJ"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Subject))))
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.Subject))))
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("DATE"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
-			fmt.Sprintf("%s", msg.DateWritten)))))
+			fmt.Sprintf("%s", origMsg.DateWritten)))))
 
-	vBox.Add(indexTable)
+	containerVBox.Add(indexTable)
 
 	previewWidget := widgets.NewDivWidget().
 		SetClass("message-preview").
 		SetContent(string(outDoc))
-	vBox.Add(previewWidget)
+	containerVBox.Add(previewWidget)
 
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)

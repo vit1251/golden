@@ -3,7 +3,8 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	msgProc "github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/file"
+	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/ui/widgets"
@@ -21,6 +22,16 @@ func NewNetmailViewAction() *NetmailViewAction {
 
 func (self *NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	/* Calculate summary */
+	var newDirectMsgCount int
+	var newEchoMsgCount int
+	var newFileCount int
+	self.Container.Invoke(func(nm *netmail.NetmailManager, em *msg.MessageManager, fm *file.FileManager) {
+		newDirectMsgCount, _ = nm.GetMessageNewCount()
+		newEchoMsgCount, _ = em.GetMessageNewCount()
+		newFileCount, _ = fm.GetMessageNewCount()
+	})
+
 	var netmailManager *netmail.NetmailManager
 	var configManager *setup.ConfigManager
 	self.Container.Invoke(func(nm *netmail.NetmailManager, cm *setup.ConfigManager) {
@@ -33,21 +44,21 @@ func (self *NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	//
 	msgHash := vars["msgid"]
-	msg, err3 := netmailManager.GetMessageByHash(msgHash)
+	origMsg, err3 := netmailManager.GetMessageByHash(msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
-	if msg == nil {
+	if origMsg == nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
-	content := msg.GetContent()
+	content := origMsg.GetContent()
 
 	//
-	mtp := msgProc.NewMessageTextProcessor()
+	mtp := msg.NewMessageTextProcessor()
 	err4 := mtp.Prepare(content)
 	if err4 != nil {
 		response := fmt.Sprintf("Fail on Prepare on MessageTextProcessor")
@@ -70,46 +81,58 @@ func (self *NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	bw.SetWidget(vBox)
 
 	mmw := widgets.NewMainMenuWidget()
+	mmw.SetParam("mainMenuDirect", newDirectMsgCount)
+	mmw.SetParam("mainMenuEcho", newEchoMsgCount)
+	mmw.SetParam("mainMenuFile", newFileCount)
 	vBox.Add(mmw)
+
+	container := widgets.NewDivWidget()
+	container.SetClass("container")
+
+	vBox.Add(container)
+
+	containerVBox := widgets.NewVBoxWidget()
+
+	container.SetWidget(containerVBox)
 
 	/* Context actions */
 	amw := widgets.NewActionMenuWidget().
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/netmail/%s/reply", msg.Hash)).
+			SetLink(fmt.Sprintf("/netmail/%s/reply", origMsg.Hash)).
 			SetIcon("icofont-edit").
 			SetLabel("Reply")).
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/netmail/%s/remove", msg.Hash)).
+			SetLink(fmt.Sprintf("/netmail/%s/remove", origMsg.Hash)).
 			SetIcon("icofont-remove").
 			SetLabel("Delete"))
-	vBox.Add(amw)
+	containerVBox.Add(amw)
 
 	indexTable := widgets.NewTableWidget().
 		SetClass("table")
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("FROM"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.From))))
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.From))))
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("TO"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.To))))
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.To))))
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("SUBJ"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Subject))))
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.Subject))))
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("DATE"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
-			fmt.Sprintf("%s", msg.DateWritten)))))
+			fmt.Sprintf("%s", origMsg.DateWritten)))))
 
-	vBox.Add(indexTable)
+	containerVBox.Add(indexTable)
 
 	previewWidget := widgets.NewDivWidget().
 		SetClass("message-preview").
 		SetContent(string(outDoc))
-	vBox.Add(previewWidget)
+	containerVBox.Add(previewWidget)
 
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)

@@ -234,3 +234,7 @@ func (self *FileManager) GetAreaByName(areaName string) (*FileArea, error) {
 	return result, nil
 }
 
+func (self *FileManager) GetMessageNewCount() (int, error) {
+	return 0, nil
+}
+
