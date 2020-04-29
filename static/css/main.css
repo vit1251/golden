@@ -427,3 +427,13 @@ a.message-item-wrap {
 .file-index-header {
   background-color: #646464;
 }
+.stat-index-items {
+  border-spacing: 0px 8px;
+  width: 100%;
+}
+.stat-index-items td {
+  padding: 4px;
+}
+.stat-index-header {
+  background-color: #646464;
+}
