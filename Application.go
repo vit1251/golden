@@ -94,12 +94,6 @@ func (self *Application) Run() {
 		mm.Check()
 	})
 
-	/* Check periodic message */
-	self.Container.Invoke(func() {
-		newTosser := tosser.NewTosser(self.Container)
-		newTosser.Toss()
-	})
-
 	/* Start service */
 	self.Container.Invoke(func() {
 		newGoldenSite := ui.NewGoldenSite(self.Container)

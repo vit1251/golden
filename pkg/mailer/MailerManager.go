@@ -39,14 +39,14 @@ func (self *MailerManager) run() {
 
 	log.Printf(" * Mailer Start")
 	for {
+		log.Printf("Start wait mailer: d = %+v", d)
+		time.Sleep(d)
+		log.Printf("Stop wait mailer")
+
 		log.Printf("Start mailer processing")
 		err := self.processMailer()
 		log.Printf("err = %+v", err)
 		log.Printf("Stop mailer processing")
-
-		log.Printf("Start wait mailer: d = %+v", d)
-		time.Sleep(d)
-		log.Printf("Stop wait mailer")
 	}
 	log.Printf(" * Mailer complete")
 

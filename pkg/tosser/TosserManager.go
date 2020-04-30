@@ -11,7 +11,9 @@ import (
 	"github.com/vit1251/golden/pkg/tmpl"
 	"go.uber.org/dig"
 	"hash/crc32"
+	"io"
 	"log"
+	"os"
 	"path"
 	"time"
 )
@@ -65,48 +67,48 @@ func (self *TosserManager) makePacketName() string {
 	return pktName
 }
 
-func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
+func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
 
 	/* Create packet name */
-	outb, err1 := self.SetupManager.Get("main", "Outbound", ".")
+	tempOutbound, err1 := self.SetupManager.Get("main", "TempOutbound", ".")
 	if err1 != nil {
-		return err1
+		return "", err1
 	}
 	password, err2 := self.SetupManager.Get("main", "Password", ".")
 	if err2 != nil {
-		return err2
+		return "", err2
 	}
 
-	pktName := self.makePacketName()
-	name := path.Join(outb, pktName)
+	packetName := self.makePacketName()
+	tempPacketPath := path.Join(tempOutbound, packetName)
 
 	/* Open outbound packet */
-	pw, err1 := packet.NewPacketWriter(name)
+	pw, err1 := packet.NewPacketWriter(tempPacketPath)
 	if err1 != nil {
-		return err1
+		return "", err1
 	}
 	defer pw.Close()
 
 	/* Ask source address */
 	myAddr, err2 := self.SetupManager.Get("main", "Address", "0:0/0.0")
 	if err2 != nil {
-		return err2
+		return "", err2
 	}
 	bossAddr, err3 := self.SetupManager.Get("main", "Link", "0:0/0.0")
 	if err3 != nil {
-		return err3
+		return "", err3
 	}
 	realName, err4 := self.SetupManager.Get("main", "RealName", "John Smith")
 	if err4 != nil {
-		return err4
+		return "", err4
 	}
 	TearLine, err5 := self.SetupManager.Get("main", "TearLine", "John Smith")
 	if err5 != nil {
-		return err5
+		return "", err5
 	}
 	Origin, err6 := self.SetupManager.Get("main", "Origin", "John Smith")
 	if err6 != nil {
-		return err6
+		return "", err6
 	}
 
 	/* Write packet header */
@@ -116,21 +118,21 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	pktHeader.SetPassword(password)
 
 	if err := pw.WritePacketHeader(pktHeader); err != nil {
-		return err
+		return "", err
 	}
 
 	/* Encode message headers */
 	newSubject, err1 := self.CharsetManager.EncodeText([]rune(em.Subject))
 	if err1 != nil {
-		return err1
+		return "", err1
 	}
 	newTo, err2 := self.CharsetManager.EncodeText([]rune(em.To))
 	if err2 != nil {
-		return err2
+		return "", err2
 	}
 	newFrom, err3 := self.CharsetManager.EncodeText([]rune(realName))
 	if err3 != nil {
-		return err3
+		return "", err3
 	}
 
 	/* Prepare packet message */
@@ -146,7 +148,7 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	msgHeader.SetTime(now)
 
 	if err := pw.WriteMessageHeader(msgHeader); err != nil {
-		return err
+		return "", err
 	}
 
 	/* Message UUID */
@@ -198,10 +200,65 @@ func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 	msgBody.SetRaw(rawMsg)
 	//
 	if err5 := pw.WriteMessage(msgBody); err5 != nil {
-		return err5
+		return "", err5
+	}
+
+	return packetName, nil
+}
+
+func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
+
+	inbound, err1 := self.SetupManager.Get("main", "Inbound", ".")
+	if err1 != nil {
+		return err1
+	}
+	outbound, err1 := self.SetupManager.Get("main", "Outbound", ".")
+	if err1 != nil {
+		return err1
+	}
+	tempOutbound, err1 := self.SetupManager.Get("main", "TempOutbound", ".")
+	if err1 != nil {
+		return err1
+	}
+
+	packetName, err1 := self.makePacketEchoMessage(em)
+	if err1 != nil {
+		return err1
+	}
+	tempPacketPath := path.Join(tempOutbound, packetName)
+
+	// Copy to Inbound and Outbound
+	log.Printf("Publish packet: name = %+v", tempPacketPath)
+	if err := self.PushPacket(tempPacketPath, path.Join(inbound, packetName)); err != nil {
+		log.Printf("Fail on copy Inbound: err = %+v", err)
+	}
+	if err := self.PushPacket(tempPacketPath, path.Join(outbound, packetName)); err != nil {
+		log.Printf("Fail on copy Outbound: err = %+v", err)
 	}
 
 	return nil
+}
+
+func (self *TosserManager) PushPacket(src string, dst string) error {
+
+	log.Printf("Publish packet: %s -> %s", src, dst)
+
+	source, err1 := os.Open(src)
+	if err1 != nil {
+		return err1
+	}
+	defer source.Close()
+
+	destination, err2 := os.Create(dst)
+	if err2 != nil {
+		return err2
+	}
+	defer destination.Close()
+
+	nBytes, err3 := io.Copy(destination, source)
+	log.Printf("Copy %+v", nBytes)
+
+	return err3
 }
 
 func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
