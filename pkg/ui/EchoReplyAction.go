@@ -3,7 +3,6 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	area2 "github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
@@ -21,9 +20,9 @@ func NewEchoReplyAction() *EchoReplyAction {
 
 func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	var areaManager *area2.AreaManager
+	var areaManager *msg.AreaManager
 	var messageManager *msg.MessageManager
-	self.Container.Invoke(func(am *area2.AreaManager, mm *msg.MessageManager) {
+	self.Container.Invoke(func(am *msg.AreaManager, mm *msg.MessageManager) {
 		areaManager = am
 		messageManager = mm
 	})

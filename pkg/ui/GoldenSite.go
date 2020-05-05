@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/ui/api"
 	"go.uber.org/dig"
 	"log"
 	"net/http"
@@ -94,12 +95,14 @@ func (self *GoldenSite) Start() (error) {
 	self.Register("/netmail/compose", NewNetmailComposeAction())
 	self.Register("/netmail/compose/complete", NewNetmailComposeCompleteAction())
 	self.Register("/stat", NewStatAction())
-	self.Register("/service", NewServiceManageAction())
-	self.Register("/service/complete", NewServiceManageCompleteAction())
 	self.Register("/setup", NewSetupAction())
 	self.Register("/setup/complete", NewSetupCompleteAction())
 	self.Register("/help", NewHelpAction())
+	//
+	self.Register("/api/service/start", api.NewAPIServiceManageCompleteAction())
+	self.Register("/api/stat", api.NewAPIStatAction())
 
+	//
 	serviceAddr := fmt.Sprintf("%s:%d", self.addr, self.port)
 
 	srv := &http.Server{

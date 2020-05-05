@@ -3,7 +3,7 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	area2 "github.com/vit1251/golden/pkg/area"
+	"github.com/vit1251/golden/pkg/msg"
 	"log"
 	"net/http"
 )
@@ -26,8 +26,8 @@ func (self *EchoUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.R
 	}
 
 	/* ... */
-	var areaManager *area2.AreaManager
-	self.Container.Invoke(func(am *area2.AreaManager) {
+	var areaManager *msg.AreaManager
+	self.Container.Invoke(func(am *msg.AreaManager) {
 		areaManager = am
 	})
 

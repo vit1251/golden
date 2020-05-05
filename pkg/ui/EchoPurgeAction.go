@@ -9,16 +9,16 @@ import (
 	"net/http"
 )
 
-type EchoMsgRemoveAction struct {
+type EchoPurgeAction struct {
 	Action
 }
 
-func NewEchoMsgRemoveAction() *EchoMsgRemoveAction {
-	ra:=new(EchoMsgRemoveAction)
+func NewEchoPurgeAction() *EchoPurgeAction {
+	ra := new(EchoPurgeAction)
 	return ra
 }
 
-func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoPurgeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var areaManager *msg2.AreaManager
 	var messageManager *msg2.MessageManager
@@ -39,15 +39,6 @@ func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	}
 	log.Printf("area = %+v", area)
 
-	//
-	msgHash := vars["msgid"]
-	msg, err2 := messageManager.GetMessageByHash(echoTag, msgHash)
-	if err2 != nil {
-		response := fmt.Sprintf("Fail on GetMessageByHash on MessageManager: err = %+v", err2)
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
-
 	bw := widgets.NewBaseWidget()
 
 	vBox := widgets.NewVBoxWidget()
@@ -65,19 +56,19 @@ func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	//<h1>Delete message?</h1>
 	headerWidget := widgets.NewHeaderWidget().
-		SetTitle("Delete message?")
+		SetTitle("Delete area?")
 	containerVBox.Add(headerWidget)
 
 	//
 	formWidget := widgets.NewFormWidget().
 		SetMethod("POST").
-		SetAction(fmt.Sprintf("/echo/%s/message/%s/remove/complete", area.Name(), msg.Hash))
+		SetAction(fmt.Sprintf("/echo/%s/remove/complete", area.Name()))
 	formVBox := widgets.NewVBoxWidget()
 	formWidget.SetWidget(formVBox)
 	containerVBox.Add(formWidget)
 
 	qustionWidget := widgets.NewDivWidget().
-		SetContent(fmt.Sprintf("A you sure to remove '%s' message?", msg.Subject))
+		SetContent(fmt.Sprintf("A you sure to remove '%s' area?", area.Name()))
 	formVBox.Add(qustionWidget)
 
 	buttonWidget := widgets.NewFormButtonWidget().

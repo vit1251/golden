@@ -1,4 +1,4 @@
-package area
+package msg
 
 import (
 	"errors"

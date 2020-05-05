@@ -30,8 +30,10 @@ func (self *EchoRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.R
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
-	self.Container.Invoke(func(mm *msg.MessageManager) {
-		mm.RemoveMessagesByAreaName(echoTag)
+	self.Container.Invoke(func(am *msg.AreaManager, mm *msg.MessageManager) {
+		err1 := mm.RemoveMessagesByAreaName(echoTag)
+		log.Printf("err1 = %+v", err1)
+		am.RemoveAreaByName(echoTag)
 	})
 
 	//

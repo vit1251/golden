@@ -3,7 +3,6 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	area2 "github.com/vit1251/golden/pkg/area"
 	msg2 "github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
@@ -21,9 +20,9 @@ func NewEchoRemoveAction() *EchoRemoveAction {
 
 func (self *EchoRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	var areaManager *area2.AreaManager
+	var areaManager *msg2.AreaManager
 	var messageManager *msg2.MessageManager
-	self.Container.Invoke(func(am *area2.AreaManager, mm *msg2.MessageManager) {
+	self.Container.Invoke(func(am *msg2.AreaManager, mm *msg2.MessageManager) {
 		areaManager = am
 		messageManager = mm
 	})

@@ -1,7 +1,6 @@
 package tosser
 
 import (
-	"github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/msg"
@@ -18,14 +17,14 @@ type Tosser struct {
 	StatManager    *stat.StatManager
 	SetupManager   *setup.ConfigManager
 	FileManager    *file.FileManager
-	AreaManager    *area.AreaManager
+	AreaManager    *msg.AreaManager
 	CharsetManager *charset.CharsetManager
 	NetmailManager *netmail.NetmailManager
 }
 
 func NewTosser(c *dig.Container) *Tosser {
 	tosser := new(Tosser)
-	c.Invoke(func(cm *charset.CharsetManager, am *area.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.ConfigManager, fm *file.FileManager, nm *netmail.NetmailManager) {
+	c.Invoke(func(cm *charset.CharsetManager, am *msg.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.ConfigManager, fm *file.FileManager, nm *netmail.NetmailManager) {
 		tosser.CharsetManager = cm
 		tosser.AreaManager = am
 		tosser.MessageManager = mm

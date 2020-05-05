@@ -3,7 +3,6 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	area2 "github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/stat"
 	"github.com/vit1251/golden/pkg/tosser"
@@ -22,11 +21,11 @@ func NewReplyCompleteAction() (*ReplyCompleteAction) {
 
 func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	var areaManager *area2.AreaManager
+	var areaManager *msg.AreaManager
 	var messageManager *msg.MessageManager
 	var tosserManager *tosser.TosserManager
 	var statManager *stat.StatManager
-	self.Container.Invoke(func(am *area2.AreaManager, mm *msg.MessageManager, tm *tosser.TosserManager, sm *stat.StatManager) {
+	self.Container.Invoke(func(am *msg.AreaManager, mm *msg.MessageManager, tm *tosser.TosserManager, sm *stat.StatManager) {
 		areaManager = am
 		messageManager = mm
 		tosserManager = tm

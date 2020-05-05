@@ -2,9 +2,6 @@ package ui
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/file"
-	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/ui/widgets"
 	version2 "github.com/vit1251/golden/pkg/version"
 	"net/http"
@@ -21,16 +18,6 @@ func NewWelcomeAction() *WelcomeAction {
 
 func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	/* Calculate summary */
-	var newDirectMsgCount int
-	var newEchoMsgCount int
-	var newFileCount int
-	self.Container.Invoke(func(nm *netmail.NetmailManager, em *msg.MessageManager, fm *file.FileManager) {
-		newDirectMsgCount, _ = nm.GetMessageNewCount()
-		newEchoMsgCount, _ = em.GetMessageNewCount()
-		newFileCount, _ = fm.GetMessageNewCount()
-	})
-
 	/* Get dependency injection manager */
 	version := version2.GetVersion()
 
@@ -41,9 +28,6 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	bw.SetWidget(vBox)
 
 	mmw := widgets.NewMainMenuWidget()
-	mmw.SetParam("mainMenuDirect", newDirectMsgCount)
-	mmw.SetParam("mainMenuEcho", newEchoMsgCount)
-	mmw.SetParam("mainMenuFile", newFileCount)
 	vBox.Add(mmw)
 
 	container := widgets.NewDivWidget()

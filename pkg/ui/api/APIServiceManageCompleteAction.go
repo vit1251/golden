@@ -1,4 +1,4 @@
-package ui
+package api
 
 import (
 	"encoding/json"
@@ -11,20 +11,20 @@ import (
 	"net/http"
 )
 
-type ServiceManageCompleteAction struct {
-	Action
+type APIServiceManageCompleteAction struct {
+	APIAction
 }
 
-func NewServiceManageCompleteAction() *ServiceManageCompleteAction {
-	smac := new(ServiceManageCompleteAction)
+func NewAPIServiceManageCompleteAction() *APIServiceManageCompleteAction {
+	smac := new(APIServiceManageCompleteAction)
 	return smac
 }
 
-func (self *ServiceManageCompleteAction) Start() {
+func (self *APIServiceManageCompleteAction) Start() {
 	go self.Run()
 }
 
-func (self *ServiceManageCompleteAction) Run() error {
+func (self *APIServiceManageCompleteAction) Run() error {
 
 	var setupManager *setup.ConfigManager
 	var statManager *stat.StatManager
@@ -83,7 +83,7 @@ func (self *ServiceManageCompleteAction) Run() error {
 	return nil
 }
 
-func (self *ServiceManageCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *APIServiceManageCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 

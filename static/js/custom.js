@@ -46,10 +46,73 @@ class Application {
         });
     }
 
+    summaryUpdateRoutine() {
+        $.ajax({
+            url: "/api/stat",
+            type: "POST",
+            dataType: "json",
+            context: this,
+            success: (resp) => {
+                //
+                console.log(resp);
+                //
+                const NetmailMessageCount = resp.NetmailMessageCount;
+                const EchomailMessageCount = resp.EchomailMessageCount;
+                const FileCount = resp.FileCount;
+                //
+                if (NetmailMessageCount > 0) {
+                    $('#mainMenuDirect').show();
+                    $('#mainMenuDirect').html(NetmailMessageCount);
+                } else {
+                    $('#mainMenuDirect').hide();
+                }
+                //
+                if (EchomailMessageCount > 0) {
+                    $('#mainMenuEcho').show();
+                    $('#mainMenuEcho').html(EchomailMessageCount);
+                } else {
+                    $('#mainMenuEcho').hide();
+                }
+                //
+                this.registerSummaryUpdateRoutine();
+            }
+        });
+    }
+
+    registerSummaryUpdateRoutine() {
+        setTimeout(() => {
+            this.summaryUpdateRoutine();
+        }, 15000.0);
+    }
+
+    processNewPacketRoutine() {
+        $.ajax({
+            url: "/api/service/start",
+            type: "POST",
+            dataType: "json",
+            context: this,
+            data: {
+                service: 'tosser',
+            },
+            success: (resp) => {
+                console.log(resp);
+                this.registerProcessNewPacketRoutine();
+            }
+        });
+    }
+
+    registerProcessNewPacketRoutine() {
+        setTimeout(() => {
+            this.processNewPacketRoutine();
+        }, 30000.0);
+    }
+
     run() {
         this.registerHandler();
         this.setupClock();
         this.registerKeyboard();
+        this.summaryUpdateRoutine();
+        this.processNewPacketRoutine();
     }
 
 }

@@ -3,11 +3,8 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	area2 "github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/audio"
-	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/ui/widgets"
 	"log"
@@ -25,20 +22,10 @@ func NewEchoViewAction() *EchoViewAction {
 
 func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	/* Calculate summary */
-	var newDirectMsgCount int
-	var newEchoMsgCount int
-	var newFileCount int
-	self.Container.Invoke(func(nm *netmail.NetmailManager, em *msg.MessageManager, fm *file.FileManager) {
-		newDirectMsgCount, _ = nm.GetMessageNewCount()
-		newEchoMsgCount, _ = em.GetMessageNewCount()
-		newFileCount, _ = fm.GetMessageNewCount()
-	})
-
-	var areaManager *area2.AreaManager
+	var areaManager *msg.AreaManager
 	var messageManager *msg.MessageManager
 	var configManager *setup.ConfigManager
-	self.Container.Invoke(func(am *area2.AreaManager, mm *msg.MessageManager, cm *setup.ConfigManager) {
+	self.Container.Invoke(func(am *msg.AreaManager, mm *msg.MessageManager, cm *setup.ConfigManager) {
 		areaManager = am
 		messageManager = mm
 		configManager = cm
@@ -113,9 +100,6 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	bw.SetWidget(vBox)
 
 	mmw := widgets.NewMainMenuWidget()
-	mmw.SetParam("mainMenuDirect", newDirectMsgCount)
-	mmw.SetParam("mainMenuEcho", newEchoMsgCount)
-	mmw.SetParam("mainMenuFile", newFileCount)
 	vBox.Add(mmw)
 
 	container := widgets.NewDivWidget()

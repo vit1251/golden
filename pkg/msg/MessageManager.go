@@ -57,7 +57,7 @@ func (self *MessageManager) GetAreaList2() ([]*Area, error) {
 		}
 		a := NewArea()
 		a.SetName(name)
-		a.Count = count
+		a.MessageCount = count
 		result = append(result, a)
 		return nil
 	})
@@ -82,7 +82,7 @@ func (self *MessageManager) GetAreaList3() ([]*Area, error) {
 		}
 		a := NewArea()
 		a.SetName(name)
-		a.MsgNewCount = count
+		a.NewMessageCount = count
 		result = append(result, a)
 		return nil
 	})

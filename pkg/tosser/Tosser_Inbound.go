@@ -2,7 +2,6 @@ package tosser
 
 import (
 	"errors"
-	"github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/mailer"
@@ -171,7 +170,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	areaName := msgBody.GetArea()
 
 	/* Auto create area */
-	a := area.NewArea()
+	a := msg.NewArea()
 	a.SetName(areaName)
 	self.AreaManager.Register(a)
 

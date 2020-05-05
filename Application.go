@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"github.com/vit1251/golden/pkg/area"
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/installer"
@@ -68,8 +67,8 @@ func (self *Application) Run() {
 	}); err != nil {
 		panic(err)
 	}
-	if err := self.Container.Provide(func() *area.AreaManager {
-		return area.NewAreaManager(self.Container)
+	if err := self.Container.Provide(func() *msg.AreaManager {
+		return msg.NewAreaManager(self.Container)
 	}); err != nil {
 		panic(err)
 	}
