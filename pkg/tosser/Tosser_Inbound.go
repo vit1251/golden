@@ -398,17 +398,17 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	/* Search area */
 	fa, err1 := self.FileManager.GetAreaByName(tic.Area)
 	if err1 != nil {
-		panic(err1)
+		return err1
 	}
 
 	/* Prepare area directory */
 	boxBasePath, err2 := self.SetupManager.Get("main", "FileBox", "")
 	if err2 != nil {
-		panic(err2)
+		return err2
 	}
 	inboxBasePath, err3 := self.SetupManager.Get("main", "Inbound", "")
 	if err3 != nil {
-		panic(err3)
+		return err3
 	}
 	areaLocation := path.Join(boxBasePath, tic.Area)
 	os.MkdirAll(areaLocation, 0755)
@@ -420,17 +420,18 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 		newFa.SetName(tic.Area)
 		newFa.Path = areaLocation
 		/* Create area */
-		if err := self.FileManager.CreateArea(newFa); err != nil {
-			log.Printf("Unable to create area %s: err = %+v", tic.Area, err)
+		if err := self.FileManager.CreateFileArea(newFa); err != nil {
+			log.Printf("Fail CreateFileArea on FileManager: area = %s err = %+v", tic.Area, err)
+			return err
 		}
 	}
 
+	/* Create new path */
 	inboxTicLocation := path.Join(inboxBasePath, tic.File)
-
 	areaFileLocation := path.Join(areaLocation, tic.File)
-	log.Printf("Area path %+v", areaLocation)
+	log.Printf("inboxTicLocation = %s areaFileLocation = %s", inboxTicLocation, areaFileLocation)
 
-	/* Move in area*/
+	/* Move */
 	os.Rename(inboxTicLocation, areaFileLocation)
 
 	/* Register file */
@@ -439,8 +440,9 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	/* Register status */
 	self.StatManager.RegisterInFile(tic.File)
 
-	/* Remove TIC descriptor */
+	/* Move TIC */
 	areaTicLocation := path.Join(areaLocation, item.Name)
+	log.Printf("areaTicLocation = %s", areaTicLocation)
 	os.Rename(item.AbsolutePath, areaTicLocation)
 
 	return nil

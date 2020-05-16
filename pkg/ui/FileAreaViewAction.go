@@ -38,6 +38,11 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
+	if area == nil {
+		response := fmt.Sprintf("Fail on GetAreaByName on FileManager with area name %s", echoTag)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
 	log.Printf("area = %+v", area)
 
 	files, err2 := fileManager.GetFileHeaders(echoTag)

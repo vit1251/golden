@@ -1,5 +1,7 @@
 package audio
 
+// +build WINDOWS
+
 import (
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/mp3"

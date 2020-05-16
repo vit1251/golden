@@ -112,19 +112,18 @@ func (self *FileManager) GetAreas2() ([]*FileArea, error) {
 	return result, nil
 }
 
-func (self *FileManager) CreateArea(a *FileArea) error {
+func (self *FileManager) CreateFileArea(a *FileArea) error {
 
 	log.Printf("Create file area: %+v", a)
 
 	/* Prepare SQL request */
-	query := "INSERT INTO `filearea` (`areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder`) VALUES ( ?, '', ?, ?, 0)"
+	query := "INSERT INTO `filearea` (`areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder`) VALUES (?, ?, ?, ?, ?)"
 
 	/* Create area */
-	if _, err := self.conn.Exec(query, a.Name, a.Path, a.Summary); err != nil {
-		return err
-	}
+	_, err1 := self.conn.Exec(query, a.Name, "sqlite3", a.Path, a.Summary, 0)
+	log.Printf("Fail on CreateFileArea with error: err = %+v", err1)
 
-	return nil
+	return err1
 }
 
 func (self *FileManager) GetFileHeaders(echoTag string) ([]*TicFile, error) {
