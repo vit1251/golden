@@ -8,8 +8,7 @@ You MAY open Golden Point over Web-browser and open address http://127.0.0.1:808
 
 ## Contributors
 
- * Vitold Sedyshev <>
- * 
+ * Vitold Sedyshev <vit1251@gmail.com>
 
 ## Credits
 
