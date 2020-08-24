@@ -1,0 +1,32 @@
+
+
+
+build_386
+        env = {
+            "GOOS": "windows",
+            "GOARCH": "386",
+            "CGO_ENABLED": "1",
+        }
+        c.run('go build -o golden-windows-386.exe .', echo=True, env=env)
+
+
+build_amd64
+
+        "GOOS": "windows",
+        "GOARCH": "amd64",
+        "CGO_ENABLED": "1",
+        "CC": "x86_64-w64-mingw32-gcc",
+        "CXX": "x86_64-w64-mingw32-g++",
+    }
+    c.run('go build -o golden-windows-amd64.exe .', echo=True, env=env)
+
+    package
+
+                "PATH": "C:\\Program Files\\7-Zip",
+        }
+        c.run('7z a -tzip {package_name} golden-windows-386.exe'.format(package_name=package_name), echo=True, env=env, warn=True)
+        c.run('7z a -tzip {package_name} golden-linux-amd64'.format(package_name=package_name), echo=True, env=env, warn=True)
+        c.run('7z a -tzip {package_name} golden-windows-amd64.exe'.format(package_name=package_name), echo=True, env=env, warn=True)
+        c.run('7z a -tzip {package_name} README.md'.format(package_name=package_name), echo=True, env=env, warn=True)
+        c.run('7z a -tzip {package_name} LICENSE'.format(package_name=package_name), echo=True, env=env, warn=True)
+        c.run('7z a -tzip {package_name} static'.format(package_name=package_name), echo=True, env=env, warn=True)

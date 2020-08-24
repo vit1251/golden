@@ -1,0 +1,28 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task: check
+
+  clean:
+    cmds:
+      - rm -rf ./package
+      - rm -rf ./dist
+
+  depend:
+    cmds:
+      - go get -v -u
+
+  check:
+    cmds:
+      - go test ./...
+
+  prepare:
+    cmds:
+      - npm install -g less
+      - cd contrib && lessc main.less main.css
+      - cp contrib/main.css static/css/main.css
+

@@ -1,0 +1,24 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  PROJECT_NAME: "Golden Point"
+  VERSION: "1.2.12"
+  GIT_COMMIT: {sh: git log -n 1 --format=%h}
+
+tasks:
+
+  default:
+    cmds:
+      - task: build
+
+  build:
+    env:
+      GOOS: "darwin"
+      GOARCH: "amd64"
+      CGO_ENABLED: "1"
+    cmds:
+      - go build -o golden-darwin-amd64 .
+    generates:
+      - golden-darwin-amd64

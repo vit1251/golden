@@ -1,0 +1,27 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  VERSION: "1.2.12"
+  GIT_COMMIT: {sh: git log -n 1 --format=%h}
+
+tasks:
+
+  build:
+    env:
+      GOOS: "linux"
+      GOARCH: "amd64"
+      CGO_ENABLED: "1"
+    cmds:
+      - go build -o golden-linux-amd64 .
+
+  package:
+    cmds:
+      - install -m 0755 -d ./package
+      - install -m 0755 -d ./package/DEBIAN
+      - install -m 0755 -d ./package/usr/local/bin
+      - install -m 0755 -d ./dist
+      - cp ./DEBIAN/control ./package/DEBIAN/control
+      - cp ./golden-linux-amd64 ./package/usr/local/bin/golden
+      - dpkg-deb -v --build ./package golden_{{.VERSION}}_amd64.deb

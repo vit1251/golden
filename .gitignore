@@ -7,6 +7,9 @@ go.sum
 package
 work
 *.zip
+
+# Binary output
 golden-linux-amd64
 golden-windows-386.exe
 golden-windows-amd64.exe
+golden-darwin-amd64
