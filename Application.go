@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+//	"github.com/webview/webview"
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/installer"
@@ -32,7 +33,7 @@ func NewApplication() *Application {
 
 func (self *Application) Run() {
 
-	stream, err1 := os.OpenFile("debug.log", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	stream, err1 := os.OpenFile("/tmp/debug.log", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err1 != nil {
 		log.Printf("Error while open debug.log: err = %+v", err1)
 	}
@@ -102,6 +103,15 @@ func (self *Application) Run() {
 	self.Container.Invoke(func(mm *mailer.MailerManager) {
 		mm.Start()
 	})
+
+	/* Start WebView */
+//	debug := true
+//	w := webview.New(debug)
+//	defer w.Destroy()
+//	w.SetTitle("Golden Point")
+//	w.SetSize(800, 600, webview.HintNone)
+//	w.Navigate("http://127.0.0.1:8080")
+//	w.Run()
 
 	/* Start mailer */
 

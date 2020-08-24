@@ -1,12 +1,17 @@
+# MacOS settings
+.DS_Store
+
+# IDE options
 .idea
+
+# Logs
 *.log
+
+# Golang
 go.sum
-*.pkt
-*.bak
-*.deb
+
+# Output directory
 package
-work
-*.zip
 
 # Binary output
 golden-linux-amd64
