@@ -2,30 +2,13 @@
 
 version: '3'
 
+includes:
+  build: ./Taskfile_{{OS}}.yml
+
 tasks:
   default:
     cmds:
-      - task: depend
-#      - task: check
-      - task: prepare
-      - task: build
-
-  clean:
-    cmds:
-      - rm -rf ./package
-      - rm -rf ./dist
-
-  depend:
-    cmds:
-      - go get -v -u
-
-  check:
-    cmds:
-      - go test ./...
-
-  prepare:
-    cmds:
-#      - npm install -g less
-      - cd contrib && lessc main.less main.css
-      - cp contrib/main.css static/css/main.css
-
+      - task: build:depend
+      - task: build:prepare
+      - task: build:build
+      - task: build:package

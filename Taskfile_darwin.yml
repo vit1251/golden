@@ -13,6 +13,16 @@ tasks:
     cmds:
       - task: build
 
+  depend:
+    cmds:
+      - go get -v -u
+
+  prepare:
+    cmds:
+#      - npm install -g less
+      - cd contrib && lessc main.less main.css
+      - cp contrib/main.css static/css/main.css
+
   build:
     env:
       GOOS: "darwin"
@@ -22,3 +32,7 @@ tasks:
       - go build -o golden-darwin-amd64 .
     generates:
       - golden-darwin-amd64
+
+  package:
+    cmds:
+      - echo "No package."
