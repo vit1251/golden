@@ -2,9 +2,19 @@
 
 Golden Point is Fido point package
 
+## Compile
+
+Golden Point use Task build system. See more https://taskfile.dev/
+
+To compile:
+
+    # task
+
 ## Usage guide
 
-You MAY open Golden Point over Web-browser and open address http://127.0.0.1:8080/
+Golden Point open in you Web-browser on address
+ 
+   http://127.0.0.1:8080/
 
 ## Contributors
 

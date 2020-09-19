@@ -33,7 +33,8 @@ func NewApplication() *Application {
 
 func (self *Application) Run() {
 
-	stream, err1 := os.OpenFile("/tmp/debug.log", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	path := "debug.log"
+	stream, err1 := os.OpenFile(path, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err1 != nil {
 		log.Printf("Error while open debug.log: err = %+v", err1)
 	}

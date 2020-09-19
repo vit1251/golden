@@ -3,7 +3,7 @@
 version: '3'
 
 includes:
-  build: ./Taskfile_{{OS}}.yml
+  build: Taskfile_{{OS}}.yml
 
 tasks:
   default:
