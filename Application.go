@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-//	"github.com/webview/webview"
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/installer"
@@ -14,6 +13,7 @@ import (
 	"github.com/vit1251/golden/pkg/storage"
 	"github.com/vit1251/golden/pkg/tosser"
 	"github.com/vit1251/golden/pkg/ui"
+	"github.com/vit1251/golden/pkg/ui2"
 	"go.uber.org/dig"
 	"log"
 	"os"
@@ -40,7 +40,7 @@ func (self *Application) Run() {
 	}
 	defer stream.Close()
 	log.SetOutput(stream)
-	log.SetFlags(log.Ltime|log.Ldate)
+	log.SetFlags(log.Ltime | log.Ldate)
 
 	/* Parse parameters */
 	var servicePort int
@@ -95,24 +95,28 @@ func (self *Application) Run() {
 		mm.Check()
 	})
 
-	/* Start service */
+	/* Start UI services */
 	self.Container.Invoke(func() {
-		newGoldenSite := ui.NewGoldenSite(self.Container)
-		newGoldenSite.SetPort(servicePort)
-		go newGoldenSite.Start()
+		s1 := ui.NewService(self.Container)
+		s1.SetPort(servicePort)
+		go s1.Start()
+	})
+	self.Container.Invoke(func() {
+		s2 := ui2.NewService(self.Container)
+		go s2.Start()
 	})
 	self.Container.Invoke(func(mm *mailer.MailerManager) {
 		mm.Start()
 	})
 
 	/* Start WebView */
-//	debug := true
-//	w := webview.New(debug)
-//	defer w.Destroy()
-//	w.SetTitle("Golden Point")
-//	w.SetSize(800, 600, webview.HintNone)
-//	w.Navigate("http://127.0.0.1:8080")
-//	w.Run()
+	//	debug := true
+	//	w := webview.New(debug)
+	//	defer w.Destroy()
+	//	w.SetTitle("Golden Point")
+	//	w.SetSize(800, 600, webview.HintNone)
+	//	w.Navigate("http://127.0.0.1:8080")
+	//	w.Run()
 
 	/* Start mailer */
 

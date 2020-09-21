@@ -18,3 +18,11 @@ golden-linux-amd64
 golden-windows-386.exe
 golden-windows-amd64.exe
 golden-darwin-amd64
+
+# Fido storage
+*.tic
+*.zip
+*.pkt
+*.mo?
+*.su?
+*.sa?

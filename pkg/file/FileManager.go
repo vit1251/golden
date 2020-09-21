@@ -96,7 +96,7 @@ func (self *FileManager) GetAreas2() ([]*FileArea, error) {
 		var name string
 		var count int
 		err2 := rows.Scan(&name, &count)
-		if err2 != nil{
+		if err2 != nil {
 			return nil, err2
 		}
 
@@ -114,14 +114,20 @@ func (self *FileManager) GetAreas2() ([]*FileArea, error) {
 
 func (self *FileManager) CreateFileArea(a *FileArea) error {
 
+	var name string = a.Name()
+	var path string = a.Path
+	var summary string = a.Summary
+
 	log.Printf("Create file area: %+v", a)
 
 	/* Prepare SQL request */
 	query := "INSERT INTO `filearea` (`areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder`) VALUES (?, ?, ?, ?, ?)"
 
 	/* Create area */
-	_, err1 := self.conn.Exec(query, a.Name, "sqlite3", a.Path, a.Summary, 0)
-	log.Printf("Fail on CreateFileArea with error: err = %+v", err1)
+	_, err1 := self.conn.Exec(query, name, "sqlite3", path, summary, 0)
+	if err1 != nil {
+		log.Printf("Fail on CreateFileArea with error: err = %+v", err1)
+	}
 
 	return err1
 }
@@ -177,7 +183,7 @@ func (self *FileManager) CheckFileExists(tic *TicFile) (bool, error) {
 	return true, nil
 }
 
-func (self *FileManager) RegisterFile(tic *TicFile) (error) {
+func (self *FileManager) RegisterFile(tic *TicFile) error {
 
 	var unixTime int64 = time.Now().Unix()
 
@@ -187,7 +193,7 @@ func (self *FileManager) RegisterFile(tic *TicFile) (error) {
 	if err2 != nil {
 		return err2
 	}
-	_, err3 := stmt1.Exec(tic.File, tic.Area, tic.Desc, unixTime )
+	_, err3 := stmt1.Exec(tic.File, tic.Area, tic.Desc, unixTime)
 	log.Printf("err3 = %+v", err3)
 	if err3 != nil {
 		return err3
@@ -236,4 +242,3 @@ func (self *FileManager) GetAreaByName(areaName string) (*FileArea, error) {
 func (self *FileManager) GetMessageNewCount() (int, error) {
 	return 0, nil
 }
-

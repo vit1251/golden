@@ -16,13 +16,13 @@ type IAction interface {
 }
 
 type Route struct {
-	pattern  string        /* Regilar expression         */
-	action   IAction       /* Processing callback        */
+	pattern string  /* Regilar expression         */
+	action  IAction /* Processing callback        */
 }
 
 type WebSite struct {
-	routes          []Route
-	rtr             *mux.Router
+	routes []Route
+	rtr    *mux.Router
 }
 
 type GoldenSite struct {
@@ -33,7 +33,7 @@ type GoldenSite struct {
 	addr      string
 }
 
-func NewGoldenSite(c *dig.Container) *GoldenSite {
+func NewService(c *dig.Container) *GoldenSite {
 
 	site := new(GoldenSite)
 	site.addr = "127.0.0.1"
@@ -66,7 +66,7 @@ func (self *GoldenSite) Register(pattern string, a IAction) {
 
 }
 
-func (self *GoldenSite) Start() (error) {
+func (self *GoldenSite) Start() error {
 
 	log.Printf("Golden web service start")
 
@@ -90,8 +90,8 @@ func (self *GoldenSite) Start() (error) {
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/view", NewFileAreaDownloadAction())
 	self.Register("/netmail", NewNetmailAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/view", NewNetmailViewAction())
-//	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/reply", NewNetmailViewAction())
-//	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/remove", NewNetmailViewAction())
+	//	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/reply", NewNetmailViewAction())
+	//	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/remove", NewNetmailViewAction())
 	self.Register("/netmail/compose", NewNetmailComposeAction())
 	self.Register("/netmail/compose/complete", NewNetmailComposeCompleteAction())
 	self.Register("/stat", NewStatAction())
@@ -106,8 +106,8 @@ func (self *GoldenSite) Start() (error) {
 	serviceAddr := fmt.Sprintf("%s:%d", self.addr, self.port)
 
 	srv := &http.Server{
-		Handler:      self.rtr,
-		Addr:         serviceAddr,
+		Handler: self.rtr,
+		Addr:    serviceAddr,
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 10 * time.Minute,
 		ReadTimeout:  10 * time.Minute,
@@ -117,12 +117,12 @@ func (self *GoldenSite) Start() (error) {
 	return err
 }
 
-func (self *GoldenSite) Stop() (error) {
+func (self *GoldenSite) Stop() error {
 
 	log.Printf("Golden web service stop")
 
 	//
-//	webSite.Stop()
+	//	webSite.Stop()
 
 	return nil
 }
