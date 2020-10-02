@@ -6,6 +6,12 @@ type MenuAction struct {
 	Label  string
 	Metric int
 	ID     string
+	Class  string
+}
+
+func (self *MenuAction) SetClass(s string) *MenuAction {
+	self.Class = s
+	return self
 }
 
 func (self *MenuAction) SetLink(s string) *MenuAction {

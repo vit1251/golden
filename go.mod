@@ -23,11 +23,11 @@ require (
 	github.com/xeonx/timeago v1.0.0-rc4
 	go.uber.org/dig v1.10.0
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
-	golang.org/x/exp v0.0.0-20200917184745-18d7dbdd5567 // indirect
-	golang.org/x/image v0.0.0-20200801110659-972c09e46d76 // indirect
+	golang.org/x/exp v0.0.0-20200924195034-c827fd4f18b9 // indirect
+	golang.org/x/image v0.0.0-20200927104501-e162460cd6b5 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de // indirect
-	golang.org/x/sys v0.0.0-20200918174421-af09f7315aff // indirect
+	golang.org/x/sys v0.0.0-20200926100807-9d91bd62050c // indirect
 	golang.org/x/text v0.3.3
 	golang.org/x/tools v0.0.0-20200401192744-099440627f01 // indirect
 )

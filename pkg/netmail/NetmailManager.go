@@ -156,3 +156,16 @@ func (self *NetmailManager) GetMessageNewCount() (int, error) {
 
 	return newMessageCount, nil
 }
+
+func (self *NetmailManager) RemoveMessageByHash(msgHash string) error {
+
+	query1 := "DELETE FROM `netmail` WHERE `nmHash` = ?"
+	var params []interface{}
+	params = append(params, msgHash)
+
+	self.StorageManager.Exec(query1, params, func(err error) {
+		//return err
+	})
+
+	return nil
+}

@@ -3,7 +3,8 @@ package ui
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/ui/api"
+	"github.com/vit1251/golden/pkg/ui/action"
+	"github.com/vit1251/golden/pkg/ui/action/api"
 	"go.uber.org/dig"
 	"log"
 	"net/http"
@@ -66,45 +67,51 @@ func (self *GoldenSite) Register(pattern string, a IAction) {
 
 }
 
+func (self *GoldenSite) registerFrontend() {
+	self.Register("/", action.NewWelcomeAction())
+	self.Register("/echo", action.NewEchoIndexAction())
+	self.Register("/echo/create", action.NewEchoCreateAction())
+	self.Register("/echo/create/complete", action.NewEchoCreateCompleteAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}", action.NewEchoMsgIndexAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", action.NewEchoRemoveAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove/complete", action.NewEchoRemoveCompleteAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge", action.NewEchoPurgeAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge/complete", action.NewEchoPurgeCompleteAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", action.NewEchoUpdateAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update/complete", action.NewEchoUpdateCompleteAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", action.NewEchoComposeAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose/complete", action.NewEchoComposeCompleteAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/view", action.NewEchoViewAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply", action.NewEchoReplyAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply/complete", action.NewReplyCompleteAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove", action.NewEchoMsgRemoveAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", action.NewEchoMsgRemoveCompleteAction())
+	self.Register("/file", action.NewFileAreaIndexAction())
+	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}", action.NewFileAreaViewAction())
+	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/view", action.NewFileAreaDownloadAction())
+	self.Register("/netmail", action.NewNetmailAction())
+	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/view", action.NewNetmailViewAction())
+	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/reply", action.NewNetmailReplyAction())
+	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/remove", action.NewNetmailRemoveAction())
+	self.Register("/netmail/compose", action.NewNetmailComposeAction())
+	self.Register("/netmail/compose/complete", action.NewNetmailComposeCompleteAction())
+	self.Register("/stat", action.NewStatAction())
+	self.Register("/setup", action.NewSetupAction())
+	self.Register("/setup/complete", action.NewSetupCompleteAction())
+	self.Register("/help", action.NewHelpAction())
+}
+
+func (self *GoldenSite) registerBackend() {
+	self.Register("/api/service/start", api.NewServiceManageCompleteAction())
+	self.Register("/api/stat", api.NewStatAction())
+	self.Register("/api/echo/create", api.NewEchoCreateAction())
+	self.Register("/api/netmail/remove", api.NewNetmailRemoveAction())
+}
+
 func (self *GoldenSite) Start() error {
-
-	log.Printf("Golden web service start")
-
-	/* Register actions */
-	self.Register("/", NewWelcomeAction())
-	self.Register("/echo", NewEchoIndexAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}", NewEchoMsgIndexAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", NewEchoRemoveAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove/complete", NewEchoRemoveCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", NewEchoUpdateAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update/complete", NewEchoUpdateCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", NewEchoComposeAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose/complete", NewEchoComposeCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/view", NewEchoViewAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply", NewEchoReplyAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply/complete", NewReplyCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove", NewEchoMsgRemoveAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", NewEchoMsgRemoveCompleteAction())
-	self.Register("/file", NewFileAreaIndexAction())
-	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}", NewFileAreaViewAction())
-	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/view", NewFileAreaDownloadAction())
-	self.Register("/netmail", NewNetmailAction())
-	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/view", NewNetmailViewAction())
-	//	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/reply", NewNetmailViewAction())
-	//	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/remove", NewNetmailViewAction())
-	self.Register("/netmail/compose", NewNetmailComposeAction())
-	self.Register("/netmail/compose/complete", NewNetmailComposeCompleteAction())
-	self.Register("/stat", NewStatAction())
-	self.Register("/setup", NewSetupAction())
-	self.Register("/setup/complete", NewSetupCompleteAction())
-	self.Register("/help", NewHelpAction())
-	//
-	self.Register("/api/service/start", api.NewAPIServiceManageCompleteAction())
-	self.Register("/api/stat", api.NewAPIStatAction())
-
-	//
+	self.registerFrontend()
+	self.registerBackend()
 	serviceAddr := fmt.Sprintf("%s:%d", self.addr, self.port)
-
 	srv := &http.Server{
 		Handler: self.rtr,
 		Addr:    serviceAddr,
@@ -113,7 +120,6 @@ func (self *GoldenSite) Start() error {
 		ReadTimeout:  10 * time.Minute,
 	}
 	err := srv.ListenAndServe()
-
 	return err
 }
 
