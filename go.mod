@@ -15,19 +15,19 @@ require (
 	github.com/gopherjs/gopherwasm v1.1.0 // indirect
 	github.com/gorilla/mux v1.8.0
 	github.com/hajimehoshi/go-mp3 v0.3.1 // indirect
-	github.com/hajimehoshi/oto v0.6.4 // indirect
-	github.com/mattn/go-sqlite3 v1.14.3
+	github.com/hajimehoshi/oto v0.6.5 // indirect
+	github.com/mattn/go-sqlite3 v1.14.4
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/webview/webview v0.0.0-20200724072439-e0c01595b361
 	github.com/xeonx/timeago v1.0.0-rc4
 	go.uber.org/dig v1.10.0
-	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
+	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0 // indirect
 	golang.org/x/exp v0.0.0-20200924195034-c827fd4f18b9 // indirect
 	golang.org/x/image v0.0.0-20200927104501-e162460cd6b5 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de // indirect
-	golang.org/x/sys v0.0.0-20200926100807-9d91bd62050c // indirect
+	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect
 	golang.org/x/text v0.3.3
 	golang.org/x/tools v0.0.0-20200401192744-099440627f01 // indirect
 )

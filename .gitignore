@@ -7,6 +7,9 @@
 # Logs
 *.log
 
+# Debian package
+*.deb
+
 # Golang
 go.sum
 

@@ -19,7 +19,7 @@ tasks:
 
   prepare:
     cmds:
-#      - npm install -g less
+      - npm install -g less
       - cd contrib && lessc main.less main.css
       - cp contrib/main.css static/css/main.css
 

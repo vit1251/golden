@@ -90,6 +90,9 @@ func (self *MailerManager) processMailer() error {
 	/**/
 	newAddress := fmt.Sprintf("%s@fidonet", address)
 
+	// Audio start
+	self.AudioManager.Play("sess_start.mp3")
+
 	/* Get parameters */
 	m := NewMailer(setupManager)
 	m.SetTempOutbound(TempOutbound)
@@ -109,11 +112,7 @@ func (self *MailerManager) processMailer() error {
 	}
 
 	/* Audio play */
-	if m.InFileCount > 0 {
-		self.AudioManager.Play("you-have-new-message.mp3")
-	} else {
-		self.AudioManager.Play("i-demand-attention.mp3")
-	}
+	self.AudioManager.Play("sess_stop.mp3")
 
 	return nil
 }

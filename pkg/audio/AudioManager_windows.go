@@ -24,7 +24,7 @@ func NewAudioManager() *AudioManager {
 	if err != nil {
 		panic(err)
 	}
-	am.basePath = path2.Join(dir, "static", "audio", "modern")
+	am.basePath = path2.Join(dir, "static", "audio")
 	return am
 }
 
