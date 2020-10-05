@@ -95,6 +95,11 @@ func (self *Application) Run() {
 		mm.Check()
 	})
 
+	/* Start tosser */
+	self.Container.Invoke(func(tm *tosser.TosserManager) {
+		tm.Start()
+	})
+
 	/* Start UI services */
 	self.Container.Invoke(func() {
 		s1 := ui.NewService(self.Container)

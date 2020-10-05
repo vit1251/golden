@@ -41,3 +41,6 @@ tasks:
     cmds:
       - go build -o golden-windows-amd64.exe .
 
+  package:
+    cmds:
+      - echo "No package."

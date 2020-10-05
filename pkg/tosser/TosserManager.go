@@ -23,6 +23,7 @@ type TosserManager struct {
 	SetupManager *setup.ConfigManager
 	MessageManager *msg.MessageManager
 	CharsetManager *charset.CharsetManager
+	event chan bool
 }
 
 type NetmailMessage struct {
@@ -55,7 +56,29 @@ func NewTosserManager(c *dig.Container) *TosserManager {
 		tm.SetupManager = sm
 		tm.MessageManager = mm
 	})
+	//
+	tm.event = make(chan bool)
+	go tm.run()
+	//
 	return tm
+}
+
+func (self *TosserManager) Start() {
+	self.event <- true
+}
+
+func (self *TosserManager) run() {
+	for alive := true; alive; {
+		timer := time.NewTimer(150 * time.Second)
+		select {
+			case <-timer.C:
+			case <-self.event:
+				log.Printf(" * Tosser start")
+				newTosser := NewTosser(self.Container)
+				newTosser.Toss()
+				log.Printf(" * Tosser complete")
+		}
+	}
 }
 
 func (self *TosserManager) makePacketName() string {
@@ -408,9 +431,4 @@ func (self *TosserManager) NewEchoMessage() *EchoMessage {
 func (self *TosserManager) NewNetmailMessage() *NetmailMessage {
 	nm := new(NetmailMessage)
 	return nm
-}
-
-func (self *TosserManager) Toss() {
-	newTosser := NewTosser(self.Container)
-	newTosser.Toss()
 }

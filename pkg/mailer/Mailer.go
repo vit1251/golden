@@ -50,10 +50,14 @@ type Mailer struct {
 	connComplete      chan int               /*  */
 	recvUnix          int                    /*  */
 	recvName          string                 /*   */
-	TempOutbound      string                 /*  */
-	SetupManager      *setup.ConfigManager   /*   */
+	workInbound       string                 /*  */
+	workOutbound      string                 /*  */
+	work              string
+	SetupManager      *setup.ConfigManager /*   */
 	InFileCount       int
 	OutFileCount      int
+	//
+	workPath          string
 }
 
 func NewMailer(sm *setup.ConfigManager) (*Mailer) {
@@ -74,8 +78,8 @@ func (self *Mailer) writeTrafic(mail int, data int) {
 	self.writeComment(raw)
 }
 
-func (self *Mailer) SetTempOutbound(TempOutbound string) {
-	self.TempOutbound = TempOutbound
+func (self *Mailer) SetTempOutbound(workOutbound string) {
+	self.workOutbound = workOutbound
 }
 
 func (self *Mailer) SetAddr(addr string) {
@@ -171,6 +175,7 @@ func (self *Mailer) writeData(chunk []byte) error {
 }
 
 func (self *Mailer) writeHeader(stat string) error {
+
 	log.Printf("TX stream header %s", stat)
 
 	newFrame := Frame{
@@ -187,4 +192,12 @@ func (self *Mailer) writeHeader(stat string) error {
 
 func (self *Mailer) GetVersion() string {
 	return "1.2.13"
+}
+
+func (self *Mailer) SetTempInbound(workInbound string) {
+	self.workInbound = workInbound
+}
+
+func (self *Mailer) SetTemp(work string) {
+	self.work = work
 }

@@ -93,7 +93,7 @@ func (self *MailerStateTransfer) Process(mailer *Mailer) IMailerState {
 		}
 
 		/* Complete routine */
-		newName := path.Join(mailer.TempOutbound, item.Name)
+		newName := path.Join(mailer.workOutbound, item.Name)
 		os.Rename(item.AbsolutePath, newName)
 
 	}

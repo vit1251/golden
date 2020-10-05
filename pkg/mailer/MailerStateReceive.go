@@ -55,8 +55,9 @@ func (self *MailerStateReceive) Process(mailer *Mailer) IMailerState {
 			mailer.size = size
 			mailer.recvUnix = unixtime
 			//
-			newPath := path.Join(mailer.inboundDirectory, filename)
+			newPath := path.Join(mailer.workInbound, filename)
 			log.Printf("RX stream save in %s", newPath)
+			mailer.workPath = newPath
 			//
 			if stream, err1 := os.Create(newPath); err1 != nil {
 				panic(err1)
@@ -83,6 +84,10 @@ func (self *MailerStateReceive) Process(mailer *Mailer) IMailerState {
 			//
 			rawComplete := fmt.Sprintf("%s %d %d", mailer.recvName, mailer.writeSize, mailer.recvUnix)
 			mailer.writeCommandPacket(M_GOT, []byte(rawComplete))
+			//
+			newPath := path.Join(mailer.inboundDirectory, mailer.recvName)
+			log.Printf("Rename %s -> %s", mailer.workPath, newPath)
+			os.Rename(mailer.workPath, newPath)
 			//
 			mailer.writeSize = 0
 		}

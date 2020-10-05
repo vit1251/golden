@@ -3,7 +3,6 @@ package mailer
 import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/audio"
-	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/stat"
 	"go.uber.org/dig"
@@ -14,42 +13,37 @@ import (
 type MailerManager struct {
 	Container    *dig.Container
 	AudioManager *audio.AudioManager
+	event         chan bool
 }
 
 func NewMailerManager(c *dig.Container) *MailerManager {
 	mm := new(MailerManager)
 	mm.Container = c
 	mm.AudioManager = audio.NewAudioManager()
+	mm.event = make(chan bool)
+	go mm.run()
 	return mm
 }
 
 func (self *MailerManager) Start() {
-	go self.run()
+	self.event <- true
 }
 
 func (self *MailerManager) run() {
-
-	/* Update duration parse */
-	dp := fidotime.NewDurationParser()
-	d, err1 := dp.Parse("5m")
-	if err1 != nil {
-		log.Printf("Error parse")
-		d = time.Minute * 15
+	for alive := true; alive; {
+		timer := time.NewTimer(5 * time.Minute)
+		select {
+		case <-self.event:
+		case <-timer.C:
+			log.Printf("Mailer start")
+			self.AudioManager.Play("sess_start.mp3")
+			if err := self.processMailer(); err != nil {
+				log.Printf("err = %+v", err)
+			}
+			self.AudioManager.Play("sess_stop.mp3")
+			log.Printf("Mailer complete")
+		}
 	}
-
-	log.Printf(" * Mailer Start")
-	for {
-		log.Printf("Start wait mailer: d = %+v", d)
-		time.Sleep(d)
-		log.Printf("Stop wait mailer")
-
-		log.Printf("Start mailer processing")
-		err := self.processMailer()
-		log.Printf("err = %+v", err)
-		log.Printf("Stop mailer processing")
-	}
-	log.Printf(" * Mailer complete")
-
 }
 
 func (self *MailerManager) processMailer() error {
@@ -86,16 +80,23 @@ func (self *MailerManager) processMailer() error {
 	if err6 != nil {
 		return err6
 	}
+	TempInbound, err6 := setupManager.Get("main", "TempInbound", "")
+	if err6 != nil {
+		return err6
+	}
+	Temp, err6 := setupManager.Get("main", "Temp", "")
+	if err6 != nil {
+		return err6
+	}
 
-	/**/
+	/* */
 	newAddress := fmt.Sprintf("%s@fidonet", address)
-
-	// Audio start
-	self.AudioManager.Play("sess_start.mp3")
 
 	/* Get parameters */
 	m := NewMailer(setupManager)
 	m.SetTempOutbound(TempOutbound)
+	m.SetTempInbound(TempInbound)
+	m.SetTemp(Temp)
 	m.SetServerAddr(netAddr)
 	m.SetInboundDirectory(inb)
 	m.SetOutboundDirectory(outb)
@@ -110,9 +111,6 @@ func (self *MailerManager) processMailer() error {
 	if err := statManager.RegisterOutSession(); err != nil {
 		log.Printf("Fail on mailer routine: err = %+v", err)
 	}
-
-	/* Audio play */
-	self.AudioManager.Play("sess_stop.mp3")
 
 	return nil
 }

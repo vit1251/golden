@@ -102,7 +102,6 @@ func (self *GoldenSite) registerFrontend() {
 }
 
 func (self *GoldenSite) registerBackend() {
-	self.Register("/api/service/start", api.NewServiceManageCompleteAction())
 	self.Register("/api/stat", api.NewStatAction())
 	self.Register("/api/echo/create", api.NewEchoCreateAction())
 	self.Register("/api/netmail/remove", api.NewNetmailRemoveAction())

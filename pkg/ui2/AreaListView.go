@@ -181,9 +181,9 @@ func (av *AreaListView) Render(cs *ConnState) {
 			if col.Type == 'M' {
 				// Символ маркировки
 				if area.NewMessageCount > 0 {
-					row += " "
-				} else {
 					row += "+"
+				} else {
+					row += " "
 				}
 			}
 			if col.Type == 'E' {

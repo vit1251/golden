@@ -66,8 +66,13 @@ func (mw *MessageView) Render(cs *ConnState) {
 			cs.t.SetAttr(F_YELLOW)
 			cs.scr.WriteStringXY(cs.t.Width - len(areaName) - 3, 1, fmt.Sprintf("%s", areaName ))
 
+			marker := " "
+			if msgHeader.ViewCount == 0 {
+				marker = "*"
+			}
+
 			cs.t.SetAttr(F_WHITE)
-			cs.scr.WriteStringXY(2, 2, fmt.Sprintf("Msg  : %d of %d %s", i+1, len(msgHeaders), msgHeader.ID))
+			cs.scr.WriteStringXY(2, 2, fmt.Sprintf("Msg  : %d of %d %s %s", i+1, len(msgHeaders), msgHeader.ID, marker))
 			cs.scr.WriteStringXY(2, 3, fmt.Sprintf("From : %s", msgHeader.From))
 			cs.scr.WriteStringXY(2, 4, fmt.Sprintf("To   : %s", msgHeader.To))
 			cs.scr.WriteStringXY(2, 5, fmt.Sprintf("Subj : %s", msgHeader.Subject))
@@ -155,26 +160,55 @@ func (mw *MessageView) getMessageByIndex(cs *ConnState, activeIndex int) *msg.Me
 
 }
 
+func (mw *MessageView) markMessageByIndex(cs *ConnState, activeIndex int) error {
+
+	var areaManager *msg.AreaManager
+	var messageManager *msg.MessageManager
+	cs.container.Invoke(func(am *msg.AreaManager, mm *msg.MessageManager) {
+		areaManager = am
+		messageManager = mm
+	})
+
+	//
+	newArea, err1 := areaManager.GetAreaByName(cs.activeArea)
+	if err1 != nil {
+		return nil
+	}
+
+	areaName := newArea.Name()
+	msgHeaders, err2 := messageManager.GetMessageHeaders(areaName)
+	if err2 != nil {
+		return nil
+	}
+
+	for idx, msgHeader := range msgHeaders {
+		if idx == activeIndex {
+			msgHash := msgHeader.Hash
+			messageManager.ViewMessageByHash(areaName, msgHash)
+			return nil
+		}
+	}
+
+	return nil
+}
+
 func (mw *MessageView) ProcessEvent(cs *ConnState, event *TerminalEvent) {
 
 	if event.Type == TerminalKey && event.Key == "INSERT" {
 		// TODO - activeView := NewComposeEchomailView()
-	} else
-	if event.Type == TerminalKey && event.Key == "DELETE" {
+	} else if event.Type == TerminalKey && event.Key == "DELETE" {
 		// TODO - active overlay dialog widget confirm delete ...
 		// Remove.Message
-	} else
-	if event.Type == TerminalKey && event.Key == "HOME" {
+	} else if event.Type == TerminalKey && event.Key == "HOME" {
 		mw.activeIndex = 0
-	} else
-	if event.Type == TerminalKey && event.Key == "LEFT" {
+	} else if event.Type == TerminalKey && event.Key == "LEFT" {
 		mw.activeIndex -= 1
-	} else
-	if event.Type == TerminalKey && event.Key == "RIGHT" {
+	} else if event.Type == TerminalKey && event.Key == "RIGHT" {
 		mw.activeIndex += 1
-	} else
-	if event.Type == TerminalKey && event.Key == "ESC" {
+	} else if event.Type == TerminalKey && event.Key == "ESC" {
 		cs.activeView = NewAreaWidget()
+	} else if event.Type == TerminalKey && event.Key == "SPACE" {
+		mw.markMessageByIndex(cs, mw.activeIndex)
 	}
 
 }

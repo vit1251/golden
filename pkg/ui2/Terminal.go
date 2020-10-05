@@ -93,6 +93,8 @@ func (t *Terminal) makeKeySym(in []byte) string {
 		return "PG_DOWN"
 	} else if bytes.Equal(in, []byte{27, 91, 53, 126}) {
 		return "PG_UP"
+	} else if bytes.Equal(in, []byte{32}) {
+		return "SPACE"
 	} else if bytes.Equal(in, []byte{27}) {
 		return "ESC"
 	} else {
