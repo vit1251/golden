@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/file"
+	"github.com/vit1251/golden/pkg/setup"
 	"io"
 	"log"
 	"net/http"
@@ -22,10 +23,20 @@ func NewFileAreaDownloadAction() *FileAreaDownloadAction {
 
 func (self *FileAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	var setupManager *setup.ConfigManager
 	var fileManager *file.FileManager
-	self.Container.Invoke(func(fm *file.FileManager) {
+	self.Container.Invoke(func(fm *file.FileManager, sm *setup.ConfigManager) {
 		fileManager = fm
+		setupManager = sm
 	})
+
+	//
+	storagePath, err1 := setupManager.Get("main", "FileBox", "Files")
+	if err1 != nil {
+		response := fmt.Sprintf("Fail on get parameters")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
@@ -43,19 +54,25 @@ func (self *FileAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	}
 	log.Printf("area = %+v", area)
 
+	//fileManager.GetFileByName(newFile)
+
 	/* Path */
-	path := filepath.Join(area.Path, newFile)
+	var areaName string = area.Name()
+	path := filepath.Join(storagePath, areaName, newFile)
 
 	/* Open original file */
 	stream, err2 := os.Open(path)
 	if err2 != nil {
-		response := fmt.Sprintf("Fail on Open")
+		response := fmt.Sprintf("Fail on open source %s", path)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 	defer stream.Close()
 
 	/* Transmit original file */
+	var sourceName string = fmt.Sprintf("attachment; filename=\"%s\"", newFile)
+	w.Header().Set("Content-Disposition", sourceName)
+
 	io.Copy(w, stream)
 
 }
