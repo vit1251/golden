@@ -30,18 +30,20 @@ func (self *MailerManager) Start() {
 }
 
 func (self *MailerManager) run() {
+	var procIteration int
+	tick := time.NewTicker(5 * time.Minute)
 	for alive := true; alive; {
-		timer := time.NewTimer(5 * time.Minute)
 		select {
 		case <-self.event:
-		case <-timer.C:
-			log.Printf("Mailer start")
+		case <-tick.C:
+			procIteration += 1
+			log.Printf("Mailer start (%d)", procIteration)
 			self.AudioManager.Play("sess_start.mp3")
 			if err := self.processMailer(); err != nil {
 				log.Printf("err = %+v", err)
 			}
 			self.AudioManager.Play("sess_stop.mp3")
-			log.Printf("Mailer complete")
+			log.Printf("Mailer complete (%d)", procIteration)
 		}
 	}
 }

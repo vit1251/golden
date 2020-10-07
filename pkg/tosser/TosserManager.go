@@ -67,18 +67,26 @@ func (self *TosserManager) Start() {
 	self.event <- true
 }
 
+func (self *TosserManager) processTosser() {
+	newTosser := NewTosser(self.Container)
+	newTosser.Toss()
+}
+
 func (self *TosserManager) run() {
+	log.Printf(" * Tosser service start")
+	var procIteration int
+	tick := time.NewTicker(1 * time.Minute)
 	for alive := true; alive; {
-		timer := time.NewTimer(150 * time.Second)
 		select {
-			case <-timer.C:
 			case <-self.event:
-				log.Printf(" * Tosser start")
-				newTosser := NewTosser(self.Container)
-				newTosser.Toss()
-				log.Printf(" * Tosser complete")
+			case <-tick.C:
+				procIteration += 1
+				log.Printf(" * Tosser start (%d)", procIteration)
+				self.processTosser()
+				log.Printf(" * Tosser complete (%d)", procIteration)
 		}
 	}
+	log.Printf(" * Tosser service stop")
 }
 
 func (self *TosserManager) makePacketName() string {
