@@ -2,8 +2,8 @@ package action
 
 import (
 	"fmt"
+	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/ui/widgets"
-	version2 "github.com/vit1251/golden/pkg/version"
 	"net/http"
 )
 
@@ -19,7 +19,7 @@ func NewWelcomeAction() *WelcomeAction {
 func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Get dependency injection manager */
-	version := version2.GetVersion()
+	version := cmn.GetVersion()
 
 	/* Render */
 	bw := widgets.NewBaseWidget()

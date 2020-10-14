@@ -4,25 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
-	"runtime"
-	"time"
 )
-
-func (self *Mailer) GetPlatform() string {
-	if runtime.GOOS == "windows" {
-		return "Windows"
-	} else if runtime.GOOS == "linux" {
-	 	return "Linux"
-	}
-	return "Unknown"
-}
-
-func (self *Mailer) GetTime() string {
-	// Sun, 26 Jan 2020 18:02:17 +0300
-	now := time.Now().Format(time.RFC1123Z)
-	log.Printf("Time is %s", now)
-	return now
-}
 
 func (self *Mailer) createAuthorization(chData []byte) (string) {
 	a := NewAuthorizer()

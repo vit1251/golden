@@ -7,8 +7,8 @@ func (s ProtocolState) String() string {
 }
 
 const (
-	SessionSetupState   ProtocolState = 0
-	FileTransferState   ProtocolState = 1
+	SessionSetupState ProtocolState = 0
+	FileTransferState ProtocolState = 1
 )
 
 type SessionSetupStageState int
@@ -27,12 +27,12 @@ func (s SessionSetupStageState) String() string {
 }
 
 const (
-	SessionSetupConnInitState SessionSetupStageState    = 0
-	SessionSetupWaitConnState SessionSetupStageState    = 1
-	SessionSetupSendPasswdState SessionSetupStageState  = 2
-	SessionSetupWaitAddrState SessionSetupStageState    = 3
-	SessionSetupAuthRemoteState SessionSetupStageState  = 4
-	SessionSetupIfSecureState SessionSetupStageState    = 5
-	SessionSetupWaitOkState SessionSetupStageState      = 6
-	SessionSetupExitState SessionSetupStageState        = 7
+	SessionSetupConnInitState   SessionSetupStageState = 0
+	SessionSetupWaitConnState   SessionSetupStageState = 1
+	SessionSetupSendPasswdState SessionSetupStageState = 2
+	SessionSetupWaitAddrState   SessionSetupStageState = 3
+	SessionSetupAuthRemoteState SessionSetupStageState = 4
+	SessionSetupIfSecureState   SessionSetupStageState = 5
+	SessionSetupWaitOkState     SessionSetupStageState = 6
+	SessionSetupExitState       SessionSetupStageState = 7
 )

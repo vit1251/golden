@@ -2,6 +2,7 @@ package mailer
 
 import (
 	"fmt"
+	cmn "github.com/vit1251/golden/pkg/common"
 	"io"
 	"log"
 	"os"
@@ -49,7 +50,7 @@ func (self *MailerStateTransfer) Transmit(mailer *Mailer, i Item) error {
 	for {
 
 		/* Calculate transmit chunk */
-		chunkSize := Min(outSize, 4096)
+		chunkSize := cmn.Min(outSize, 4096)
 		chunk := make([]byte, chunkSize)
 
 		/* Read */
@@ -93,12 +94,12 @@ func (self *MailerStateTransfer) Process(mailer *Mailer) IMailerState {
 		}
 
 		/* Complete routine */
-		newName := path.Join(mailer.workOutbound, item.Name)
+		newName := path.Join(mailer.GetWorkOutbound(), item.Name)
 		os.Rename(item.AbsolutePath, newName)
 
 	}
 
 	log.Printf("Sent complete!")
 
-	return NewMailerStateCloseConnection()
+	return NewMailerStateEndBatch()
 }

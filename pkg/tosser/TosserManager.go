@@ -98,6 +98,25 @@ func (self *TosserManager) makePacketName() string {
 	return pktName
 }
 
+func (self *TosserManager) makeTimeZone() string {
+	newTime := time.Now()
+	_, offset := newTime.Zone()
+	var sign string = "+"
+	if offset < 0 {
+		offset = -offset
+		sign = "-"
+	}
+	ZHour, Zmin := offset / 3600, offset % 3600
+	var newZone string
+	if sign == "+" {
+		newZone = fmt.Sprintf("%02d%02d", ZHour, Zmin)
+	} else if sign == "-" {
+		newZone = fmt.Sprintf("-%02d%02d", ZHour, Zmin)
+	}
+	log.Printf("zone = %s", newZone)
+	return newZone
+}
+
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
 
 	/* Create packet name */
@@ -213,12 +232,14 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	hs := h.Sum32()
 	log.Printf("crc32 = %+v", hs)
 
+	newZone := self.makeTimeZone()
+
 	/* Write message body */
 	msgBody := packet.NewMessageBody()
 	//
 	msgBody.SetArea(em.AreaName)
 	//
-	//msgBody.AddKludge("TZUTC", "0300")
+	msgBody.AddKludge("TZUTC", newZone)
 	//msgBody.AddKludge("CHRS", "UTF-8 4")
 	msgBody.AddKludge("CHRS", "CP866 2")
 	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", myAddr, hs))

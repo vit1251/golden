@@ -20,9 +20,9 @@ const TypeARCmail MailerInboundRecType = 2
 const TypeTICmail MailerInboundRecType = 3
 
 type MailerInboundRec struct {
-	Type         MailerInboundRecType    /**/
-	AbsolutePath string                  /**/
-	Name         string                  /**/
+	Type         MailerInboundRecType /**/
+	AbsolutePath string               /**/
+	Name         string               /**/
 }
 
 func (self *MailerInboundRec) SetAbsolutePath(absolutePath string) {

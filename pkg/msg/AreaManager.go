@@ -105,11 +105,12 @@ func (self *AreaManager) Register(a *Area) error {
 	var params []interface{}
 	params = append(params, areaName)
 
-	self.StorageManager.Exec(query1, params, func(err error) {
+	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
+		return nil
 	})
 
-	return nil
+	return err1
 }
 
 func (self *AreaManager) GetAreas() ([]*Area, error) {
@@ -187,11 +188,12 @@ func (self *AreaManager) Update(area *Area) error {
 	params = append(params, area.Summary)
 	params = append(params, area.Name())
 
-	self.StorageManager.Exec(query1, params, func(err error) {
+	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
+		return nil
 	})
 
-	return nil
+	return err1
 }
 
 func (self *AreaManager) RemoveAreaByName(echoName string) error {
@@ -200,9 +202,10 @@ func (self *AreaManager) RemoveAreaByName(echoName string) error {
 	var params []interface{}
 	params = append(params, echoName)
 
-	self.StorageManager.Exec(query1, params, func(err error) {
+	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
+		return nil
 	})
 
-	return nil
+	return err1
 }

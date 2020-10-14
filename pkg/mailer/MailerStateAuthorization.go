@@ -16,7 +16,7 @@ func (self *MailerStateAuthorization) String() string {
 
 func (self *MailerStateAuthorization) Process(mailer *Mailer) IMailerState {
 
-	mailer.writePassword(mailer.respAuthorization)
+	mailer.WritePassword(mailer.respAuthorization)
 
 	return NewMailerStateSecure()
 

@@ -3,6 +3,7 @@ package mailer
 import (
 	"bytes"
 	"fmt"
+	cmn "github.com/vit1251/golden/pkg/common"
 	"log"
 	"os"
 	"path"
@@ -43,9 +44,9 @@ func (self *MailerStateReceive) Process(mailer *Mailer) IMailerState {
 			parts := bytes.SplitN(nextFrame.CommandFrame.Body, []byte(" "), 4)
 			//
 			filename := string(parts[0])
-			size := mailer.parseSize(parts[1])
-			unixtime := mailer.parseSize(parts[2])
-			offset := mailer.parseSize(parts[3])
+			size, _ := cmn.ParseSize(parts[1])
+			unixtime, _ := cmn.ParseSize(parts[2])
+			offset, _ := cmn.ParseSize(parts[3])
 			//
 			if offset != 0 {
 				panic("Wrong offset is not 0")

@@ -2,6 +2,7 @@ package mailer
 
 import (
 	"fmt"
+	cmn "github.com/vit1251/golden/pkg/common"
 )
 
 type MailerStateTxHello struct {
@@ -20,16 +21,31 @@ func (self *MailerStateTxHello) String() string {
 
 func (self *MailerStateTxHello) Process(mailer *Mailer) IMailerState {
 
-	//mailer.writeInfo("SYS", "Vitold Station")
-	//mailer.writeInfo("ZYZ", "Vitold Sedyshev")
-	//mailer.writeInfo("LOC", "Saint-Petersburg, Russia")
-	mailer.writeInfo("NDL", "115200,TCP,BINKP")
-	mailer.writeInfo("TIME", mailer.GetTime())
-	mailer.writeInfo("OS", mailer.GetPlatform())
+	/* System name */
+	systemName := mailer.GetSystemName()
+	if systemName != "" {
+		mailer.WriteInfo("SYS", systemName)
+	}
+
+	/* User name */
+	username := mailer.GetUserName()
+	if username != "" {
+		mailer.WriteInfo("ZYZ", username)
+	}
+
+	location := mailer.GetLocation()
+	if location != "" {
+		mailer.WriteInfo("LOC", location)
+	}
+
+	mailer.WriteInfo("NDL", "115200,TCP,BINKP")
+	mailer.WriteInfo("TIME", cmn.GetTime())
+	mailer.WriteInfo("OS", cmn.GetPlatform())
 	appName := "GoldenMailer"
-	appVersion := mailer.GetVersion()
-	mailer.writeInfo("VER", fmt.Sprintf("%s/%s", appName, appVersion))
-	mailer.writeAddress(mailer.addr)
+	appVersion := cmn.GetVersion()
+	mailer.WriteInfo("VER", fmt.Sprintf("%s/%s", appName, appVersion))
+	addr := mailer.GetAddr()
+	mailer.WriteAddress(addr)
 
 	return NewMailerStateRxHello()
 }

@@ -1,6 +1,8 @@
 package mailer
 
-import "log"
+import (
+	"log"
+)
 
 type MailerStateSecure struct {
 
@@ -23,7 +25,7 @@ func (self *MailerStateSecure) Process(mailer *Mailer) IMailerState {
 
 	if nextFrame.Command {
 		if nextFrame.CommandFrame.CommandID == M_OK {
-			return NewMailerStateReceive()
+			return NewMailerStateStartBatch()
 		}
 	} else {
 		log.Panicf("Unexpected frame")

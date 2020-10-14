@@ -12,7 +12,7 @@ const (
 )
 
 func (self *Mailer) parseFrameHeader(frameHeader uint16) (bool, uint16) {
-	var frameCommand bool = frameHeader & FrameCommandMask == FrameCommandMask
+	var frameCommand bool = frameHeader &FrameCommandMask == FrameCommandMask
 	var frameSize uint16 = frameHeader & FrameSizeMask
 	return frameCommand, frameSize
 }

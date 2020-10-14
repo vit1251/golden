@@ -12,8 +12,8 @@ import (
 )
 
 type CommandFrame struct {
-	CommandID CommandID     /* Command ID  */
-	Body []byte
+	CommandID CommandID /* Command ID  */
+	Body      []byte
 }
 
 type DataFrame struct {
@@ -57,10 +57,13 @@ type Mailer struct {
 	InFileCount       int
 	OutFileCount      int
 	//
-	workPath          string
+	workPath   string
+	systemName string
+	userName   string
+	location   string
 }
 
-func NewMailer(sm *setup.ConfigManager) (*Mailer) {
+func NewMailer(sm *setup.ConfigManager) *Mailer {
 	m := new(Mailer)
 	m.inDataFrames = make(chan Frame)
 	m.outDataFrames = make(chan Frame)
@@ -75,7 +78,7 @@ func (self *Mailer) closeSession() {
 
 func (self *Mailer) writeTrafic(mail int, data int) {
 	raw := fmt.Sprintf("TRF %d %d", mail, data)
-	self.writeComment(raw)
+	self.WriteComment(raw)
 }
 
 func (self *Mailer) SetTempOutbound(workOutbound string) {
@@ -152,13 +155,6 @@ func (self *Mailer) SetOutboundDirectory(outb string) {
 	self.outboundDirectory = outb
 }
 
-func Min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
-}
-
 func (self *Mailer) writeData(chunk []byte) error {
 	log.Printf("TX data chunk %d", len(chunk))
 
@@ -182,16 +178,12 @@ func (self *Mailer) writeHeader(stat string) error {
 		Command: true,
 		CommandFrame: CommandFrame{
 			CommandID: M_FILE,
-			Body: []byte(stat),
+			Body:      []byte(stat),
 		},
 	}
 	self.outDataFrames <- newFrame
 
 	return nil
-}
-
-func (self *Mailer) GetVersion() string {
-	return "1.2.13"
 }
 
 func (self *Mailer) SetTempInbound(workInbound string) {
@@ -200,4 +192,36 @@ func (self *Mailer) SetTempInbound(workInbound string) {
 
 func (self *Mailer) SetTemp(work string) {
 	self.work = work
+}
+
+func (self *Mailer) GetWorkOutbound() string {
+	return self.workOutbound
+}
+
+func (self *Mailer) GetAddr() string {
+	return self.addr
+}
+
+func (self *Mailer) GetSystemName() string {
+	return self.systemName
+}
+
+func (self *Mailer) GetUserName() string {
+	return self.userName
+}
+
+func (self *Mailer) GetLocation() string {
+	return self.location
+}
+
+func (self *Mailer) SetLocation(location string) {
+	self.location = location
+}
+
+func (self *Mailer) SetUserName(name string) {
+	self.userName = name
+}
+
+func (self *Mailer) SetStationName(name string) {
+	self.systemName = name
 }

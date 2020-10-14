@@ -73,11 +73,11 @@ func (self *NetmailManager) Write(msg *NetmailMessage) error {
 	params = append(params, msg.Content)
 	params = append(params, msg.UnixTime)
 
-	self.StorageManager.Exec(query1, params, func(err error) {
-		//return err
+	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+		return nil
 	})
 
-	return nil
+	return err1
 }
 
 func (self *NetmailManager) GetMessageByHash(msgHash string) (*NetmailMessage, error) {
@@ -131,11 +131,12 @@ func (self *NetmailManager) ViewMessageByHash(msgHash string) error {
 	var params []interface{}
 	params = append(params, msgHash)
 
-	self.StorageManager.Exec(query1, params, func(err error) {
+	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
+		return nil
 	})
 
-	return nil
+	return err1
 }
 
 func (self *NetmailManager) GetMessageNewCount() (int, error) {
@@ -163,9 +164,9 @@ func (self *NetmailManager) RemoveMessageByHash(msgHash string) error {
 	var params []interface{}
 	params = append(params, msgHash)
 
-	self.StorageManager.Exec(query1, params, func(err error) {
-		//return err
+	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+		return nil
 	})
 
-	return nil
+	return err1
 }

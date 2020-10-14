@@ -51,32 +51,35 @@ func (self *StorageManager) Query(query string, params []interface{}, f func(row
 	ctx, cancel := context.WithTimeout(parentContext, 5*time.Second)
 	defer cancel()
 
-	log.Printf("sql = %+v params = %+v", query, params)
+	log.Printf("StorageManager: Query: sql = %+v params = %+v", query, params)
+
 	start := time.Now()
-	rows, err1 := self.conn.QueryContext(ctx, query, params...)
-	if err1 != nil {
-		panic(err1)
-		return err1
-	}
-	defer rows.Close()
-	for rows.Next() {
-		err2 := f(rows)
-		if err2 != nil {
-			errRes = err2
-			break
+	if rows, err1 := self.conn.QueryContext(ctx, query, params...); err1 == nil {
+		for rows.Next() {
+			err2 := f(rows)
+			if err2 != nil {
+				errRes = err2
+				break
+			}
 		}
+		err3 := rows.Close()
+		if err3 != nil {
+			errRes = err3
+		}
+	} else {
+		errRes = err1
 	}
-	age := time.Since(start)
-	log.Printf("Storage: query: duration = %+v", age)
+	duration := time.Since(start)
+	log.Printf("StorageManager: Query: duration = %+v err = %+v", duration, errRes)
+
 	return errRes
 }
 
-func (self *StorageManager) Exec(query string, params []interface{}, f func(err error)) error {
-	log.Printf("sql = %+v params = %+v", query, params)
+func (self *StorageManager) Exec(query string, params []interface{}, f func(result sql.Result, err error) error) error {
+	log.Printf("StorageManager: Exec: sql = %+v params = %+v", query, params)
 	start := time.Now()
-	_, err1 := self.conn.Exec(query, params...)
-	age := time.Since(start)
-	log.Printf("Storage: exec: duration = %+v", age)
-	f(err1)
-	return nil
+	result, err1 := self.conn.Exec(query, params...)
+	duration := time.Since(start)
+	log.Printf("StorageManager: Exec: duration = %+v err = %+v", duration, err1)
+	return f(result, err1)
 }

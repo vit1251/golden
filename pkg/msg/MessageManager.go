@@ -189,11 +189,12 @@ func (self *MessageManager) ViewMessageByHash(echoTag string, msgHash string) er
 	params = append(params, echoTag)
 	params = append(params, msgHash)
 
-	self.StorageManager.Exec(query1, params, func(err error) {
+	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
+		return nil
 	})
 
-	return nil
+	return err1
 
 }
 
@@ -204,11 +205,12 @@ func (self *MessageManager) RemoveMessageByHash(echoTag string, msgHash string) 
 	params = append(params, echoTag)
 	params = append(params, msgHash)
 
-	self.StorageManager.Exec(query1, params, func(err error) {
+	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
+		return nil
 	})
 
-	return nil
+	return err1
 }
 
 func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string) (bool, error) {
@@ -253,11 +255,12 @@ func (self *MessageManager) Write(msg *Message) (error) {
 	params = append(params, msg.Content)
 	params = append(params, msg.UnixTime)
 
-	self.StorageManager.Exec(query1, params, func(err error) {
+	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
+		return nil
 	})
 
-	return nil
+	return err1
 
 }
 
@@ -286,10 +289,11 @@ func (self *MessageManager) RemoveMessagesByAreaName(echoTag string) error {
 	var params []interface{}
 	params = append(params, echoTag)
 
-	self.StorageManager.Exec(query1, params, func(err error) {
+	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
+		return nil
 	})
 
-	return nil
+	return err1
 
 }

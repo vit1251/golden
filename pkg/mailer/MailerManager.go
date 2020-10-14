@@ -2,7 +2,6 @@ package mailer
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/audio"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/stat"
 	"go.uber.org/dig"
@@ -12,14 +11,12 @@ import (
 
 type MailerManager struct {
 	Container    *dig.Container
-	AudioManager *audio.AudioManager
 	event         chan bool
 }
 
 func NewMailerManager(c *dig.Container) *MailerManager {
 	mm := new(MailerManager)
 	mm.Container = c
-	mm.AudioManager = audio.NewAudioManager()
 	mm.event = make(chan bool)
 	go mm.run()
 	return mm
@@ -37,13 +34,11 @@ func (self *MailerManager) run() {
 		case <-self.event:
 		case <-tick.C:
 			procIteration += 1
-			log.Printf("Mailer start (%d)", procIteration)
-			self.AudioManager.Play("sess_start.mp3")
+			log.Printf(" * Mailer start (%d)", procIteration)
 			if err := self.processMailer(); err != nil {
 				log.Printf("err = %+v", err)
 			}
-			self.AudioManager.Play("sess_stop.mp3")
-			log.Printf("Mailer complete (%d)", procIteration)
+			log.Printf(" * Mailer complete (%d)", procIteration)
 		}
 	}
 }
@@ -90,6 +85,22 @@ func (self *MailerManager) processMailer() error {
 	if err6 != nil {
 		return err6
 	}
+	Country, err6 := setupManager.Get("main", "Country", "")
+	if err6 != nil {
+		return err6
+	}
+	City, err6 := setupManager.Get("main", "City", "")
+	if err6 != nil {
+		return err6
+	}
+	realName, err1 := setupManager.Get("main", "RealName", "")
+	if err1 != nil {
+		return err1
+	}
+	stationName, err1 := setupManager.Get("main", "StationName", "")
+	if err1 != nil {
+		return err1
+	}
 
 	/* */
 	newAddress := fmt.Sprintf("%s@fidonet", address)
@@ -104,6 +115,11 @@ func (self *MailerManager) processMailer() error {
 	m.SetOutboundDirectory(outb)
 	m.SetAddr(newAddress)
 	m.SetSecret(password)
+	m.SetUserName(realName)
+	m.SetStationName(stationName)
+	if City != "" && Country != "" {
+		m.SetLocation(fmt.Sprintf("%s, %s", City, Country))
+	}
 	m.Start()
 
 	/* Wait complete */

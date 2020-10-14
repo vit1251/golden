@@ -1,5 +1,10 @@
 package ui2
 
+import (
+	"fmt"
+	cmn "github.com/vit1251/golden/pkg/common"
+)
+
 type WelcomeView struct {
 
 }
@@ -44,7 +49,11 @@ func (ww *WelcomeView) Render(cs *ConnState) {
 	cs.t.SetAttr(F_BLUE)
 	cs.scr.DrawLineY( 20,"─")
 
-//	authorWidget.AddLine(fmt.Sprintf("Version: %s", "1.2.13"))
+	ver := cmn.GetVersion()
+	msg := fmt.Sprintf("Version: %s", ver)
+	var margin3 = (cs.t.Width - len(msg)) / 2
+	cs.scr.WriteStringXY(margin3, 22, msg)
+
 //	authorWidget.AddLine("Contributors: \n")
 //	authorWidget.AddLine(" Vitold Sedyshev \n")
 //	authorWidget.AddLine(" Sergey Anohin \n")

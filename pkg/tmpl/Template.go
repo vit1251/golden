@@ -1,6 +1,7 @@
 package tmpl
 
 import (
+	cmn "github.com/vit1251/golden/pkg/common"
 	"runtime"
 	"strings"
 )
@@ -29,8 +30,8 @@ func NewTemplate() *Template {
 
 	r.Set("GOLDEN_PLATFORM", platformName)
 	r.Set("GOLDEN_ARCH", archName)
-	r.Set("GOLDEN_VERSION", "1.2.13")
-	r.Set("GOLDEN_RELEASE_DATE", "2020-10-05 13:44 MSK")
+	r.Set("GOLDEN_VERSION", cmn.GetVersion())
+	r.Set("GOLDEN_RELEASE_DATE", cmn.GetReleaseDate())
 	r.Set("GOLDEN_RELEASE_HASH", "master")
 
 	return r

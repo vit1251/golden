@@ -44,10 +44,11 @@ func (self *StatManager) RegisterInFile(filename string) error {
 	statDate := self.makeToday()
 	var params []interface{}
 	params = append(params, statDate)
-	self.StorageManager.Exec(query, params, func(err error) {
+	err1 := self.StorageManager.Exec(query, params, func(result sql.Result, err error) error {
 		log.Printf("Error: err = %+v", err)
+		return nil
 	})
-	return nil
+	return err1
 }
 
 func (self *StatManager) RegisterOutFile(filename string) error {
@@ -62,13 +63,13 @@ type SummaryRow struct {
 
 func (self *StatManager) GetStatRow(statDate string) (*Stat, error) {
 
-	var result *Stat = new(Stat)
+	var result *Stat
 
 	query1 := "SELECT `statMessageRXcount`, `statMessageTXcount`, `statSessionIn`, `statSessionOut`, `statFileRXcount`, `statFileTXcount`, `statPacketIn`, `statPacketOut` FROM `stat` WHERE `statDate` = $1"
 	var params []interface{}
 	params = append(params, statDate)
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err1 := self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var statMessageInCount int64
 		var statMessageOutCount int64
@@ -84,6 +85,7 @@ func (self *StatManager) GetStatRow(statDate string) (*Stat, error) {
 			return err2
 		}
 
+		result = new(Stat)
 		result.MessageReceived = int(statMessageInCount)
 		result.MessageSent = int(statMessageOutCount)
 		result.SessionIn = int(statSessionInCount)
@@ -96,7 +98,7 @@ func (self *StatManager) GetStatRow(statDate string) (*Stat, error) {
 		return nil
 	})
 
-	return result, nil
+	return result, err1
 }
 
 func (self *StatManager) GetStat() (*Stat, error) {
@@ -112,10 +114,11 @@ func (self *StatManager) RegisterInPacket() error {
 	statDate := self.makeToday()
 	var params []interface{}
 	params = append(params, statDate)
-	self.StorageManager.Exec(query, params, func(err error) {
+	err1 := self.StorageManager.Exec(query, params, func(result sql.Result, err error) error {
 		log.Printf("Error: err = %+v", err)
+		return nil
 	})
-	return nil
+	return err1
 }
 
 func (self *StatManager) RegisterOutPacket() error {
@@ -125,10 +128,11 @@ func (self *StatManager) RegisterOutPacket() error {
 	statDate := self.makeToday()
 	var params []interface{}
 	params = append(params, statDate)
-	self.StorageManager.Exec(query, params, func(err error) {
+	err1 := self.StorageManager.Exec(query, params, func(result sql.Result, err error) error {
 		log.Printf("Error: err = %+v", err)
+		return nil
 	})
-	return nil
+	return err1
 }
 
 func (self *StatManager) RegisterDupe() error {
@@ -143,10 +147,11 @@ func (self *StatManager) RegisterInMessage() error {
 	statDate := self.makeToday()
 	var params []interface{}
 	params = append(params, statDate)
-	self.StorageManager.Exec(query, params, func(err error) {
+	err1 := self.StorageManager.Exec(query, params, func(result sql.Result, err error) error {
 		log.Printf("Error: err = %+v", err)
+		return nil
 	})
-	return nil
+	return err1
 }
 
 func (self *StatManager) RegisterOutMessage() error {
@@ -156,10 +161,11 @@ func (self *StatManager) RegisterOutMessage() error {
 	statDate := self.makeToday()
 	var params []interface{}
 	params = append(params, statDate)
-	self.StorageManager.Exec(query, params, func(err error) {
+	err1 := self.StorageManager.Exec(query, params, func(result sql.Result, err error) error {
 		log.Printf("Error: err = %+v", err)
+		return nil
 	})
-	return nil
+	return err1
 }
 
 func (self *StatManager) makeToday() string {
@@ -169,15 +175,27 @@ func (self *StatManager) makeToday() string {
 	return result
 }
 
-func (self *StatManager) createStat() {
-	/* Update statistic */
-	query := "INSERT INTO `stat` (`statDate`) VALUES ( ? )"
+func (self *StatManager) createStat() error {
 	statDate := self.makeToday()
+	stat, err1 := self.GetStatRow(statDate)
+	if err1 != nil {
+		return err1
+	}
+	if stat == nil {
+		self.createStat2(statDate)
+	}
+	return nil
+}
+
+func (self *StatManager) createStat2(statDate string) error {
+	query := "INSERT INTO `stat` (`statDate`) VALUES ( ? )"
 	var params []interface{}
 	params = append(params, statDate)
-	self.StorageManager.Exec(query, params, func(err error) {
+	err1 := self.StorageManager.Exec(query, params, func(result sql.Result, err error) error {
 		log.Printf("Error: err = %+v", err)
+		return nil
 	})
+	return err1
 }
 
 func (self *StatManager) RegisterInSession() error {
@@ -188,10 +206,11 @@ func (self *StatManager) RegisterInSession() error {
 	statDate := self.makeToday()
 	var params []interface{}
 	params = append(params, statDate)
-	self.StorageManager.Exec(query, params, func(err error) {
+	err1 := self.StorageManager.Exec(query, params, func(result sql.Result, err error) error {
 		log.Printf("Error: err = %+v", err)
+		return nil
 	})
-	return nil
+	return err1
 }
 
 func (self *StatManager) RegisterOutSession() error {
@@ -202,8 +221,9 @@ func (self *StatManager) RegisterOutSession() error {
 	statDate := self.makeToday()
 	var params []interface{}
 	params = append(params, statDate)
-	self.StorageManager.Exec(query, params, func(err error) {
+	err1 := self.StorageManager.Exec(query, params, func(result sql.Result, err error) error {
 		log.Printf("Error: err = %+v", err)
+		return nil
 	})
-	return nil
+	return err1
 }

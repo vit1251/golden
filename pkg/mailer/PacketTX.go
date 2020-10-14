@@ -10,7 +10,7 @@ func (self *Mailer) writePacket(msg []byte) {
 
 }
 
-func (self *Mailer) writeCommandPacket(commandID CommandID, msgBody []byte) (error) {
+func (self *Mailer) writeCommandPacket(commandID CommandID, msgBody []byte) error {
 	log.Printf("writeCommandPacket: commandID = %d body = %s", commandID, msgBody)
 	newFrame := Frame{
 		Command: true,
@@ -27,23 +27,23 @@ func (self *Mailer) writeCommentPacket(msg []byte) (error) {
 	return self.writeCommandPacket(M_NUL, msg)
 }
 
-func (self *Mailer) writeInfo(name string, value string) (error) {
+func (self *Mailer) WriteInfo(name string, value string) (error) {
 	var row string = fmt.Sprintf("%s %s", name, value)
 	var commentPacket1 []byte = []byte(row)
 	return self.writeCommentPacket(commentPacket1)
 }
 
-func (self *Mailer) writeComment(comment string) (error) {
+func (self *Mailer) WriteComment(comment string) (error) {
     var commentPacket1 []byte = []byte(comment)
     return self.writeCommentPacket(commentPacket1)
 }
 
-func (self *Mailer) writeAddress(addr string) (error) {
+func (self *Mailer) WriteAddress(addr string) (error) {
 	var addrPacket []byte = []byte(addr)
 	return self.writeCommandPacket(M_ADR, addrPacket)
 }
 
-func (self *Mailer) writePassword(password string) (error) {
+func (self *Mailer) WritePassword(password string) (error) {
 	var passwordPacket []byte = []byte(password)
 	return self.writeCommandPacket(M_PWD, passwordPacket)
 }
