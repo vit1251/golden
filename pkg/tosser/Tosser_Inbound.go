@@ -303,7 +303,8 @@ func (self *Tosser) ProcessPacket(name string) error {
 		}
 
 		/* Process message */
-		self.processNewMessage(msgHeader, rawBody)
+		err := self.processNewMessage(msgHeader, rawBody)
+		log.Printf("Tosser: ProcessPacket: err = %+v", err)
 
 		/* Update message count */
 		msgCount += 1
