@@ -13,6 +13,8 @@ jobs:
         id: go
       - name: Install Task
         uses: Arduino/actions/setup-taskfile@master
+        with:
+          version: '3.x'
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
       - name: Make build
@@ -29,6 +31,8 @@ jobs:
         id: go
       - name: Install Task
         uses: Arduino/actions/setup-taskfile@master
+        with:
+          version: '3.x'
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
       - name: Make build
