@@ -23,7 +23,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: dist
-          path: "*.exe"
+          path: ["golden-windows-386.exe", "golden-windows-amd64.exe"]
 
   build-linux:
     name: Build on Ubuntu
@@ -45,8 +45,8 @@ jobs:
       - name: Upload Debian pacakge
         uses: actions/upload-artifact@v1
         with:
-          name: dist
-          path: "*.deb"
+          name: golden-linux-amd64
+          path: golden-linux-amd64
 
   build-macos:
     name: Build on macOS X
@@ -68,6 +68,6 @@ jobs:
       - name: Upload macOS disk image
         uses: actions/upload-artifact@v1
         with:
-          name: dist
-          path: "*.dmg"
+          name: golden-darwin-amd64
+          path: golden-darwin-amd64
 
