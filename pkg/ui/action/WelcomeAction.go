@@ -40,7 +40,7 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vBox.Add(container)
 
 	imageWidget := widgets.NewImageWidget()
-	imageWidget.SetSource("/static/img/fido.gif")
+	imageWidget.SetSource("/static/fido.svg")
 	containerVBox.Add(imageWidget)
 
 	nameWidget := widgets.NewDivWidget().

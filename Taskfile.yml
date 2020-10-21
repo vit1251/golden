@@ -13,6 +13,6 @@ tasks:
   default:
     cmds:
       - task: build:depend
-      - task: build:prepare
+      - task: build:generate
       - task: build:build
       - task: build:package

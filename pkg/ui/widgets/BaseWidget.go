@@ -21,9 +21,9 @@ type BaseWidget struct {
 
 func NewBaseWidget() *BaseWidget {
 	bw := new(BaseWidget)
-	bw.AddStyle("/static/css/main.css")
-	bw.AddStyle("/static/css/custom.css")
-	bw.AddScript("/static/js/custom.js")
+	bw.AddStyle("/static/main.css")
+	bw.AddStyle("/static/custom.css")
+	bw.AddScript("/static/custom.js")
 	return bw
 }
 

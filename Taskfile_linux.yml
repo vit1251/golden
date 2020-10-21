@@ -12,11 +12,9 @@ tasks:
       - sudo apt-get install -y libasound2-dev
       - go get -v -u
 
-  prepare:
+  generate:
     cmds:
-      - sudo npm install -g less
-      - cd contrib && lessc main.less main.css
-      - cp contrib/main.css static/css/main.css
+      - go generate
 
   build:
     env:

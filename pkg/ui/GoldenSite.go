@@ -40,12 +40,7 @@ func NewService(c *dig.Container) *GoldenSite {
 	site.addr = "127.0.0.1"
 	site.port = 8080
 	site.Container = c
-
-	/* Create router */
-	rtr := mux.NewRouter()
-	staticDir := "./static"
-	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
-	site.rtr = rtr
+	site.rtr = mux.NewRouter()
 
 	return site
 }
@@ -99,6 +94,7 @@ func (self *GoldenSite) registerFrontend() {
 	self.Register("/setup", action.NewSetupAction())
 	self.Register("/setup/complete", action.NewSetupCompleteAction())
 	self.Register("/help", action.NewHelpAction())
+	self.Register("/static/{name:[A-Za-z0-9\\.\\_\\-]+}", action.NewStaticAction())
 }
 
 func (self *GoldenSite) registerBackend() {

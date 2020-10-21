@@ -34,13 +34,14 @@ class MetricFeature {
             this.updateMetric('mainMenuDirect', NetmailMessageCount);
             this.updateMetric('mainMenuEcho', EchomailMessageCount);
             //
+            this.registerSummaryUpdateRoutine();
         });
     }
 
     registerSummaryUpdateRoutine() {
         setTimeout(() => {
             this.summaryUpdateRoutine();
-        }, 1000);
+        }, 5000);
     }
 
     register() {

@@ -11,11 +11,9 @@ tasks:
     cmds:
       - go get -v -u
 
-  prepare:
+  generate:
     cmds:
-      - npm install -g less
-      - lessc contrib\\main.less contrib\\main.css
-      - xcopy /y /q contrib\\main.css static\\css\\main.css
+      - go generate
 
   build:
     deps: [build_386, build_amd64]

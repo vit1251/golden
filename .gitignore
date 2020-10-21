@@ -4,6 +4,9 @@
 # IDE options
 .idea
 
+# Assets
+pkg/assets
+
 # Logs
 *.log
 
