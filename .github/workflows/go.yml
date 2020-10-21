@@ -22,8 +22,8 @@ jobs:
       - name: Upload Widnows executable
         uses: actions/upload-artifact@v1
         with:
-          name: dist
-          path: ["golden-windows-386.exe", "golden-windows-amd64.exe"]
+          name: golden-windows-amd64
+          path: golden-windows-amd64.exe
 
   build-linux:
     name: Build on Ubuntu
