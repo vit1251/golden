@@ -21,11 +21,8 @@ type BaseWidget struct {
 
 func NewBaseWidget() *BaseWidget {
 	bw := new(BaseWidget)
-	bw.AddStyle("/static/css/icofont.css")
 	bw.AddStyle("/static/css/main.css")
 	bw.AddStyle("/static/css/custom.css")
-	bw.AddScript("/static/js/mousetrap-1.6.5/mousetrap.js")
-	bw.AddScript("/static/js/jquery-3.4.1/jquery-3.4.1.min.js")
 	bw.AddScript("/static/js/custom.js")
 	return bw
 }
@@ -45,7 +42,6 @@ func (self *BaseWidget) Render(w http.ResponseWriter) error {
 	/* Headers */
 	w.Write([]byte("<head>\n"))
 	w.Write([]byte("\t<meta charset=\"utf-8\">\n"))
-	w.Write([]byte("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n"))
 	w.Write([]byte("\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"))
 
 	w.Write([]byte("\t<title>Golden Point</title>\n"))

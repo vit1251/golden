@@ -2,6 +2,10 @@
 
 version: '3'
 
+vars:
+  PROJECT_NAME: "Golden Point"
+  VERSION: "1.2.14"
+
 includes:
   build: Taskfile_{{OS}}.yml
 

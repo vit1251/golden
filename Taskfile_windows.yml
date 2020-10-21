@@ -3,7 +3,6 @@
 version: '3'
 
 vars:
-  VERSION: "1.2.12"
   GIT_COMMIT: {sh: git log -n 1 --format=%h}
 
 tasks:

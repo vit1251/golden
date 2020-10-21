@@ -1,34 +1,80 @@
-class Application {
 
-    constructor() {
-        this.chart = null;
+class MetricFeature {
+
+    updateMetric(metricName, value) {
+        let element = document.getElementById(metricName);
+        //
+        element.innerHTML = value;
+        //
+        if (value > 0) {
+            element.classList.remove("hidden");
+        } else {
+            element.classList.add("hidden");
+        }
     }
 
-    registerHandler() {
-        $('.service-start').on('click', (e) => {
-        let currentTarget = e.currentTarget;
-        let serviceName = currentTarget.dataset.service;
-        console.log('Start request: servcie = ', serviceName);
-        /* Start request */
-        $.ajax({
-            url: "/api/service/start",
-            type: "POST",
-            dataType: "json",
-            context: currentTarget,
-            data: {
-                service: serviceName,
-            },
-            success: function() {
-                $(this).html( "Всё ок" );
-            }
+    summaryUpdateRoutine() {
+
+        fetch("/api/stat", {
+            method: "POST",
+            headers: {},
+            body: '',
+        })
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            //
+            console.log(data);
+            //
+            const NetmailMessageCount = data.NetmailMessageCount;
+            const EchomailMessageCount = data.EchomailMessageCount;
+            //const FileCount = resp.FileCount;
+            //
+            this.updateMetric('mainMenuDirect', NetmailMessageCount);
+            this.updateMetric('mainMenuEcho', EchomailMessageCount);
+            //
         });
-        });
+    }
+
+    registerSummaryUpdateRoutine() {
+        setTimeout(() => {
+            this.summaryUpdateRoutine();
+        }, 1000);
+    }
+
+    register() {
+        this.registerSummaryUpdateRoutine();
+    }
+
+}
+
+class ClockFeature {
+
+    constructor() {
+        this.sep = false;
+    }
+
+    makeTime() {
+        const now = new Date();
+        const min = now.getMinutes();
+        const hour = now.getHours();
+        const minStr = `${min}`.padStart(2, '0');
+        const hourStr = `${hour}`.padStart(2, '0');
+        if (this.sep) {
+            const result = `${hourStr}:${minStr}`;
+            return result;
+        } else {
+            const result = `${hourStr} ${minStr}`;
+            return result;
+        }
     }
 
     updateClock() {
-        let now = new Date();
+        const currentTime = this.makeTime();
         let clock = document.getElementById("clock");
-        clock.innerHTML = now.toLocaleTimeString();
+        clock.innerHTML = currentTime;
+        this.sep = !this.sep;
     }
 
     setupClock() {
@@ -37,87 +83,29 @@ class Application {
         }, 1000);
     }
 
-    registerKeyboard() {
-        Mousetrap.bind('ctrl+left', () => {
-            console.log('Search prev message');
-        });
-        Mousetrap.bind('ctrl+right', () => {
-            console.log('Search next message');
-        });
-    }
-
-    summaryUpdateRoutine() {
-        $.ajax({
-            url: "/api/stat",
-            type: "POST",
-            dataType: "json",
-            context: this,
-            success: (resp) => {
-                //
-                console.log(resp);
-                //
-                const NetmailMessageCount = resp.NetmailMessageCount;
-                const EchomailMessageCount = resp.EchomailMessageCount;
-                const FileCount = resp.FileCount;
-                //
-                if (NetmailMessageCount > 0) {
-                    $('#mainMenuDirect').show();
-                    $('#mainMenuDirect').html(NetmailMessageCount);
-                } else {
-                    $('#mainMenuDirect').hide();
-                }
-                //
-                if (EchomailMessageCount > 0) {
-                    $('#mainMenuEcho').show();
-                    $('#mainMenuEcho').html(EchomailMessageCount);
-                } else {
-                    $('#mainMenuEcho').hide();
-                }
-                //
-                this.registerSummaryUpdateRoutine();
-            }
-        });
-    }
-
-    registerSummaryUpdateRoutine() {
-        setTimeout(() => {
-            this.summaryUpdateRoutine();
-        }, 15000.0);
-    }
-
-    processNewPacketRoutine() {
-        $.ajax({
-            url: "/api/service/start",
-            type: "POST",
-            dataType: "json",
-            context: this,
-            data: {
-                service: 'tosser',
-            },
-            success: (resp) => {
-                console.log(resp);
-                this.registerProcessNewPacketRoutine();
-            }
-        });
-    }
-
-    registerProcessNewPacketRoutine() {
-        setTimeout(() => {
-            this.processNewPacketRoutine();
-        }, 30000.0);
-    }
-
-    run() {
-        this.registerHandler();
+    register() {
         this.setupClock();
-        this.registerKeyboard();
-        this.summaryUpdateRoutine();
-        this.processNewPacketRoutine();
     }
 
 }
 
-$(() => {
-    const app = new Application();
-    app.run();
-});
+class Application {
+
+    constructor() {
+        this.features = [
+            new MetricFeature(),
+            new ClockFeature(),
+        ];
+    }
+
+    run() {
+        this.features.forEach((feature) => {
+            feature.register();
+        });
+    }
+
+}
+
+const app = new Application();
+app.run();
+
