@@ -20,7 +20,7 @@ func (self *MessageManager) NewMessageContent() *MessageContent {
 func (self *MessageContent) AddLine(line string) {
 
 	if self.charset == "CP866" {
-		newLine := fmt.Sprintf("%s\r\n", line)
+		newLine := fmt.Sprintf("%s\r", line)
 		var rawLine []rune = []rune(newLine)
 		chunk, err1 := self.cm.EncodeText(rawLine)
 		if err1 != nil {

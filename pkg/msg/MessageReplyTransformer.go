@@ -40,7 +40,7 @@ func (self *MessageReplyTransformer) Transform(content string) string {
 		row := nl.QuoteStart + nl.QuoteAuthor + nl.QuoteMarkers + nl.QuoteLine
 		log.Printf("quote: row = %+v", row)
 
-		newContent += row + "\n"
+		newContent += row + "\r"
 	})
 	return newContent
 }

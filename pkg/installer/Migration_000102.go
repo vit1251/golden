@@ -5,11 +5,7 @@ import (
 	"path"
 )
 
-type Migration_000102 struct {
-	IMigration
-}
-
-func (self *Migration_000102) Up(conn *sql.DB) error {
+func migration_000102_Up(conn *sql.DB) error {
 
 	query1 := "INSERT INTO `settings` (`section`,`name`,`value`) VALUES (?,?,?)"
 
@@ -62,4 +58,8 @@ func (self *Migration_000102) Up(conn *sql.DB) error {
 	}
 
 	return nil
+}
+
+func init() {
+	migrations.Set("2020-10-23 00:01:02", nil, migration_000102_Up)
 }

@@ -4,11 +4,7 @@ import (
 	"database/sql"
 )
 
-type Migration_000500 struct {
-	IMigration
-}
-
-func (m *Migration_000500) Up(conn *sql.DB) error {
+func migration_000500_Up(conn *sql.DB) error {
 	query1 := "CREATE TABLE `file` (" +
 		"    fileId INTEGER NOT NULL PRIMARY KEY," +
 		"    fileName CHAR(64) NOT NULL," +
@@ -22,3 +18,6 @@ func (m *Migration_000500) Up(conn *sql.DB) error {
 	return nil
 }
 
+func init() {
+	migrations.Set("2020-10-23 00:05:00", nil, migration_000500_Up)
+}

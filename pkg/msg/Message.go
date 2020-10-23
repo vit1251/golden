@@ -37,6 +37,7 @@ type Message struct {
 	UnixTime    int64
 	DateWritten *time.Time
 	ViewCount   int
+	Packet      []byte
 }
 
 func NewMessage() *Message {
@@ -104,4 +105,8 @@ func (self *Message) Age() string {
 		result = timeago.English.Format(*self.DateWritten)
 	}
 	return result
+}
+
+func (self *Message) SetPacket(packet []byte) {
+	self.Packet = packet
 }

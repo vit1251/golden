@@ -14,7 +14,7 @@ type ReplyCompleteAction struct {
 	Action
 }
 
-func NewReplyCompleteAction() (*ReplyCompleteAction) {
+func NewReplyCompleteAction() *ReplyCompleteAction {
 	rca := new(ReplyCompleteAction)
 	return rca
 }
@@ -65,10 +65,11 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	body := r.Form.Get("body")
 	log.Printf("to = %s subj = %s body = %s", to, subj, body)
 
+
 	/* Create message */
 	em := tosserManager.NewEchoMessage()
 	em.Subject = subj
-	em.Body = body
+	em.SetBody(body)
 	em.AreaName = area.Name()
 	em.To = to
 	em.Reply = origMsg.MsgID

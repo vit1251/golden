@@ -4,11 +4,7 @@ import (
 	"database/sql"
 )
 
-type Migration_000300 struct {
-	IMigration
-}
-
-func (m *Migration_000300) Up(conn *sql.DB) error {
+func migration_000300_Up(conn *sql.DB) error {
 	query1 :=  "CREATE TABLE `message` (" +
 		"    `msgId` INTEGER NOT NULL PRIMARY KEY," +
 		"    `msgMsgId` CHAR(16) NOT NULL," +
@@ -25,4 +21,8 @@ func (m *Migration_000300) Up(conn *sql.DB) error {
 		return err
 	}
 	return nil
+}
+
+func init() {
+	migrations.Set("2020-10-23 00:03:00", nil, migration_000300_Up)
 }

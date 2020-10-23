@@ -6,16 +6,17 @@ import (
 )
 
 type NetmailMessage struct {
-	ID           string
-	MsgID        string
-	Hash         string
-	From         string
-	To           string
-	Subject      string
-	Content      string
-	UnixTime     int64
-	ViewCount    int
+	ID          string
+	MsgID       string
+	Hash        string
+	From        string
+	To          string
+	Subject     string
+	Content     string
+	UnixTime    int64
+	ViewCount   int
 	DateWritten *time.Time
+	Packet      []byte
 }
 
 func NewNetmailMessage() *NetmailMessage {
@@ -82,5 +83,9 @@ func (self *NetmailMessage) Age() string {
 		result = timeago.English.Format(*self.DateWritten)
 	}
 	return result
+}
+
+func (self *NetmailMessage) SetPacket(packet []byte) {
+	self.Packet = packet
 }
 

@@ -77,19 +77,17 @@ func (self *MessageTextProcessor) processHtmlLine(oneLine string) string {
 
 func (self *MessageTextProcessor) Prepare(msg string) error {
 
-	/* Replace CRLF on \x0D */
 	newMsg := msg
-	newMsg = strings.ReplaceAll(newMsg, "\x0A", "")
 	newMsg = strings.ReplaceAll(newMsg, "\x07", "&#8226;") // Bullet char
 
 	/* Process */
-	tr := NewTextReader()
-	tr.Process(msg, func(oneLine string) {
+	rows := strings.Split(msg, "\r")
+	for _, oneLine := range rows {
 		var newHtmlLine string = self.processHtmlLine(oneLine)
 		var newLine = oneLine
 		self.html += newHtmlLine + "<br>"
-		self.raw += newLine + "\n"
-	})
+		self.raw += newLine + "\r"
+	}
 
 	return nil
 }

@@ -1,6 +1,7 @@
 package action
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/msg"
@@ -10,16 +11,16 @@ import (
 	"net/http"
 )
 
-type EchoViewAction struct {
+type EchoDumpAction struct {
 	Action
 }
 
-func NewEchoViewAction() *EchoViewAction {
-	va := new(EchoViewAction)
+func NewEchoDumpAction() *EchoDumpAction {
+	va := new(EchoDumpAction)
 	return va
 }
 
-func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var areaManager *msg.AreaManager
 	var messageManager *msg.MessageManager
@@ -60,21 +61,8 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var content string
-	if origMsg != nil {
-		content = origMsg.GetContent()
-	} else {
-		content = "!! Unable restore message !!"
-	}
-	//
-	mtp := msg.NewMessageTextProcessor()
-	err4 := mtp.Prepare(content)
-	if err4 != nil {
-		response := fmt.Sprintf("Fail on Prepare on MessageTextProcessor")
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
-	outDoc := mtp.HTML()
+	//outDoc := origMsg.GetContent()
+	outDoc := hex.Dump(origMsg.Packet)
 
 	/* Update view counter */
 	err5 := messageManager.ViewMessageByHash(echoTag, msgHash)

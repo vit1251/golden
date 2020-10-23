@@ -148,6 +148,7 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 
 	newMsg.SetMsgID(msgid)
 	newMsg.SetHash(msgHash)
+	newMsg.SetPacket(msgBody.RAW)
 
 	/* Decode message body */
 	newBody, err9 := self.decodeMessageBody(msgBody.RAW, charset)
@@ -253,6 +254,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	newMsg.SetTo(string(newTo))
 	newMsg.SetSubject(string(newSubject))
 	newMsg.SetTime(msgTime)
+	newMsg.SetPacket(msgBody.RAW)
 
 	newMsg.SetContent(newBody)
 
@@ -303,8 +305,10 @@ func (self *Tosser) ProcessPacket(name string) error {
 		}
 
 		/* Process message */
-		err := self.processNewMessage(msgHeader, rawBody)
-		log.Printf("Tosser: ProcessPacket: err = %+v", err)
+		err7 := self.processNewMessage(msgHeader, rawBody)
+		if err7 != nil {
+			log.Printf("Tosser: ProcessPacket: err = %+v", err7)
+		}
 
 		/* Update message count */
 		msgCount += 1
@@ -357,17 +361,24 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
 		return err1
 	}
 
+	log.Printf("-- ARCmail provide FTN packets: packets = %+v", packets)
+
 	for _, p := range packets {
-		log.Printf("-- Process FTN packets %+v", packets)
+
+		log.Printf("-- Process FTN packet start: packet = %+v", p)
 
 		/* Register packet */
 		if err := self.StatManager.RegisterInPacket(); err != nil {
 			log.Printf("Fail on RegisterInPacket: err = %+v", err)
 		}
 
-		/**/
-		err3 := self.ProcessPacket(p)
-		log.Printf("error durng parse package: err = %+v", err3)
+		/* Process PKT network packet */
+		if err := self.ProcessPacket(p); err != nil {
+			log.Printf("error durng parse package: err = %+v", err)
+		}
+
+		log.Printf("-- Process FTN packet complete: packet = %+v", p)
+
 	}
 
 	newInbTempDir, err3 := self.SetupManager.Get("main", "TempInbound", "")

@@ -1,17 +1,15 @@
 package installer
 
-import (
-	"database/sql"
-)
+import "database/sql"
 
-type Migration_000601 struct {
-	IMigration
-}
-
-func (m *Migration_000601) Up(conn *sql.DB) error {
+func migration_000601_Up(conn *sql.DB) error {
 	query1 := "ALTER TABLE `netmail` ADD `nmMsgId` CHAR(64)"
 	if _, err := conn.Exec(query1); err != nil {
 		return err
 	}
 	return nil
+}
+
+func init() {
+	migrations.Set("2020-10-23 00:06:01", nil, migration_000601_Up)
 }

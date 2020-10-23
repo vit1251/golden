@@ -138,7 +138,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 
 	var result *Message
 
-	query1 := "SELECT `msgId`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	query1 := "SELECT `msgId`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate`, `msgPacket` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
 	var params []interface{}
 	params = append(params, echoTag)
 	params = append(params, msgHash)
@@ -152,9 +152,10 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 		var from string
 		var to string
 		var content string
+		var packet []byte
 		var written int64
 
-		err1 := rows.Scan(&ID, &msgMsgId, &msgHash, &subject, &from, &to, &content, &written)
+		err1 := rows.Scan(&ID, &msgMsgId, &msgHash, &subject, &from, &to, &content, &written, &packet)
 		if err1 != nil{
 			return err1
 		}
@@ -172,6 +173,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 		msg.SetFrom(from)
 		msg.SetTo(to)
 		msg.SetContent(content)
+		msg.SetPacket(packet)
 
 		/* Save result */
 		result = msg
@@ -241,9 +243,9 @@ func (self *MessageManager) Write(msg *Message) (error) {
 
 	/* Step 3. Make prepare SQL insert query */
 	query1 := "INSERT INTO message " +
-	           "(msgMsgId, msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate) " +
+	           "(msgMsgId, msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate, msgPacket) " +
 	           "VALUES " +
-	           "(?, ?, ?, ?, ?, ?, ?, ?)"
+	           "(?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 	var params []interface{}
 	params = append(params, msg.MsgID)
@@ -254,6 +256,7 @@ func (self *MessageManager) Write(msg *Message) (error) {
 	params = append(params, msg.Subject)
 	params = append(params, msg.Content)
 	params = append(params, msg.UnixTime)
+	params = append(params, msg.Packet)
 
 	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)

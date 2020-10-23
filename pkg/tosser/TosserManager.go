@@ -15,6 +15,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 	"time"
 )
 
@@ -45,6 +46,11 @@ type EchoMessage struct {
 
 func (m *EchoMessage) SetSubject(subj string) {
 	m.Subject = subj
+}
+
+func (m *EchoMessage) SetBody(body string) {
+	newBody := strings.ReplaceAll(body, "\r\n", "\r")
+	m.Body = newBody
 }
 
 func NewTosserManager(c *dig.Container) *TosserManager {

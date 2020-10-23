@@ -22,21 +22,22 @@ func NewMessageOriginTransformer() *MessageOriginTransformer {
 	return ot
 }
 
+/// Remove SEEN-BY message
 func (self *MessageOriginTransformer) Transform(msg string) string {
 	var result string
-	tr := NewTextReader()
-	tr.Process(msg, func(oneLine string) {
+	rows := strings.Split(msg, "\r")
+	for _, oneLine := range rows {
 		if self.state == MessageStateBody {
 			if strings.HasPrefix(oneLine, " * Origin: ") {
 				self.state = MessageStateService
 			} else {
-				result += oneLine + "\n"
+				result += oneLine + "\r"
 			}
 		} else if self.state == MessageStateService {
 			log.Printf("orgini: line = %+v", oneLine)
 		} else {
 			panic("unknown state")
 		}
-	})
+	}
 	return result
 }
