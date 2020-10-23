@@ -9,7 +9,6 @@ tasks:
 
   depend:
     cmds:
-      - sudo apt-get install -y libasound2-dev
       - go get -v -u
 
   generate:
