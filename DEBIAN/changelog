@@ -1,3 +1,12 @@
+gpoint (1.2.14-1) stable; urgency=medium
+ - Improve message body parser (enhancement)
+ - Remove JQuery dependency (enhancement)
+ - No store new config parameters (bug)
+ - No TZUTC kludge with timezone (bug)
+ - Unsafe kludge parsing TZUTC (bug)
+ - Missing EOB packet in mailer component (bug)
+ - Show message source (enhancement)
+ - Store original packet on storage (enhancement)
 gpoint (1.2.13-1) stable; urgency=medium
  - Initial implementation terminal user interface
  - Netmail view counter

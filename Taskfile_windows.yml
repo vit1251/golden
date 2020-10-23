@@ -40,4 +40,4 @@ tasks:
 
   package:
     cmds:
-      - echo "No package."
+      - build.bat
