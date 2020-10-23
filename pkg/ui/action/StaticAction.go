@@ -19,24 +19,27 @@ func NewStaticAction() *StaticAction {
 	return new(StaticAction)
 }
 
-//
-
 func (self *StaticAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	name := vars["name"]
 
-	content := assets.Main[name]
-	fmt.Printf("size = %+v\n", len(content) )
+	if content, ok := assets.Main[name]; ok {
+		ext := filepath.Ext(name)
+		contentType := mime.TypeByExtension(ext)
 
-	ext := filepath.Ext(name)
-	contnetType := mime.TypeByExtension(ext)
-	fmt.Printf("contnetType = %+v\n", contnetType )
-	w.Header().Set("Content-Type", contnetType)
+		w.Header().Set("Content-Length", fmt.Sprintf("%d", len(content)))
+		w.Header().Set("Content-Type", contentType)
 
-	image := bytes.NewReader(content)
+		w.WriteHeader(200)
 
-	size, err := io.Copy(w, image)
-	fmt.Printf("static: size = %+v err = %+v\n", size, err)
+		image := bytes.NewReader(content)
+		io.Copy(w, image)
+
+	} else {
+
+		w.WriteHeader(404)
+
+	}
 
 }

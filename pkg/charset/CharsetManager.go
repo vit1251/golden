@@ -5,7 +5,6 @@ import (
 )
 
 type CharsetManager struct {
-
 }
 
 func NewCharsetManager() *CharsetManager {
@@ -13,7 +12,14 @@ func NewCharsetManager() *CharsetManager {
 	return cm
 }
 
-func (self *CharsetManager) DecodeText(source []byte) ([]rune, error) {
+func (self *CharsetManager) DecodeString(source []byte) (string, error) {
+	var result string
+	runes, err := self.Decode(source)
+	result = string(runes)
+	return result, err
+}
+
+func (self *CharsetManager) Decode(source []byte) ([]rune, error) {
 
 	var result []rune
 
@@ -27,7 +33,11 @@ func (self *CharsetManager) DecodeText(source []byte) ([]rune, error) {
 	return result, nil
 }
 
-func (self *CharsetManager) EncodeText(source []rune) ([]byte, error) {
+//func (self *CharsetManager) EncodeString(source string) ([]byte, error) {
+// TODO - implement it later or newer ...
+//}
+
+func (self *CharsetManager) Encode(source []rune) ([]byte, error) {
 
 	var result []byte
 

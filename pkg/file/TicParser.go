@@ -74,7 +74,7 @@ func (self *TicParser) Parse(stream io.Reader) error {
 		} else {
 			return err2
 		}
-		newRow, err3 := self.cm.DecodeText(newLine)
+		newRow, err3 := self.cm.Decode(newLine)
 		if err3 != nil {
 			return err3
 		}

@@ -178,15 +178,15 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	}
 
 	/* Encode message headers */
-	newSubject, err1 := self.CharsetManager.EncodeText([]rune(em.Subject))
+	newSubject, err1 := self.CharsetManager.Encode([]rune(em.Subject))
 	if err1 != nil {
 		return "", err1
 	}
-	newTo, err2 := self.CharsetManager.EncodeText([]rune(em.To))
+	newTo, err2 := self.CharsetManager.Encode([]rune(em.To))
 	if err2 != nil {
 		return "", err2
 	}
-	newFrom, err3 := self.CharsetManager.EncodeText([]rune(realName))
+	newFrom, err3 := self.CharsetManager.Encode([]rune(realName))
 	if err3 != nil {
 		return "", err3
 	}
@@ -378,15 +378,15 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	}
 
 	/* Encode message */
-	newSubject, err1 := self.CharsetManager.EncodeText([]rune(nm.Subject))
+	newSubject, err1 := self.CharsetManager.Encode([]rune(nm.Subject))
 	if err1 != nil {
 		return err1
 	}
-	newTo, err2 := self.CharsetManager.EncodeText([]rune(nm.To))
+	newTo, err2 := self.CharsetManager.Encode([]rune(nm.To))
 	if err2 != nil {
 		return err2
 	}
-	newFrom, err3 := self.CharsetManager.EncodeText([]rune(params.FromName))
+	newFrom, err3 := self.CharsetManager.Encode([]rune(params.FromName))
 	if err3 != nil {
 		return err3
 	}

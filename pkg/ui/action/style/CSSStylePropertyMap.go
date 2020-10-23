@@ -1,16 +1,23 @@
 package style
 
+type CSSStyleProperty struct {
+	Name  string
+	Value string
+}
+
 type CSSStylePropertyMap struct {
-	propertyMap map[string]string
+	propertyMap []CSSStyleProperty
 }
 
 func NewCSSStylePropertyMap() *CSSStylePropertyMap {
 	pm := new(CSSStylePropertyMap)
-	pm.propertyMap = make(map[string]string)
 	return pm
 }
 
 func (self *CSSStylePropertyMap) Set(name string, value string) {
-	self.propertyMap[name] = value
+	property := CSSStyleProperty{
+		Name: name,
+		Value: value,
+	}
+	self.propertyMap = append(self.propertyMap, property)
 }
-

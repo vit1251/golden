@@ -22,8 +22,8 @@ func (self *CSSStyleSheet) String() string {
 		fmt.Printf("rule = %+q", rule)
 		//
 		result += fmt.Sprintf("%s {\n", rule.selectorText)
-		for name, value := range rule.styleMap.propertyMap {
-			result += fmt.Sprintf("    %s: %s;\n", name, value)
+		for _, property := range rule.styleMap.propertyMap {
+			result += fmt.Sprintf("    %s: %s;\n", property.Name, property.Value)
 		}
 		result += "}\n"
 	}

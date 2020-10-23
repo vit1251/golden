@@ -2,7 +2,6 @@ package installer
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
 	"sort"
@@ -22,11 +21,13 @@ var migrations *MigrationList = NewMigrationList()
 
 func (mm *MigrationManager) Check() {
 
+	/* Get migations */
 	keys := migrations.GetList()
-	fmt.Printf("keys = %q\n", keys)
-	sort.Strings(keys)
-	fmt.Printf("keys = %q\n", keys)
 
+	/* Setup migration orders */
+	sort.Strings(keys)
+
+	/* Process migrations */
 	for _, migrationKey := range keys {
 		m := migrations.GetByKey(migrationKey)
 		if m != nil {

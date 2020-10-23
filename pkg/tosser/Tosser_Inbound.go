@@ -2,6 +2,7 @@ package tosser
 
 import (
 	"errors"
+	"fmt"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/mailer"
@@ -41,7 +42,7 @@ func (self *Tosser) decodeMessageBody(msgBody []byte, charset string) (string, e
 
 	if charset == "CP866" {
 
-		if unicodeBody, err1 := self.CharsetManager.DecodeText(msgBody); err1 == nil {
+		if unicodeBody, err1 := self.CharsetManager.Decode(msgBody); err1 == nil {
 			result = string(unicodeBody)
 		} else {
 			return result, err1
@@ -64,10 +65,10 @@ func (self *Tosser) decodeMessageBody(msgBody []byte, charset string) (string, e
 	return result, nil
 }
 
-func (self *Tosser) processNewMessage(msgHeader *packet.PacketMessageHeader, rawBody []byte) error {
+func (self *Tosser) processNewMessage(msg *TosserPacketMessage) error {
 
 	msgParser := packet.NewMessageBodyParser()
-	msgBody, err8 := msgParser.Parse(rawBody)
+	msgBody, err8 := msgParser.Parse(msg.Body)
 	if err8 != nil {
 		return err8
 	}
@@ -75,9 +76,9 @@ func (self *Tosser) processNewMessage(msgHeader *packet.PacketMessageHeader, raw
 	/* Determine area */
 	areaName := msgBody.GetArea()
 	if areaName == "" {
-		return self.processNewDirectMessage(msgHeader, msgBody)
+		return self.processNewDirectMessage(msg.Header, msgBody)
 	} else {
-		return self.processNewEchoMessage(msgHeader, msgBody)
+		return self.processNewEchoMessage(msg.Header, msgBody)
 	}
 
 	return nil
@@ -85,18 +86,18 @@ func (self *Tosser) processNewMessage(msgHeader *packet.PacketMessageHeader, raw
 
 func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeader, msgBody *packet.MessageBody) error {
 
-	log.Printf("direct: msg = %+v", msgHeader)
+	log.Printf("Process NETMAIL message: %q -> %q", msgHeader.OrigAddr, msgHeader.DestAddr)
 
 	/* Decode headers */
-	newSubject, err1 := self.CharsetManager.DecodeText(msgHeader.Subject)
+	newSubject, err1 := self.CharsetManager.Decode(msgHeader.Subject)
 	if err1 != nil {
 		return err1
 	}
-	newFrom, err2 := self.CharsetManager.DecodeText(msgHeader.FromUserName)
+	newFrom, err2 := self.CharsetManager.Decode(msgHeader.FromUserName)
 	if err2 != nil {
 		return err2
 	}
-	newTo, err3 := self.CharsetManager.DecodeText(msgHeader.ToUserName)
+	newTo, err3 := self.CharsetManager.Decode(msgHeader.ToUserName)
 	if err3 != nil {
 		return err3
 	}
@@ -168,6 +169,8 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 
 func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader, msgBody *packet.MessageBody) error {
 
+	log.Printf("Process ECHOMAIL message: %q -> %q", msgHeader.OrigAddr, msgHeader.DestAddr)
+
 	areaName := msgBody.GetArea()
 
 	/* Auto create area */
@@ -232,27 +235,32 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	}
 
 	/* Decode headers */
-	newSubject, err1 := self.CharsetManager.DecodeText(msgHeader.Subject)
+	newSubject, err1 := self.CharsetManager.DecodeString(msgHeader.Subject)
 	if err1 != nil {
 		return err1
 	}
-	newFrom, err2 := self.CharsetManager.DecodeText(msgHeader.FromUserName)
+	newFrom, err2 := self.CharsetManager.DecodeString(msgHeader.FromUserName)
 	if err2 != nil {
 		return err2
 	}
-	newTo, err3 := self.CharsetManager.DecodeText(msgHeader.ToUserName)
+	newTo, err3 := self.CharsetManager.DecodeString(msgHeader.ToUserName)
 	if err3 != nil {
 		return err3
 	}
 
+	/* Debug message */
+	newFromAddr := fmt.Sprintf("\"%s\" <%s>", newFrom, msgHeader.OrigAddr)
+	newToAddr := fmt.Sprintf("\"%s\" <%s>", newTo, msgHeader.DestAddr)
+	log.Printf("Process ECHOMAIL message:\n\tFrom: %s\n\tTo: %s", newFromAddr, newToAddr)
+
 	/* Create msgapi.Message */
-	newMsg := new(msg.Message)
+	newMsg := msg.NewMessage()
 	newMsg.SetMsgID(msgid)
 	newMsg.SetMsgHash(msgHash)
 	newMsg.SetArea(areaName)
-	newMsg.SetFrom(string(newFrom))
-	newMsg.SetTo(string(newTo))
-	newMsg.SetSubject(string(newSubject))
+	newMsg.SetFrom(newFrom)
+	newMsg.SetTo(newTo)
+	newMsg.SetSubject(newSubject)
 	newMsg.SetTime(msgTime)
 	newMsg.SetPacket(msgBody.RAW)
 
@@ -270,21 +278,24 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 
 func (self *Tosser) ProcessPacket(name string) error {
 
-	/* Start new packet reader */
+	/* Parse packet */
 	pr, err3 := packet.NewPacketReader(name)
 	if err3 != nil {
 		return err3
 	}
 	defer pr.Close()
 
-	/* Read packet header */
+	/* Parse packet header */
 	pktHeader, err4 := pr.ReadPacketHeader()
 	if err4 != nil {
 		return err4
 	}
 	log.Printf("pktHeader = %+v", pktHeader)
 
-	/* Read messages */
+	/* Validate packet */
+	// TODO - check password and destination address ...
+
+	/* Parse packet messages */
 	var msgCount int = 0
 	for {
 
@@ -304,8 +315,13 @@ func (self *Tosser) ProcessPacket(name string) error {
 			return err6
 		}
 
+		/* Create message */
+		msgTosser := NewTosserPacketMessage()
+		msgTosser.Header = msgHeader
+		msgTosser.Body = rawBody
+
 		/* Process message */
-		err7 := self.processNewMessage(msgHeader, rawBody)
+		err7 := self.processNewMessage(msgTosser)
 		if err7 != nil {
 			log.Printf("Tosser: ProcessPacket: err = %+v", err7)
 		}
