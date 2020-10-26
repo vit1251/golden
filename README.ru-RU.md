@@ -16,11 +16,11 @@ Golden Point работает в качестве HTTP сервера
 В большинстве случаев нет необходимости в сборке из исходного кода. Исключения составляют случаи когда эти сборки производят
 владельцы узла для добавления специфичных характеристик для своих Поинтов (пример: предварительная установка узловых настроек).
 
-См. BUILD-Windows-ru.md, BUILD-Linux-ru.md или BUILD-MacOS-ru.md
+См. BUILD.Windows.ru-RU.md, BUILD.Linux.ru-RU.md или BUILD.MacOS.ru-RU.md
 
 ## Инструкция по установке
 
-См. INSTALL-Windows-ru.md, INSTALL-Linux-ru.md или INSTALL-MacOS-ru.md
+См. INSTALL.Windows.ru-RU.md, INSTALL.Linux.ru-RU.md или INSTALL.MacOS.ru-RU.md
 
 ## В разработке активно принимали участие
 
