@@ -116,13 +116,12 @@ func (self *Application) Run() {
 	})
 
 	/* Start WebView */
-	fmt.Printf("Start sucessfully!\n")
-	fmt.Printf("\n")
-	fmt.Printf("The app is running at:\n")
+	fmt.Printf("Golden Point is running at:\n")
 	fmt.Printf("\n")
 	fmt.Printf("    http://127.0.0.1:%d\n", servicePort)
 	fmt.Printf("\n")
-	fmt.Printf("Note that you should setup your instalattion at first run.\n")
+	fmt.Printf("Note: You MUST setup your instalattion on first run.\n")
+	fmt.Printf("      Please open `Setup` section initially.\n")
 
 	/* Start mailer */
 
