@@ -203,7 +203,7 @@ func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) (error) {
 
 const PACKET_MESSAGE_MAGIC = 2
 
-func (self *PacketWriter) WriteMessageHeader(msgHeader *PacketMessageHeader) (error) {
+func (self *PacketWriter) WriteMessageHeader(msgHeader *PacketMessageHeader) error {
 
 	/* Write packet message version (2 byte) */
 	if err1 := self.binaryStreamWriter.WriteUINT16(PACKET_MESSAGE_MAGIC); err1 != nil {
@@ -268,7 +268,7 @@ func (self *PacketWriter) WriteMessageHeader(msgHeader *PacketMessageHeader) (er
 	return nil
 }
 
-func (self *PacketWriter) WriteMessage(msgBody *MessageBody) (error) {
+func (self *PacketWriter) WriteMessage(msgBody *MessageBody) error {
 
 	/* Step 1. Write area */
 	var areaName string = msgBody.GetArea()

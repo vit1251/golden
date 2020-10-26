@@ -12,7 +12,9 @@ import (
 	"go.uber.org/dig"
 	"hash/crc32"
 	"io"
+	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"path"
 	"strings"
@@ -25,32 +27,6 @@ type TosserManager struct {
 	MessageManager *msg.MessageManager
 	CharsetManager *charset.CharsetManager
 	event chan bool
-}
-
-type NetmailMessage struct {
-	Subject string
-	To      string
-	ToAddr  string
-	From    string
-	Body    string
-}
-
-type EchoMessage struct {
-	Subject  string
-	To       string
-	From     string
-	Body     string
-	AreaName string
-	Reply    string
-}
-
-func (m *EchoMessage) SetSubject(subj string) {
-	m.Subject = subj
-}
-
-func (m *EchoMessage) SetBody(body string) {
-	newBody := strings.ReplaceAll(body, "\r\n", "\r")
-	m.Body = newBody
 }
 
 func NewTosserManager(c *dig.Container) *TosserManager {
@@ -121,6 +97,28 @@ func (self *TosserManager) makeTimeZone() string {
 	}
 	log.Printf("zone = %s", newZone)
 	return newZone
+}
+
+func (self *TosserManager) prepareOrigin(Origin string) string {
+	/* Check Origin is external */
+	if strings.HasPrefix(Origin, "@") {
+		newPath := strings.TrimPrefix(Origin, "@")
+		content, err := ioutil.ReadFile(newPath)
+		if err == nil {
+			newContent := string(content)
+			rows := strings.Split(newContent, "\n")
+			rand.Seed(time.Now().Unix())
+			n := rand.Intn(len(rows))
+			oneLine := rows[n]
+			newOneLine := strings.Trim(oneLine, " \t\n\r")
+			return fmt.Sprintf("%s", newOneLine)
+		} else {
+			log.Printf("Origin: err = %+v", err)
+			return " -- No origins exist -- "
+		}
+	} else {
+		return Origin
+	}
 }
 
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
@@ -214,6 +212,9 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	//		return err4
 	//	}
 
+	/* Prepare origin */
+	Origin = self.prepareOrigin(Origin)
+
 	/* Prepare new message */
 	t := tmpl.NewTemplate()
 	newTearLine, _ := t.Render(TearLine)
@@ -225,7 +226,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 
 	msgContent.SetCharset("CP866")
 
-	msgContent.AddLine(em.Body)
+	msgContent.AddLine(em.GetBody())
 	msgContent.AddLine("")
 	msgContent.AddLine(fmt.Sprintf("--- %s", newTearLine))
 	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", newOrigin, myAddr))
@@ -346,7 +347,8 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 		return err
 	}
 	if origin, err := self.SetupManager.Get("main", "Origin", "Empty"); err == nil {
-		params.Origin = origin
+		newOrigin := self.prepareOrigin(origin)
+		params.Origin = newOrigin
 	} else {
 		return err
 	}
@@ -423,7 +425,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	/* Construct message content */
 	msgContent := self.MessageManager.NewMessageContent()
 	msgContent.SetCharset("CP866")
-	msgContent.AddLine(nm.Body)
+	msgContent.AddLine(nm.GetBody())
 	msgContent.AddLine("")
 	msgContent.AddLine(fmt.Sprintf("--- %s", newTearLine))
 	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", newOrigin, params.From))
@@ -438,14 +440,17 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	/* Write message body */
 	msgBody := packet.NewMessageBody()
 
-	//
-	//msgBody.AddKludge("TZUTC", "0300")
+	/* Cross network NETMAIL */
+	destinationAddress := fmt.Sprintf("%d:%d/%d", msgHeader.DestAddr.Zone, msgHeader.DestAddr.Net, msgHeader.DestAddr.Node)
+	originAddress := fmt.Sprintf("%d:%d/%d", msgHeader.OrigAddr.Zone, msgHeader.OrigAddr.Net,  msgHeader.OrigAddr.Node)
+
+	msgBody.AddKludge("INTL", fmt.Sprintf("%s %s", destinationAddress, originAddress))
+	msgBody.AddKludge("FMPT", fmt.Sprintf("%d", msgHeader.OrigAddr.Point))
+	msgBody.AddKludge("TOPT", fmt.Sprintf("%d", msgHeader.DestAddr.Point))
 	msgBody.AddKludge("CHRS", "CP866 2")
 	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", params.From, hs))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
 	msgBody.AddKludge("TID", newTID)
-	msgBody.AddKludge("FMPT", fmt.Sprintf("%d", msgHeader.OrigAddr.Point))
-	msgBody.AddKludge("TOPT", fmt.Sprintf("%d", msgHeader.DestAddr.Point))
 
 	/* Set message body */
 	msgBody.SetRaw(rawMsg)
@@ -456,14 +461,4 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	}
 
 	return nil
-}
-
-func (self *TosserManager) NewEchoMessage() *EchoMessage {
-	em := new(EchoMessage)
-	return em
-}
-
-func (self *TosserManager) NewNetmailMessage() *NetmailMessage {
-	nm := new(NetmailMessage)
-	return nm
 }

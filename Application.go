@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/installer"
@@ -115,13 +116,13 @@ func (self *Application) Run() {
 	})
 
 	/* Start WebView */
-	//	debug := true
-	//	w := webview.New(debug)
-	//	defer w.Destroy()
-	//	w.SetTitle("Golden Point")
-	//	w.SetSize(800, 600, webview.HintNone)
-	//	w.Navigate("http://127.0.0.1:8080")
-	//	w.Run()
+	fmt.Printf("Start sucessfully!\n")
+	fmt.Printf("\n")
+	fmt.Printf("The app is running at:\n")
+	fmt.Printf("\n")
+	fmt.Printf("    http://127.0.0.1:%d\n", servicePort)
+	fmt.Printf("\n")
+	fmt.Printf("Note that you should setup your instalattion at first run.\n")
 
 	/* Start mailer */
 

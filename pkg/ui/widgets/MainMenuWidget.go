@@ -64,13 +64,6 @@ func (self *MainMenuWidget) Init() []*MenuAction {
 		menus = append(menus, menuAction)
 	}
 
-	if menuAction := NewMenuAction(); menuAction != nil {
-		menuAction.ID = "mainMenuHelp"
-		menuAction.Link = "/help"
-		menuAction.Label = "Help"
-		menus = append(menus, menuAction)
-	}
-
 	return menus
 }
 

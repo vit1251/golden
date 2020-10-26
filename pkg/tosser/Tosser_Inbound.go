@@ -188,7 +188,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 		return err9
 	}
 
-	/* Determine msgid */
+	/* Determine message ID */
 	msgid := msgBody.GetKludge("MSGID", "")
 	msgid = strings.Trim(msgid, " ")
 	log.Printf("msgid = %s", msgid)
@@ -198,6 +198,13 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 		//source := msgidParts[0]
 		msgHash = msgidParts[1]
 	}
+
+	/* Detrmine network address */
+	intl := msgBody.GetKludge("INTL", "")
+	origPoint := msgBody.GetKludge("TOPT", "")
+	destPoint := msgBody.GetKludge("FMPT", "")
+
+	log.Printf("kludge: intl = %q origPnt = %q destPnt = %q", intl, origPoint, destPoint)
 
 	/* Determine reply */
 	reply := msgBody.GetKludge("REPLY", "")

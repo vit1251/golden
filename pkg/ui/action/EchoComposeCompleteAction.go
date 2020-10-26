@@ -55,9 +55,9 @@ func (self *EchoComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.
 	log.Printf("to = %s subj = %s body = %s", to, subj, body)
 
 	/* Create message */
-	em := tosserManager.NewEchoMessage()
+	em := tosser.NewEchoMessage()
 	em.Subject = subj
-	em.Body = body
+	em.SetBody(body)
 	em.AreaName = area.Name()
 	em.To = to
 

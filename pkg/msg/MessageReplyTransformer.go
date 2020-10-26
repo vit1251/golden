@@ -1,6 +1,9 @@
 package msg
 
-import "log"
+import (
+	"log"
+	"strings"
+)
 
 type MessageReplyTransformer struct {
 	author string
@@ -14,10 +17,12 @@ func NewMessageReplyTransformer() *MessageReplyTransformer {
 
 func (self *MessageReplyTransformer) Transform(content string) string {
 	var newContent string
+
 	log.Printf("reply_transform: msg = %+v", content)
 
-	tr := NewTextReader()
-	tr.Process(content, func(oneLine string) {
+	rows := strings.Split(content, "\r")
+	for _, oneLine := range rows {
+
 		log.Printf("transform: row = %+v", oneLine)
 
 		mlp := NewMessageLineParser()
@@ -41,7 +46,9 @@ func (self *MessageReplyTransformer) Transform(content string) string {
 		log.Printf("quote: row = %+v", row)
 
 		newContent += row + "\r"
-	})
+
+	}
+
 	return newContent
 }
 

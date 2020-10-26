@@ -78,7 +78,8 @@ func (self *MessageTextProcessor) processHtmlLine(oneLine string) string {
 func (self *MessageTextProcessor) Prepare(msg string) error {
 
 	newMsg := msg
-	newMsg = strings.ReplaceAll(newMsg, "\x07", "&#8226;") // Bullet char
+	newMsg = strings.ReplaceAll(newMsg, "\r\n", "\r")
+	newMsg = strings.ReplaceAll(newMsg, "\x07", "&#8226;")
 
 	/* Process */
 	rows := strings.Split(msg, "\r")

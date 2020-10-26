@@ -2,22 +2,22 @@ package action
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/stat"
 	"github.com/vit1251/golden/pkg/tosser"
 	"log"
 	"net/http"
 )
 
-type NetmailComposeCompleteAction struct {
+type NetmailReplyCompleteAction struct {
 	Action
 }
 
-func NewNetmailComposeCompleteAction() (*NetmailComposeCompleteAction) {
-	nm := new(NetmailComposeCompleteAction)
-	return nm
+func NewNetmailReplyCompleteAction() *NetmailReplyCompleteAction {
+	return new(NetmailReplyCompleteAction)
 }
 
-func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *NetmailReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var tosserManager *tosser.TosserManager
 	var statManager *stat.StatManager
@@ -25,6 +25,13 @@ func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 		tosserManager = tm
 		statManager = sm
 	})
+
+	vars := mux.Vars(r)
+
+	/* Recover message */
+	msgHash := vars["msgid"]
+
+	// TODO - copy original message ... to textarea ...
 
 	/* Parse */
 	err1 := r.ParseForm()
@@ -45,6 +52,7 @@ func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 	nm.SetBody(body)
 	nm.To = to
 	nm.ToAddr = to_addr
+	nm.SetReply(msgHash)
 
 	/* Delivery message */
 	if err := tosserManager.WriteNetmailMessage(nm); err != nil {
@@ -62,4 +70,5 @@ func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 	/* Redirect */
 	newLocation := fmt.Sprintf("/netmail")
 	http.Redirect(w, r, newLocation, 303)
+
 }

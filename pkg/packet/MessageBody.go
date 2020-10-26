@@ -15,7 +15,7 @@ type MessageBody struct {
 	RAW     []byte
 }
 
-func NewMessageBody() (*MessageBody) {
+func NewMessageBody() *MessageBody {
 	mb := new(MessageBody)
 	return mb
 }

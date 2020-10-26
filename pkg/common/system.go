@@ -31,7 +31,7 @@ func Min(x, y int) int {
 }
 
 func GetVersion() string {
-	return "1.2.14"
+	return "1.2.15"
 }
 
 func ParseSize(value []byte) (int, error) {
@@ -41,5 +41,5 @@ func ParseSize(value []byte) (int, error) {
 }
 
 func GetReleaseDate() string {
-	return "2020-10-05 13:44 MSK"
+	return "2020-10-25 18:48 MSK"
 }

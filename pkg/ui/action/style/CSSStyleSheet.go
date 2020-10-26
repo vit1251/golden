@@ -18,9 +18,6 @@ func (self *CSSStyleSheet) InsertRule(rule *CSSRule) {
 func (self *CSSStyleSheet) String() string {
 	var result string
 	for _, rule := range self.Rules {
-		//
-		fmt.Printf("rule = %+q", rule)
-		//
 		result += fmt.Sprintf("%s {\n", rule.selectorText)
 		for _, property := range rule.styleMap.propertyMap {
 			result += fmt.Sprintf("    %s: %s;\n", property.Name, property.Value)
