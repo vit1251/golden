@@ -1,5 +1,7 @@
 package tosser
 
+/// NETMAIL KLUDGE - http://ftsc.org/docs/fts-4001.001
+
 type NetmailMessage struct {
 	Subject string
 	To      string

@@ -99,7 +99,9 @@ func (self *TosserManager) makeTimeZone() string {
 	return newZone
 }
 
+/// ORIGIN LENGTH 79 http://ftsc.org/docs/fsc-0068.001
 func (self *TosserManager) prepareOrigin(Origin string) string {
+	var result string = " -- No origins exist -- "
 	/* Check Origin is external */
 	if strings.HasPrefix(Origin, "@") {
 		newPath := strings.TrimPrefix(Origin, "@")
@@ -111,14 +113,15 @@ func (self *TosserManager) prepareOrigin(Origin string) string {
 			n := rand.Intn(len(rows))
 			oneLine := rows[n]
 			newOneLine := strings.Trim(oneLine, " \t\n\r")
-			return fmt.Sprintf("%s", newOneLine)
-		} else {
-			log.Printf("Origin: err = %+v", err)
-			return " -- No origins exist -- "
+			result = newOneLine
 		}
 	} else {
-		return Origin
+		result = Origin
 	}
+	if len(result) > 78 {
+		result = result[:78]
+	}
+	return  result
 }
 
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
