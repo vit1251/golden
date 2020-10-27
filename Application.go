@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/vit1251/golden/pkg/charset"
+	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/installer"
 	"github.com/vit1251/golden/pkg/mailer"
@@ -19,6 +20,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	path2 "path"
 	"syscall"
 )
 
@@ -34,8 +36,9 @@ func NewApplication() *Application {
 
 func (self *Application) Run() {
 
-	path := "debug.log"
-	stream, err1 := os.OpenFile(path, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	logBaseDirectory := cmn.GetLogDirectory()
+	logPath := path2.Join(logBaseDirectory, "golden.log")
+	stream, err1 := os.OpenFile(logPath, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err1 != nil {
 		log.Printf("Error while open debug.log: err = %+v", err1)
 	}

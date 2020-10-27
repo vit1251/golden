@@ -53,54 +53,18 @@ func (self *MailerManager) processMailer() error {
 	})
 
 	/* Construct node address */
-	netAddr, err1 := setupManager.Get("main", "NetAddr", "")
-	if err1 != nil {
-		return err1
-	}
-	password, err2 := setupManager.Get("main", "Password", "")
-	if err2 != nil {
-		return err2
-	}
-	address, err3 := setupManager.Get("main", "Address", "")
-	if err3 != nil {
-		return err3
-	}
-	inb, err4 := setupManager.Get("main", "Inbound", "")
-	if err4 != nil {
-		return err4
-	}
-	outb, err5 := setupManager.Get("main", "Outbound", "")
-	if err5 != nil {
-		return err5
-	}
-	TempOutbound, err6 := setupManager.Get("main", "TempOutbound", "")
-	if err6 != nil {
-		return err6
-	}
-	TempInbound, err6 := setupManager.Get("main", "TempInbound", "")
-	if err6 != nil {
-		return err6
-	}
-	Temp, err6 := setupManager.Get("main", "Temp", "")
-	if err6 != nil {
-		return err6
-	}
-	Country, err6 := setupManager.Get("main", "Country", "")
-	if err6 != nil {
-		return err6
-	}
-	City, err6 := setupManager.Get("main", "City", "")
-	if err6 != nil {
-		return err6
-	}
-	realName, err1 := setupManager.Get("main", "RealName", "")
-	if err1 != nil {
-		return err1
-	}
-	stationName, err1 := setupManager.Get("main", "StationName", "")
-	if err1 != nil {
-		return err1
-	}
+	netAddr, _ := setupManager.Get("main", "NetAddr")
+	password, _ := setupManager.Get("main", "Password")
+	address, _ := setupManager.Get("main", "Address")
+	inb, _ := setupManager.Get("main", "Inbound")
+	outb, _ := setupManager.Get("main", "Outbound")
+	TempOutbound, _ := setupManager.Get("main", "TempOutbound")
+	TempInbound, _ := setupManager.Get("main", "TempInbound")
+	Temp, _ := setupManager.Get("main", "Temp")
+	Country, _ := setupManager.Get("main", "Country")
+	City, _ := setupManager.Get("main", "City")
+	realName, _ := setupManager.Get("main", "RealName")
+	stationName, _ := setupManager.Get("main", "StationName")
 
 	/* */
 	newAddress := fmt.Sprintf("%s@fidonet", address)

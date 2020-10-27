@@ -83,14 +83,13 @@ func (self *ConfigManager) Set(section string, name string, value string) error 
 	return nil
 }
 
-func (self *ConfigManager) Get(section string, name string, defaultValue string) (string, error) {
-	var result string = defaultValue
+func (self *ConfigManager) Get(section string, name string) (string, bool) {
 	for _, param := range self.Params {
 		if param.Section == section && param.Name == name {
-			result = param.Value
+			return param.Value, true
 		}
 	}
-	return result, nil
+	return "", false
 }
 
 func (self *ConfigManager) Register(section string, name string, summary string) error {

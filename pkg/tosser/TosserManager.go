@@ -4,6 +4,7 @@ import (
 	"fmt"
 	uuid "github.com/satori/go.uuid"
 	"github.com/vit1251/golden/pkg/charset"
+	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
@@ -39,10 +40,49 @@ func NewTosserManager(c *dig.Container) *TosserManager {
 		tm.MessageManager = mm
 	})
 	//
+	tm.checkDirectories()
+	//
 	tm.event = make(chan bool)
 	go tm.run()
 	//
 	return tm
+}
+
+func (self *TosserManager) checkDirectory(cacheSection string) {
+
+	cacheDirectory, _ := self.SetupManager.Get("main", cacheSection)
+	if cacheDirectory == "" {
+		log.Printf("Wrong directory: section = %+v", cacheSection)
+		storageDirectory := cmn.GetStorageDirectory()
+		cacheDirectory = path.Join(storageDirectory, "Fido", cacheSection)
+		log.Printf("Construct new directory: section = %+v cacheDirectory = %+v", cacheSection, cacheDirectory)
+		self.SetupManager.Set("main", cacheSection, cacheDirectory)
+	}
+	if _, err1 := os.Stat(cacheDirectory); err1 != nil {
+		log.Printf("Directory check: name = %v - ERR", cacheSection)
+		if os.IsNotExist(err1) {
+			log.Printf("Initial create directory: path = %+v", cacheDirectory)
+			os.MkdirAll(cacheDirectory, os.ModePerm)
+		} else {
+			log.Fatal("Initernal error: err = %+v", err1)
+		}
+	} else {
+		log.Printf("Directory check: name = %v - OK", cacheSection)
+	}
+
+}
+
+func (self *TosserManager) checkDirectories() {
+
+	/* Check mailer directory */
+	self.checkDirectory("Inbound")
+	self.checkDirectory("Outbound")
+	self.checkDirectory("TempInbound")
+	self.checkDirectory("TempOutbound")
+
+	/* Check FileBox directory */
+	self.checkDirectory("FileBox")
+
 }
 
 func (self *TosserManager) Start() {
@@ -127,14 +167,8 @@ func (self *TosserManager) prepareOrigin(Origin string) string {
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
 
 	/* Create packet name */
-	tempOutbound, err1 := self.SetupManager.Get("main", "TempOutbound", ".")
-	if err1 != nil {
-		return "", err1
-	}
-	password, err2 := self.SetupManager.Get("main", "Password", ".")
-	if err2 != nil {
-		return "", err2
-	}
+	tempOutbound, _ := self.SetupManager.Get("main", "TempOutbound")
+	password, _ := self.SetupManager.Get("main", "Password")
 
 	packetName := self.makePacketName()
 	tempPacketPath := path.Join(tempOutbound, packetName)
@@ -147,26 +181,11 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	defer pw.Close()
 
 	/* Ask source address */
-	myAddr, err2 := self.SetupManager.Get("main", "Address", "0:0/0.0")
-	if err2 != nil {
-		return "", err2
-	}
-	bossAddr, err3 := self.SetupManager.Get("main", "Link", "0:0/0.0")
-	if err3 != nil {
-		return "", err3
-	}
-	realName, err4 := self.SetupManager.Get("main", "RealName", "John Smith")
-	if err4 != nil {
-		return "", err4
-	}
-	TearLine, err5 := self.SetupManager.Get("main", "TearLine", "John Smith")
-	if err5 != nil {
-		return "", err5
-	}
-	Origin, err6 := self.SetupManager.Get("main", "Origin", "John Smith")
-	if err6 != nil {
-		return "", err6
-	}
+	myAddr, _ := self.SetupManager.Get("main", "Address")
+	bossAddr, _ := self.SetupManager.Get("main", "Link")
+	realName, _ := self.SetupManager.Get("main", "RealName")
+	TearLine, _ := self.SetupManager.Get("main", "TearLine")
+	Origin, _ := self.SetupManager.Get("main", "Origin")
 
 	/* Write packet header */
 	pktHeader := packet.NewPacketHeader()
@@ -270,18 +289,9 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 
 func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 
-	inbound, err1 := self.SetupManager.Get("main", "Inbound", ".")
-	if err1 != nil {
-		return err1
-	}
-	outbound, err1 := self.SetupManager.Get("main", "Outbound", ".")
-	if err1 != nil {
-		return err1
-	}
-	tempOutbound, err1 := self.SetupManager.Get("main", "TempOutbound", ".")
-	if err1 != nil {
-		return err1
-	}
+	inbound, _ := self.SetupManager.Get("main", "Inbound")
+	outbound, _ := self.SetupManager.Get("main", "Outbound")
+	tempOutbound, _ := self.SetupManager.Get("main", "TempOutbound")
 
 	packetName, err1 := self.makePacketEchoMessage(em)
 	if err1 != nil {
@@ -334,32 +344,16 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	}
 
 	/* Create packet name */
-	if outb, err := self.SetupManager.Get("main", "Outbound", "."); err == nil {
-		params.Outbound = outb
-	} else {
-		return err
-	}
-	if from, err := self.SetupManager.Get("main", "Address", "."); err == nil {
-		params.From = from
-	} else {
-		return err
-	}
-	if fromName, err := self.SetupManager.Get("main", "RealName", "John Smith"); err == nil {
-		params.FromName = fromName
-	} else {
-		return err
-	}
-	if origin, err := self.SetupManager.Get("main", "Origin", "Empty"); err == nil {
-		newOrigin := self.prepareOrigin(origin)
-		params.Origin = newOrigin
-	} else {
-		return err
-	}
-	if TearLine, err := self.SetupManager.Get("main", "TearLine", "Empty"); err == nil {
-		params.TearLine = TearLine
-	} else {
-		return err
-	}
+	params.Outbound, _ = self.SetupManager.Get("main", "Outbound")
+	params.From, _ = self.SetupManager.Get("main", "Address")
+	params.FromName, _ = self.SetupManager.Get("main", "RealName")
+
+	origin, _ := self.SetupManager.Get("main", "Origin")
+	origin1 := self.prepareOrigin(origin)
+	params.Origin = origin1
+
+	TearLine, _ := self.SetupManager.Get("main", "TearLine")
+	params.TearLine = TearLine
 
 	/* Create packet name */
 	pktName := self.makePacketName()

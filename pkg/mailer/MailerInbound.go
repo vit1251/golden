@@ -80,7 +80,7 @@ func (self *MailerInbound) Scan() ([]*MailerInboundRec, error) {
 
 	var result []*MailerInboundRec
 
-	inb, err1 := self.SetupManager.Get("main", "Inbound", ".")
+	inb, _ := self.SetupManager.Get("main", "Inbound")
 
 	items, err1 := ioutil.ReadDir(inb)
 	if err1 != nil {

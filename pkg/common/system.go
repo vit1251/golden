@@ -2,6 +2,7 @@ package commonfunc
 
 import (
 	"log"
+	"os/user"
 	"runtime"
 	"strconv"
 	"time"
@@ -42,4 +43,17 @@ func ParseSize(value []byte) (int, error) {
 
 func GetReleaseDate() string {
 	return "2020-10-25 18:48 MSK"
+}
+
+func GetStorageDirectory() string {
+	usr, err1 := user.Current()
+	if err1 != nil {
+		panic(err1)
+	}
+	userHomeDir := usr.HomeDir
+	return userHomeDir
+}
+
+func GetLogDirectory() string {
+	return "."
 }

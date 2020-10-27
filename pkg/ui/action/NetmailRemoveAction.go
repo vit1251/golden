@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/setup"
+	"log"
 	"net/http"
 )
 
@@ -35,8 +36,7 @@ func (self *NetmailRemoveAction)  ServeHTTP(w http.ResponseWriter, r *http.Reque
 	//	return
 	//}
 
-	fmt.Printf("msg = %s\n", msgHash)
-
+	log.Printf("msg = %s\n", msgHash)
 
 	if err := netmailManager.RemoveMessageByHash(msgHash) ; err != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")

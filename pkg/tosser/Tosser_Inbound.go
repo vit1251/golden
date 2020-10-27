@@ -346,11 +346,7 @@ func (self *Tosser) ProcessPacket(name string) error {
 
 func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) error {
 
-	/**/
-	inbTempPath, err0 := self.SetupManager.Get("main", "TempInbound", "")
-	if err0 != nil {
-		panic(err0)
-	}
+	inbTempPath, _ := self.SetupManager.Get("main", "TempInbound")
 
 	self.StatManager.RegisterInPacket()
 
@@ -372,11 +368,7 @@ func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) error {
 
 func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
 
-	/**/
-	newInbTempDir, err0 := self.SetupManager.Get("main", "TempInbound", "")
-	if err0 != nil {
-		panic(err0)
-	}
+	newInbTempDir, _ := self.SetupManager.Get("main", "TempInbound")
 
 	/* Unpack */
 	packets, err1 := Unpack(item.AbsolutePath, newInbTempDir)
@@ -402,11 +394,6 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
 
 		log.Printf("-- Process FTN packet complete: packet = %+v", p)
 
-	}
-
-	newInbTempDir, err3 := self.SetupManager.Get("main", "TempInbound", "")
-	if err3 != nil {
-		panic(err3)
 	}
 
 	/* Construct new path */
@@ -437,14 +424,9 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	}
 
 	/* Prepare area directory */
-	boxBasePath, err2 := self.SetupManager.Get("main", "FileBox", "")
-	if err2 != nil {
-		return err2
-	}
-	inboxBasePath, err3 := self.SetupManager.Get("main", "Inbound", "")
-	if err3 != nil {
-		return err3
-	}
+	boxBasePath, _ := self.SetupManager.Get("main", "FileBox")
+	inboxBasePath, _ := self.SetupManager.Get("main", "Inbound")
+
 	areaLocation := path.Join(boxBasePath, tic.Area)
 	os.MkdirAll(areaLocation, 0755)
 

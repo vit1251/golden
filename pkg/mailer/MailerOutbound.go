@@ -36,10 +36,7 @@ func (self *MailerOutbound) GetItems() ([]*Item, error) {
 
 	var items []*Item
 
-	outb, err1 := self.SetupManager.Get("main", "Outbound", "")
-	if err1 != nil {
-		return nil, err1
-	}
+	outb, _ := self.SetupManager.Get("main", "Outbound")
 
 	files, err2 := ioutil.ReadDir(outb)
 	if err2 != nil {

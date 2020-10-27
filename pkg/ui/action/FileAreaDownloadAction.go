@@ -30,13 +30,7 @@ func (self *FileAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 		setupManager = sm
 	})
 
-	//
-	storagePath, err1 := setupManager.Get("main", "FileBox", "Files")
-	if err1 != nil {
-		response := fmt.Sprintf("Fail on get parameters")
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
+	boxDirectory, _ := setupManager.Get("main", "FileBox")
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
@@ -58,7 +52,7 @@ func (self *FileAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 
 	/* Path */
 	var areaName string = area.Name()
-	path := filepath.Join(storagePath, areaName, newFile)
+	path := filepath.Join(boxDirectory, areaName, newFile)
 
 	/* Open original file */
 	stream, err2 := os.Open(path)

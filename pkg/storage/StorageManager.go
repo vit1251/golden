@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"log"
-	"os/user"
 	"path/filepath"
+	cmn "github.com/vit1251/golden/pkg/common"
 	"time"
 )
 
@@ -17,31 +17,33 @@ func (self *StorageManager) GetConnection() *sql.DB {
 	return self.conn
 }
 
-func (self *StorageManager) Close() {
-	self.conn.Close()
-}
-
+/// Initialize storage
 func NewStorageManager() *StorageManager {
 
 	sm := new(StorageManager)
 
-	/* Initialize storage */
-	usr, err1 := user.Current()
-	if err1 != nil {
-		panic(err1)
-	}
-	userHomeDir := usr.HomeDir
-	log.Printf("userHomeDir = %+v", userHomeDir)
-	userStoragePath := filepath.Join(userHomeDir, "golden.sqlite3")
-	log.Printf("userStoragePath = %+v", userStoragePath)
-	db, err2 := sql.Open("sqlite3", userStoragePath)
+	sm.Open()
+
+	return sm
+}
+
+func (self *StorageManager) Open() error {
+
+	storageBaseDir := cmn.GetStorageDirectory()
+	storageFile := filepath.Join(storageBaseDir, "golden.sqlite3")
+
+	db, err2 := sql.Open("sqlite3", storageFile)
 	if err2 != nil {
 		panic(err2)
 	}
-	sm.conn = db
+	self.conn = db
 	log.Printf("db = %+v", db)
 
-	return sm
+	return nil
+}
+
+func (self *StorageManager) Close() error {
+	return self.conn.Close()
 }
 
 func (self *StorageManager) Query(query string, params []interface{}, f func(rows *sql.Rows) error) error {
