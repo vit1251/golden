@@ -79,6 +79,7 @@ func (self *TosserManager) checkDirectories() {
 	self.checkDirectory("Outbound")
 	self.checkDirectory("TempInbound")
 	self.checkDirectory("TempOutbound")
+	self.checkDirectory("Temp")
 
 	/* Check FileBox directory */
 	self.checkDirectory("FileBox")

@@ -41,6 +41,9 @@ func migration_000102_Up(conn *sql.DB) error {
 	if _, err := conn.Exec(query1, "main", "TempInbound", ""); err != nil {
 	}
 
+	if _, err := conn.Exec(query1, "main", "Temp", ""); err != nil {
+	}
+
 	if _, err := conn.Exec(query1, "main", "TempOutbound", ""); err != nil {
 	}
 
