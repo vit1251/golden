@@ -3,6 +3,7 @@ package mailer
 import (
 	"bufio"
 	"fmt"
+	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/setup"
 	"log"
 	"net"
@@ -30,10 +31,16 @@ type Mailer struct {
 	activeState       IMailerState           /* Mailer state                */
 	sessionSetupState SessionSetupStageState /* Session setup state         */
 	transferState     FileTransferStageState /* Mailer state                */
+
 	rxState           RxState                /*                             */
 	txState           TxState                /*                             */
+
+	inStop            chan int
 	inDataFrames      chan Frame             /* RX processing Frame routine */
+
+	outStop           chan int
 	outDataFrames     chan Frame             /* TX processing Frame routine */
+
 	conn              net.Conn               /* Network address             */
 	reader            *bufio.Reader          /* Network address             */
 	writer            *bufio.Writer          /* Network address             */
@@ -61,11 +68,14 @@ type Mailer struct {
 	systemName string
 	userName   string
 	location   string
+
 }
 
 func NewMailer(sm *setup.ConfigManager) *Mailer {
 	m := new(Mailer)
+	m.inStop = make(chan int)
 	m.inDataFrames = make(chan Frame)
+	m.outStop = make(chan int)
 	m.outDataFrames = make(chan Frame)
 	m.connComplete = make(chan int)
 	m.SetupManager = sm
@@ -98,15 +108,15 @@ func (self *Mailer) Start() {
 	/* Start state */
 	self.activeState = NewMailerStateCreateConnection()
 
+	/* Add wait */
+	self.wait.Add(1)
+
 	/* Play! */
 	go self.run()
 
 }
 
 func (self *Mailer) run() {
-
-	/* Add wait */
-	self.wait.Add(1)
 
 	mailerStart := time.Now()
 	log.Printf("Start mailer routine")
@@ -224,4 +234,15 @@ func (self *Mailer) SetUserName(name string) {
 
 func (self *Mailer) SetStationName(name string) {
 	self.systemName = name
+}
+
+func (self *Mailer) WriteVersion() {
+
+	appName := "GoldenMailer"
+	appVersion := cmn.GetVersion()
+	protocolVersion := "binkp/1.0"
+	mailverVersion := fmt.Sprintf("%s/%s %s", appName, appVersion, protocolVersion)
+	//log.Printf
+	self.WriteInfo("VER", mailverVersion)
+
 }

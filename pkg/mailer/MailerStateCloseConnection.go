@@ -15,11 +15,8 @@ func (self *MailerStateCloseConnection) String() string {
 
 func (self *MailerStateCloseConnection) Process(mailer *Mailer) IMailerState {
 
-	/* Close connection */
-	if mailer.conn != nil {
-		mailer.conn.Close()
-		mailer.conn = nil
-	}
+	close(mailer.inStop)
+	close(mailer.outStop)
 
 	return nil
 }

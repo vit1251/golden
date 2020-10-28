@@ -1,7 +1,6 @@
 package mailer
 
 import (
-	"fmt"
 	cmn "github.com/vit1251/golden/pkg/common"
 )
 
@@ -41,9 +40,7 @@ func (self *MailerStateTxHello) Process(mailer *Mailer) IMailerState {
 	mailer.WriteInfo("NDL", "115200,TCP,BINKP")
 	mailer.WriteInfo("TIME", cmn.GetTime())
 	mailer.WriteInfo("OS", cmn.GetPlatform())
-	appName := "GoldenMailer"
-	appVersion := cmn.GetVersion()
-	mailer.WriteInfo("VER", fmt.Sprintf("%s/%s", appName, appVersion))
+	mailer.WriteVersion()
 	addr := mailer.GetAddr()
 	mailer.WriteAddress(addr)
 

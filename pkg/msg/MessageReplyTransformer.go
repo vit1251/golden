@@ -42,10 +42,14 @@ func (self *MessageReplyTransformer) Transform(content string) string {
 
 		log.Printf("ql: nl = %+v", nl)
 
-		row := nl.QuoteStart + nl.QuoteAuthor + nl.QuoteMarkers + nl.QuoteLine
-		log.Printf("quote: row = %+v", row)
-
-		newContent += row + "\r"
+		quoteLineSize := len(strings.TrimSpace(nl.QuoteLine))
+		if quoteLineSize > 0 {
+			row := nl.QuoteStart + nl.QuoteAuthor + nl.QuoteMarkers + nl.QuoteLine
+			newContent += row + "\r"
+			log.Printf("quote: row = %+v", row)
+		} else {
+			newContent += "\r"
+		}
 
 	}
 

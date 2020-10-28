@@ -84,10 +84,14 @@ func (self *MailerManager) processMailer() error {
 	if City != "" && Country != "" {
 		m.SetLocation(fmt.Sprintf("%s, %s", City, Country))
 	}
+
+	/* Start mailer */
+	log.Printf("--- Mailer start ---")
 	m.Start()
 
-	/* Wait complete */
+	/* Wait mailer complete */
 	m.Wait()
+	log.Printf("--- Mailer complete ---")
 
 	/* Complete start tosser */
 	if err := statManager.RegisterOutSession(); err != nil {

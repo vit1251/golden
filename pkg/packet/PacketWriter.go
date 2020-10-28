@@ -283,7 +283,7 @@ func (self *PacketWriter) WriteMessage(msgBody *MessageBody) error {
 	for _, k := range msgBody.Kludges {
 		self.binaryStreamWriter.WriteBytes([]byte("\x01"))
 		self.binaryStreamWriter.WriteBytes([]byte(k.Name))
-		self.binaryStreamWriter.WriteBytes([]byte(": "))
+		self.binaryStreamWriter.WriteBytes([]byte(" "))
 		self.binaryStreamWriter.WriteBytes([]byte(k.Value))
 		self.binaryStreamWriter.WriteBytes([]byte("\x0D"))
 	}

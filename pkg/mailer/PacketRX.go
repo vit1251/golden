@@ -67,4 +67,8 @@ func (self *Mailer) processRX() {
 		log.Printf("^^^ RX stream ^^^")
 	}
 	log.Printf("RX stream stop")
+
+	/* Done waiter */
+	self.wait.Done()
+
 }
