@@ -2,33 +2,32 @@ package msg
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/vit1251/golden/pkg/charset"
+	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
 )
 
 type MessageManager struct {
 	conn           *sql.DB
-	CharsetManager *charset.CharsetManager
-	StorageManager *storage.StorageManager
+	registry       *registry.Container
 }
 
-func NewMessageManager(sm *storage.StorageManager, cm *charset.CharsetManager) *MessageManager {
+func NewMessageManager(r *registry.Container) *MessageManager {
 	mm := new(MessageManager)
-	mm.CharsetManager = cm
-	mm.StorageManager = sm
+	mm.registry = r
 	return mm
 }
 
 func (self *MessageManager) GetAreaList() ([]string, error) {
+
+	storageManager := self.restoreStorageManager()
 
 	var result []string
 
 	query1 := "SELECT DISTINCT(`msgArea`) AS `name` FROM `message` ORDER BY `name` ASC"
 	var params []interface{}
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 		var name string
 		err2 := rows.Scan(&name)
 		if err2 != nil {
@@ -43,12 +42,14 @@ func (self *MessageManager) GetAreaList() ([]string, error) {
 
 func (self *MessageManager) GetAreaList2() ([]*Area, error) {
 
+	storageManager := self.restoreStorageManager()
+
 	var result []*Area
 
 	query1 := "SELECT `msgArea`, count(`msgId`) AS `msgCount` FROM `message` GROUP BY `msgArea` ORDER BY `msgArea` ASC"
 	var params []interface{}
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 		var name string
 		var count int
 		err2 := rows.Scan(&name, &count)
@@ -67,12 +68,14 @@ func (self *MessageManager) GetAreaList2() ([]*Area, error) {
 
 func (self *MessageManager) GetAreaList3() ([]*Area, error) {
 
+	storageManager := self.restoreStorageManager()
+
 	var result []*Area
 
 	query1 := "SELECT `msgArea`, count(`msgId`) AS `msgCount` FROM `message` WHERE `msgViewCount` = 0 GROUP BY `msgArea` ORDER BY `msgArea` ASC"
 	var params []interface{}
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 		var name string
 		var count int
 
@@ -92,13 +95,15 @@ func (self *MessageManager) GetAreaList3() ([]*Area, error) {
 
 func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error) {
 
+	storageManager := self.restoreStorageManager()
+
 	var result []*Message
 
 	query1 := "SELECT `msgId`, `msgArea`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
 	var params []interface{}
 	params = append(params, echoTag)
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var ID string
 		var msgHash *string
@@ -136,6 +141,8 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 
 func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*Message, error) {
 
+	storageManager := self.restoreStorageManager()
+
 	var result *Message
 
 	query1 := "SELECT `msgId`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate`, `msgPacket` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
@@ -143,7 +150,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 	params = append(params, echoTag)
 	params = append(params, msgHash)
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var ID string
 		var msgMsgId string
@@ -186,12 +193,14 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 
 func (self *MessageManager) ViewMessageByHash(echoTag string, msgHash string) error {
 
+	storageManager := self.restoreStorageManager()
+
 	query1 := "UPDATE `message` SET `msgViewCount` = `msgViewCount` + 1 WHERE `msgArea` = $1 AND `msgHash` = $2"
 	var params []interface{}
 	params = append(params, echoTag)
 	params = append(params, msgHash)
 
-	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
 		return nil
 	})
@@ -202,12 +211,14 @@ func (self *MessageManager) ViewMessageByHash(echoTag string, msgHash string) er
 
 func (self *MessageManager) RemoveMessageByHash(echoTag string, msgHash string) error {
 
+	storageManager := self.restoreStorageManager()
+
 	query1 := "DELETE FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
 	var params []interface{}
 	params = append(params, echoTag)
 	params = append(params, msgHash)
 
-	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
 		return nil
 	})
@@ -217,6 +228,8 @@ func (self *MessageManager) RemoveMessageByHash(echoTag string, msgHash string) 
 
 func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string) (bool, error) {
 
+	storageManager := self.restoreStorageManager()
+
 	var result bool = false
 
 	query1 := "SELECT `msgId` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
@@ -224,7 +237,7 @@ func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string
 	params = append(params, echoTag)
 	params = append(params, msgHash)
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 		var ID string
 		err1 := rows.Scan(&ID)
 		if err1 != nil {
@@ -240,6 +253,8 @@ func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string
 }
 
 func (self *MessageManager) Write(msg *Message) (error) {
+
+	storageManager := self.restoreStorageManager()
 
 	/* Step 3. Make prepare SQL insert query */
 	query1 := "INSERT INTO message " +
@@ -258,7 +273,7 @@ func (self *MessageManager) Write(msg *Message) (error) {
 	params = append(params, msg.UnixTime)
 	params = append(params, msg.Packet)
 
-	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
 		return nil
 	})
@@ -269,12 +284,14 @@ func (self *MessageManager) Write(msg *Message) (error) {
 
 func (self *MessageManager) GetMessageNewCount() (int, error) {
 
+	storageManager := self.restoreStorageManager()
+
 	var newMessageCount int
 
 	query1 := "SELECT count(`msgId`) FROM `message` WHERE `msgViewCount` = 0"
 	var params []interface{}
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		err1 := rows.Scan(&newMessageCount)
 		if err1 != nil {
@@ -288,15 +305,28 @@ func (self *MessageManager) GetMessageNewCount() (int, error) {
 
 func (self *MessageManager) RemoveMessagesByAreaName(echoTag string) error {
 
+	storageManager := self.restoreStorageManager()
+
 	query1 := "DELETE FROM `message` WHERE `msgArea` = $1"
 	var params []interface{}
 	params = append(params, echoTag)
 
-	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
 		return nil
 	})
 
 	return err1
+
+}
+
+func (self *MessageManager) restoreStorageManager() *storage.StorageManager {
+
+	managerPtr := self.registry.Get("StorageManager")
+	if manager, ok := managerPtr.(*storage.StorageManager); ok {
+		return manager
+	} else {
+		panic("no storage manager")
+	}
 
 }

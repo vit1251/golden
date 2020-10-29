@@ -5,35 +5,21 @@ import (
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
+	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/stat"
-	"go.uber.org/dig"
 	"log"
 	"time"
 )
 
 type Tosser struct {
-	MessageManager *msg.MessageManager
-	StatManager    *stat.StatManager
-	SetupManager   *setup.ConfigManager
-	FileManager    *file.FileManager
-	AreaManager    *msg.AreaManager
-	CharsetManager *charset.CharsetManager
-	NetmailManager *netmail.NetmailManager
+	registry       *registry.Container
 }
 
-func NewTosser(c *dig.Container) *Tosser {
+func NewTosser(registry *registry.Container) *Tosser {
 	tosser := new(Tosser)
-	c.Invoke(func(cm *charset.CharsetManager, am *msg.AreaManager, mm *msg.MessageManager, sm *stat.StatManager, setm *setup.ConfigManager, fm *file.FileManager, nm *netmail.NetmailManager) {
-		tosser.CharsetManager = cm
-		tosser.AreaManager = am
-		tosser.MessageManager = mm
-		tosser.StatManager = sm
-		tosser.SetupManager = setm
-		tosser.FileManager = fm
-		tosser.NetmailManager = nm
-	})
-	return tosser
+	tosser.registry = registry
+    return tosser
 }
 
 func (self *Tosser) Toss() {
@@ -54,3 +40,67 @@ func (self *Tosser) Toss() {
 	elapsed := time.Since(tosserStart)
 	log.Printf("Tosser session: %+v", elapsed)
 }
+
+func (self *Tosser) restoreCharsetManager() *charset.CharsetManager {
+	managerPtr := self.registry.Get("CharsetManager")
+	if manager, ok := managerPtr.(*charset.CharsetManager); ok {
+		return manager
+	} else {
+		panic("no charset manager")
+	}
+}
+
+func (self *Tosser) restoreNetmailManager() *netmail.NetmailManager {
+	managerPtr := self.registry.Get("NetmailManager")
+	if manager, ok := managerPtr.(*netmail.NetmailManager); ok {
+		return manager
+	} else {
+		panic("no netmail manager")
+	}
+}
+
+func (self *Tosser) restoreAreaManager() *msg.AreaManager {
+	managerPtr := self.registry.Get("AreaManager")
+	if manager, ok := managerPtr.(*msg.AreaManager); ok {
+		return manager
+	} else {
+		panic("no area manager")
+	}
+}
+
+func (self *Tosser) restoreMessageManager() *msg.MessageManager {
+	managerPtr := self.registry.Get("MessageManager")
+	if manager, ok := managerPtr.(*msg.MessageManager); ok {
+		return manager
+	} else {
+		panic("no message manager")
+	}
+}
+
+func (self *Tosser) restoreStatManager() *stat.StatManager {
+	managerPtr := self.registry.Get("StatManager")
+	if manager, ok := managerPtr.(*stat.StatManager); ok {
+		return manager
+	} else {
+		panic("no stat manager")
+	}
+}
+
+func (self *Tosser) restoreConfigManager() *setup.ConfigManager {
+	managerPtr := self.registry.Get("ConfigManager")
+	if manager, ok := managerPtr.(*setup.ConfigManager); ok {
+		return manager
+	} else {
+		panic("no config manager")
+	}
+}
+
+func (self *Tosser) restoreFileManager() *file.FileManager {
+	managerPtr := self.registry.Get("FileManager")
+	if manager, ok := managerPtr.(*file.FileManager); ok {
+		return manager
+	} else {
+		panic("no file manager")
+	}
+}
+

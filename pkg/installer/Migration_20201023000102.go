@@ -6,51 +6,36 @@ import (
 
 func migration_000102_Up(conn *sql.DB) error {
 
+	type param struct {
+		section string
+		name string
+		value string
+	}
+
+	var params []param
+
+	params = append(params, param{"main", "RealName", "John Smith"})
+	params = append(params, param{"main", "Country", "Russia"})
+	params = append(params, param{"main", "City", "Moscow"})
+	params = append(params, param{"main", "Origin", "Yo Adrian, I Did It! (c) Rocky II"})
+	params = append(params, param{"main", "TearLine", "Golden/{GOLDEN_PLATFORM}-{GOLDEN_ARCH} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})"})
+	params = append(params, param{ "main", "Address", ""})
+	params = append(params, param{"main", "Link", ""})
+	params = append(params, param{"main", "NetAddr", ""})
+	params = append(params, param{"main", "Inbound", ""})
+	params = append(params, param{"main", "Outbound", ""})
+	params = append(params, param{"main", "TempInbound", ""})
+	params = append(params, param{"main", "Temp", ""})
+	params = append(params, param{"main", "TempOutbound", ""})
+	params = append(params, param{"main", "FileBox", ""})
+	params = append(params, param{"main", "Password", ""})
+
+	/* Execute */
 	query1 := "INSERT INTO `settings` (`section`,`name`,`value`) VALUES (?, ?, ?)"
-
-	if _, err := conn.Exec(query1, "main", "RealName", "John Smith"); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "Country", "Russia"); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "City", "Moscow"); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "Origin", "Yo Adrian, I Did It! (c) Rocky II"); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "TearLine", "Golden/{GOLDEN_PLATFORM}-{GOLDEN_ARCH} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})"); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "Address", ""); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "Link", ""); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "NetAddr", ""); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "Inbound", ""); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "Outbound", ""); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "TempInbound", ""); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "Temp", ""); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "TempOutbound", ""); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "FileBox", ""); err != nil {
-	}
-
-	if _, err := conn.Exec(query1, "main", "Password", ""); err != nil {
+	for _, param := range params {
+		if _, err := conn.Exec(query1, param.section, param.name, param.value); err != nil {
+			return err
+		}
 	}
 
 	return nil

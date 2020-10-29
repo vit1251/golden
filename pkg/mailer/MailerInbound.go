@@ -1,6 +1,7 @@
 package mailer
 
 import (
+	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
 	"io/ioutil"
 	"path"
@@ -9,7 +10,7 @@ import (
 )
 
 type MailerInbound struct {
-	SetupManager	*setup.ConfigManager
+	registry     *registry.Container
 }
 
 type MailerInboundRecType int
@@ -41,9 +42,9 @@ func NewMailerInboundRec() *MailerInboundRec {
 	return new(MailerInboundRec)
 }
 
-func NewMailerInbound(sm *setup.ConfigManager) *MailerInbound {
+func NewMailerInbound(registry *registry.Container) *MailerInbound {
 	mi := new(MailerInbound)
-	mi.SetupManager = sm
+	mi.registry = registry
 	return mi
 }
 
@@ -78,9 +79,11 @@ func (self *MailerInbound) nodeTypePrediction(name string) (MailerInboundRecType
 
 func (self *MailerInbound) Scan() ([]*MailerInboundRec, error) {
 
+	conifgManager := self.restoreConifgManager()
+
 	var result []*MailerInboundRec
 
-	inb, _ := self.SetupManager.Get("main", "Inbound")
+	inb, _ := conifgManager.Get("main", "Inbound")
 
 	items, err1 := ioutil.ReadDir(inb)
 	if err1 != nil {
@@ -100,5 +103,16 @@ func (self *MailerInbound) Scan() ([]*MailerInboundRec, error) {
 	}
 
 	return result, nil
+
+}
+
+func (self *MailerInbound) restoreConifgManager() *setup.ConfigManager {
+
+	managerPtr := self.registry.Get("ConfigManager")
+	if manager, ok := managerPtr.(*setup.ConfigManager); ok {
+		return manager
+	} else {
+		panic("no config manager")
+	}
 
 }

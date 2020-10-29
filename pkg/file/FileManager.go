@@ -2,13 +2,14 @@ package file
 
 import (
 	"database/sql"
+	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
 	"time"
 )
 
 type FileManager struct {
-	conn *sql.DB
+	registry      *registry.Container
 }
 
 type FileArea struct {
@@ -31,24 +32,25 @@ func NewFileArea() *FileArea {
 	return fa
 }
 
-func NewFileManager(sm *storage.StorageManager) *FileManager {
+func NewFileManager(r *registry.Container) *FileManager {
 	fm := new(FileManager)
-	fm.conn = sm.GetConnection()
+	fm.registry = r
 	return fm
 }
 
 func (self *FileManager) GetAreas() ([]*FileArea, error) {
 
+	storageManager := self.restoreStorageManager()
+
 	var areas []*FileArea
 
 	/* Restore parameters */
 	sqlStmt := "SELECT `areaName`, `areaPath`, `areaSummary` FROM `filearea`"
-	rows, err2 := self.conn.Query(sqlStmt)
-	if err2 != nil {
-		return nil, err2
-	}
-	defer rows.Close()
-	for rows.Next() {
+
+	var params []interface{}
+	//params = append(params, echoName)
+
+	err1 := storageManager.Query(sqlStmt, params, func(rows *sql.Rows) error {
 
 		var areaName string
 		var areaPath string
@@ -56,7 +58,7 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 
 		err3 := rows.Scan(&areaName, &areaPath, &areaSummary)
 		if err3 != nil {
-			return nil, err3
+			return err3
 		}
 
 		/**/
@@ -71,17 +73,21 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 
 		areas = append(areas, area)
 
-	}
+		return nil
+	})
 
-	return areas, nil
+	return areas, err1
 }
 
 func (self *FileManager) GetAreas2() ([]*FileArea, error) {
 
+	storageManager := self.restoreStorageManager()
+	conn := storageManager.GetConnection() // TODO
+
 	var result []*FileArea
 
 	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
+	ConnTransaction, err := conn.Begin()
 	if err != nil {
 		return nil, err
 	}
@@ -114,6 +120,9 @@ func (self *FileManager) GetAreas2() ([]*FileArea, error) {
 
 func (self *FileManager) CreateFileArea(a *FileArea) error {
 
+	storageManager := self.restoreStorageManager()
+	conn := storageManager.GetConnection() // TODO
+
 	var name string = a.Name()
 	var path string = a.Path
 	var summary string = a.Summary
@@ -124,7 +133,7 @@ func (self *FileManager) CreateFileArea(a *FileArea) error {
 	query := "INSERT INTO `filearea` (`areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder`) VALUES (?, ?, ?, ?, ?)"
 
 	/* Create area */
-	_, err1 := self.conn.Exec(query, name, "sqlite3", path, summary, 0)
+	_, err1 := conn.Exec(query, name, "sqlite3", path, summary, 0)
 	if err1 != nil {
 		log.Printf("Fail on CreateFileArea with error: err = %+v", err1)
 	}
@@ -134,10 +143,13 @@ func (self *FileManager) CreateFileArea(a *FileArea) error {
 
 func (self *FileManager) GetFileHeaders(echoTag string) ([]*TicFile, error) {
 
+	storageManager := self.restoreStorageManager()
+	conn := storageManager.GetConnection() // TODO
+
 	var result []*TicFile
 
 	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := self.conn.Begin()
+	ConnTransaction, err := conn.Begin()
 	if err != nil {
 		return nil, err
 	}
@@ -185,11 +197,14 @@ func (self *FileManager) CheckFileExists(tic *TicFile) (bool, error) {
 
 func (self *FileManager) RegisterFile(tic *TicFile) error {
 
+	storageManager := self.restoreStorageManager()
+	conn := storageManager.GetConnection() // TODO
+
 	var unixTime int64 = time.Now().Unix()
 
 	/* Insert new one area */
 	sqlStmt1 := "INSERT INTO `file` ( `fileName`, `fileArea`, `fileDesc`, `fileTime` ) VALUES ( ?, ?, ?, ? )"
-	stmt1, err2 := self.conn.Prepare(sqlStmt1)
+	stmt1, err2 := conn.Prepare(sqlStmt1)
 	if err2 != nil {
 		return err2
 	}
@@ -204,11 +219,14 @@ func (self *FileManager) RegisterFile(tic *TicFile) error {
 
 func (self *FileManager) GetAreaByName(areaName string) (*FileArea, error) {
 
+	storageManager := self.restoreStorageManager()
+	conn := storageManager.GetConnection() // TODO
+
 	var result *FileArea
 
 	query1 := "SELECT `areaName`, `areaPath`, `areaSummary` FROM `filearea` WHERE `areaName` = $1"
 	log.Printf("query = %s params = %s", query1, areaName)
-	rows, err2 := self.conn.Query(query1, areaName)
+	rows, err2 := conn.Query(query1, areaName)
 	if err2 != nil {
 		return nil, err2
 	}
@@ -241,4 +259,13 @@ func (self *FileManager) GetAreaByName(areaName string) (*FileArea, error) {
 
 func (self *FileManager) GetMessageNewCount() (int, error) {
 	return 0, nil
+}
+
+func (self *FileManager) restoreStorageManager() *storage.StorageManager {
+	managerPtr := self.registry.Get("StorageManager")
+	if manager, ok := managerPtr.(*storage.StorageManager); ok {
+		return manager
+	} else {
+		panic("no storage manager")
+	}
 }

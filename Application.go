@@ -2,21 +2,20 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/installer"
 	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
+	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/site"
 	"github.com/vit1251/golden/pkg/stat"
 	"github.com/vit1251/golden/pkg/storage"
 	"github.com/vit1251/golden/pkg/tosser"
-	"github.com/vit1251/golden/pkg/ui"
-	"github.com/vit1251/golden/pkg/ui2"
-	"go.uber.org/dig"
 	"log"
 	"os"
 	"os/signal"
@@ -25,13 +24,35 @@ import (
 )
 
 type Application struct {
-	Container *dig.Container
+	Container *registry.Container
 }
 
 func NewApplication() *Application {
 	app := new(Application)
-	app.Container = dig.New()
+	app.Container = registry.NewContainer()
 	return app
+}
+
+func (self *Application) processMigration() {
+
+	migrationManagerPtr := self.Container.Get("MigrationManager")
+	if migrationManager, ok := migrationManagerPtr.(*installer.MigrationManager); ok {
+		migrationManager.Check()
+	} else {
+		panic("no migration manager")
+	}
+
+}
+
+func (self *Application) startTosserService() {
+
+	tosserManagerPtr := self.Container.Get("TosserManager")
+	if tosserManager, ok := tosserManagerPtr.(*tosser.TosserManager); ok {
+		tosserManager.Start()
+	} else {
+		panic("no tosser manager")
+	}
+
 }
 
 func (self *Application) Run() {
@@ -50,98 +71,102 @@ func (self *Application) Run() {
 	var servicePort int
 	flag.IntVar(&servicePort, "P", 8080, "Set HTTP service port")
 	flag.Parse()
-	log.Printf("servicePort - %+v", servicePort)
 
-	/* Create managers */
-	if err := self.Container.Provide(installer.NewMigrationManager); err != nil {
-		panic(err)
-	}
-	if err := self.Container.Provide(charset.NewCharsetManager); err != nil {
-		panic(err)
-	}
-	if err := self.Container.Provide(storage.NewStorageManager); err != nil {
-		panic(err)
-	}
-	if err := self.Container.Provide(setup.NewConfigManager); err != nil {
-		panic(err)
-	}
-	if err := self.Container.Provide(msg.NewMessageManager); err != nil {
-		panic(err)
-	}
-	if err := self.Container.Provide(func() *mailer.MailerManager {
-		return mailer.NewMailerManager(self.Container)
-	}); err != nil {
-		panic(err)
-	}
-	if err := self.Container.Provide(func() *msg.AreaManager {
-		return msg.NewAreaManager(self.Container)
-	}); err != nil {
-		panic(err)
-	}
-	if err := self.Container.Provide(file.NewFileManager); err != nil {
-		panic(err)
-	}
-	if err := self.Container.Provide(stat.NewStatManager); err != nil {
-		panic(err)
-	}
-	if err := self.Container.Provide(netmail.NewNetmailManager); err != nil {
-		panic(err)
-	}
-	if err := self.Container.Provide(func() *tosser.TosserManager {
-		result := tosser.NewTosserManager(self.Container)
-		return result
-	}); err != nil {
-		panic(err)
-	}
+	/* Start storage service */
+	self.Container.Register("EventBus", eventbus.NewEventBus(self.Container))
+	self.Container.Register("StorageManager", storage.NewStorageManager(self.Container))
+	self.Container.Register("MigrationManager", installer.NewMigrationManager(self.Container))
+	self.Container.Register("ConfigManager", setup.NewConfigManager(self.Container))
 
-	/* Migrations */
-	self.Container.Invoke(func(mm *installer.MigrationManager) {
-		mm.Check()
-	})
+	self.Container.Register("CharsetManager", charset.NewCharsetManager(self.Container))
 
-	/* Start tosser */
-	self.Container.Invoke(func(tm *tosser.TosserManager) {
-		tm.Start()
-	})
+	self.Container.Register("MessageManager", msg.NewMessageManager(self.Container))
+	self.Container.Register("AreaManager", msg.NewAreaManager(self.Container))
+	self.Container.Register("FileManager", file.NewFileManager(self.Container))
+	self.Container.Register("NetmailManager", netmail.NewNetmailManager(self.Container))
+	self.Container.Register("StatManager", stat.NewStatManager(self.Container))
 
-	/* Start UI services */
-	self.Container.Invoke(func() {
-		s1 := ui.NewService(self.Container)
-		s1.SetPort(servicePort)
-		go s1.Start()
-	})
-	self.Container.Invoke(func() {
-		s2 := ui2.NewService(self.Container)
-		go s2.Start()
-	})
-	self.Container.Invoke(func(mm *mailer.MailerManager) {
-		mm.Start()
-	})
+	self.Container.Register("TosserManager",	tosser.NewTosserManager(self.Container))
+	self.Container.Register("MailerManager", mailer.NewMailerManager(self.Container))
 
-	/* Start WebView */
-	fmt.Printf("Golden Point is running at:\n")
-	fmt.Printf("\n")
-	fmt.Printf("    http://127.0.0.1:%d\n", servicePort)
-	fmt.Printf("\n")
-	fmt.Printf("Note: You MUST setup your instalattion on first run.\n")
-	fmt.Printf("      Please open `Setup` section initially.\n")
+	self.Container.Register("SiteManager", site.NewSiteManager(self.Container))
 
-	/* Start mailer */
+	/* Initialize migrations */
+	self.processMigration()
 
-	/* Wait sigs */
-	sigs := make(chan os.Signal, 1)
-	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	/* Start tosser service */
+	self.startTosserService()
 
-	/* Block until a signal is received. */
-	<-sigs
+	/* Start site service */
+	siteManager := self.restoreSiteManager()
+	siteManager.SetPort(servicePort)
+	siteManager.Start()
 
-	/* Sync storage */
-	self.Container.Invoke(func(sm *storage.StorageManager) {
-		log.Printf("Sync storage.")
-		sm.Close()
-	})
+	/* Start mailer service */
+	mailerManager := self.restoreMailerManager()
+	mailerManager.Start()
+
+	/* Wait system interrupt marker */
+	self.waitInterrupt()
+
+	/* Stop mailer service */
+	//mailerManager.Stop()
+
+	/* Stop tosser service */
+	//self.stopTosserService()
+
+	/* Stop storage service */
+	self.stopStorageServcie()
 
 	/* Wait */
 	log.Printf("Complete.")
+
+}
+
+func (self *Application) waitInterrupt() {
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	<-sigs
+}
+
+func (self *Application) stopStorageServcie() {
+
+	log.Printf("Application: Sync storage.")
+
+	storageManager := self.restoreStorageManager()
+	storageManager.Close()
+
+}
+
+func (self *Application) restoreSiteManager() *site.SiteManager {
+
+	siteManagerPtr := self.Container.Get("SiteManager")
+	if siteManager, ok := siteManagerPtr.(*site.SiteManager); ok {
+		return siteManager
+	} else {
+		panic("no site manager")
+	}
+
+}
+
+func (self *Application) restoreStorageManager() *storage.StorageManager {
+
+	managerPtr := self.Container.Get("StorageManager")
+	if manager, ok := managerPtr.(*storage.StorageManager); ok {
+		return manager
+	} else {
+		panic("no storage manager")
+	}
+
+}
+
+func (self *Application) restoreMailerManager() *mailer.MailerManager {
+
+	managerPtr := self.Container.Get("MailerManager")
+	if manager, ok := managerPtr.(*mailer.MailerManager); ok {
+		return manager
+	} else {
+		panic("no mailer manager")
+	}
 
 }

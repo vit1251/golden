@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/mailer/stream"
 	"log"
 	"os"
 	"path"
@@ -26,13 +27,15 @@ func (self *MailerStateReceive) String() string {
 func (self *MailerStateReceive) Process(mailer *Mailer) IMailerState {
 
 	select {
-	case nextFrame := <- mailer.inDataFrames:
+	case nextFrame := <- mailer.stream.InDataFrames:
+
 		if nextFrame.Command {
-			if nextFrame.CommandFrame.CommandID == M_EOB {
+
+			if nextFrame.CommandFrame.CommandID == stream.M_EOB {
 
 				return NewMailerStateTransfer()
 
-			} else if nextFrame.CommandFrame.CommandID == M_FILE {
+			} else if nextFrame.CommandFrame.CommandID == stream.M_FILE {
 			//
 			if mailer.outStream != nil {
 				mailer.outStream.Close()
@@ -66,7 +69,9 @@ func (self *MailerStateReceive) Process(mailer *Mailer) IMailerState {
 				mailer.outStream = stream
 			}
 		}
+
 	} else {
+
 		log.Printf("Data frame: body = %d", len(nextFrame.DataFrame.Body))
 		//
 		mailer.writeSize += len(nextFrame.DataFrame.Body)
@@ -84,7 +89,7 @@ func (self *MailerStateReceive) Process(mailer *Mailer) IMailerState {
 			mailer.outStream = nil
 			//
 			rawComplete := fmt.Sprintf("%s %d %d", mailer.recvName, mailer.writeSize, mailer.recvUnix)
-			mailer.writeCommandPacket(M_GOT, []byte(rawComplete))
+			mailer.stream.WriteCommandPacket(stream.M_GOT, []byte(rawComplete))
 			//
 			newPath := path.Join(mailer.inboundDirectory, mailer.recvName)
 			log.Printf("Rename %s -> %s", mailer.workPath, newPath)
@@ -96,11 +101,13 @@ func (self *MailerStateReceive) Process(mailer *Mailer) IMailerState {
 	}
 
 	case <-time.After(1 * time.Second):
-		log.Printf("!!!Timeout!!!")
-		return self
+		log.Printf("--- Transport stumble: no income packet more 1 sec. ---")
+		break
+
 	}
 
 	return self
+
 }
 
 

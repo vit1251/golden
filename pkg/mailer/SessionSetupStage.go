@@ -3,11 +3,12 @@ package mailer
 import (
 	"bytes"
 	"fmt"
+	"github.com/vit1251/golden/pkg/mailer/auth"
 	"log"
 )
 
 func (self *Mailer) createAuthorization(chData []byte) (string) {
-	a := NewAuthorizer()
+	a := auth.NewAuthorizer()
 	a.SetChallengeData(string(chData))
 	a.SetSecret(self.secret)
 	responseDigest, err := a.CalculateDigest()
@@ -34,6 +35,7 @@ func (self *Mailer) parseInfoOptFrame(rawOptions []byte)  {
 			authScheme := parts[1]
 			if bytes.Equal(authScheme, []byte("MD5")) {
 				authDigest := parts[2]
+				log.Printf("Use %s as digest", authDigest)
 				self.respAuthorization = self.createAuthorization(authDigest)
 			} else {
 				log.Panicf("Wrong mechanism: authScheme = %s", authScheme)

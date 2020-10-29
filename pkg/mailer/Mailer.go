@@ -3,29 +3,13 @@ package mailer
 import (
 	"bufio"
 	"fmt"
-	cmn "github.com/vit1251/golden/pkg/common"
+	stream2 "github.com/vit1251/golden/pkg/mailer/stream"
 	"github.com/vit1251/golden/pkg/setup"
 	"log"
-	"net"
 	"os"
 	"sync"
 	"time"
 )
-
-type CommandFrame struct {
-	CommandID CommandID /* Command ID  */
-	Body      []byte
-}
-
-type DataFrame struct {
-	Body []byte
-}
-
-type Frame struct {
-	Command bool
-	DataFrame
-	CommandFrame
-}
 
 type Mailer struct {
 	activeState       IMailerState           /* Mailer state                */
@@ -35,16 +19,13 @@ type Mailer struct {
 	rxState           RxState                /*                             */
 	txState           TxState                /*                             */
 
-	inStop            chan int
-	inDataFrames      chan Frame             /* RX processing Frame routine */
+	stream           *stream2.MailerStream
 
-	outStop           chan int
-	outDataFrames     chan Frame             /* TX processing Frame routine */
-
-	conn              net.Conn               /* Network address             */
 	reader            *bufio.Reader          /* Network address             */
 	writer            *bufio.Writer          /* Network address             */
+
 	wait              sync.WaitGroup         /* Add wait */
+
 	addr              string                 /* Network address             */
 	secret            string                 /* Secret password             */
 	ServerAddr        string                 /*  */
@@ -73,22 +54,19 @@ type Mailer struct {
 
 func NewMailer(sm *setup.ConfigManager) *Mailer {
 	m := new(Mailer)
-	m.inStop = make(chan int)
-	m.inDataFrames = make(chan Frame)
-	m.outStop = make(chan int)
-	m.outDataFrames = make(chan Frame)
+
 	m.connComplete = make(chan int)
 	m.SetupManager = sm
 	return m
 }
 
 func (self *Mailer) closeSession() {
-    self.conn.Close()
+    self.stream.CloseSession()
 }
 
 func (self *Mailer) writeTrafic(mail int, data int) {
 	raw := fmt.Sprintf("TRF %d %d", mail, data)
-	self.WriteComment(raw)
+	self.stream.WriteComment(raw)
 }
 
 func (self *Mailer) SetTempOutbound(workOutbound string) {
@@ -106,7 +84,7 @@ func (self *Mailer) SetSecret(secret string) {
 func (self *Mailer) Start() {
 
 	/* Start state */
-	self.activeState = NewMailerStateCreateConnection()
+	self.activeState = NewMailerStateStart()
 
 	/* Add wait */
 	self.wait.Add(1)
@@ -165,37 +143,6 @@ func (self *Mailer) SetOutboundDirectory(outb string) {
 	self.outboundDirectory = outb
 }
 
-func (self *Mailer) writeData(chunk []byte) error {
-	log.Printf("TX data chunk %d", len(chunk))
-
-	/* Transmit data frame */
-	newFrame := Frame{
-		Command: false,
-		DataFrame: DataFrame{
-			Body: chunk,
-		},
-	}
-	self.outDataFrames <- newFrame
-
-	return nil
-}
-
-func (self *Mailer) writeHeader(stat string) error {
-
-	log.Printf("TX stream header %s", stat)
-
-	newFrame := Frame{
-		Command: true,
-		CommandFrame: CommandFrame{
-			CommandID: M_FILE,
-			Body:      []byte(stat),
-		},
-	}
-	self.outDataFrames <- newFrame
-
-	return nil
-}
-
 func (self *Mailer) SetTempInbound(workInbound string) {
 	self.workInbound = workInbound
 }
@@ -236,13 +183,4 @@ func (self *Mailer) SetStationName(name string) {
 	self.systemName = name
 }
 
-func (self *Mailer) WriteVersion() {
 
-	appName := "GoldenMailer"
-	appVersion := cmn.GetVersion()
-	protocolVersion := "binkp/1.0"
-	mailverVersion := fmt.Sprintf("%s/%s %s", appName, appVersion, protocolVersion)
-	//log.Printf
-	self.WriteInfo("VER", mailverVersion)
-
-}

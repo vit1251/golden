@@ -1,5 +1,7 @@
 package mailer
 
+import "github.com/vit1251/golden/pkg/mailer/stream"
+
 type MailerStateEndBatch struct {
 	MailerState
 }
@@ -15,7 +17,7 @@ func (self *MailerStateEndBatch) String() string {
 
 func (self *MailerStateEndBatch) Process(mailer *Mailer) IMailerState {
 
-	mailer.writeCommandPacket(M_EOB, []byte("Complete!"))
+	mailer.stream.WriteCommandPacket(stream.M_EOB, []byte("Complete!"))
 
 	return NewMailerStateCloseConnection()
 }

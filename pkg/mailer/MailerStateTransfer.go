@@ -43,7 +43,7 @@ func (self *MailerStateTransfer) Transmit(mailer *Mailer, i Item) error {
 	streamTime := streamInfo.ModTime().Unix()
 	fileStat := fmt.Sprintf("%s %d %d %d", i.Name, streamSize, streamTime, 0)
 	log.Printf("TX %s", fileStat)
-	mailer.writeHeader(fileStat)
+	mailer.stream.WriteHeader(fileStat)
 
 	/* Transmit chunk */
 	var outSize int = int(streamSize)
@@ -60,7 +60,7 @@ func (self *MailerStateTransfer) Transmit(mailer *Mailer, i Item) error {
 		}
 
 		/* Transmit chunk */
-		mailer.writeData(chunk)
+		mailer.stream.WriteData(chunk)
 
 		/* Update TX size */
 		outSize -= chunkSize

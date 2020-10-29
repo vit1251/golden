@@ -2,28 +2,31 @@ package netmail
 
 import (
 	"database/sql"
+	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
 )
 
 type NetmailManager struct {
-	StorageManager  *storage.StorageManager
+	registry       *registry.Container
 }
 
-func NewNetmailManager(sm *storage.StorageManager) *NetmailManager {
+func NewNetmailManager(r *registry.Container) *NetmailManager {
 	nm := new(NetmailManager)
-	nm.StorageManager = sm
+	nm.registry = r
 	return nm
 }
 
 func (self *NetmailManager) GetMessageHeaders() ([]*NetmailMessage, error) {
+
+	storageManager := self.restoreStorageManager()
 
 	var result []*NetmailMessage
 
 	query1 := "SELECT `nmId`, `nmHash`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmDate` FROM `netmail` ORDER BY `nmDate` ASC, `nmId` ASC"
 	var params []interface{}
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var ID string
 		var msgHash *string
@@ -60,6 +63,8 @@ func (self *NetmailManager) GetMessageHeaders() ([]*NetmailMessage, error) {
 
 func (self *NetmailManager) Write(msg *NetmailMessage) error {
 
+	storageManager := self.restoreStorageManager()
+
 	query1 := "INSERT INTO `netmail` " +
 		"(nmMsgId, nmHash, nmFrom, nmTo, nmSubject, nmBody, nmDate) " +
 		"VALUES " +
@@ -73,7 +78,7 @@ func (self *NetmailManager) Write(msg *NetmailMessage) error {
 	params = append(params, msg.Content)
 	params = append(params, msg.UnixTime)
 
-	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		return nil
 	})
 
@@ -82,13 +87,15 @@ func (self *NetmailManager) Write(msg *NetmailMessage) error {
 
 func (self *NetmailManager) GetMessageByHash(msgHash string) (*NetmailMessage, error) {
 
+	storageManager := self.restoreStorageManager()
+
 	var result *NetmailMessage
 
 	query1 := "SELECT `nmId`, `nmHash`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmDate`, `nmBody` FROM `netmail` WHERE `nmHash` = ?"
 	var params []interface{}
 	params = append(params, msgHash)
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var ID string
 		var msgHash *string
@@ -127,11 +134,13 @@ func (self *NetmailManager) GetMessageByHash(msgHash string) (*NetmailMessage, e
 
 func (self *NetmailManager) ViewMessageByHash(msgHash string) error {
 
+	storageManager := self.restoreStorageManager()
+
 	query1 := "UPDATE `netmail` SET `nmViewCount` = `nmViewCount` + 1 WHERE `nmHash` = $1"
 	var params []interface{}
 	params = append(params, msgHash)
 
-	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
 		return nil
 	})
@@ -141,12 +150,14 @@ func (self *NetmailManager) ViewMessageByHash(msgHash string) error {
 
 func (self *NetmailManager) GetMessageNewCount() (int, error) {
 
+	storageManager := self.restoreStorageManager()
+
 	var newMessageCount int
 
 	query1 := "SELECT count(`nmId`) FROM `netmail` WHERE `nmViewCount` = 0"
 	var params []interface{}
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		err1 := rows.Scan(&newMessageCount)
 		if err1 != nil {
@@ -160,13 +171,24 @@ func (self *NetmailManager) GetMessageNewCount() (int, error) {
 
 func (self *NetmailManager) RemoveMessageByHash(msgHash string) error {
 
+	storageManager := self.restoreStorageManager()
+
 	query1 := "DELETE FROM `netmail` WHERE `nmHash` = ?"
 	var params []interface{}
 	params = append(params, msgHash)
 
-	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		return nil
 	})
 
 	return err1
+}
+
+func (self *NetmailManager) restoreStorageManager() *storage.StorageManager {
+	managerPtr := self.registry.Get("StorageManager")
+	if manager, ok := managerPtr.(*storage.StorageManager); ok {
+		return manager
+	} else {
+		panic("no storage manager")
+	}
 }

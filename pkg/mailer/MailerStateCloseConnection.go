@@ -15,8 +15,8 @@ func (self *MailerStateCloseConnection) String() string {
 
 func (self *MailerStateCloseConnection) Process(mailer *Mailer) IMailerState {
 
-	close(mailer.inStop)
-	close(mailer.outStop)
+	/* Wakeup stream */
+	mailer.stream.CloseSession()
 
 	return nil
 }

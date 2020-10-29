@@ -2,75 +2,85 @@ package mailer
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/eventbus"
+	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/stat"
-	"go.uber.org/dig"
 	"log"
 	"time"
 )
 
 type MailerManager struct {
-	Container    *dig.Container
+	registry      *registry.Container
 	event         chan bool
+	procIteration int
+	running       bool
 }
 
-func NewMailerManager(c *dig.Container) *MailerManager {
+func NewMailerManager(r *registry.Container) *MailerManager {
 	mm := new(MailerManager)
-	mm.Container = c
+	mm.registry = r
 	mm.event = make(chan bool)
-	go mm.run()
 	return mm
 }
 
 func (self *MailerManager) Start() {
-	self.event <- true
+	log.Printf("MailerManager: Start ")
+	go self.run()
+	self.running = true
 }
 
+
 func (self *MailerManager) run() {
-	var procIteration int
-	tick := time.NewTicker(5 * time.Minute)
-	for alive := true; alive; {
-		select {
-		case <-self.event:
-		case <-tick.C:
-			procIteration += 1
-			log.Printf(" * Mailer start (%d)", procIteration)
-			if err := self.processMailer(); err != nil {
-				log.Printf("err = %+v", err)
-			}
-			log.Printf(" * Mailer complete (%d)", procIteration)
+
+	for self.running {
+
+		self.procIteration += 1
+
+		log.Printf(" * Mailer start (%d)", self.procIteration)
+		if err := self.processMailer(); err != nil {
+			log.Printf("err = %+v", err)
 		}
+		log.Printf(" * Mailer complete (%d)", self.procIteration)
+
+		/* Wait 5 minute */
+		time.Sleep(5 * time.Minute)
+
 	}
+
+}
+
+func (self *MailerManager) Stop() {
+	self.running = false
 }
 
 func (self *MailerManager) processMailer() error {
 
-	var setupManager *setup.ConfigManager
-	var statManager *stat.StatManager
-	self.Container.Invoke(func(sm *setup.ConfigManager, sm2 *stat.StatManager) {
-		setupManager = sm
-		statManager = sm2
-	})
+	log.Printf("MailerManager: processMailer")
+
+	configManager := self.restoreConfigManager()
+	statManager := self.restoreStatManager()
+	eventBus := self.restoreEventBus()
 
 	/* Construct node address */
-	netAddr, _ := setupManager.Get("main", "NetAddr")
-	password, _ := setupManager.Get("main", "Password")
-	address, _ := setupManager.Get("main", "Address")
-	inb, _ := setupManager.Get("main", "Inbound")
-	outb, _ := setupManager.Get("main", "Outbound")
-	TempOutbound, _ := setupManager.Get("main", "TempOutbound")
-	TempInbound, _ := setupManager.Get("main", "TempInbound")
-	Temp, _ := setupManager.Get("main", "Temp")
-	Country, _ := setupManager.Get("main", "Country")
-	City, _ := setupManager.Get("main", "City")
-	realName, _ := setupManager.Get("main", "RealName")
-	stationName, _ := setupManager.Get("main", "StationName")
+	netAddr, _ := configManager.Get("main", "NetAddr")
+	password, _ := configManager.Get("main", "Password")
+	address, _ := configManager.Get("main", "Address")
+	inb, _ := configManager.Get("main", "Inbound")
+	outb, _ := configManager.Get("main", "Outbound")
+	TempOutbound, _ := configManager.Get("main", "TempOutbound")
+	TempInbound, _ := configManager.Get("main", "TempInbound")
+	Temp, _ := configManager.Get("main", "Temp")
+	Country, _ := configManager.Get("main", "Country")
+	City, _ := configManager.Get("main", "City")
+	realName, _ := configManager.Get("main", "RealName")
+	stationName, _ := configManager.Get("main", "StationName")
 
 	/* */
 	newAddress := fmt.Sprintf("%s@fidonet", address)
 
 	/* Get parameters */
-	m := NewMailer(setupManager)
+	m := NewMailer(configManager)
 	m.SetTempOutbound(TempOutbound)
 	m.SetTempInbound(TempInbound)
 	m.SetTemp(Temp)
@@ -98,5 +108,40 @@ func (self *MailerManager) processMailer() error {
 		log.Printf("Fail on mailer routine: err = %+v", err)
 	}
 
+	/* Start tossing */
+	eventBus.Event("Toss")
+
 	return nil
+}
+
+func (self *MailerManager) restoreConfigManager() *setup.ConfigManager {
+
+	managerPtr := self.registry.Get("ConfigManager")
+	if manager, ok := managerPtr.(*setup.ConfigManager); ok {
+		return manager
+	} else {
+		panic("no config manager")
+	}
+}
+
+func (self *MailerManager) restoreStatManager() *stat.StatManager {
+
+	managerPtr := self.registry.Get("StatManager")
+	if manager, ok := managerPtr.(*stat.StatManager); ok {
+		return manager
+	} else {
+		panic("no stat manager")
+	}
+
+}
+
+func (self *MailerManager) restoreEventBus() *eventbus.EventBus {
+
+	managerPtr := self.registry.Get("EventBus")
+	if manager, ok := managerPtr.(*eventbus.EventBus); ok {
+		return manager
+	} else {
+		panic("no eventbus manager")
+	}
+
 }

@@ -38,11 +38,14 @@ func (self *Tosser) parseCharsetKludge(charsetKludge string) (string) {
 
 func (self *Tosser) decodeMessageBody(msgBody []byte, charset string) (string, error) {
 
+
+	charsetManager := self.restoreCharsetManager()
+
 	var result string
 
 	if charset == "CP866" {
 
-		if unicodeBody, err1 := self.CharsetManager.Decode(msgBody); err1 == nil {
+		if unicodeBody, err1 := charsetManager.Decode(msgBody); err1 == nil {
 			result = string(unicodeBody)
 		} else {
 			return result, err1
@@ -86,18 +89,21 @@ func (self *Tosser) processNewMessage(msg *TosserPacketMessage) error {
 
 func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeader, msgBody *packet.MessageBody) error {
 
+	charsetManager := self.restoreCharsetManager()
+	netmailManager := self.restoreNetmailManager()
+
 	log.Printf("Process NETMAIL message: %q -> %q", msgHeader.OrigAddr, msgHeader.DestAddr)
 
 	/* Decode headers */
-	newSubject, err1 := self.CharsetManager.Decode(msgHeader.Subject)
+	newSubject, err1 := charsetManager.Decode(msgHeader.Subject)
 	if err1 != nil {
 		return err1
 	}
-	newFrom, err2 := self.CharsetManager.Decode(msgHeader.FromUserName)
+	newFrom, err2 := charsetManager.Decode(msgHeader.FromUserName)
 	if err2 != nil {
 		return err2
 	}
-	newTo, err3 := self.CharsetManager.Decode(msgHeader.ToUserName)
+	newTo, err3 := charsetManager.Decode(msgHeader.ToUserName)
 	if err3 != nil {
 		return err3
 	}
@@ -160,7 +166,7 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 	newMsg.SetContent(newBody)
 
 	/* Write message */
-	err := self.NetmailManager.Write(newMsg)
+	err := netmailManager.Write(newMsg)
 	log.Printf("err = %v", err)
 
 	return nil
@@ -169,6 +175,11 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 
 func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader, msgBody *packet.MessageBody) error {
 
+	areaManager := self.restoreAreaManager()
+	messageManager := self.restoreMessageManager()
+	statManager := self.restoreStatManager()
+	charsetManager := self.restoreCharsetManager()
+
 	log.Printf("Process ECHOMAIL message: %q -> %q", msgHeader.OrigAddr, msgHeader.DestAddr)
 
 	areaName := msgBody.GetArea()
@@ -176,7 +187,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	/* Auto create area */
 	a := msg.NewArea()
 	a.SetName(areaName)
-	self.AreaManager.Register(a)
+	areaManager.Register(a)
 
 	/* Decode message */
 	charsetKludge := msgBody.GetKludge("CHRS", "CP866 2")
@@ -231,26 +242,26 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	log.Printf("msgTime (Local) = %+v", msgTime.Local())
 
 	/* Check unique item */
-	exists, err9 := self.MessageManager.IsMessageExistsByHash(areaName, msgHash)
+	exists, err9 := messageManager.IsMessageExistsByHash(areaName, msgHash)
 	if err9 != nil {
 		return err9
 	}
 	if exists {
 		log.Printf("Message %s already exists", msgHash)
-		self.StatManager.RegisterDupe()
+		statManager.RegisterDupe()
 		return nil
 	}
 
 	/* Decode headers */
-	newSubject, err1 := self.CharsetManager.DecodeString(msgHeader.Subject)
+	newSubject, err1 := charsetManager.DecodeString(msgHeader.Subject)
 	if err1 != nil {
 		return err1
 	}
-	newFrom, err2 := self.CharsetManager.DecodeString(msgHeader.FromUserName)
+	newFrom, err2 := charsetManager.DecodeString(msgHeader.FromUserName)
 	if err2 != nil {
 		return err2
 	}
-	newTo, err3 := self.CharsetManager.DecodeString(msgHeader.ToUserName)
+	newTo, err3 := charsetManager.DecodeString(msgHeader.ToUserName)
 	if err3 != nil {
 		return err3
 	}
@@ -274,11 +285,11 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	newMsg.SetContent(newBody)
 
 	/* Store message */
-	err := self.MessageManager.Write(newMsg)
+	err := messageManager.Write(newMsg)
 	log.Printf("err = %v", err)
 
 	/* Update counter */
-	self.StatManager.RegisterInMessage()
+	statManager.RegisterInMessage()
 
 	return nil
 }
@@ -346,9 +357,12 @@ func (self *Tosser) ProcessPacket(name string) error {
 
 func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) error {
 
-	inbTempPath, _ := self.SetupManager.Get("main", "TempInbound")
+	configManager := self.restoreConfigManager()
+	statManager := self.restoreStatManager()
 
-	self.StatManager.RegisterInPacket()
+	inbTempPath, _ := configManager.Get("main", "TempInbound")
+
+	statManager.RegisterInPacket()
 
 	err1 := self.ProcessPacket(item.AbsolutePath)
 	if err1 != nil {
@@ -368,7 +382,10 @@ func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) error {
 
 func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
 
-	newInbTempDir, _ := self.SetupManager.Get("main", "TempInbound")
+	configManager := self.restoreConfigManager()
+	statManager := self.restoreStatManager()
+
+	newInbTempDir, _ := configManager.Get("main", "TempInbound")
 
 	/* Unpack */
 	packets, err1 := Unpack(item.AbsolutePath, newInbTempDir)
@@ -383,7 +400,7 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
 		log.Printf("-- Process FTN packet start: packet = %+v", p)
 
 		/* Register packet */
-		if err := self.StatManager.RegisterInPacket(); err != nil {
+		if err := statManager.RegisterInPacket(); err != nil {
 			log.Printf("Fail on RegisterInPacket: err = %+v", err)
 		}
 
@@ -409,8 +426,13 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
 
 func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 
+	charsetManager := self.restoreCharsetManager()
+	fileManager := self.restoreFileManager()
+	configManager := self.restoreConfigManager()
+	statManager := self.restoreStatManager()
+
 	/* Parse */
-	newTicParser := file.NewTicParser(self.CharsetManager)
+	newTicParser := file.NewTicParser(charsetManager)
 	tic, err1 := newTicParser.ParseFile(item.AbsolutePath)
 	if err1 != nil {
 		return err1
@@ -418,14 +440,14 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	log.Printf("tic = %+v", tic)
 
 	/* Search area */
-	fa, err1 := self.FileManager.GetAreaByName(tic.Area)
+	fa, err1 := fileManager.GetAreaByName(tic.Area)
 	if err1 != nil {
 		return err1
 	}
 
 	/* Prepare area directory */
-	boxBasePath, _ := self.SetupManager.Get("main", "FileBox")
-	inboxBasePath, _ := self.SetupManager.Get("main", "Inbound")
+	boxBasePath, _ := configManager.Get("main", "FileBox")
+	inboxBasePath, _ := configManager.Get("main", "Inbound")
 
 	areaLocation := path.Join(boxBasePath, tic.Area)
 	os.MkdirAll(areaLocation, 0755)
@@ -437,7 +459,7 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 		newFa.SetName(tic.Area)
 		newFa.Path = areaLocation
 		/* Create area */
-		if err := self.FileManager.CreateFileArea(newFa); err != nil {
+		if err := fileManager.CreateFileArea(newFa); err != nil {
 			log.Printf("Fail CreateFileArea on FileManager: area = %s err = %+v", tic.Area, err)
 			return err
 		}
@@ -452,10 +474,10 @@ func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
 	os.Rename(inboxTicLocation, areaFileLocation)
 
 	/* Register file */
-	self.FileManager.RegisterFile(tic)
+	fileManager.RegisterFile(tic)
 
 	/* Register status */
-	self.StatManager.RegisterInFile(tic.File)
+	statManager.RegisterInFile(tic.File)
 
 	/* Move TIC */
 	areaTicLocation := path.Join(areaLocation, item.Name)
@@ -470,7 +492,7 @@ func (self *Tosser) ProcessInbound() error {
 	log.Printf("ProcessInbound")
 
 	/* New mailer inbound */
-	mi := mailer.NewMailerInbound(self.SetupManager)
+	mi := mailer.NewMailerInbound(self.registry)
 
 	/* Scan inbound */
 	items, err2 := mi.Scan()

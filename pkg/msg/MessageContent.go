@@ -3,26 +3,29 @@ package msg
 import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/charset"
+	"github.com/vit1251/golden/pkg/registry"
 )
 
 type MessageContent struct {
-	cm      *charset.CharsetManager
-	RAW     []byte
-	charset string
+	RAW      []byte
+	charset  string
+	registry *registry.Container
 }
 
-func (self *MessageManager) NewMessageContent() *MessageContent {
+func (self *MessageManager) NewMessageContent(r *registry.Container) *MessageContent {
 	mc := new(MessageContent)
-	mc.cm = self.CharsetManager
+	mc.registry = r
 	return mc
 }
 
 func (self *MessageContent) AddLine(line string) {
 
+	charsetManager := self.restoreCharsetManager()
+
 	if self.charset == "CP866" {
 		newLine := fmt.Sprintf("%s\r", line)
 		var rawLine []rune = []rune(newLine)
-		chunk, err1 := self.cm.Encode(rawLine)
+		chunk, err1 := charsetManager.Encode(rawLine)
 		if err1 != nil {
 			panic(err1)
 		}
@@ -38,4 +41,8 @@ func (self *MessageContent) Pack() []byte {
 
 func (self *MessageContent) SetCharset(charset string) {
 	self.charset = charset
+}
+
+func (self *MessageContent) restoreCharsetManager() *charset.CharsetManager {
+	return nil
 }

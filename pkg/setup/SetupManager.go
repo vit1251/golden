@@ -3,7 +3,7 @@ package setup
 import (
 	"database/sql"
 	"errors"
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
 )
@@ -26,13 +26,14 @@ func (self *ConfigValue) SetValue(value string) {
 }
 
 type ConfigManager struct {
-	Params []*ConfigValue
-	StorageManager *storage.StorageManager
+	Params         []*ConfigValue
+	registry       *registry.Container
 }
 
-func NewConfigManager(sm *storage.StorageManager) *ConfigManager {
+func NewConfigManager(registry *registry.Container) *ConfigManager {
 	sem := new(ConfigManager)
-	sem.StorageManager = sm
+
+	sem.registry = registry
 
 	/* Set item i18n */
 	sem.Register("main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
@@ -57,6 +58,7 @@ func NewConfigManager(sm *storage.StorageManager) *ConfigManager {
 	if err2 != nil {
 		panic(err2)
 	}
+
 	return sem
 }
 
@@ -104,12 +106,23 @@ func (self *ConfigManager) Register(section string, name string, summary string)
 	return nil
 }
 
+func (self *ConfigManager) restoreStorageManager() *storage.StorageManager {
+	storageManagerPtr := self.registry.Get("StorageManager")
+	if storageManager, ok := storageManagerPtr.(*storage.StorageManager); ok {
+		return storageManager
+	} else {
+		panic("no storage manager")
+	}
+}
+
 func (self *ConfigManager) Restore() error {
+
+	storageManager := self.restoreStorageManager()
 
 	query1 := "SELECT `section`, `name`, `value` FROM `settings`"
 	var params []interface{}
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var section string
 		var name string
@@ -128,12 +141,15 @@ func (self *ConfigManager) Restore() error {
 }
 
 func (self *ConfigManager) UpdateValue(value string, section string, name string) error {
+
+	storageManager := self.restoreStorageManager()
+
 	query1 := "UPDATE `settings` SET `value` = ? WHERE `section` = ? AND `name` = ?"
 	var params []interface{}
 	params = append(params, value)
 	params = append(params, section)
 	params = append(params, name)
-	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		if err != nil {
 			return err
 		}
@@ -150,12 +166,15 @@ func (self *ConfigManager) UpdateValue(value string, section string, name string
 }
 
 func (self *ConfigManager) InsertValue(value string, section string, name string) error {
+
+	storageManager := self.restoreStorageManager()
+
 	query1 := "INSERT INTO `settings` (`section`, `name`, `value`) VALUES (?, ?, ?)"
 	var params []interface{}
 	params = append(params, section)
 	params = append(params, name)
 	params = append(params, value)
-	err1 := self.StorageManager.Exec(query1, params, func (result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func (result sql.Result, err error) error {
 		log.Printf("ConfigManager: InsertValue: Exec: err = %+v", err)
 		return nil
 	})

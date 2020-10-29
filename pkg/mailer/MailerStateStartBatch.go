@@ -18,5 +18,6 @@ func (self *MailerStateStartBatch) Process(mailer *Mailer) IMailerState {
 	// TODO - write message ...
 
 	return NewMailerStateReceive()
+
 }
 

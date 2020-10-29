@@ -5,12 +5,13 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
+	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/tmpl"
-	"go.uber.org/dig"
 	"hash/crc32"
 	"io"
 	"io/ioutil"
@@ -23,40 +24,61 @@ import (
 )
 
 type TosserManager struct {
-	Container *dig.Container
-	SetupManager *setup.ConfigManager
-	MessageManager *msg.MessageManager
-	CharsetManager *charset.CharsetManager
-	event chan bool
+	event          chan bool
+	registry      *registry.Container
 }
 
-func NewTosserManager(c *dig.Container) *TosserManager {
+func NewTosserManager(registry *registry.Container) *TosserManager {
+
 	tm := new(TosserManager)
-	tm.Container = c
-	//
-	c.Invoke(func(cm *charset.CharsetManager, sm *setup.ConfigManager, mm *msg.MessageManager) {
-		tm.CharsetManager = cm
-		tm.SetupManager = sm
-		tm.MessageManager = mm
-	})
-	//
+	tm.registry = registry
+
 	tm.checkDirectories()
 	//
 	tm.event = make(chan bool)
-	go tm.run()
-	//
+
+	eventBus := tm.restoreEventBus()
+	eventBus.Register(tm)
+
 	return tm
+}
+
+func (self *TosserManager) HandleEvent(event string ) {
+	log.Printf("Tosser event receive")
+	if event == "Toss" {
+		self.event <- true
+	}
+}
+
+func (self *TosserManager) restoreEventBus() *eventbus.EventBus {
+	ConfigManagerPtr := self.registry.Get("EventBus")
+	if eventBus, ok := ConfigManagerPtr.(*eventbus.EventBus); ok {
+		return eventBus
+	} else {
+		panic("no event bus")
+	}
+}
+
+func (self *TosserManager) restoreConfigManager() *setup.ConfigManager {
+	ConfigManagerPtr := self.registry.Get("ConfigManager")
+	if configManager, ok := ConfigManagerPtr.(*setup.ConfigManager); ok {
+		return configManager
+	} else {
+		panic("no config manager")
+	}
 }
 
 func (self *TosserManager) checkDirectory(cacheSection string) {
 
-	cacheDirectory, _ := self.SetupManager.Get("main", cacheSection)
+	configManager := self.restoreConfigManager()
+
+	cacheDirectory, _ := configManager.Get("main", cacheSection)
 	if cacheDirectory == "" {
 		log.Printf("Wrong directory: section = %+v", cacheSection)
 		storageDirectory := cmn.GetStorageDirectory()
 		cacheDirectory = path.Join(storageDirectory, "Fido", cacheSection)
 		log.Printf("Construct new directory: section = %+v cacheDirectory = %+v", cacheSection, cacheDirectory)
-		self.SetupManager.Set("main", cacheSection, cacheDirectory)
+		configManager.Set("main", cacheSection, cacheDirectory)
 	}
 	if _, err1 := os.Stat(cacheDirectory); err1 != nil {
 		log.Printf("Directory check: name = %v - ERR", cacheSection)
@@ -87,27 +109,22 @@ func (self *TosserManager) checkDirectories() {
 }
 
 func (self *TosserManager) Start() {
-	self.event <- true
+	go self.run()
 }
 
 func (self *TosserManager) processTosser() {
-	newTosser := NewTosser(self.Container)
+	newTosser := NewTosser(self.registry)
 	newTosser.Toss()
 }
 
 func (self *TosserManager) run() {
 	log.Printf(" * Tosser service start")
 	var procIteration int
-	tick := time.NewTicker(1 * time.Minute)
-	for alive := true; alive; {
-		select {
-			case <-self.event:
-			case <-tick.C:
-				procIteration += 1
-				log.Printf(" * Tosser start (%d)", procIteration)
-				self.processTosser()
-				log.Printf(" * Tosser complete (%d)", procIteration)
-		}
+	for range self.event {
+		log.Printf(" * Tosser start (%d)", procIteration)
+		self.processTosser()
+		log.Printf(" * Tosser complete (%d)", procIteration)
+		procIteration += 1
 	}
 	log.Printf(" * Tosser service stop")
 }
@@ -167,9 +184,13 @@ func (self *TosserManager) prepareOrigin(Origin string) string {
 
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
 
+	configManager := self.restoreConfigManager()
+	messageManager := self.restoreMessageManager()
+	charsetManager := self.restoreCharsetManager()
+
 	/* Create packet name */
-	tempOutbound, _ := self.SetupManager.Get("main", "TempOutbound")
-	password, _ := self.SetupManager.Get("main", "Password")
+	tempOutbound, _ := configManager.Get("main", "TempOutbound")
+	password, _ := configManager.Get("main", "Password")
 
 	packetName := self.makePacketName()
 	tempPacketPath := path.Join(tempOutbound, packetName)
@@ -182,11 +203,11 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	defer pw.Close()
 
 	/* Ask source address */
-	myAddr, _ := self.SetupManager.Get("main", "Address")
-	bossAddr, _ := self.SetupManager.Get("main", "Link")
-	realName, _ := self.SetupManager.Get("main", "RealName")
-	TearLine, _ := self.SetupManager.Get("main", "TearLine")
-	Origin, _ := self.SetupManager.Get("main", "Origin")
+	myAddr, _ := configManager.Get("main", "Address")
+	bossAddr, _ := configManager.Get("main", "Link")
+	realName, _ := configManager.Get("main", "RealName")
+	TearLine, _ := configManager.Get("main", "TearLine")
+	Origin, _ := configManager.Get("main", "Origin")
 
 	/* Write packet header */
 	pktHeader := packet.NewPacketHeader()
@@ -199,15 +220,15 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	}
 
 	/* Encode message headers */
-	newSubject, err1 := self.CharsetManager.Encode([]rune(em.Subject))
+	newSubject, err1 := charsetManager.Encode([]rune(em.Subject))
 	if err1 != nil {
 		return "", err1
 	}
-	newTo, err2 := self.CharsetManager.Encode([]rune(em.To))
+	newTo, err2 := charsetManager.Encode([]rune(em.To))
 	if err2 != nil {
 		return "", err2
 	}
-	newFrom, err3 := self.CharsetManager.Encode([]rune(realName))
+	newFrom, err3 := charsetManager.Encode([]rune(realName))
 	if err3 != nil {
 		return "", err3
 	}
@@ -245,7 +266,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
 
 	/* Construct message content */
-	msgContent := self.MessageManager.NewMessageContent()
+	msgContent := messageManager.NewMessageContent(self.registry)
 
 	msgContent.SetCharset("CP866")
 
@@ -290,9 +311,11 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 
 func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 
-	inbound, _ := self.SetupManager.Get("main", "Inbound")
-	outbound, _ := self.SetupManager.Get("main", "Outbound")
-	tempOutbound, _ := self.SetupManager.Get("main", "TempOutbound")
+	configManager := self.restoreConfigManager()
+
+	inbound, _ := configManager.Get("main", "Inbound")
+	outbound, _ := configManager.Get("main", "Outbound")
+	tempOutbound, _ := configManager.Get("main", "TempOutbound")
 
 	packetName, err1 := self.makePacketEchoMessage(em)
 	if err1 != nil {
@@ -336,6 +359,10 @@ func (self *TosserManager) PushPacket(src string, dst string) error {
 
 func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
+	configManager := self.restoreConfigManager()
+	messageManager := self.restoreMessageManager()
+	charsetManager := self.restoreCharsetManager()
+
 	var params struct {
 		Outbound string
 		From string
@@ -345,15 +372,15 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	}
 
 	/* Create packet name */
-	params.Outbound, _ = self.SetupManager.Get("main", "Outbound")
-	params.From, _ = self.SetupManager.Get("main", "Address")
-	params.FromName, _ = self.SetupManager.Get("main", "RealName")
+	params.Outbound, _ = configManager.Get("main", "Outbound")
+	params.From, _ = configManager.Get("main", "Address")
+	params.FromName, _ = configManager.Get("main", "RealName")
 
-	origin, _ := self.SetupManager.Get("main", "Origin")
+	origin, _ := configManager.Get("main", "Origin")
 	origin1 := self.prepareOrigin(origin)
 	params.Origin = origin1
 
-	TearLine, _ := self.SetupManager.Get("main", "TearLine")
+	TearLine, _ := configManager.Get("main", "TearLine")
 	params.TearLine = TearLine
 
 	/* Create packet name */
@@ -378,15 +405,15 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	}
 
 	/* Encode message */
-	newSubject, err1 := self.CharsetManager.Encode([]rune(nm.Subject))
+	newSubject, err1 := charsetManager.Encode([]rune(nm.Subject))
 	if err1 != nil {
 		return err1
 	}
-	newTo, err2 := self.CharsetManager.Encode([]rune(nm.To))
+	newTo, err2 := charsetManager.Encode([]rune(nm.To))
 	if err2 != nil {
 		return err2
 	}
-	newFrom, err3 := self.CharsetManager.Encode([]rune(params.FromName))
+	newFrom, err3 := charsetManager.Encode([]rune(params.FromName))
 	if err3 != nil {
 		return err3
 	}
@@ -421,7 +448,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
 
 	/* Construct message content */
-	msgContent := self.MessageManager.NewMessageContent()
+	msgContent := messageManager.NewMessageContent(self.registry)
 	msgContent.SetCharset("CP866")
 	msgContent.AddLine(nm.GetBody())
 	msgContent.AddLine("")
@@ -458,5 +485,13 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 		return err
 	}
 
+	return nil
+}
+
+func (self *TosserManager) restoreMessageManager() *msg.MessageManager {
+	return nil
+}
+
+func (self *TosserManager) restoreCharsetManager() *charset.CharsetManager {
 	return nil
 }

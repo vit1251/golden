@@ -1,11 +1,9 @@
 package commonfunc
 
 import (
-	"log"
 	"os/user"
 	"runtime"
 	"strconv"
-	"time"
 )
 
 func GetPlatform() string {
@@ -15,13 +13,6 @@ func GetPlatform() string {
 		return "Linux"
 	}
 	return "Unknown"
-}
-
-func GetTime() string {
-	// Sun, 26 Jan 2020 18:02:17 +0300
-	now := time.Now().Format(time.RFC1123Z)
-	log.Printf("Time is %s", now)
-	return now
 }
 
 func Min(x, y int) int {

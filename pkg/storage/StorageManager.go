@@ -3,9 +3,11 @@ package storage
 import (
 	"context"
 	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
+	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/registry"
 	"log"
 	"path/filepath"
-	cmn "github.com/vit1251/golden/pkg/common"
 	"time"
 )
 
@@ -18,12 +20,9 @@ func (self *StorageManager) GetConnection() *sql.DB {
 }
 
 /// Initialize storage
-func NewStorageManager() *StorageManager {
-
+func NewStorageManager(container *registry.Container) *StorageManager {
 	sm := new(StorageManager)
-
 	sm.Open()
-
 	return sm
 }
 
@@ -32,12 +31,13 @@ func (self *StorageManager) Open() error {
 	storageBaseDir := cmn.GetStorageDirectory()
 	storageFile := filepath.Join(storageBaseDir, "golden.sqlite3")
 
+	log.Printf("StorageManager: Open storage: path = %s", storageFile)
+
 	db, err2 := sql.Open("sqlite3", storageFile)
 	if err2 != nil {
 		panic(err2)
 	}
 	self.conn = db
-	log.Printf("db = %+v", db)
 
 	return nil
 }

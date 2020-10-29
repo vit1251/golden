@@ -1,13 +1,14 @@
 package charset
 
 import (
+	"github.com/vit1251/golden/pkg/registry"
 	"golang.org/x/text/encoding/charmap"
 )
 
 type CharsetManager struct {
 }
 
-func NewCharsetManager() *CharsetManager {
+func NewCharsetManager(r *registry.Container) *CharsetManager {
 	cm := new(CharsetManager)
 	return cm
 }

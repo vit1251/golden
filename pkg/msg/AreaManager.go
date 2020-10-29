@@ -2,26 +2,19 @@ package msg
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
-	"go.uber.org/dig"
 	"log"
 	"strings"
 )
 
 type AreaManager struct {
-	MessageManager *MessageManager
-	StorageManager *storage.StorageManager
-	Container      *dig.Container
+	registry       *registry.Container
 }
 
-func NewAreaManager(c *dig.Container) *AreaManager {
+func NewAreaManager(r *registry.Container) *AreaManager {
 	am := new(AreaManager)
-	am.Container = c
-	c.Invoke(func(sm *storage.StorageManager, mm *MessageManager) {
-		am.StorageManager = sm
-		am.MessageManager = mm
-	})
+	am.registry = r
 	am.Rescan()
 	return am
 }
@@ -29,8 +22,10 @@ func NewAreaManager(c *dig.Container) *AreaManager {
 
 func (self *AreaManager) Rescan() {
 
+	messageManager := self.restoreMessageManager()
+
 	/* Preload echo areas */
-	areas, err3 := self.MessageManager.GetAreaList2()
+	areas, err3 := messageManager.GetAreaList2()
 	if err3 != nil {
 		panic(err3)
 	}
@@ -51,10 +46,12 @@ func (self *AreaManager) Rescan() {
 
 func (self *AreaManager) updateMsgCount(areas []*Area) error {
 
+	messageManager := self.restoreMessageManager()
+
 	log.Printf("areas = %+v", areas)
 
 	/* Get message count */
-	areas2, err1 := self.MessageManager.GetAreaList2()
+	areas2, err1 := messageManager.GetAreaList2()
 	if err1 != nil {
 		log.Printf("err1 = %+v", err1)
 		return err1
@@ -62,7 +59,7 @@ func (self *AreaManager) updateMsgCount(areas []*Area) error {
 	log.Printf("areas = %+v", areas2)
 
 	/* Get message new count */
-	areas3, err2 := self.MessageManager.GetAreaList3()
+	areas3, err2 := messageManager.GetAreaList3()
 	if err2 != nil {
 		log.Printf("err2 = %+v", err2)
 		return err2
@@ -99,13 +96,15 @@ func (self *AreaManager) updateMsgCount(areas []*Area) error {
 
 func (self *AreaManager) Register(a *Area) error {
 
+	storageManager := self.restoreStorageManager()
+
 	var areaName string = a.Name()
 
 	query1 := "INSERT INTO `area` ( `areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder` ) VALUES ( ?, '', '', '', 0 )"
 	var params []interface{}
 	params = append(params, areaName)
 
-	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
 		return nil
 	})
@@ -115,12 +114,14 @@ func (self *AreaManager) Register(a *Area) error {
 
 func (self *AreaManager) GetAreas() ([]*Area, error) {
 
+	storageManager := self.restoreStorageManager()
+
 	var areas []*Area
 
 	query1 := "SELECT `areaName`, `areaSummary` FROM `area` ORDER BY `areaName` ASC"
 	var params []interface{}
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var areaName string
 		var areaSummary string
@@ -151,6 +152,8 @@ func (self *AreaManager) GetAreas() ([]*Area, error) {
 
 func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 
+	storageManager := self.restoreStorageManager()
+
 	var result *Area
 
 	/* Restore parameters */
@@ -158,7 +161,7 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 	var params []interface{}
 	params = append(params, echoTag)
 
-	self.StorageManager.Query(query1, params, func(rows *sql.Rows) error {
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var areaName string
 		var areaSummary string
@@ -183,12 +186,14 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 
 func (self *AreaManager) Update(area *Area) error {
 
+	storageManager := self.restoreStorageManager()
+
 	query1 := "UPDATE `area` SET `areaSummary` = ? WHERE `areaName` = ?"
 	var params []interface{}
 	params = append(params, area.Summary)
 	params = append(params, area.Name())
 
-	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
 		return nil
 	})
@@ -198,14 +203,38 @@ func (self *AreaManager) Update(area *Area) error {
 
 func (self *AreaManager) RemoveAreaByName(echoName string) error {
 
+	storageManager := self.restoreStorageManager()
+
 	query1 := "DELETE FROM `area` WHERE `areaName` = ?"
 	var params []interface{}
 	params = append(params, echoName)
 
-	err1 := self.StorageManager.Exec(query1, params, func(result sql.Result, err error) error {
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
 		return nil
 	})
 
 	return err1
+}
+
+func (self *AreaManager) restoreMessageManager() *MessageManager {
+
+	managerPtr := self.registry.Get("MessageManager")
+	if manager, ok := managerPtr.(*MessageManager); ok {
+		return manager
+	} else {
+		panic("no message manager")
+	}
+
+}
+
+func (self *AreaManager) restoreStorageManager() *storage.StorageManager {
+
+	managerPtr := self.registry.Get("StorageManager")
+	if manager, ok := managerPtr.(*storage.StorageManager); ok {
+		return manager
+	} else {
+		panic("no message manager")
+	}
+
 }

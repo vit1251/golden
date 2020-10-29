@@ -4,15 +4,21 @@ Golden Point is Fido point package
 
 For work with GoldenPoint after starting you will open browser on address http://127.0.0.1:8080
 
-## Binnary distribution
+## Documentation
 
-1. You may use unstable version (night) build place in https://github.com/vit1251/golden/actions
-2. You may use stable (release) build place in https://github.com/vit1251/golden/releases
+You may reading more documentation on https://github.com/vit1251/golden/tree/master/docs
 
-## Build from source code
+## Binary builds
 
-In most cases, there is no need to build from source. The exceptions are when these assemblies produce
-node owners to add specific characteristics to their Points (example: pre-flashing node speciffic settings).
+You may download binary builds
+
+ - Unstable version (night) build provided in CI/CD system on https://github.com/vit1251/golden/actions
+ - Stable version (release) build provided in https://github.com/vit1251/golden/releases
+
+## Building from source code
+
+In most cases, there is no need to build from source. The exceptions are when these build produce
+by node owners to add additional or specific attribute to their Points.
 
 ## Contributors
 
