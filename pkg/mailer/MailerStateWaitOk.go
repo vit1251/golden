@@ -35,10 +35,10 @@ func (self *MailerStateWaitOk) processCommandFrame(nextFrame stream.Frame) IMail
 
 func (self *MailerStateWaitOk) processFrame(nextFrame stream.Frame) IMailerState {
 
-	if nextFrame.Command {
+	if nextFrame.IsCommandFrame() {
 		return self.processCommandFrame(nextFrame)
 	} else {
-		log.Panicf("Unexpected frame")
+		log.Printf("Unexpected frame: frame = %+v", nextFrame)
 	}
 
 	return self

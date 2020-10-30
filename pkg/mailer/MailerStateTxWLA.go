@@ -14,7 +14,9 @@ func (self MailerStateTxWLA) String() string {
 
 func (self *MailerStateTxWLA) Process(mailer *Mailer) IMailerState {
 
-	mailer.txState = TxDone
+	if mailer.rxState == RxDone {
+		mailer.txState = TxDone
+	}
 
 	return NewMailerStateSwitch()
 
