@@ -3,6 +3,7 @@ package mailer
 import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/eventbus"
+	"github.com/vit1251/golden/pkg/mailer/cache"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/stat"
@@ -93,6 +94,16 @@ func (self *MailerManager) processMailer() error {
 	m.SetStationName(stationName)
 	if City != "" && Country != "" {
 		m.SetLocation(fmt.Sprintf("%s, %s", City, Country))
+	}
+
+	/* Populate outbound queue */
+	mo := cache.NewMailerOutbound(self.registry)
+	items, err2 := mo.GetItems()
+	if err2 != nil {
+		return nil
+	}
+	for _, item := range items {
+		m.AddOutbound(item)
 	}
 
 	/* Start mailer */

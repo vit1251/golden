@@ -68,6 +68,7 @@ func (self *MailerStream) processTX() {
 	for nextFrame := range self.OutDataFrames {
 		log.Printf("TX packet processing")
 		self.processTXpacket(nextFrame)
+		self.writeReady = true
 	}
 	log.Printf("MailerStream: TX stream: stop")
 

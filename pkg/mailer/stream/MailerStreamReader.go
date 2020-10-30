@@ -55,8 +55,11 @@ func (self *MailerStream) processRX() {
 					Body: frameBody[1:],
 				},
 			}
+
 			log.Printf("MailerStream: RX frame: commandID = %q body = %s", nextFrame.CommandFrame.CommandID, nextFrame.CommandFrame.Body)
+			self.readReady = true
 			self.InDataFrames <- nextFrame
+
 		} else {
 			/* Store data frame in queue */
 			nextFrame := Frame{
@@ -65,6 +68,7 @@ func (self *MailerStream) processRX() {
 					Body: frameBody,
 				},
 			}
+			self.readReady = true
 			self.InDataFrames <- nextFrame
 		}
 		log.Printf("^^^ RX stream ^^^")

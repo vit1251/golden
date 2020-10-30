@@ -21,7 +21,7 @@ func (self *NetmailComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 
 	vBox := widgets.NewVBoxWidget()
 
-	mmw := widgets.NewMainMenuWidget()
+	mmw := self.makeMenu()
 	vBox.Add(mmw)
 
 	container := widgets.NewDivWidget().SetClass("container")

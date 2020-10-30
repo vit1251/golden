@@ -86,7 +86,7 @@ func (self *TosserManager) checkDirectory(cacheSection string) {
 			log.Printf("Initial create directory: path = %+v", cacheDirectory)
 			os.MkdirAll(cacheDirectory, os.ModeDir|0755)
 		} else {
-			log.Fatal("Initernal error: err = %+v", err1)
+			log.Fatal("TosserManager: checkDirectory: err = %+v", err1)
 		}
 	} else {
 		log.Printf("Directory check: name = %v - OK", cacheSection)

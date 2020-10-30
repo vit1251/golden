@@ -39,7 +39,7 @@ func (self *AdditionalStepAction) processCommandFrame(mailer *Mailer, nextFrame 
 		if mailer.respAuthorization != "" {
 			return NewMailerStateSecureAuthRemoteAction()
 		} else {
-			return NewMailerStateAuthRemoteAction()
+			return NewMailerStateAuthRemote()
 		}
 	}
 
@@ -50,7 +50,7 @@ func (self *AdditionalStepAction) processFrame(mailer *Mailer, nextFrame stream.
 	if nextFrame.Command {
 		return self.processCommandFrame(mailer, nextFrame)
 	} else {
-		return NewMailerStateCloseConnection()
+		return NewMailerStateEnd()
 	}
 }
 

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
-	"log"
 	"time"
 )
 
@@ -43,15 +42,15 @@ func (self *StatManager) RegisterInFile(filename string) error {
 	storageManager := self.restoreStorageManager()
 
 	self.createStat()
-	//
+
 	query := "UPDATE `stat` SET `statFileRXcount` = `statFileRXcount` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
 	var params []interface{}
 	params = append(params, statDate)
 	err1 := storageManager.Exec(query, params, func(result sql.Result, err error) error {
-		log.Printf("Error: err = %+v", err)
-		return nil
+		return err
 	})
+
 	return err1
 }
 
@@ -118,15 +117,15 @@ func (self *StatManager) RegisterInPacket() error {
 	storageManager := self.restoreStorageManager()
 
 	self.createStat()
-	//
+
 	query := "UPDATE `stat` SET `statPacketIn` = `statPacketIn` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
 	var params []interface{}
 	params = append(params, statDate)
 	err1 := storageManager.Exec(query, params, func(result sql.Result, err error) error {
-		log.Printf("Error: err = %+v", err)
-		return nil
+		return err
 	})
+
 	return err1
 }
 
@@ -141,9 +140,9 @@ func (self *StatManager) RegisterOutPacket() error {
 	var params []interface{}
 	params = append(params, statDate)
 	err1 := storageManager.Exec(query, params, func(result sql.Result, err error) error {
-		log.Printf("Error: err = %+v", err)
-		return nil
+		return err
 	})
+
 	return err1
 }
 
@@ -157,15 +156,15 @@ func (self *StatManager) RegisterInMessage() error {
 	storageManager := self.restoreStorageManager()
 
 	self.createStat()
-	//
+
 	query := "UPDATE `stat` SET `statMessageRXcount` = `statMessageRXcount` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
 	var params []interface{}
 	params = append(params, statDate)
 	err1 := storageManager.Exec(query, params, func(result sql.Result, err error) error {
-		log.Printf("Error: err = %+v", err)
-		return nil
+		return err
 	})
+
 	return err1
 }
 
@@ -174,15 +173,15 @@ func (self *StatManager) RegisterOutMessage() error {
 	storageManager := self.restoreStorageManager()
 
 	self.createStat()
-	/* Update statistic */
+
 	query := "UPDATE `stat` SET `statMessageTXcount` = `statMessageTXcount` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
 	var params []interface{}
 	params = append(params, statDate)
 	err1 := storageManager.Exec(query, params, func(result sql.Result, err error) error {
-		log.Printf("Error: err = %+v", err)
-		return nil
+		return err
 	})
+
 	return err1
 }
 
@@ -206,46 +205,61 @@ func (self *StatManager) createStat() error {
 }
 
 func (self *StatManager) createStat2(statDate string) error {
+
 	storageManager := self.restoreStorageManager()
+
 	query := "INSERT INTO `stat` (`statDate`) VALUES ( ? )"
+
 	var params []interface{}
 	params = append(params, statDate)
+
 	err1 := storageManager.Exec(query, params, func(result sql.Result, err error) error {
-		log.Printf("Error: err = %+v", err)
-		return nil
+		return err
 	})
+
 	return err1
 }
 
 func (self *StatManager) RegisterInSession() error {
+
 	storageManager := self.restoreStorageManager()
+
 	/* Initialize statistic record */
 	self.createStat()
+
 	/* Update statistic */
 	query := "UPDATE `stat` SET `statSessionIn` = `statSessionIn` + 1 WHERE `statDate` = ?"
 	statDate := self.makeToday()
+
 	var params []interface{}
 	params = append(params, statDate)
+
 	err1 := storageManager.Exec(query, params, func(result sql.Result, err error) error {
-		log.Printf("Error: err = %+v", err)
-		return nil
+		return err
 	})
+
 	return err1
 }
 
 func (self *StatManager) RegisterOutSession() error {
+
 	storageManager := self.restoreStorageManager()
+
 	/* Initialize statistic record */
 	self.createStat()
+
 	/* Update statistic */
 	query := "UPDATE `stat` SET `statSessionOut` = `statSessionOut` + 1 WHERE `statDate` = ?"
+
 	statDate := self.makeToday()
+
 	var params []interface{}
 	params = append(params, statDate)
+
 	err1 := storageManager.Exec(query, params, func(result sql.Result, err error) error {
-		log.Printf("Error: err = %+v", err)
-		return nil
+		return err
 	})
+
 	return err1
 }
 

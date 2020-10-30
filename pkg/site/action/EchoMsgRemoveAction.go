@@ -48,7 +48,7 @@ func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	vBox := widgets.NewVBoxWidget()
 	bw.SetWidget(vBox)
 
-	mmw := widgets.NewMainMenuWidget()
+	mmw := self.makeMenu()
 	vBox.Add(mmw)
 
 	container := widgets.NewDivWidget()

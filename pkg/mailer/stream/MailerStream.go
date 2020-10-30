@@ -9,16 +9,18 @@ import (
 )
 
 type MailerStream struct {
+	conn net.Conn
 
-	conn          net.Conn
+	reader *bufio.Reader
+	writer *bufio.Writer
 
-	reader        *bufio.Reader
-	writer        *bufio.Writer
-
-	wait          sync.WaitGroup
+	wait sync.WaitGroup
 
 	InDataFrames  chan Frame
 	OutDataFrames chan Frame
+
+	readReady     bool
+	writeReady    bool
 
 }
 
@@ -27,13 +29,23 @@ func NewMailerStream() *MailerStream {
 	return stream
 }
 
+func (self *MailerStream) IsReadReady() bool {
+	return self.readReady
+}
+
+func (self *MailerStream) IsWriteReady() bool {
+	return self.writeReady
+}
+
 func (self *MailerStream) OpenSession(system string) error {
 
 	conn, err1 := net.DialTimeout("tcp", system, time.Millisecond*1000)
 	if err1 != nil {
-		log.Printf("MailerStream: Fail to start session: err = %+v", err1)
+		log.Printf("MailerStream: Fail to open and connect socket: err = %+v", err1)
 		return err1
 	}
+
+	log.Printf("MailerStream: Socket open")
 
 	self.InDataFrames = make(chan Frame)
 	self.OutDataFrames = make(chan Frame)
@@ -43,6 +55,10 @@ func (self *MailerStream) OpenSession(system string) error {
 	/* Create reader and writer */
 	self.reader = bufio.NewReader(conn)
 	self.writer = bufio.NewWriter(conn)
+
+	/* Initial reading value */
+	self.readReady = false
+	self.writeReady = true
 
 	/* Register wait */
 	self.wait.Add(2)
@@ -109,7 +125,17 @@ func (self *MailerStream) CloseSession() error {
 	log.Printf("MailerSession: Wait socket reader and writer")
 	self.wait.Wait()
 
-	log.Printf("MailerStream: Close")
+	log.Printf("MailerStream: Socket close.")
 	return self.conn.Close()
 
+}
+
+func (self *MailerStream) RemReadReady() {
+	self.readReady = false
+}
+
+func (self *MailerStream) GetFrame() Frame {
+	nextFrame := <- self.InDataFrames
+	self.RemReadReady()
+	return nextFrame
 }

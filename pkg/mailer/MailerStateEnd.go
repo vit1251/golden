@@ -16,6 +16,12 @@ func (self *MailerStateEnd) String() string {
 }
 
 func (self *MailerStateEnd) Process(mailer *Mailer) IMailerState {
-	log.Printf("End")
+
+	log.Printf("Exit")
+
+	/* Wakeup stream */
+	mailer.stream.CloseSession()
+
 	return nil
+
 }

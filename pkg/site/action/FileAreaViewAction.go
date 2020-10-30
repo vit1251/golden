@@ -55,7 +55,7 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	vBox := widgets.NewVBoxWidget()
 	bw.SetWidget(vBox)
 
-	mmw := widgets.NewMainMenuWidget()
+	mmw := self.makeMenu()
 	vBox.Add(mmw)
 
 	/* Context actions */

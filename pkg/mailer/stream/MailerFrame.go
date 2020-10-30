@@ -14,3 +14,11 @@ type Frame struct {
 	DataFrame
 	CommandFrame
 }
+
+func (self Frame) IsCommandFrame() bool {
+	return self.Command
+}
+
+func (self Frame) IsDataFrame() bool {
+	return self.Command == false
+}

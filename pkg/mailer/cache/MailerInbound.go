@@ -1,4 +1,4 @@
-package mailer
+package cache
 
 import (
 	"github.com/vit1251/golden/pkg/registry"
@@ -13,44 +13,15 @@ type MailerInbound struct {
 	registry     *registry.Container
 }
 
-type MailerInboundRecType int
-
-const TypeUnknown MailerInboundRecType = 0
-const TypeNetmail MailerInboundRecType = 1
-const TypeARCmail MailerInboundRecType = 2
-const TypeTICmail MailerInboundRecType = 3
-
-type MailerInboundRec struct {
-	Type         MailerInboundRecType /**/
-	AbsolutePath string               /**/
-	Name         string               /**/
-}
-
-func (self *MailerInboundRec) SetAbsolutePath(absolutePath string) {
-	self.AbsolutePath = absolutePath
-}
-
-func (self *MailerInboundRec) SetType(nodeType MailerInboundRecType) {
-	self.Type = nodeType
-}
-
-func (self *MailerInboundRec) SetName(name string) {
-	self.Name = name
-}
-
-func NewMailerInboundRec() *MailerInboundRec {
-	return new(MailerInboundRec)
-}
-
 func NewMailerInbound(registry *registry.Container) *MailerInbound {
 	mi := new(MailerInbound)
 	mi.registry = registry
 	return mi
 }
 
-func (self *MailerInbound) nodeTypePrediction(name string) (MailerInboundRecType) {
+func (self *MailerInbound) nodeTypePrediction(name string) (FileEntryType) {
 
-	var result MailerInboundRecType = TypeUnknown
+	var result FileEntryType = TypeUnknown
 
 	/* Check on packet message (direct Netmail) */
 	var nodeExtension string = filepath.Ext(name)
@@ -77,11 +48,11 @@ func (self *MailerInbound) nodeTypePrediction(name string) (MailerInboundRecType
 	return result
 }
 
-func (self *MailerInbound) Scan() ([]*MailerInboundRec, error) {
+func (self *MailerInbound) Scan() ([]*FileEntry, error) {
 
 	conifgManager := self.restoreConifgManager()
 
-	var result []*MailerInboundRec
+	var result []*FileEntry
 
 	inb, _ := conifgManager.Get("main", "Inbound")
 
@@ -94,7 +65,7 @@ func (self *MailerInbound) Scan() ([]*MailerInboundRec, error) {
 		absPath := path.Join(inb, item.Name())
 		itemMode := item.Mode()
 		if itemMode.IsRegular() {
-			rec := NewMailerInboundRec()
+			rec := NewFileEntry()
 			rec.SetAbsolutePath(absPath)
 			rec.SetName(item.Name())
 			rec.SetType(self.nodeTypePrediction(absPath))

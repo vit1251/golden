@@ -34,7 +34,7 @@ func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vBox := widgets.NewVBoxWidget()
 	bw.SetWidget(vBox)
 
-	mmw := widgets.NewMainMenuWidget()
+	mmw := self.makeMenu()
 	vBox.Add(mmw)
 
 	container := widgets.NewDivWidget()

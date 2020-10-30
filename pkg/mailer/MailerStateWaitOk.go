@@ -25,7 +25,7 @@ func (self *MailerStateWaitOk) processCommandFrame(nextFrame stream.Frame) IMail
 		return self
 	} else if command == stream.M_OK {
 		log.Printf("Auth - OK")
-		return NewMailerStateStartBatch()
+		return NewMailerStateOpts()
 	} else if command == stream.M_ERR {
 		log.Printf("AUTH - ERROR: err = %+v", nextFrame.CommandFrame.Body)
 	}

@@ -3,6 +3,7 @@ package mailer
 import (
 	"bufio"
 	"fmt"
+	"github.com/vit1251/golden/pkg/mailer/cache"
 	stream2 "github.com/vit1251/golden/pkg/mailer/stream"
 	"github.com/vit1251/golden/pkg/setup"
 	"log"
@@ -12,43 +13,57 @@ import (
 )
 
 type Mailer struct {
-	activeState       IMailerState           /* Mailer state                */
-	sessionSetupState SessionSetupStageState /* Session setup state         */
-	transferState     FileTransferStageState /* Mailer state                */
+	activeState IMailerState /* Mailer state                */
 
-	rxState           RxState                /*                             */
-	txState           TxState                /*                             */
+	transferState FileTransferStageState /* Mailer state                */
 
-	stream           *stream2.MailerStream
+	rxState RxState /*                             */
+	txState TxState /*                             */
 
-	reader            *bufio.Reader          /* Network address             */
-	writer            *bufio.Writer          /* Network address             */
+	stream *stream2.MailerStream
 
-	wait              sync.WaitGroup         /* Add wait */
+	reader *bufio.Reader /* Network address             */
+	writer *bufio.Writer /* Network address             */
 
-	addr              string                 /* Network address             */
-	secret            string                 /* Secret password             */
-	ServerAddr        string                 /*  */
-	inboundDirectory  string                 /*   */
-	outboundDirectory string                 /*   */
-	respAuthorization string                 /*   */
-	outStream         *os.File               /*    */
-	writeSize         int                    /*    */
-	size              int                    /*  */
-	connComplete      chan int               /*  */
-	recvUnix          int                    /*  */
-	recvName          string                 /*   */
-	workInbound       string                 /*  */
-	workOutbound      string                 /*  */
-	work              string
-	SetupManager      *setup.ConfigManager /*   */
-	InFileCount       int
-	OutFileCount      int
+	wait sync.WaitGroup /* Add wait */
+
+	addr       string /* Network address             */
+	secret     string /* Secret password             */
+	ServerAddr string /*  */
+
+	inboundDirectory  string /*   */
+	outboundDirectory string /*   */
+
+	respAuthorization string /*   */
+
+	recvStream *os.File /* Stream using in Rx routines */
+	sendStream *os.File /* Stream using in Tx routines */
+
+	readSize  int64 /* Size incoming download */
+	writeSize int64 /* Size outgoing upload   */
+
+	connComplete chan int /*  */
+	recvUnix     int      /*  */
+
+	sendName *cache.FileEntry   /* Upload entry     */
+	recvName *cache.FileEntry    /* Download entry   */
+
+	workInbound  string /*  */
+	workOutbound string /*  */
+	work         string
+	SetupManager *setup.ConfigManager /*   */
+
+	InFileCount  int
+	OutFileCount int
+
 	//
 	workPath   string
 	systemName string
 	userName   string
 	location   string
+
+	outboundQueue []cache.FileEntry
+	inboundQueue  []cache.FileEntry
 
 }
 
@@ -57,6 +72,7 @@ func NewMailer(sm *setup.ConfigManager) *Mailer {
 
 	m.connComplete = make(chan int)
 	m.SetupManager = sm
+
 	return m
 }
 
@@ -122,11 +138,6 @@ func (self *Mailer) Wait() {
 	self.wait.Wait()
 }
 
-func (self *Mailer) SetSessionSetupState(state SessionSetupStageState) {
-	log.Printf("Set session setup state: %s", state.String())
-	self.sessionSetupState = state
-}
-
 func (self *Mailer) SetServerAddr(addr string) {
 	self.ServerAddr = addr
 }
@@ -183,4 +194,6 @@ func (self *Mailer) SetStationName(name string) {
 	self.systemName = name
 }
 
-
+func (self *Mailer) AddOutbound(path cache.FileEntry) {
+	self.outboundQueue = append(self.outboundQueue, path)
+}

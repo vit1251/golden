@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/file"
-	"github.com/vit1251/golden/pkg/mailer"
+	"github.com/vit1251/golden/pkg/mailer/cache"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/packet"
@@ -355,7 +355,7 @@ func (self *Tosser) ProcessPacket(name string) error {
 	return nil
 }
 
-func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) error {
+func (self *Tosser) processNetmail(item *cache.FileEntry) error {
 
 	configManager := self.restoreConfigManager()
 	statManager := self.restoreStatManager()
@@ -380,7 +380,7 @@ func (self *Tosser) processNetmail(item *mailer.MailerInboundRec) error {
 	return nil
 }
 
-func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
+func (self *Tosser) processARCmail(item *cache.FileEntry) error {
 
 	configManager := self.restoreConfigManager()
 	statManager := self.restoreStatManager()
@@ -424,7 +424,7 @@ func (self *Tosser) processARCmail(item *mailer.MailerInboundRec) error {
 
 }
 
-func (self *Tosser) processTICmail(item *mailer.MailerInboundRec) (error) {
+func (self *Tosser) processTICmail(item *cache.FileEntry) (error) {
 
 	charsetManager := self.restoreCharsetManager()
 	fileManager := self.restoreFileManager()
@@ -492,7 +492,7 @@ func (self *Tosser) ProcessInbound() error {
 	log.Printf("ProcessInbound")
 
 	/* New mailer inbound */
-	mi := mailer.NewMailerInbound(self.registry)
+	mi := cache.NewMailerInbound(self.registry)
 
 	/* Scan inbound */
 	items, err2 := mi.Scan()
@@ -502,17 +502,17 @@ func (self *Tosser) ProcessInbound() error {
 	log.Printf("items = %+v", items)
 
 	for _, item := range items {
-		if item.Type == mailer.TypeNetmail {
-			log.Printf(" - Found Netmail packet %s. Skip.", item.Name)
+		if item.Type == cache.TypeNetmail {
+			log.Printf("Tosser: Netmail packet: name = %s", item.Name)
 			self.processNetmail(item)
-		} else if item.Type == mailer.TypeARCmail {
-			log.Printf(" - Found ARCmail packet %s. Process.", item.Name)
+		} else if item.Type == cache.TypeARCmail {
+			log.Printf("Tosser: ARCmail packet: name = %s", item.Name)
 			self.processARCmail(item)
-		} else if item.Type == mailer.TypeTICmail {
-			log.Printf(" - Found TIC packet %s. Process.", item.Name)
+		} else if item.Type == cache.TypeTICmail {
+			log.Printf("Tosser: TIC packet: name = %s", item.Name)
 			self.processTICmail(item)
 		} else {
-			log.Printf(" - Found other packet %s. Skip.", item.Name)
+			log.Printf("Tosser: Unknoen packet: name = %s", item.Name)
 		}
 	}
 

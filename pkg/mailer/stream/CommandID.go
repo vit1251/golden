@@ -19,19 +19,29 @@ const (
 )
 
 func (self CommandID) String() string {
-	switch self {
-	case M_NUL:
-		return "M_NUL"
-	case M_ADR:
-		return "M_ADR"
-	case M_PWD:
-		return "M_PWD"
-	case M_FILE:
-		return "M_FILE"
-	case M_OK:
-		return "M_OK"
-	case M_EOB:
-		return "M_EOB"
+
+	type commandName struct {
+		id CommandID
+		name string
 	}
+
+	commandNames := []commandName{
+		{M_NUL, "M_NUL"},
+		{M_ADR, "M_ADR"},
+		{M_PWD, "M_PWD"},
+		{M_FILE, "M_FILE"},
+		{M_OK, "M_OK"},
+		{M_EOB, "M_EOB"},
+		{M_GOT, "M_GOT"},
+		{M_GET,"M_GET"},
+	}
+
+	for _, commandName := range commandNames {
+		if commandName.id == self {
+			return commandName.name
+		}
+	}
+
 	return fmt.Sprintf("M_UNKOWN[%d]", self)
+
 }

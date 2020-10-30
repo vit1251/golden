@@ -6,6 +6,7 @@ import (
 	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/site/widgets"
 	"github.com/vit1251/golden/pkg/stat"
 	"github.com/vit1251/golden/pkg/tosser"
 	"net/http"
@@ -22,6 +23,17 @@ type Action struct {
 
 func (self *Action) SetContainer(r *registry.Container) {
 	self.registry = r
+}
+
+func (self *Action) makeMenu() *widgets.MainMenuWidget {
+
+	messageManager := self.restoreMessageManager()
+	newCount, _ := messageManager.GetMessageNewCount()
+
+	mainMenu := widgets.NewMainMenuWidget()
+	mainMenu.SetParam("mainMenuEcho", newCount)
+
+	return mainMenu
 }
 
 func (self *Action) restoreMessageManager() *msg.MessageManager {

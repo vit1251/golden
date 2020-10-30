@@ -143,7 +143,7 @@ func (self *SiteManager) run() {
 
 	err := srv.ListenAndServe()
 	if err != nil {
-		log.Printf("SiteManager: service error: err = %+v")
+		log.Printf("SiteManager: service error: err = %+v", err)
 	}
 
 }
