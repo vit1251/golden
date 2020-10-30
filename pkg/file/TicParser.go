@@ -22,22 +22,29 @@ func NewTicParser(cm *charset.CharsetManager) *TicParser {
 	tp.cm = cm
 	tp.TicFile = new(TicFile)
 	tp.Handlers = make(map[string]TicParserHandler)
-	tp.Handlers["Area"] = tp.processArea
-	tp.Handlers["Desc"] = tp.processDesc
-	tp.Handlers["File"] = tp.processFile
-	tp.Handlers["From"] = nil
-	tp.Handlers["To"] = nil
-	tp.Handlers["Pw"] = nil
-	tp.Handlers["File"] = tp.processFile
-	tp.Handlers["Path"] = nil
-	tp.Handlers["Crc"] = nil
-	tp.Handlers["Size"] = nil
-	tp.Handlers["Origin"] = nil
-	tp.Handlers["LDesc"] = nil
-	tp.Handlers["LDesc"] = nil
-	tp.Handlers["Seenby"] = nil
-
+	tp.initializeHandler()
 	return tp
+}
+
+func (self *TicParser) registerHandler(name string, handler TicParserHandler) {
+	self.Handlers[name] = handler
+}
+
+func (self *TicParser) initializeHandler() {
+	self.registerHandler("Area", self.processArea)
+	self.registerHandler("Desc", self.processDesc)
+	self.registerHandler("File", self.processFile)
+	self.registerHandler("From", nil)
+	self.registerHandler("To", nil)
+	self.registerHandler("Pw", nil)
+	self.registerHandler("File", self.processFile)
+	self.registerHandler("Path", nil)
+	self.registerHandler("Crc", nil)
+	self.registerHandler("Size", nil)
+	self.registerHandler("Origin", nil)
+	self.registerHandler("LDesc", nil)
+	self.registerHandler("LDesc", nil)
+	self.registerHandler("Seenby", nil)
 }
 
 func (self *TicParser) prcessLine(newLine string) {
@@ -104,7 +111,7 @@ func (self *TicParser) ParseFile(filename string) (*TicFile, error) {
 }
 
 func (self *TicParser) processArea(value string) {
-	self.TicFile.Area = value
+	self.TicFile.SetArea(value)
 }
 
 func (self *TicParser) processDesc(value string) {

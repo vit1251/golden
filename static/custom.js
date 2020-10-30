@@ -1,6 +1,10 @@
 
 class MetricFeature {
 
+    constructor() {
+        this.summaryMonitoringInterval = 2.5 * 60 * 1000;
+    }
+
     updateMetric(metricName, value) {
         let element = document.getElementById(metricName);
         //
@@ -41,7 +45,7 @@ class MetricFeature {
     registerSummaryUpdateRoutine() {
         setTimeout(() => {
             this.summaryUpdateRoutine();
-        }, 5000);
+        }, this.summaryMonitoringInterval);
     }
 
     register() {

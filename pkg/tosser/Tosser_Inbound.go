@@ -439,8 +439,10 @@ func (self *Tosser) processTICmail(item *cache.FileEntry) (error) {
 	}
 	log.Printf("tic = %+v", tic)
 
+	areaName := tic.GetArea()
+
 	/* Search area */
-	fa, err1 := fileManager.GetAreaByName(tic.Area)
+	fa, err1 := fileManager.GetAreaByName(areaName)
 	if err1 != nil {
 		return err1
 	}
@@ -449,18 +451,18 @@ func (self *Tosser) processTICmail(item *cache.FileEntry) (error) {
 	boxBasePath, _ := configManager.Get("main", "FileBox")
 	inboxBasePath, _ := configManager.Get("main", "Inbound")
 
-	areaLocation := path.Join(boxBasePath, tic.Area)
+	areaLocation := path.Join(boxBasePath, areaName)
 	os.MkdirAll(areaLocation, 0755)
 
 	/* Create area */
 	if fa == nil {
 		/* Prepare area */
 		newFa := file.NewFileArea()
-		newFa.SetName(tic.Area)
+		newFa.SetName(areaName)
 		newFa.Path = areaLocation
 		/* Create area */
 		if err := fileManager.CreateFileArea(newFa); err != nil {
-			log.Printf("Fail CreateFileArea on FileManager: area = %s err = %+v", tic.Area, err)
+			log.Printf("Fail CreateFileArea on FileManager: area = %s err = %+v", areaName, err)
 			return err
 		}
 	}

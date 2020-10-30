@@ -88,7 +88,7 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.Age()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
 				SetContent("Download"). // /file/BOOK-DOP/tic/KORSAV01.RAR/view
-				SetLink(fmt.Sprintf("/file/%s/tic/%s/view", f.Area, f.File)))))
+				SetLink(fmt.Sprintf("/file/%s/tic/%s/view", f.GetArea(), f.File)))))
 	}
 
 	vBox.Add(indexTable)

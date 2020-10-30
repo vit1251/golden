@@ -2,6 +2,7 @@ package file
 
 import (
 	"github.com/xeonx/timeago"
+	"strings"
 	"time"
 )
 
@@ -9,7 +10,7 @@ type TicFile struct {
 	From        string
 	To          string
 	File        string
-	Area        string
+	area        string
 	Desc        string
 	SeenBy      []string
 	UnixTime    int64
@@ -37,4 +38,12 @@ func (self *TicFile) Age() string {
 		result = timeago.English.Format(*self.DateWritten)
 	}
 	return result
+}
+
+func (self *TicFile) SetArea(area string) {
+	self.area = strings.ToUpper(area)
+}
+
+func (self *TicFile) GetArea() string {
+	return self.area
 }

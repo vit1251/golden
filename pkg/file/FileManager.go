@@ -176,7 +176,7 @@ func (self *FileManager) GetFileHeaders(echoTag string) ([]*TicFile, error) {
 		}
 
 		tic := NewTicFile()
-		tic.Area = fileArea
+		tic.SetArea(fileArea)
 		tic.Desc = fileDesc
 		tic.File = fileName
 		if fileTime != nil {
@@ -208,7 +208,8 @@ func (self *FileManager) RegisterFile(tic *TicFile) error {
 	if err2 != nil {
 		return err2
 	}
-	_, err3 := stmt1.Exec(tic.File, tic.Area, tic.Desc, unixTime)
+	areaName := tic.GetArea()
+	_, err3 := stmt1.Exec(tic.File, areaName, tic.Desc, unixTime)
 	log.Printf("err3 = %+v", err3)
 	if err3 != nil {
 		return err3
