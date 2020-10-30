@@ -24,8 +24,10 @@ func (self *MailerStateEnd) Process(mailer *Mailer) IMailerState {
 
 	select {
 	case <-time.After(5 * time.Second):
-		/* Wakeup stream */
-		mailer.stream.CloseSession()
+		/* Close session */
+		if mailer.stream != nil {
+			mailer.stream.CloseSession()
+		}
 		return nil
 
 	}

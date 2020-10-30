@@ -1,7 +1,6 @@
 package mailer
 
 import (
-	"bytes"
 	"github.com/vit1251/golden/pkg/mailer/stream"
 	"log"
 )
@@ -47,15 +46,7 @@ func (self *MailerStateWaitAddr) processFrame(mailer *Mailer, nextFrame stream.F
 	/* M_NUL frame received */
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandFrame.CommandID == stream.M_NUL {
-			if key, value, err1 := mailer.parseInfoFrame(nextFrame.CommandFrame.Body); err1 == nil {
-				log.Printf("Remote side option: name = %s value = %s", key, value)
-				if bytes.Equal(key, []byte("OPT")) {
-					mailer.parseInfoOptFrame(value)
-				}
-				return NewMailerStateWaitAddr()
-			} else {
-				log.Printf("M_NUL in WaitAddr parse error: err = %+v", err1)
-			}
+			mailer.processNulFrame(nextFrame)
 		}
 	}
 

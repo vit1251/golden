@@ -1,9 +1,7 @@
 package mailer
 
 import (
-	"bytes"
 	"github.com/vit1251/golden/pkg/mailer/stream"
-	"log"
 )
 
 type MailerStateAdditionalStep struct {
@@ -24,14 +22,7 @@ func (self *MailerStateAdditionalStep) processCommandFrame(mailer *Mailer, nextF
 
 	/* Use modern secure authorization */
 	if streamCommandId == stream.M_NUL {
-		if key, value, err1 := mailer.parseInfoFrame(nextFrame.CommandFrame.Body); err1 == nil {
-			log.Printf("Remote side option: name = %s value = %s", key, value)
-			if bytes.Equal(key, []byte("OPT")) {
-				mailer.parseInfoOptFrame(value)
-			}
-		} else {
-			log.Printf("Parse error: err = %+v", err1)
-		}
+		mailer.processNulFrame(nextFrame)
 	}
 
 	/* Use unsecure password authorization */

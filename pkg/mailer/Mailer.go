@@ -2,7 +2,9 @@ package mailer
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
+	"github.com/vit1251/golden/pkg/mailer/auth"
 	"github.com/vit1251/golden/pkg/mailer/cache"
 	stream2 "github.com/vit1251/golden/pkg/mailer/stream"
 	"github.com/vit1251/golden/pkg/setup"
@@ -74,10 +76,6 @@ func NewMailer(sm *setup.ConfigManager) *Mailer {
 	m.SetupManager = sm
 
 	return m
-}
-
-func (self *Mailer) closeSession() {
-    self.stream.CloseSession()
 }
 
 func (self *Mailer) writeTrafic(mail int, data int) {
@@ -196,4 +194,60 @@ func (self *Mailer) SetStationName(name string) {
 
 func (self *Mailer) AddOutbound(path cache.FileEntry) {
 	self.outboundQueue = append(self.outboundQueue, path)
+}
+
+func (self *Mailer) createAuthorization(chData []byte) (string) {
+	a := auth.NewAuthorizer()
+	a.SetChallengeData(string(chData))
+	a.SetSecret(self.secret)
+	responseDigest, err := a.CalculateDigest()
+	if err != nil {
+		panic(err)
+	}
+	password := fmt.Sprintf("%s-%s-%s", "CRAM", "MD5", responseDigest)
+	return password
+}
+
+func (self *Mailer) processNulOptFrame(rawOptions []byte)  {
+
+	log.Printf("Remote server option: %s", rawOptions)
+
+	/* Split options */
+	options := bytes.Fields(rawOptions)
+	for _, option := range options {
+		if bytes.HasPrefix(option, []byte("CRAM-")) {
+			parts := bytes.SplitN(option, []byte("-"), 3)
+			authScheme := parts[1]
+			if bytes.Equal(authScheme, []byte("MD5")) {
+				authDigest := parts[2]
+				log.Printf("Use %s as digest", authDigest)
+				self.respAuthorization = self.createAuthorization(authDigest)
+			} else {
+				log.Panicf("Wrong mechanism: authScheme = %s", authScheme)
+			}
+		}
+	}
+
+}
+
+func (self *Mailer) processNulFrame(nextFrame stream2.Frame) {
+
+	packet := nextFrame.CommandFrame.Body
+	values := bytes.SplitN(packet, []byte(" "), 2)
+
+	log.Printf("Remote side M_NUL with values: values = %+v", values)
+
+	if len(values) == 2 {
+
+		key := values[0]
+		value := values[1]
+
+		if bytes.Equal(key, []byte("OPT")) {
+			self.processNulOptFrame(value)
+		}
+
+	} else {
+		log.Printf("Remote side M_NUL parse error")
+	}
+
 }
