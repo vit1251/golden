@@ -25,7 +25,7 @@ func (self *MailerStateTxReadS) Process(mailer *Mailer) IMailerState {
 	chunkSize := 4096 // TODO - cmn.Min(1024, 4096)
 	chunk := make([]byte, chunkSize)
 
-	sendReady, err3 := io.ReadFull(mailer.sendStream, chunk)
+	sendReady, err3 := mailer.sendStream.Read(chunk)
 
 	/* Read failed */
 	if err3 != nil {

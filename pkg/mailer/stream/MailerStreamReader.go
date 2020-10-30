@@ -30,7 +30,7 @@ func (self *MailerStream) processRX() {
 		self.conn.SetReadDeadline(time.Now().Add(1 * time.Second))
 		err1 := binary.Read(self.reader, binary.BigEndian, &frameHeader)
 		if err1 == io.EOF {
-			log.Printf("Session close.")
+			log.Printf("MailerStream: processRX: stream EOF")
 			break
 		}
 		log.Printf("RX frame: header %04X", frameHeader)
