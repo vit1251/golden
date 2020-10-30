@@ -19,7 +19,7 @@ func (self *MailerStateConnInit) Process(mailer *Mailer) IMailerState {
 	s := stream.NewMailerStream()
 	if err1 := s.OpenSession(mailer.ServerAddr); err1 == nil {
 		mailer.stream = s
-		return NewMailerWaitConnAction()
+		return NewMailerWaitConn()
 	} else {
 		return NewMailerStateEnd()
 	}

@@ -1,6 +1,9 @@
 package mailer
 
-import "log"
+import (
+	"log"
+	"time"
+)
 
 type MailerStateEnd struct {
 	MailerState
@@ -19,9 +22,12 @@ func (self *MailerStateEnd) Process(mailer *Mailer) IMailerState {
 
 	log.Printf("Exit")
 
-	/* Wakeup stream */
-	mailer.stream.CloseSession()
+	select {
+	case <-time.After(5 * time.Second):
+		/* Wakeup stream */
+		mailer.stream.CloseSession()
+		return nil
 
-	return nil
+	}
 
 }

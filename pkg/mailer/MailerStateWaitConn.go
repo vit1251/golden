@@ -6,37 +6,36 @@ import (
 	"time"
 )
 
-type MailerStateWaitConnAction struct {
+type MailerStateWaitConn struct {
 	MailerState
-	IMailerState
 }
 
-func NewMailerWaitConnAction() *MailerStateWaitConnAction {
-	msth := new(MailerStateWaitConnAction)
+func NewMailerWaitConn() *MailerStateWaitConn {
+	msth := new(MailerStateWaitConn)
 	return msth
 }
 
-func (self *MailerStateWaitConnAction) String() string {
-	return "MailerStateWaitConnAction"
+func (self *MailerStateWaitConn) String() string {
+	return "MailerStateWaitConn"
 }
 
-func (self *MailerStateWaitConnAction) makeSystemTime() string {
+func (self *MailerStateWaitConn) makeSystemTime() string {
 	now := time.Now().Format(time.RFC822)
 	return now
 }
 
-func (self *MailerStateWaitConnAction) makeOperationSystemName() string {
+func (self *MailerStateWaitConn) makeOperationSystemName() string {
 	return cmn.GetPlatform()
 }
 
-func (self *MailerStateWaitConnAction) makeVersionString() string {
+func (self *MailerStateWaitConn) makeVersionString() string {
 	appName := "GoldenMailer"
 	appVersion := cmn.GetVersion()
 	protocolVersion := "binkp/1.0"
 	return fmt.Sprintf("%s/%s %s", appName, appVersion, protocolVersion)
 }
 
-func (self *MailerStateWaitConnAction) Process(mailer *Mailer) IMailerState {
+func (self *MailerStateWaitConn) Process(mailer *Mailer) IMailerState {
 
 	/* Send M_NUL frames with system info (optional) */
 	if username := mailer.GetUserName(); username != "" {
@@ -52,6 +51,9 @@ func (self *MailerStateWaitConnAction) Process(mailer *Mailer) IMailerState {
 	/* Send M_ADR frame with system address */
 	mailer.stream.WriteAddress(mailer.GetAddr())
 
-	return NewMailerStateAdditionalStepAction()
+	select {
+		case <-time.After(5 * time.Second):
+			return NewMailerStateAdditionalStep()
+	}
 
 }

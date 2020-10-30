@@ -8,6 +8,8 @@ import (
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/stat"
 	"log"
+	"reflect"
+	"runtime"
 	"time"
 )
 
@@ -53,6 +55,10 @@ func (self *MailerManager) run() {
 
 func (self *MailerManager) Stop() {
 	self.running = false
+}
+
+func GetFunctionName(i interface{}) string {
+	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 }
 
 func (self *MailerManager) processMailer() error {

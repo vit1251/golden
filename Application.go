@@ -24,34 +24,14 @@ import (
 )
 
 type Application struct {
-	Container *registry.Container
+	registry *registry.Container
 }
 
 func NewApplication() *Application {
+
 	app := new(Application)
-	app.Container = registry.NewContainer()
+	app.registry = registry.NewContainer()
 	return app
-}
-
-func (self *Application) processMigration() {
-
-	migrationManagerPtr := self.Container.Get("MigrationManager")
-	if migrationManager, ok := migrationManagerPtr.(*installer.MigrationManager); ok {
-		migrationManager.Check()
-	} else {
-		panic("no migration manager")
-	}
-
-}
-
-func (self *Application) startTosserService() {
-
-	tosserManagerPtr := self.Container.Get("TosserManager")
-	if tosserManager, ok := tosserManagerPtr.(*tosser.TosserManager); ok {
-		tosserManager.Start()
-	} else {
-		panic("no tosser manager")
-	}
 
 }
 
@@ -73,47 +53,49 @@ func (self *Application) Run() {
 	flag.Parse()
 
 	/* Start storage service */
-	self.Container.Register("EventBus", eventbus.NewEventBus(self.Container))
-	self.Container.Register("StorageManager", storage.NewStorageManager(self.Container))
-	self.Container.Register("MigrationManager", installer.NewMigrationManager(self.Container))
-	self.Container.Register("ConfigManager", setup.NewConfigManager(self.Container))
+	self.registry.Register("EventBus", eventbus.NewEventBus(self.registry))
+	self.registry.Register("StorageManager", storage.NewStorageManager(self.registry))
+	self.registry.Register("MigrationManager", installer.NewMigrationManager(self.registry))
+	self.registry.Register("ConfigManager", setup.NewConfigManager(self.registry))
 
-	self.Container.Register("CharsetManager", charset.NewCharsetManager(self.Container))
+	self.registry.Register("CharsetManager", charset.NewCharsetManager(self.registry))
 
-	self.Container.Register("MessageManager", msg.NewMessageManager(self.Container))
-	self.Container.Register("AreaManager", msg.NewAreaManager(self.Container))
-	self.Container.Register("FileManager", file.NewFileManager(self.Container))
-	self.Container.Register("NetmailManager", netmail.NewNetmailManager(self.Container))
-	self.Container.Register("StatManager", stat.NewStatManager(self.Container))
+	self.registry.Register("MessageManager", msg.NewMessageManager(self.registry))
+	self.registry.Register("AreaManager", msg.NewAreaManager(self.registry))
+	self.registry.Register("FileManager", file.NewFileManager(self.registry))
+	self.registry.Register("NetmailManager", netmail.NewNetmailManager(self.registry))
+	self.registry.Register("StatManager", stat.NewStatManager(self.registry))
 
-	self.Container.Register("TosserManager",	tosser.NewTosserManager(self.Container))
-	self.Container.Register("MailerManager", mailer.NewMailerManager(self.Container))
+	self.registry.Register("TosserManager",	tosser.NewTosserManager(self.registry))
+	self.registry.Register("MailerManager", mailer.NewMailerManager(self.registry))
 
-	self.Container.Register("SiteManager", site.NewSiteManager(self.Container))
+	self.registry.Register("SiteManager", site.NewSiteManager(self.registry))
 
-	/* Initialize migrations */
-	self.processMigration()
+	/* Initialize database (apply new migration) */
+	migrationManager := self.restoreMigrationManager()
+	migrationManager.Check()
 
-	/* Start tosser service */
-	self.startTosserService()
+	/* Start tosser */
+	tosserManager := self.restoreTosserManager()
+	tosserManager.Start()
 
-	/* Start site service */
+	/* Start site */
 	siteManager := self.restoreSiteManager()
 	siteManager.SetPort(servicePort)
 	siteManager.Start()
 
-	/* Start mailer service */
+	/* Start mailer */
 	mailerManager := self.restoreMailerManager()
 	mailerManager.Start()
 
-	/* Wait system interrupt marker */
+	/* Wait system Ctrl+C keyboard interruption or OS terminate request */
 	self.waitInterrupt()
 
 	/* Stop mailer service */
 	//mailerManager.Stop()
 
 	/* Stop tosser service */
-	//self.stopTosserService()
+	//tosserService.Stop()
 
 	/* Stop storage service */
 	self.stopStorageServcie()
@@ -138,9 +120,11 @@ func (self *Application) stopStorageServcie() {
 
 }
 
+/* Restore managers */
+
 func (self *Application) restoreSiteManager() *site.SiteManager {
 
-	siteManagerPtr := self.Container.Get("SiteManager")
+	siteManagerPtr := self.registry.Get("SiteManager")
 	if siteManager, ok := siteManagerPtr.(*site.SiteManager); ok {
 		return siteManager
 	} else {
@@ -151,7 +135,7 @@ func (self *Application) restoreSiteManager() *site.SiteManager {
 
 func (self *Application) restoreStorageManager() *storage.StorageManager {
 
-	managerPtr := self.Container.Get("StorageManager")
+	managerPtr := self.registry.Get("StorageManager")
 	if manager, ok := managerPtr.(*storage.StorageManager); ok {
 		return manager
 	} else {
@@ -162,11 +146,31 @@ func (self *Application) restoreStorageManager() *storage.StorageManager {
 
 func (self *Application) restoreMailerManager() *mailer.MailerManager {
 
-	managerPtr := self.Container.Get("MailerManager")
+	managerPtr := self.registry.Get("MailerManager")
 	if manager, ok := managerPtr.(*mailer.MailerManager); ok {
 		return manager
 	} else {
 		panic("no mailer manager")
+	}
+
+}
+
+func (self *Application) restoreMigrationManager() *installer.MigrationManager {
+	managerPtr := self.registry.Get("MigrationManager")
+	if manager, ok := managerPtr.(*installer.MigrationManager); ok {
+		return manager
+	} else {
+		panic("no migration manager")
+	}
+}
+
+func (self *Application) restoreTosserManager() *tosser.TosserManager {
+
+	managerPtr := self.registry.Get("TosserManager")
+	if manager, ok := managerPtr.(*tosser.TosserManager); ok {
+		return manager
+	} else {
+		panic("no tosser manager")
 	}
 
 }

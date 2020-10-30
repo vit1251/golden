@@ -145,9 +145,11 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 		pktHeader.pktCreated = *value
 	}
 
-	/* Read unused (2 byte) */
-	if _, err4 := self.binaryStreamReader.ReadUINT16(); err4 != nil {
+	/* Read packet sub-version */
+	if subVersion, err4 := self.binaryStreamReader.ReadUINT16(); err4 != nil {
 		return nil, err4
+	} else {
+		pktHeader.subVersion = subVersion
 	}
 
 	/* Read pakcet version (2 byte) */

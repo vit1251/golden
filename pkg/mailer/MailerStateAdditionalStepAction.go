@@ -6,19 +6,19 @@ import (
 	"log"
 )
 
-type AdditionalStepAction struct {
+type MailerStateAdditionalStep struct {
 	MailerState
 }
 
-func NewMailerStateAdditionalStepAction() *AdditionalStepAction {
-	return new(AdditionalStepAction)
+func NewMailerStateAdditionalStep() *MailerStateAdditionalStep {
+	return new(MailerStateAdditionalStep)
 }
 
-func (self *AdditionalStepAction) String() string {
-	return "AdditionalStepAction"
+func (self *MailerStateAdditionalStep) String() string {
+	return "MailerStateAdditionalStep"
 }
 
-func (self *AdditionalStepAction) processCommandFrame(mailer *Mailer, nextFrame stream.Frame) IMailerState {
+func (self *MailerStateAdditionalStep) processCommandFrame(mailer *Mailer, nextFrame stream.Frame) IMailerState {
 
 	var streamCommandId = nextFrame.CommandFrame.CommandID
 
@@ -30,7 +30,7 @@ func (self *AdditionalStepAction) processCommandFrame(mailer *Mailer, nextFrame 
 				mailer.parseInfoOptFrame(value)
 			}
 		} else {
-			panic("parse error")
+			log.Printf("Parse error: err = %+v", err1)
 		}
 	}
 
@@ -46,18 +46,21 @@ func (self *AdditionalStepAction) processCommandFrame(mailer *Mailer, nextFrame 
 	return self
 }
 
-func (self *AdditionalStepAction) processFrame(mailer *Mailer, nextFrame stream.Frame) IMailerState {
-	if nextFrame.Command {
+func (self *MailerStateAdditionalStep) processFrame(mailer *Mailer, nextFrame stream.Frame) IMailerState {
+
+	if nextFrame.IsCommandFrame() {
 		return self.processCommandFrame(mailer, nextFrame)
-	} else {
-		return NewMailerStateEnd()
 	}
+
+	return self
+
 }
 
-func (self *AdditionalStepAction) Process(mailer *Mailer) IMailerState {
+func (self *MailerStateAdditionalStep) Process(mailer *Mailer) IMailerState {
+
 	select {
 	case nextFrame := <-mailer.stream.InDataFrames:
 		return self.processFrame(mailer, nextFrame)
 	}
-	return self
+
 }

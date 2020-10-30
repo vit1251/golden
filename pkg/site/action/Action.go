@@ -32,7 +32,7 @@ func (self *Action) makeMenu() *widgets.MainMenuWidget {
 
 	netmailManager := self.restoreNetmailManager()
 	newDirect, _ := netmailManager.GetMessageNewCount()
-	
+
 	mainMenu := widgets.NewMainMenuWidget()
 	mainMenu.SetParam("mainMenuEcho", newCount)
 	mainMenu.SetParam("mainMenuDirect", newDirect)

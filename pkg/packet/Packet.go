@@ -57,19 +57,28 @@ type PktDateTime struct {
 	Sec     uint16
 }
 
+type PktVersion int
+
+const (
+	PKTv2      = 0x0200
+	PKTv2plus  = 0x0201
+	PKTv22     = 0x0202
+)
+
 type PacketHeader struct {
-	OrigAddr            NetAddr
-	DestAddr            NetAddr
-	pktCreated          PktDateTime
-	capatiblityByte1    uint8
-	capatiblityByte2    uint8
-	pktPassword       []byte
-	auxNet              uint16
-	hiProductCode       uint8
-	minorProductRev     uint8
-	capabilityWord      uint16
-	loProductCode       uint8
-	majorProductRev     uint8
+	OrigAddr         NetAddr
+	DestAddr         NetAddr
+	pktCreated       PktDateTime
+	subVersion       uint16
+	capatiblityByte1 uint8
+	capatiblityByte2 uint8
+	pktPassword      []byte
+	auxNet           uint16
+	hiProductCode    uint8
+	minorProductRev  uint8
+	capabilityWord   uint16
+	loProductCode    uint8
+	majorProductRev  uint8
 }
 
 func NewPacketHeader() *PacketHeader {
@@ -80,6 +89,19 @@ func NewPacketHeader() *PacketHeader {
 	ph.auxNet = 0
 	ph.capabilityWord = 1
 	return ph
+}
+
+func (self *PacketHeader) GetVersion() PktVersion {
+	if self.subVersion == 2 {
+		return PKTv22
+	} else {
+		checkFeature := true // TODO - if lo(cap word) == hi(inv cap word) and hi(cap word) == lo( inv cap word) {
+		if checkFeature {
+			return PKTv2plus
+		} else {
+			return PKTv2
+		}
+	}
 }
 
 func (self *PacketHeader) SetPassword(password string) {
