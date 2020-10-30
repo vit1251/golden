@@ -6,19 +6,7 @@ import (
 	"os"
 )
 
-type MailerStateRxAccF struct {
-	MailerState
-}
-
-func NewMailerStateRxAccF() *MailerStateRxAccF {
-	return new(MailerStateRxAccF)
-}
-
-func (self MailerStateRxAccF) String() string {
-	return "MailerStateRxAccF"
-}
-
-func (self *MailerStateRxAccF) Process(mailer *Mailer) IMailerState {
+func ReceiveRoutineRxAccF(mailer *Mailer) {
 
 	/* Accept from beginning */
 
@@ -38,7 +26,5 @@ func (self *MailerStateRxAccF) Process(mailer *Mailer) IMailerState {
 		mailer.recvStream = stream
 		mailer.rxState = RxRaceD
 	}
-
-	return NewMailerStateSwitch()
 
 }

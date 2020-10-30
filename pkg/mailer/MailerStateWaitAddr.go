@@ -55,7 +55,7 @@ func (self *MailerStateWaitAddr) processFrame(mailer *Mailer, nextFrame stream.F
 
 func (self *MailerStateWaitAddr) Process(mailer *Mailer) IMailerState {
 
-	nextFrame := mailer.stream.GetFrame()
+	nextFrame := <-mailer.stream.InFrame
 	return self.processFrame(mailer, nextFrame)
 
 }

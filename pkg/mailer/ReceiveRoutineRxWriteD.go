@@ -9,20 +9,18 @@ import (
 	"path"
 )
 
-type MailerStateRxWriteD struct {
-	MailerState
+
+func makeFileGotPacket(mailer *Mailer, recvOffset int64) {
+
+	recvName := mailer.recvName.Name
+	recvUnix := mailer.recvUnix
+
+	rawComplete := fmt.Sprintf("%s %d %d", recvName, recvOffset, recvUnix)
+	mailer.stream.WriteCommandPacket(stream.M_GOT, []byte(rawComplete))
+
 }
 
-func NewMailerStateRxWriteD() *MailerStateRxWriteD {
-	return new(MailerStateRxWriteD)
-}
-
-func (self MailerStateRxWriteD) String() string {
-	return "MailerStateRxWriteD"
-}
-
-func (self *MailerStateRxWriteD) Process(mailer *Mailer) IMailerState {
-
+func ReceiveRoutineRxWriteD(mailer *Mailer) {
 
 	offset, err := mailer.recvStream.Seek(0, io.SeekCurrent)
 	if err != nil {
@@ -42,7 +40,7 @@ func (self *MailerStateRxWriteD) Process(mailer *Mailer) IMailerState {
 		mailer.recvStream = nil
 
 		/* Send M_GOT */
-		self.makeFileGotPacket(mailer, offset)
+		makeFileGotPacket(mailer, offset)
 
 		/* Report File Received */
 		log.Printf("Recieved file - %s", mailer.recvName)
@@ -63,17 +61,5 @@ func (self *MailerStateRxWriteD) Process(mailer *Mailer) IMailerState {
 	if offset < mailer.readSize {
 		mailer.rxState = RxRaceD
 	}
-
-	return NewMailerStateSwitch()
-
-}
-
-func (self MailerStateRxWriteD) makeFileGotPacket(mailer *Mailer, recvOffset int64) {
-
-	recvName := mailer.recvName.Name
-	recvUnix := mailer.recvUnix
-
-	rawComplete := fmt.Sprintf("%s %d %d", recvName, recvOffset, recvUnix)
-	mailer.stream.WriteCommandPacket(stream.M_GOT, []byte(rawComplete))
 
 }

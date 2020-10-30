@@ -48,7 +48,7 @@ func (self *MailerStateWaitOk) Process(mailer *Mailer) IMailerState {
 
 	select {
 
-	case nextFrame := <-mailer.stream.InDataFrames:
+	case nextFrame := <-mailer.stream.InFrame:
 		return self.processFrame(nextFrame)
 
 		//	case <-mailer.WaitAddrTimeout:

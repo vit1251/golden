@@ -8,19 +8,7 @@ import (
 	"os"
 )
 
-type MailerStateTxGNF struct {
-	MailerState
-}
-
-func NewMailerStateTxGNF() *MailerStateTxGNF {
-	return new(MailerStateTxGNF)
-}
-
-func (self MailerStateTxGNF) String() string {
-	return "MailerStateTxGNF"
-}
-
-func (self *MailerStateTxGNF) popNextFileEntry(mailer *Mailer) *cache.FileEntry {
+func popNextFileEntry(mailer *Mailer) *cache.FileEntry {
 
 	var result *cache.FileEntry = nil
 
@@ -34,10 +22,34 @@ func (self *MailerStateTxGNF) popNextFileEntry(mailer *Mailer) *cache.FileEntry 
 
 }
 
-func (self *MailerStateTxGNF) Process(mailer *Mailer) IMailerState {
+func makeFilePakcet(mailer *Mailer, stm *os.File) error {
+
+	/* File summary */
+	streamInfo, err1 := stm.Stat()
+	if err1 != nil {
+		return err1
+	}
+
+	/* Prepare M_FILE packet */
+	// p0018ea8.WE0 39678 1579714843 0
+
+	sendSize := streamInfo.Size()
+	sendTime := streamInfo.ModTime().Unix()
+	sendName := mailer.sendName.Name
+
+	packet := fmt.Sprintf("%s %d %d %d", sendName, sendSize, sendTime, 0)
+
+	mailer.stream.WriteHeader(packet)
+
+	return nil
+
+}
+
+
+func TransmitRoutineTxGNF(mailer *Mailer) {
 
 	/* Open next file from outgoing queue */
-	mailer.sendName = self.popNextFileEntry(mailer)
+	mailer.sendName = popNextFileEntry(mailer)
 
 	/* File opened OK */
 	if mailer.sendName != nil {
@@ -49,7 +61,7 @@ func (self *MailerStateTxGNF) Process(mailer *Mailer) IMailerState {
 			mailer.sendStream = stm
 
 			/* Send M_FILE */
-			self.makeFilePakcet(mailer, stm)
+			makeFilePakcet(mailer, stm)
 
 			/* Report sending file */
 			log.Printf("Start sending file - %+v", mailer.sendName)
@@ -81,30 +93,5 @@ func (self *MailerStateTxGNF) Process(mailer *Mailer) IMailerState {
 		mailer.txState = TxWLA
 
 	}
-
-	return NewMailerStateSwitch()
-
-}
-
-func (self MailerStateTxGNF) makeFilePakcet(mailer *Mailer, stm *os.File) error {
-
-	/* File summary */
-	streamInfo, err1 := stm.Stat()
-	if err1 != nil {
-		return err1
-	}
-
-	/* Prepare M_FILE packet */
-	// p0018ea8.WE0 39678 1579714843 0
-
-	sendSize := streamInfo.Size()
-	sendTime := streamInfo.ModTime().Unix()
-	sendName := mailer.sendName.Name
-
-	packet := fmt.Sprintf("%s %d %d %d", sendName, sendSize, sendTime, 0)
-
-	mailer.stream.WriteHeader(packet)
-
-	return nil
 
 }

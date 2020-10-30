@@ -5,22 +5,10 @@ import (
 	"log"
 )
 
-type MailerStateRxRaceD struct {
-	MailerState
-}
-
-func NewMailerStateRxRaceD() *MailerStateRxRaceD {
-	return new(MailerStateRxRaceD)
-}
-
-func (self MailerStateRxRaceD) String() string {
-	return "MailerStateRxRaceD"
-}
-
-func (self *MailerStateRxRaceD) Process(mailer *Mailer) IMailerState {
+func ReceiveRoutineRxRaceD(mailer *Mailer) {
 
 	/* Accept from beginning */
-	nextFrame := mailer.stream.GetFrame()
+	nextFrame := <- mailer.stream.InFrame
 
 	if nextFrame.IsDataFrame() {
 
@@ -52,6 +40,7 @@ func (self *MailerStateRxRaceD) Process(mailer *Mailer) IMailerState {
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandID == stream.M_GET || nextFrame.CommandID == stream.M_GOT || nextFrame.CommandID == stream.M_SKIP {
 			/* Add frame to The Queue */
+			mailer.queue.Push(nextFrame)
 		}
 	}
 
@@ -65,8 +54,6 @@ func (self *MailerStateRxRaceD) Process(mailer *Mailer) IMailerState {
 	// TODO -
 
 	// TODO - Report receiving file
-
-	return NewMailerStateSwitch()
 
 }
 

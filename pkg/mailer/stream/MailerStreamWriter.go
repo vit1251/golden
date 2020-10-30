@@ -67,18 +67,25 @@ func (self *MailerStream) processTX() {
 	log.Printf("MailerStream: TX stream: start")
 	for alive := true; alive; {
 		select {
-		case nextFrame, ok := <-self.OutDataFrames:
+
+		case <- self.OutFrameReady:
+			log.Printf("MailerStream: TX stream: marker write READY push")
+
+		case nextFrame, ok := <-self.OutFrame:
 			if ok {
 				log.Printf("MailerStream: processTX: new TX packet ready")
 				self.processTXpacket(nextFrame)
-				self.writeReady = true
 			} else {
-				log.Printf("MailerStream: processTX: stream EOF")
 				alive = false
 			}
+
 		}
 	}
 	log.Printf("MailerStream: TX stream: stop")
+
+	/* Close stream */
+	log.Printf("MailerStream: processTX: stream EOF")
+	close(self.OutFrameReady)
 
 	/* Done writer */
 	self.wait.Done()

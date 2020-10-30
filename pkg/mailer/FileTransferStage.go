@@ -1,29 +1,22 @@
 package mailer
 
-type RxState int
+type RxState string
 
 const (
-	RxWaitF  RxState = 0x0101
-	RxAccF   RxState = 0x0102
-	RxRaceD  RxState = 0x0103
-	RxWriteD RxState = 0x0104
-	RxEOB    RxState = 0x0105
-	RxDone   RxState = 0x0106
+	RxWaitF  RxState = "RxWaitF"
+	RxAccF   RxState = "RxAccF"
+	RxRaceD  RxState = "RxRaceD"
+	RxWriteD RxState = "RxWriteD"
+	RxEOB    RxState = "RxEOB"
+	RxDone   RxState = "RxDone"
 )
 
-type TxState int
+type TxState string
 
 const (
-	TxGNF   TxState = 0x0201
-	TxTryR  TxState = 0x0202
-	TxReadS TxState = 0x0203
-	TxWLA   TxState = 0x0204
-	TxDone  TxState = 0x0205
-)
-
-type FileTransferStageState int
-
-const (
-	FileTransferInitTransferState FileTransferStageState = 0
-	FileTransferSwitchState       FileTransferStageState = 1
+	TxGNF   TxState = "TxGNF"
+	TxTryR  TxState = "TxTryR"
+	TxReadS TxState = "TxReadS"
+	TxWLA   TxState = "TxWLA"
+	TxDone  TxState = "TxDone"
 )

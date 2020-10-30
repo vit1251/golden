@@ -7,6 +7,7 @@ import (
 	"github.com/vit1251/golden/pkg/mailer/auth"
 	"github.com/vit1251/golden/pkg/mailer/cache"
 	stream2 "github.com/vit1251/golden/pkg/mailer/stream"
+	"github.com/vit1251/golden/pkg/mailer/util"
 	"github.com/vit1251/golden/pkg/setup"
 	"log"
 	"os"
@@ -16,8 +17,6 @@ import (
 
 type Mailer struct {
 	activeState IMailerState /* Mailer state                */
-
-	transferState FileTransferStageState /* Mailer state                */
 
 	rxState RxState /*                             */
 	txState TxState /*                             */
@@ -52,7 +51,9 @@ type Mailer struct {
 
 	workInbound  string /*  */
 	workOutbound string /*  */
+
 	work         string
+
 	SetupManager *setup.ConfigManager /*   */
 
 	InFileCount  int
@@ -67,6 +68,10 @@ type Mailer struct {
 	outboundQueue []cache.FileEntry
 	inboundQueue  []cache.FileEntry
 
+	queue          *util.TheQueue       /* TheQueue      */
+
+	pendingFiles    util.Directory
+
 }
 
 func NewMailer(sm *setup.ConfigManager) *Mailer {
@@ -74,6 +79,7 @@ func NewMailer(sm *setup.ConfigManager) *Mailer {
 
 	m.connComplete = make(chan int)
 	m.SetupManager = sm
+	m.queue = util.NewTheQueue()
 
 	return m
 }
@@ -138,10 +144,6 @@ func (self *Mailer) Wait() {
 
 func (self *Mailer) SetServerAddr(addr string) {
 	self.ServerAddr = addr
-}
-
-func (self *Mailer) SetFileTransferState(state FileTransferStageState) {
-	self.transferState = state
 }
 
 func (self *Mailer) SetInboundDirectory(inb string) {
@@ -250,4 +252,8 @@ func (self *Mailer) processNulFrame(nextFrame stream2.Frame) {
 		log.Printf("Remote side M_NUL parse error")
 	}
 
+}
+
+func (self *Mailer) GetWork() string {
+	return self.work
 }

@@ -5,25 +5,15 @@ import (
 	"log"
 )
 
-type MailerStateRxEOB struct {
-	MailerState
-}
-
-func NewMailerStateRxEOB() *MailerStateRxEOB {
-	return new(MailerStateRxEOB)
-}
-
-func (self MailerStateRxEOB) String() string {
-	return "MailerStateRxEOB"
-}
-
-func (self *MailerStateRxEOB) Process(mailer *Mailer) IMailerState {
+func ReceiveRoutineRxEOB(mailer *Mailer) {
 
 	/* Get a frame from Input Buffer */
-	nextFrame := mailer.stream.GetFrame()
+	nextFrame := <- mailer.stream.InFrame
 
 	/* Pending Files list is empty */
-	mailer.rxState = RxDone
+	if mailer.pendingFiles.IsEmpty() {
+		mailer.rxState = RxDone
+	}
 
 	/* Didn't get a complete frame yet or TxState is not TxDone */
 	// TODO -
@@ -40,7 +30,7 @@ func (self *MailerStateRxEOB) Process(mailer *Mailer) IMailerState {
 	/* Got M_GET / M_GOT / M_SKIP */
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandID == stream.M_GET || nextFrame.CommandID == stream.M_GOT || nextFrame.CommandID == stream.M_SKIP {
-			// TODO - Add frame to The Queue
+			mailer.queue.Push(nextFrame)
 		}
 	}
 
@@ -52,7 +42,5 @@ func (self *MailerStateRxEOB) Process(mailer *Mailer) IMailerState {
 
 	/* Got unknown frame */
 	// TODO -
-
-	return NewMailerStateSwitch()
 
 }

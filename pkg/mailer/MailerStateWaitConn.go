@@ -35,7 +35,7 @@ func (self *MailerStateWaitConn) makeVersionString() string {
 	return fmt.Sprintf("%s/%s %s", appName, appVersion, protocolVersion)
 }
 
-func (self *MailerStateWaitConn) Process(mailer *Mailer) IMailerState {
+func (self *MailerStateWaitConn) processWelcome(mailer *Mailer) {
 
 	/* Send M_NUL frames with system info (optional) */
 	if username := mailer.GetUserName(); username != "" {
@@ -51,9 +51,19 @@ func (self *MailerStateWaitConn) Process(mailer *Mailer) IMailerState {
 	/* Send M_ADR frame with system address */
 	mailer.stream.WriteAddress(mailer.GetAddr())
 
+}
+
+func (self *MailerStateWaitConn) Process(mailer *Mailer) IMailerState {
+
 	select {
-		case <-time.After(5 * time.Second):
-			return NewMailerStateAdditionalStep()
+	case <-mailer.stream.InFrameReady: // TODO - replace on connection ready channel ...
+		self.processWelcome(mailer)
+		return NewMailerStateAdditionalStep()
+
+	case <-time.After(15 * time.Second):
+		return NewMailerStateEnd()
 	}
 
 }
+
+

@@ -50,7 +50,7 @@ func (self *MailerStateAdditionalStep) processFrame(mailer *Mailer, nextFrame st
 func (self *MailerStateAdditionalStep) Process(mailer *Mailer) IMailerState {
 
 	select {
-	case nextFrame := <-mailer.stream.InDataFrames:
+	case nextFrame := <-mailer.stream.InFrame:
 		return self.processFrame(mailer, nextFrame)
 	}
 

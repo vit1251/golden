@@ -4,7 +4,6 @@ import (
 	"encoding/binary"
 	"io"
 	"log"
-	"time"
 )
 
 const (
@@ -18,6 +17,21 @@ func (self *MailerStream) parseFrameHeader(frameHeader uint16) (bool, uint16) {
 	return frameCommand, frameSize
 }
 
+func (self *MailerStream) pushPacket(nextFrame Frame) {
+	for pending := true; pending; {
+		select {
+
+			case self.InFrameReady <- nil:
+				log.Printf("MailerStream: RX stream: marker read READY push")
+
+			case self.InFrame <- nextFrame:
+				log.Printf("MailerStream: RX stream: ask packet with content")
+				pending = false
+
+		}
+	}
+}
+
 func (self *MailerStream) processRX() {
 
 	log.Printf("MailerStream: RX stream: start")
@@ -27,10 +41,9 @@ func (self *MailerStream) processRX() {
 
 		/* Receive frame header */
 		var frameHeader uint16
-		self.conn.SetReadDeadline(time.Now().Add(1 * time.Second))
 		err1 := binary.Read(self.reader, binary.BigEndian, &frameHeader)
-		if err1 == io.EOF {
-			log.Printf("MailerStream: processRX: stream EOF")
+		if err1 != nil {
+			log.Printf("MailerStream: Read: err = %+v", err1)
 			break
 		}
 		log.Printf("RX frame: header %04X", frameHeader)
@@ -57,8 +70,7 @@ func (self *MailerStream) processRX() {
 			}
 
 			log.Printf("MailerStream: RX frame: commandID = %q body = %s", nextFrame.CommandFrame.CommandID, nextFrame.CommandFrame.Body)
-			self.readReady = true
-			self.InDataFrames <- nextFrame
+			self.pushPacket(nextFrame)
 
 		} else {
 			/* Store data frame in queue */
@@ -68,8 +80,7 @@ func (self *MailerStream) processRX() {
 					Body: frameBody,
 				},
 			}
-			self.readReady = true
-			self.InDataFrames <- nextFrame
+			self.pushPacket(nextFrame)
 		}
 		log.Printf("^^^ RX stream ^^^")
 	}
@@ -77,7 +88,9 @@ func (self *MailerStream) processRX() {
 	log.Printf("MailerStream: RX stream: stop")
 
 	/* Release resources */
-	close(self.InDataFrames)
+	log.Printf("MailerStream: processRX: stream EOF")
+	close(self.InFrameReady)
+	close(self.InFrame)
 
 	/* Done reader */
 	self.wait.Done()

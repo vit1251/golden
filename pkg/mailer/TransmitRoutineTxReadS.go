@@ -3,29 +3,20 @@ package mailer
 import (
 	"io"
 	"log"
-	"os"
-	"path"
 )
 
-type MailerStateTxReadS struct {
-	MailerState
-}
-
-func NewMailerStateTxReadS() *MailerStateTxReadS {
-	return new(MailerStateTxReadS)
-}
-
-func (self MailerStateTxReadS) String() string {
-	return "MailerStateTxReadS"
-}
-
-func (self *MailerStateTxReadS) Process(mailer *Mailer) IMailerState {
+func TransmitRoutineTxReadS(mailer *Mailer) {
 
 	/* Read data block from file */
 	chunkSize := 4096 // TODO - cmn.Min(1024, 4096)
 	chunk := make([]byte, chunkSize)
 
 	sendReady, err3 := mailer.sendStream.Read(chunk)
+	if sendReady > 0 {
+		chunk = chunk[:sendReady]
+	} else {
+		chunk = nil
+	}
 
 	/* Read failed */
 	if err3 != nil {
@@ -40,7 +31,7 @@ func (self *MailerStateTxReadS) Process(mailer *Mailer) IMailerState {
 	if err3 == io.EOF {
 
 		/* Send data block frame */
-		if sendReady > 0 {
+		if chunk != nil {
 			mailer.stream.WriteData(chunk)
 		}
 
@@ -48,15 +39,12 @@ func (self *MailerStateTxReadS) Process(mailer *Mailer) IMailerState {
 		mailer.sendStream.Close()
 		mailer.sendStream = nil
 
-		/* Complete routine */
-		newName := path.Join(mailer.GetWorkOutbound(), mailer.sendName.Name)
-		err4 := os.Rename(mailer.sendName.AbsolutePath, newName)
-		if err4 != nil {
-			log.Printf("Send file rename error: err = %+v")
-
+		/* Add current file to Pending Files */
+		if mailer.sendName != nil {
+			mailer.pendingFiles.Push(*mailer.sendName)
 		}
 
-		/* Add current file to Panding Files */
+		/* Next state */
 		mailer.txState = TxGNF
 
 	}
@@ -71,7 +59,5 @@ func (self *MailerStateTxReadS) Process(mailer *Mailer) IMailerState {
 		mailer.txState = TxTryR
 
 	}
-
-	return NewMailerStateSwitch()
 
 }
