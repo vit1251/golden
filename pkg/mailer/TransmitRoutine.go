@@ -2,24 +2,34 @@ package mailer
 
 import "log"
 
-func TransmitRoutine(mailer *Mailer) {
+type TransmitRoutineResult string
+
+const (
+	TxOk         TransmitRoutineResult = "TxOk"
+	TxFailure    TransmitRoutineResult = "TxFailure"
+	TxContinue   TransmitRoutineResult = "TxContinue"
+)
+
+func TransmitRoutine(mailer *Mailer) TransmitRoutineResult {
 
 	log.Printf("TransmitRoutine: txState = %+v", mailer.txState)
 
 	switch mailer.txState {
 
 	case TxGNF:
-		TransmitRoutineTxGNF(mailer)
+		return TransmitRoutineTxGNF(mailer)
 
 	case TxWLA:
-		TransmitRoutineTxWLA(mailer)
+		return TransmitRoutineTxWLA(mailer)
 
 	case TxTryR:
-		TransmitRoutineTxTryR(mailer)
+		return TransmitRoutineTxTryR(mailer)
 
 	case TxReadS:
-		TransmitRoutineTxReadS(mailer)
+		return TransmitRoutineTxReadS(mailer)
 
 	}
+
+	panic("wrong case or memory corruption")
 
 }

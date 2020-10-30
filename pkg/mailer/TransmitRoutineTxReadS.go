@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func TransmitRoutineTxReadS(mailer *Mailer) {
+func TransmitRoutineTxReadS(mailer *Mailer) TransmitRoutineResult {
 
 	/* Read data block from file */
 	chunkSize := 4096 // TODO - cmn.Min(1024, 4096)
@@ -24,6 +24,7 @@ func TransmitRoutineTxReadS(mailer *Mailer) {
 			/* Report error */
 			log.Printf("Error reading TX stream: err = %+v", err3)
 			mailer.txState = TxDone
+			return TxFailure
 		}
 	}
 
@@ -46,7 +47,7 @@ func TransmitRoutineTxReadS(mailer *Mailer) {
 
 		/* Next state */
 		mailer.txState = TxGNF
-
+		return TxOk
 	}
 
 	/* Read OK, not reached EOF */
@@ -57,7 +58,9 @@ func TransmitRoutineTxReadS(mailer *Mailer) {
 
 		/* Next state */
 		mailer.txState = TxTryR
-
+		return TxOk
 	}
+
+	panic("unknown case or memory corruption")
 
 }

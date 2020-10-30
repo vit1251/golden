@@ -35,14 +35,15 @@ func processFile(mailer *Mailer, nextFrame stream.Frame) {
 
 }
 
-func ReceiveRoutineRxWaitF(mailer *Mailer) {
+func ReceiveRoutineRxWaitF(mailer *Mailer) ReceiveRoutineResult {
 
 	/* Get a frame from Input Buffer */
 	nextFrame := <-mailer.stream.InFrame
 
 	/* Got Data frame */
 	if nextFrame.IsDataFrame() {
-		// ignore
+		/* ignore */
+		return RxOk
 	}
 
 	/* Got M_ERR */
@@ -51,6 +52,7 @@ func ReceiveRoutineRxWaitF(mailer *Mailer) {
 			/* Report error */
 			log.Printf("RxWaitF receive M_ERR")
 			mailer.rxState = RxDone
+			return RxFailure
 		}
 	}
 
@@ -61,6 +63,14 @@ func ReceiveRoutineRxWaitF(mailer *Mailer) {
 			log.Printf("State: RxWaitF TheQueue push packet")
 			mailer.queue.Push(nextFrame)
 			mailer.queue.Dump()
+			return RxOk
+		}
+	}
+
+	/* Got M_NUL */
+	if nextFrame.IsCommandFrame() {
+		if nextFrame.CommandID == stream.M_EOB {
+			return RxOk
 		}
 	}
 
@@ -68,6 +78,7 @@ func ReceiveRoutineRxWaitF(mailer *Mailer) {
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandID == stream.M_EOB {
 			mailer.rxState = RxEOB
+			return RxOk
 		}
 	}
 
@@ -76,13 +87,19 @@ func ReceiveRoutineRxWaitF(mailer *Mailer) {
 		if nextFrame.CommandID == stream.M_FILE {
 			processFile(mailer, nextFrame)
 			mailer.rxState = RxAccF
+			return RxContinue
 		}
 	}
 
 	/* Got other known frame */
-	// TODO -
+	if nextFrame.IsCommandFrame() { // TODO - Other known frame ...
+		/* Report unexpected frame */
+		log.Printf("Report unexpected frame")
+		mailer.rxState = RxDone
+		return RxFailure
+	}
 
 	/* Got unknown frame */
-	// TODO -
+	return RxOk
 
 }

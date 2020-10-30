@@ -5,11 +5,12 @@ import (
 	"log"
 )
 
-func ReceiveRoutineRxRaceD(mailer *Mailer) {
+func ReceiveRoutineRxRaceD(mailer *Mailer) ReceiveRoutineResult {
 
-	/* Accept from beginning */
+	/* Get a frame from Input Buffer */
 	nextFrame := <- mailer.stream.InFrame
 
+	/* Got Data frame */
 	if nextFrame.IsDataFrame() {
 
 		packet := nextFrame.DataFrame.Body
@@ -25,6 +26,7 @@ func ReceiveRoutineRxRaceD(mailer *Mailer) {
 		}
 
 		mailer.rxState = RxWriteD
+		return RxContinue
 	}
 
 	/* Got M_ERR */
@@ -32,7 +34,9 @@ func ReceiveRoutineRxRaceD(mailer *Mailer) {
 		if nextFrame.CommandID == stream.M_ERR {
 			/* Report Error */
 			log.Printf("MailerState: Receive - RxRaceD - Got M_ERR")
+
 			mailer.rxState = RxDone
+			return RxFailure
 		}
 	}
 
@@ -41,6 +45,9 @@ func ReceiveRoutineRxRaceD(mailer *Mailer) {
 		if nextFrame.CommandID == stream.M_GET || nextFrame.CommandID == stream.M_GOT || nextFrame.CommandID == stream.M_SKIP {
 			/* Add frame to The Queue */
 			mailer.queue.Push(nextFrame)
+
+			mailer.rxState = RxRaceD
+			return RxOk
 		}
 	}
 
@@ -51,9 +58,13 @@ func ReceiveRoutineRxRaceD(mailer *Mailer) {
 	// TODO -
 
 	/* Got other known frame */
-	// TODO -
+	if nextFrame.IsCommandFrame() {
+		mailer.rxState = RxDone
+		return RxFailure
+	}
 
-	// TODO - Report receiving file
+	/* Got unknown frame */
+	mailer.rxState = RxRaceD
+	return RxOk
 
 }
-

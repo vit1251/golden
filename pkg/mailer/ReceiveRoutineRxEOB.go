@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func ReceiveRoutineRxEOB(mailer *Mailer) {
+func ReceiveRoutineRxEOB(mailer *Mailer) ReceiveRoutineResult {
 
 	/* Get a frame from Input Buffer */
 	nextFrame := <- mailer.stream.InFrame
@@ -13,10 +13,14 @@ func ReceiveRoutineRxEOB(mailer *Mailer) {
 	/* Pending Files list is empty */
 	if mailer.pendingFiles.IsEmpty() {
 		mailer.rxState = RxDone
+		return RxOk
 	}
 
 	/* Didn't get a complete frame yet or TxState is not TxDone */
-	// TODO -
+	if mailer.txState != TxDone {
+		mailer.rxState = RxEOB
+		return RxOk
+	}
 
 	/* Got M_ERR */
 	if nextFrame.IsCommandFrame() {
@@ -24,6 +28,7 @@ func ReceiveRoutineRxEOB(mailer *Mailer) {
 			/* Report Rrror */
 			log.Printf("Receive - RxEOB - Got M_ERR")
 			mailer.rxState = RxDone
+			return RxFailure
 		}
 	}
 
@@ -31,6 +36,8 @@ func ReceiveRoutineRxEOB(mailer *Mailer) {
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandID == stream.M_GET || nextFrame.CommandID == stream.M_GOT || nextFrame.CommandID == stream.M_SKIP {
 			mailer.queue.Push(nextFrame)
+			mailer.rxState = RxEOB
+			return RxOk
 		}
 	}
 
@@ -38,9 +45,13 @@ func ReceiveRoutineRxEOB(mailer *Mailer) {
 	// TODO -
 
 	/* Got other known frame or data frame */
-	// TODO -
+	if nextFrame.IsCommandFrame() {
+		mailer.rxState = RxDone
+		return RxFailure
+	}
 
 	/* Got unknown frame */
-	// TODO -
+	mailer.rxState = RxEOB
+	return RxOk
 
 }

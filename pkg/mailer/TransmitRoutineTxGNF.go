@@ -46,7 +46,7 @@ func makeFilePakcet(mailer *Mailer, stm *os.File) error {
 }
 
 
-func TransmitRoutineTxGNF(mailer *Mailer) {
+func TransmitRoutineTxGNF(mailer *Mailer) TransmitRoutineResult {
 
 	/* Open next file from outgoing queue */
 	mailer.sendName = popNextFileEntry(mailer)
@@ -55,7 +55,9 @@ func TransmitRoutineTxGNF(mailer *Mailer) {
 	if mailer.sendName != nil {
 
 		log.Printf("TX name: nextFile = %+v", mailer.sendName)
+
 		stm, err1 := os.Open(mailer.sendName.AbsolutePath)
+
 		if err1 == nil {
 
 			mailer.sendStream = stm
@@ -68,7 +70,7 @@ func TransmitRoutineTxGNF(mailer *Mailer) {
 
 			/* Next state */
 			mailer.txState = TxTryR
-
+			return TxContinue
 		}
 
 		/* Failed to open file */
@@ -77,6 +79,7 @@ func TransmitRoutineTxGNF(mailer *Mailer) {
 			log.Printf("Fail to open file")
 			/* New state */
 			mailer.txState = TxDone
+			return TxFailure
 		}
 
 	}
@@ -91,7 +94,9 @@ func TransmitRoutineTxGNF(mailer *Mailer) {
 		log.Printf("Transmite Routine: End of Batch.")
 
 		mailer.txState = TxWLA
-
+		return TxContinue
 	}
+
+	panic("unknown case or memory corruption")
 
 }

@@ -23,3 +23,12 @@ func (self *Directory) RemoveByName(name string) {
 func (self Directory) IsEmpty() bool {
 	return len(self.items) == 0
 }
+
+func (self *Directory) Contains(name string) bool {
+	for _, item := range self.items {
+		if item.Name == name {
+			return true
+		}
+	}
+	return false
+}

@@ -2,25 +2,35 @@ package mailer
 
 import "log"
 
-func ReceiveRoutine(mailer *Mailer) {
+type ReceiveRoutineResult string
+
+const (
+	RxOk         ReceiveRoutineResult = "RxOk"
+	RxFailure    ReceiveRoutineResult = "RxFailure"
+	RxContinue   ReceiveRoutineResult = "RxContinue"
+)
+
+func ReceiveRoutine(mailer *Mailer) ReceiveRoutineResult {
 
 	log.Printf("ReceiveRoutine: rxState = %+v", mailer.rxState)
 
 	switch mailer.rxState {
 	case RxWaitF:
-		ReceiveRoutineRxWaitF(mailer)
+		return ReceiveRoutineRxWaitF(mailer)
 
 	case RxAccF:
-		ReceiveRoutineRxAccF(mailer)
+		return ReceiveRoutineRxAccF(mailer)
 
 	case RxRaceD:
-		ReceiveRoutineRxRaceD(mailer)
+		return ReceiveRoutineRxRaceD(mailer)
 
 	case RxWriteD:
-		ReceiveRoutineRxWriteD(mailer)
+		return ReceiveRoutineRxWriteD(mailer)
 
 	case RxEOB:
-		ReceiveRoutineRxEOB(mailer)
+		return ReceiveRoutineRxEOB(mailer)
 	}
+
+	panic("wrong case or memory corruption")
 
 }

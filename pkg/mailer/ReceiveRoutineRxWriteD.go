@@ -20,16 +20,34 @@ func makeFileGotPacket(mailer *Mailer, recvOffset int64) {
 
 }
 
-func ReceiveRoutineRxWriteD(mailer *Mailer) {
+func ReceiveRoutineRxWriteD(mailer *Mailer) ReceiveRoutineResult {
 
-	offset, err := mailer.recvStream.Seek(0, io.SeekCurrent)
+	/* Write data to file */
+	var err error = nil
+
+	/* Write Failed */
 	if err != nil {
-		log.Printf("Error: err %+v", err)
+		/* Report error */
+		log.Printf("Report error")
+		mailer.rxState = RxDone
+		return RxFailure
 	}
+
+	offset, err1 := mailer.recvStream.Seek(0, io.SeekCurrent)
+	if err1 != nil {
+		log.Printf("Error: err %+v", err1)
+		mailer.rxState = RxDone
+		return RxFailure
+	}
+
+	log.Printf("RxWriteD: offset = %d expected = %d", offset, mailer.readSize)
 
 	/* File Pos > Reported */
 	if offset > mailer.readSize {
-		// TODO - Report write beyond EOF
+		/* Report write beyond EOF */
+		log.Printf("Report write beyond EOF")
+		mailer.rxState = RxDone
+		return RxFailure
 	}
 
 	/* File Pos = Reported */
@@ -56,10 +74,14 @@ func ReceiveRoutineRxWriteD(mailer *Mailer) {
 		mailer.recvName = nil
 
 		mailer.rxState = RxWaitF
+		return RxOk
 	}
 
 	if offset < mailer.readSize {
 		mailer.rxState = RxRaceD
+		return RxOk
 	}
+
+	panic("unknown case or memory corruption")
 
 }

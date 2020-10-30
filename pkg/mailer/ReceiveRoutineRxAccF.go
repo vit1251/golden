@@ -6,25 +6,39 @@ import (
 	"os"
 )
 
-func ReceiveRoutineRxAccF(mailer *Mailer) {
+const (
+	AcceptFromBegin   = 1
+	AcceptFromOffset  = 2
+	AcceptLater       = 3
+)
+
+func ReceiveRoutineRxAccF(mailer *Mailer) ReceiveRoutineResult {
+
+	acceptMode := AcceptFromBegin
 
 	/* Accept from beginning */
+	if acceptMode == AcceptFromBegin {
 
-	log.Printf("Open path: %+v", mailer.recvName.AbsolutePath)
+		/* Report receiving file */
+		log.Printf("Report receiving file: name = %s", mailer.recvName.AbsolutePath)
 
-	stream, err1 := os.Create(mailer.recvName.AbsolutePath)
+		stream, err1 := os.Create(mailer.recvName.AbsolutePath)
 
-	if err1 != nil {
-		log.Printf("Fail to create file")
-		// TODO - error report and packet ...
-		mailer.stream.WriteCommandPacket(stream2.M_ERR, []byte("Unable to open file!"))
-		mailer.rxState = RxDone
-	}
+		if err1 != nil {
+			log.Printf("Fail to create file")
+			// TODO - error report and packet ...
+			mailer.stream.WriteCommandPacket(stream2.M_ERR, []byte("Unable to open file!"))
+			mailer.rxState = RxDone
+			return RxFailure
+		}
 
-	if err1 == nil {
-		log.Printf("Start receivnig file")
 		mailer.recvStream = stream
 		mailer.rxState = RxRaceD
+
+		return RxOk
+
 	}
+
+	return RxFailure
 
 }

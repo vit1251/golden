@@ -22,7 +22,7 @@ func (self *MailerStateSwitch) Process(mailer *Mailer) IMailerState {
 
 	log.Printf("                         --- Debug wait --- ")
 	log.Printf("rxState = %s txState = %s", mailer.rxState, mailer.txState)
-	time.Sleep(1 * time.Second)
+	time.Sleep(100 * time.Millisecond)
 
 	/* Check complete */
 	log.Printf("Check complete")
@@ -36,7 +36,18 @@ func (self *MailerStateSwitch) Process(mailer *Mailer) IMailerState {
 	case _, ok := <- mailer.stream.InFrameReady:
 		log.Printf("Data available in Input Buffer")
 		if ok {
-			ReceiveRoutine(mailer)
+			for {
+				result := ReceiveRoutine(mailer)
+				if result == RxOk {
+					break
+				}
+				if result == RxContinue {
+					//
+				}
+				if result == RxFailure {
+					return NewMailerStateEnd()
+				}
+			}
 		} else {
 			// Close session ...
 			return NewMailerStateEnd()
@@ -45,8 +56,18 @@ func (self *MailerStateSwitch) Process(mailer *Mailer) IMailerState {
 	/* Data available in Output Buffer */
 	case mailer.stream.OutFrameReady <- nil:
 		log.Printf("Data available in Output Buffer")
-		TransmitRoutine(mailer)
-
+		for {
+			result := TransmitRoutine(mailer)
+			if result == TxOk {
+				break
+			}
+			if result == TxContinue {
+				//
+			}
+			if result == TxFailure {
+				return NewMailerStateEnd()
+			}
+		}
 	}
 
 	return self

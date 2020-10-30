@@ -8,33 +8,70 @@ import (
 	"path"
 )
 
-func processGotPacket(mailer *Mailer, nextFrame stream.Frame) {
+type GotStat struct {
+	Name     string
+	Size     int64
+	UnixTime int64
+}
 
-	log.Printf("Process M_GOT incoming packet")
-
-	packet := nextFrame.CommandFrame.Body
-
-	// abc.txt 000 123
+func parseGot(packet []byte) *GotStat {
 	values := bytes.SplitN(packet, []byte(" "), 2)
 	if len(values) > 1 {
 		name := values[0]
-		newName := string(name) // TODO - unescape name here ...
+		// TODO - Size ..
+		// TODO - UnixTime ..
+		result := GotStat{
+			Name: string(name),      // TODO - unescape name here ...
+		}
+		return &result
+	} else {
+		return nil
+	}
+}
 
-		log.Printf("ACK receive packet: name = %+v", name)
-		mailer.pendingFiles.RemoveByName(newName)
 
-		pendingPath := path.Join(mailer.outboundDirectory, newName)
-		newPath := path.Join(mailer.workOutbound, newName)
+func processGotPacket(mailer *Mailer, nextFrame stream.Frame) {
 
-		log.Printf("SEND COMPLETE: MOVE: %s -> %s", pendingPath, newPath)
+	log.Printf("Process M_GOT incoming packet")
+	packet := nextFrame.CommandFrame.Body
+	gs := parseGot(packet)
+	if gs == nil {
+		log.Printf("M_GOT parse error!")
+		return
+	}
 
-		err4 := os.Rename(pendingPath, newPath)
-		if err4 != nil {
-			log.Printf("Send file rename error: err = %+v", err4)
+	/* M_GOT file that is currently transmitting */
+	// TODO - ...
+
+	/* M_GOT file that is not currently transmitting */
+	if (mailer.sendName == nil) || (mailer.sendName != nil && mailer.sendName.Name != gs.Name) {
+
+		/* Files is in PendingFiles list */
+		if mailer.pendingFiles.Contains(gs.Name) {
+
+			pendingPath := path.Join(mailer.outboundDirectory, gs.Name)
+			newPath := path.Join(mailer.workOutbound, gs.Name)
+
+			log.Printf("SEND COMPLETE: MOVE: %s -> %s", pendingPath, newPath)
+
+			err4 := os.Rename(pendingPath, newPath)
+			if err4 != nil {
+				log.Printf("Send file rename error: err = %+v", err4)
+			}
+
+			/* Remove file from the PendingFiles list */
+			log.Printf("ACK receive packet: name = %+v", gs.Name)
+			mailer.pendingFiles.RemoveByName(gs.Name)
+
+			/* Set TxState to TxGNF */
+			mailer.txState = TxGNF
+
+		} else {
+
+			/* Ignore frame */
+
 		}
 
-	} else {
-		log.Printf("M_GOT parse error!")
 	}
 
 }
@@ -46,18 +83,14 @@ func ProcessTheQueue(mailer *Mailer) {
 	nextFrame := mailer.queue.Pop()
 
 	/* M_GET received */
+	/* M_GET received for a known file */
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandFrame.CommandID == stream.M_GET {
 			// TODO - ...
 		}
 	}
 
-	/* M_GET received for a known file */
-	// TODO - ...
-
 	/* M_GOT file that is currently transmitting */
-	// TODO - ...
-
 	/* M_GOT file that is not currently transmitting */
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandFrame.CommandID == stream.M_GOT {
@@ -65,5 +98,10 @@ func ProcessTheQueue(mailer *Mailer) {
 		}
 	}
 
+	/* M_SKIP */
+	// TODO -
+
+	/* M_NUL */
+	// TODO -
 
 }
