@@ -75,3 +75,7 @@ func (self PacketReader2) ReadPacketHeader() (*PacketHeader, error) {
 	return &result, nil
 
 }
+
+func (self PacketReader2) ReadMessageHeader() (interface{}, error) {
+	return nil, nil
+}

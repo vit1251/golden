@@ -70,7 +70,7 @@ func (self *PacketWriter) writePacketHeaderCapatiblityBytes(capByte1 uint8, capB
 
 const PKT_VERSION = 2
 
-func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) (error) {
+func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) error {
 
 	/* Write orginator node address */
 	if err1 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigNode); err1 != nil {
@@ -217,6 +217,11 @@ func (self *PacketWriter) WriteMessageHeader(msgHeader *PacketMessageHeader) err
 	return nil
 }
 
+const (
+	SOH = "\x01"
+	CR  = "\x0D"
+)
+
 func (self *PacketWriter) WriteMessage(msgBody *MessageBody) error {
 
 	/* Step 1. Write area */
@@ -225,16 +230,16 @@ func (self *PacketWriter) WriteMessage(msgBody *MessageBody) error {
 		self.binaryStreamWriter.WriteBytes([]byte("AREA"))
 		self.binaryStreamWriter.WriteBytes([]byte(":"))
 		self.binaryStreamWriter.WriteBytes([]byte(areaName))
-		self.binaryStreamWriter.WriteBytes([]byte("\x0D"))
+		self.binaryStreamWriter.WriteBytes([]byte(CR))
 	}
 
 	/* Step 2. Write kludges */
 	for _, k := range msgBody.Kludges {
-		self.binaryStreamWriter.WriteBytes([]byte("\x01"))
+		self.binaryStreamWriter.WriteBytes([]byte(SOH))
 		self.binaryStreamWriter.WriteBytes([]byte(k.Name))
 		self.binaryStreamWriter.WriteBytes([]byte(" "))
 		self.binaryStreamWriter.WriteBytes([]byte(k.Value))
-		self.binaryStreamWriter.WriteBytes([]byte("\x0D"))
+		self.binaryStreamWriter.WriteBytes([]byte(CR))
 	}
 
 	/* Step 3. Write message body */

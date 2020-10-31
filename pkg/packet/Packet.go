@@ -26,21 +26,6 @@ func (self *PacketHeader) SetPassword(password string) {
 	self.PktPassword = newPassword
 }
 
-type PacketMessageHeader struct {
-	OrigAddr        NetAddr
-	DestAddr        NetAddr
-	Attributes      uint16
-	ToUserName    []byte
-	FromUserName  []byte
-	Subject       []byte
-	Time           *fidotime.FidoDate
-}
-
-func NewPacketMessageHeader() *PacketMessageHeader {
-	msgHeader := new(PacketMessageHeader)
-	return msgHeader
-}
-
 type PacketAttr int8
 
 const (

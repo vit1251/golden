@@ -86,7 +86,7 @@ func (self *TosserManager) checkDirectory(cacheSection string) {
 			log.Printf("Initial create directory: path = %+v", cacheDirectory)
 			os.MkdirAll(cacheDirectory, os.ModeDir|0755)
 		} else {
-			log.Fatal("TosserManager: checkDirectory: err = %+v", err1)
+			log.Fatalf("TosserManager: checkDirectory: err = %+v", err1)
 		}
 	} else {
 		log.Printf("Directory check: name = %v - OK", cacheSection)
@@ -426,20 +426,15 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	msgHeader.SetToUserName(newTo)
 	msgHeader.SetFromUserName(newFrom)
 	msgHeader.SetSubject(newSubject)
-	var now *fidotime.FidoDate = fidotime.NewFidoDate()
-	now.SetNow()
-	msgHeader.SetTime(now)
+
+	msgTime := fidotime.NewFidoDate()
+	msgTime.SetNow()
+
+	msgHeader.SetTime(msgTime)
 
 	if err := pw.WriteMessageHeader(msgHeader); err != nil {
 		return err
 	}
-
-	/* Message UUID */
-	u1 := uuid.NewV4()
-	//	u1, err4 := uuid.NewV4()
-	//	if err4 != nil {
-	//		return err4
-	//	}
 
 	/* Prepare new message */
 	t := tmpl.NewTemplate()
@@ -456,12 +451,6 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", newOrigin, params.From))
 	rawMsg := msgContent.Pack()
 
-	/* Calculate checksumm */
-	h := crc32.NewIEEE()
-	h.Write(rawMsg)
-	hs := h.Sum32()
-	log.Printf("crc32 = %+v", hs)
-
 	/* Write message body */
 	msgBody := packet.NewMessageBody()
 
@@ -473,8 +462,8 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	msgBody.AddKludge("FMPT", fmt.Sprintf("%d", msgHeader.OrigAddr.Point))
 	msgBody.AddKludge("TOPT", fmt.Sprintf("%d", msgHeader.DestAddr.Point))
 	msgBody.AddKludge("CHRS", "CP866 2")
-	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", params.From, hs))
-	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
+	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %s", params.From, makeCRC32(rawMsg)))
+	msgBody.AddKludge("UUID", fmt.Sprintf("%s", makeUUID()))
 	msgBody.AddKludge("TID", newTID)
 
 	/* Set message body */
@@ -489,9 +478,32 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 }
 
 func (self *TosserManager) restoreMessageManager() *msg.MessageManager {
-	return nil
+
+	managerPtr := self.registry.Get("MessageManager")
+	if manager, ok := managerPtr.(*msg.MessageManager); ok {
+		return manager
+	} else {
+		panic("no message manager")
+	}
+
 }
 
 func (self *TosserManager) restoreCharsetManager() *charset.CharsetManager {
 	return nil
+}
+
+func makeUUID() string {
+	u1 := uuid.NewV4()
+	//	u1, err4 := uuid.NewV4()
+	//	if err4 != nil {
+	//		return err4
+	//	}
+	return u1.String()
+}
+
+func makeCRC32(rawMsg []byte) string {
+	h := crc32.NewIEEE()
+	h.Write(rawMsg)
+	hs := h.Sum32()
+	return fmt.Sprintf("%08X", hs)
 }

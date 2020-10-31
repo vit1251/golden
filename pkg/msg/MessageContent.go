@@ -44,5 +44,10 @@ func (self *MessageContent) SetCharset(charset string) {
 }
 
 func (self *MessageContent) restoreCharsetManager() *charset.CharsetManager {
-	return nil
+	managerPtr := self.registry.Get("CharsetManager")
+	if manager, ok := managerPtr.(*charset.CharsetManager); ok {
+		return manager
+	} else {
+		panic("no charset manager")
+	}
 }

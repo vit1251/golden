@@ -24,43 +24,6 @@ func NewPacketReader(stream io.Reader) *PacketReader {
 	return pr
 }
 
-func (self *PacketReader) readPacketHeaderCapatiblityBytes() (uint8, uint8, error) {
-
-	var capByte1 uint8
-	var capByte2 uint8
-
-	if value, err1 := self.binaryStreamReader.ReadUINT8(); err1 != nil {
-		return capByte1, capByte2, err1
-	} else {
-		capByte1 = value
-	}
-
-	if value, err2 := self.binaryStreamReader.ReadUINT8(); err2 != nil {
-		return capByte1, capByte2, err2
-	} else {
-		capByte2 = value
-	}
-
-	return capByte1, capByte2, nil
-}
-
-func (self *PacketReader) readPacketHeaderProductVersion() error {
-
-	if _, err1 := self.binaryStreamReader.ReadUINT8(); err1 != nil {
-		return err1
-//	} else {
-//		header.hiProductCode = value
-	}
-
-	if _, err2 := self.binaryStreamReader.ReadUINT8(); err2 != nil {
-		return err2
-//	} else {
-//		header.minorProductRev = value
-	}
-
-	return nil
-}
-
 func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 
 	/* Create packet header */
@@ -142,8 +105,12 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 	}
 
 	/* Read product version (2 byte)*/
-	if err8 := self.readPacketHeaderProductVersion(); err8 != nil {
-		return nil, err8
+	if _, err1 := self.binaryStreamReader.ReadUINT8(); err1 != nil {
+		return nil, err1
+	}
+
+	if _, err2 := self.binaryStreamReader.ReadUINT8(); err2 != nil {
+		return nil, err2
 	}
 
 	/* Read packet password (8 byte) */

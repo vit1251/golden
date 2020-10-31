@@ -12,3 +12,12 @@ func TestAverage(t *testing.T) {
 	}
 
 }
+
+func TestCRC32(t *testing.T) {
+	crc32 := makeCRC32([]byte("The quick brown fox jumps over the lazy dog"))
+	expect := "414FA339"
+	if crc32 != expect {
+		t.Logf("CRC32: our value = %q <- expect %q", crc32, expect)
+		t.Errorf("Wrong CRC32 calculation")
+	}
+}
