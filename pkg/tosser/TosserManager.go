@@ -249,13 +249,6 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 		return "", err
 	}
 
-	/* Message UUID */
-	u1 := uuid.NewV4()
-	//	u1, err4 := uuid.NewV4()
-	//	if err4 != nil {
-	//		return err4
-	//	}
-
 	/* Prepare origin */
 	Origin = self.prepareOrigin(Origin)
 
@@ -277,12 +270,6 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 
 	rawMsg := msgContent.Pack()
 
-	/* Calculate checksumm */
-	h := crc32.NewIEEE()
-	h.Write(rawMsg)
-	hs := h.Sum32()
-	log.Printf("crc32 = %+v", hs)
-
 	newZone := self.makeTimeZone()
 
 	/* Write message body */
@@ -293,8 +280,8 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	msgBody.AddKludge("TZUTC", newZone)
 	//msgBody.AddKludge("CHRS", "UTF-8 4")
 	msgBody.AddKludge("CHRS", "CP866 2")
-	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %08x", myAddr, hs))
-	msgBody.AddKludge("UUID", fmt.Sprintf("%s", u1))
+	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %s", myAddr, makeCRC32(rawMsg)))
+	msgBody.AddKludge("UUID", fmt.Sprintf("%s", makeUUID()))
 	msgBody.AddKludge("TID", newTID)
 	if em.Reply != "" {
 		msgBody.AddKludge("REPLY", em.Reply)

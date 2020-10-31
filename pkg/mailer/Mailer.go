@@ -114,6 +114,14 @@ func (self *Mailer) Start() {
 
 }
 
+func (self *Mailer) IsTransmitting() bool {
+	return self.sendName != nil
+}
+
+func (self *Mailer) IsReceiving() bool {
+	return self.recvName != nil
+}
+
 func (self *Mailer) run() {
 
 	mailerStart := time.Now()

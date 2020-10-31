@@ -41,10 +41,29 @@ func processGotPacket(mailer *Mailer, nextFrame stream.Frame) {
 	}
 
 	/* M_GOT file that is currently transmitting */
-	// TODO - ...
+	if mailer.IsTransmitting() && mailer.sendName.Name == gs.Name {
+
+		/* Close and finalize file. */
+		if mailer.sendStream != nil {
+			if err1 := mailer.sendStream.Close(); err1 != nil {
+				log.Printf("Fail on close TX stream: err = %+v", err1)
+			}
+			mailer.sendStream = nil
+		}
+
+		/* Report that remote refused file being transmitted. */
+		log.Printf("Remote side reject receiving - %q", gs.Name)
+
+		/* Remove file from the PendingFiles list */
+		mailer.pendingFiles.RemoveByName(gs.Name)
+
+		/* Set TxState to TxGNF */
+		mailer.txState = TxGNF
+		
+	}
 
 	/* M_GOT file that is not currently transmitting */
-	if (mailer.sendName == nil) || (mailer.sendName != nil && mailer.sendName.Name != gs.Name) {
+	if !mailer.IsTransmitting() || (mailer.IsTransmitting() && mailer.sendName.Name != gs.Name) {
 
 		/* Files is in PendingFiles list */
 		if mailer.pendingFiles.Contains(gs.Name) {
