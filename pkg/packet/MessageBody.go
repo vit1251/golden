@@ -10,8 +10,8 @@ type Kludge struct {
 }
 
 type MessageBody struct {
-	Area      string
-	Kludges []Kludge
+	Area    string
+	kludges []Kludge
 	RAW     []byte
 }
 
@@ -22,7 +22,7 @@ func NewMessageBody() *MessageBody {
 
 func (self *MessageBody) IsEchoMail() bool {
 	var result bool = false
-	for _, k := range self.Kludges {
+	for _, k := range self.kludges {
 		if k.Name == "AREA" {
 			result = true
 			break
@@ -44,12 +44,16 @@ func (self *MessageBody) AddKludge(name string, value string) {
 		Name: name,
 		Value: value,
 	}
-	self.Kludges = append(self.Kludges, newKludge)
+	self.kludges = append(self.kludges, newKludge)
+}
+
+func (self *MessageBody) GetKludges() []Kludge {
+	return self.kludges
 }
 
 func (self *MessageBody) GetKludge(name string, defaultValue string) string {
 	var result string = defaultValue
-	for _, k := range self.Kludges {
+	for _, k := range self.kludges {
 		if k.Name == name {
 			result = k.Value
 			break

@@ -18,10 +18,11 @@ For work with GoldenPoint after starting you will open browser on address http:/
      - [x] maximizing performance over packet switched data networks
    - [x] [FTS-1027] Binkp/1.0 optional protocol extension CRAM
  - [x] Tosser
-   - [x] [FSC-0001] A Basic FidoNet(r) Technical Standard
-   - [ ] [FSC-0039]	A Type-2 Packet Extension Proposal
-   - [ ] [FSC-0048] A Proposed Type-2 Packet Extension
-   - [x] TIC parser
+   - [x] [FTS-0001] A Basic FidoNet(r) Technical Standard
+   - [ ] [FTS-0039]	A Type-2 Packet Extension Proposal
+   - [ ] [FTS-0048] A Proposed Type-2 Packet Extension
+   - [x] [FTS-4001] ADDRESSING CONTROL PARAGRAPHS
+   - [ ] (Validation) TIC parser
  - [x] Editor
    - [x] Create NETMAIL messages
    - [x] Create ECHOMAIL messages

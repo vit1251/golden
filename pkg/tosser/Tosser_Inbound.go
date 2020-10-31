@@ -14,6 +14,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 )
 
@@ -93,7 +94,26 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 	charsetManager := self.restoreCharsetManager()
 	netmailManager := self.restoreNetmailManager()
 
-	log.Printf("Process NETMAIL message: %q -> %q", msgHeader.OrigAddr, msgHeader.DestAddr)
+	/* FST-40001 - Parse NETMAIL source address */
+	for _, k := range msgBody.GetKludges() {
+		if k.Name == "INTL" {
+			// TODO - parse ...
+		} else if k.Name == "TOPT" {
+			if newPoint, err := strconv.ParseUint(k.Value, 10, 16); err == nil {
+				msgHeader.DestAddr.Point = uint16(newPoint)
+			} else {
+				log.Printf("Parse TOPT klude error: value = %q", k.Value)
+			}
+		} else if k.Name == "FMPT" {
+			if newPoint, err := strconv.ParseUint(k.Value, 10, 16); err == nil {
+				msgHeader.OrigAddr.Point = uint16(newPoint)
+			} else {
+				log.Printf("Parse FMPT klude error: value = %q", k.Value)
+			}
+		}
+	}
+
+	log.Printf("NETMAIL message %q -> %q", msgHeader.OrigAddr, msgHeader.DestAddr)
 
 	/* Decode headers */
 	newSubject, err1 := charsetManager.Decode(msgHeader.Subject)
@@ -210,13 +230,6 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 		//source := msgidParts[0]
 		msgHash = msgidParts[1]
 	}
-
-	/* Detrmine network address */
-	intl := msgBody.GetKludge("INTL", "")
-	origPoint := msgBody.GetKludge("TOPT", "")
-	destPoint := msgBody.GetKludge("FMPT", "")
-
-	log.Printf("kludge: intl = %q origPnt = %q destPnt = %q", intl, origPoint, destPoint)
 
 	/* Determine reply */
 	reply := msgBody.GetKludge("REPLY", "")

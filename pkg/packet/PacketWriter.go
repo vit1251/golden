@@ -234,7 +234,7 @@ func (self *PacketWriter) WriteMessage(msgBody *MessageBody) error {
 	}
 
 	/* Step 2. Write kludges */
-	for _, k := range msgBody.Kludges {
+	for _, k := range msgBody.kludges {
 		self.binaryStreamWriter.WriteBytes([]byte(SOH))
 		self.binaryStreamWriter.WriteBytes([]byte(k.Name))
 		self.binaryStreamWriter.WriteBytes([]byte(" "))
