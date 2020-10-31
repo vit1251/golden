@@ -41,7 +41,7 @@ func processGotPacket(mailer *Mailer, nextFrame stream.Frame) {
 	}
 
 	/* M_GOT file that is currently transmitting */
-	if mailer.IsTransmitting() && mailer.sendName.Name == gs.Name {
+	if mailer.IsTransmitName(gs.Name) {
 
 		/* Close and finalize file. */
 		if mailer.sendStream != nil {
@@ -59,11 +59,11 @@ func processGotPacket(mailer *Mailer, nextFrame stream.Frame) {
 
 		/* Set TxState to TxGNF */
 		mailer.txState = TxGNF
-		
+
 	}
 
 	/* M_GOT file that is not currently transmitting */
-	if !mailer.IsTransmitting() || (mailer.IsTransmitting() && mailer.sendName.Name != gs.Name) {
+	if !mailer.IsTransmitName(gs.Name) {
 
 		/* Files is in PendingFiles list */
 		if mailer.pendingFiles.Contains(gs.Name) {

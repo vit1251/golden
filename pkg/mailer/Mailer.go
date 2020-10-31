@@ -265,3 +265,21 @@ func (self *Mailer) processNulFrame(nextFrame stream2.Frame) {
 func (self *Mailer) GetWork() string {
 	return self.work
 }
+
+func (self *Mailer) IsReceiveName(name string) bool {
+	if self.recvName != nil {
+		if name == self.recvName.Name {
+			return true
+		}
+	}
+	return false
+}
+
+func (self *Mailer) IsTransmitName(name string) bool {
+	if self.sendName != nil {
+		if name == self.sendName.Name {
+			return true
+		}
+	}
+	return false
+}
