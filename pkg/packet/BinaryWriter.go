@@ -34,7 +34,7 @@ func (self *BinaryWriter) WriteUINT16(value uint16) (error) {
 	return err
 }
 
-func (self *BinaryWriter) WriteBytes(msg []byte) (error) {
+func (self *BinaryWriter) WriteBytes(msg []byte) error {
 	size := len(msg)
 	for j := 0; j < size; j++ {
 		var i byte = msg[j]

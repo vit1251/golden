@@ -2,6 +2,7 @@ package packet
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"os"
 )
@@ -37,22 +38,6 @@ func NewPacketWriter(name string) (*PacketWriter, error) {
 
 	/* Done */
 	return pw, nil
-}
-
-const PRODUCT_VERSION_MAJOR = 1
-const PRODUCT_VERSION_MINOR = 2
-
-func (self *PacketWriter) writePacketHeaderProductVersion() (error) {
-
-	if err1 := self.binaryStreamWriter.WriteUINT8(PRODUCT_VERSION_MAJOR); err1 != nil {
-		return err1
-	}
-
-	if err2 := self.binaryStreamWriter.WriteUINT8(PRODUCT_VERSION_MINOR); err2 != nil {
-		return err2
-	}
-
-	return nil
 }
 
 func (self *PacketWriter) writePacketHeaderCapatiblityBytes(capByte1 uint8, capByte2 uint8) (error) {
@@ -121,13 +106,21 @@ func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) error {
 		return err7
 	}
 
-	/* Write product version (2 byte)*/
-	if err8 := self.writePacketHeaderProductVersion(); err8 != nil {
-		return err8
+	/* Write prodCode version (1 byte)*/
+	if err1 := self.binaryStreamWriter.WriteUINT8(0); err1 != nil {
+		return err1
+	}
+
+	/* Write serialNo version (1 byte)*/
+	if err2 := self.binaryStreamWriter.WriteUINT8(0); err2 != nil {
+		return err2
 	}
 
 	/* Write packet password (8 byte) */
-	if err10 := self.binaryStreamWriter.WriteBytes(pktHeader.PktPassword); err10 != nil {
+	pktPassword := make([]byte, 8)
+	copy(pktPassword, pktHeader.PktPassword)
+	fmt.Printf("pktPassword = %d\n", len(pktPassword))
+	if err10 := self.binaryStreamWriter.WriteBytes(pktPassword); err10 != nil {
 		return err10
 	}
 
@@ -142,7 +135,7 @@ func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) error {
 	}
 
 	/* Write packet fill (20 byte) */
-	var fill []byte = make([]byte, 20)
+	fill := make([]byte, 20)
 	if err13 := self.binaryStreamWriter.WriteBytes(fill); err13 != nil {
 		return err13
 	}

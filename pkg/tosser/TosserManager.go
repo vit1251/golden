@@ -1,6 +1,7 @@
 package tosser
 
 import (
+	"bytes"
 	"fmt"
 	uuid "github.com/satori/go.uuid"
 	"github.com/vit1251/golden/pkg/charset"
@@ -159,26 +160,35 @@ func (self *TosserManager) makeTimeZone() string {
 
 /// ORIGIN LENGTH 79 http://ftsc.org/docs/fsc-0068.001
 func (self *TosserManager) prepareOrigin(Origin string) string {
-	var result string = " -- No origins exist -- "
-	/* Check Origin is external */
+
+	/* Set empty origin */
+	result := ""
+
+	/* Process origins notebook */
 	if strings.HasPrefix(Origin, "@") {
+		/* Remove @ */
 		newPath := strings.TrimPrefix(Origin, "@")
+		/* Reading notebook content */
 		content, err := ioutil.ReadFile(newPath)
 		if err == nil {
-			newContent := string(content)
-			rows := strings.Split(newContent, "\n")
+			rows := bytes.Split(content, []byte("\r"))
 			rand.Seed(time.Now().Unix())
 			n := rand.Intn(len(rows))
 			oneLine := rows[n]
-			newOneLine := strings.Trim(oneLine, " \t\n\r")
-			result = newOneLine
+			newOneLine := bytes.Trim(oneLine, " \t\n\r")
+			result = string(newOneLine)
 		}
 	} else {
+		/* Set Origin (i.e. Origin without @ prefix) */
 		result = Origin
 	}
-	if len(result) > 78 {
-		result = result[:78]
+
+	/* Processing with origin in context UTF-8 rues */
+	originRunes := []rune(result)
+	if len(originRunes) >= 79 {
+		result = string(originRunes[:79])
 	}
+
 	return  result
 }
 
