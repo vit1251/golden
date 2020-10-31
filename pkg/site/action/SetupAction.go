@@ -49,7 +49,6 @@ func (self *SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	/* Add custom param field */
 	setupFormBox := widgets.NewVBoxWidget()
 	for _, param := range params {
-		log.Printf("param = %+v", param)
 		self.createInputField(setupFormBox,
 			param.Name,
 			param.Summary,
@@ -77,7 +76,7 @@ func (self *SetupAction) createInputField(box *widgets.VBoxWidget, name string, 
 	mainDiv.SetWidget(mainDivBox)
 
 	mainTitle := widgets.NewDivWidget().
-		SetClass("col-sm-2 col-form-label").
+		SetClass("").
 		SetContent(name)
 
 	mainDivBox.Add(mainTitle)

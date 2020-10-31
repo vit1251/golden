@@ -11,11 +11,11 @@ type BinaryReader struct {
 	offset int64
 }
 
-func NewBinaryReader(reader io.Reader) (*BinaryReader, error) {
+func NewBinaryReader(reader io.Reader) *BinaryReader {
 	binaryReader := new(BinaryReader)
 	binaryReader.reader = reader
 	binaryReader.offset = 0
-	return binaryReader, nil
+	return binaryReader
 }
 
 func (self *BinaryReader) Offset() int64 {
@@ -69,7 +69,4 @@ func (self *BinaryReader) ReadUntil(ch byte) ([]byte, error) {
 		cache = append(cache, i)
 	}
 	return cache, nil
-}
-
-func (self *BinaryReader) Close() {
 }

@@ -1,6 +1,7 @@
 package tosser
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"github.com/vit1251/golden/pkg/fidotime"
@@ -296,12 +297,18 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 
 func (self *Tosser) ProcessPacket(name string) error {
 
-	/* Parse packet */
-	pr, err3 := packet.NewPacketReader(name)
-	if err3 != nil {
-		return err3
+	/* Open stream */
+	stream, err1 := os.Open(name)
+	if err1 != nil {
+		return err1
 	}
-	defer pr.Close()
+	defer stream.Close()
+
+	/* Cache open stream */
+	cacheStream := bufio.NewReader(stream)
+
+	/* Parse packet */
+	pr := packet.NewPacketReader(cacheStream)
 
 	/* Parse packet header */
 	pktHeader, err4 := pr.ReadPacketHeader()

@@ -39,31 +39,6 @@ func NewPacketWriter(name string) (*PacketWriter, error) {
 	return pw, nil
 }
 
-func (self *PacketWriter) writePacketHeaderDateTime(pktDateTime *PktDateTime) (error) {
-
-	/* Writing */
-	if err1 := self.binaryStreamWriter.WriteUINT16(pktDateTime.Year); err1 != nil {
-		return err1
-	}
-	if err2 := self.binaryStreamWriter.WriteUINT16(pktDateTime.Mon); err2 != nil {
-		return err2
-	}
-	if err3 := self.binaryStreamWriter.WriteUINT16(pktDateTime.MDay); err3 != nil {
-		return err3
-	}
-	if err4 := self.binaryStreamWriter.WriteUINT16(pktDateTime.Hour); err4 != nil {
-		return err4
-	}
-	if err5 := self.binaryStreamWriter.WriteUINT16(pktDateTime.Min); err5 != nil {
-		return err5
-	}
-	if err6 := self.binaryStreamWriter.WriteUINT16(pktDateTime.Sec); err6 != nil {
-		return err6
-	}
-
-	return nil
-}
-
 const PRODUCT_VERSION_MAJOR = 1
 const PRODUCT_VERSION_MINOR = 2
 
@@ -98,20 +73,35 @@ const PKT_VERSION = 2
 func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) (error) {
 
 	/* Write orginator node address */
-	if err1 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigAddr.Node); err1 != nil {
+	if err1 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigNode); err1 != nil {
 		return err1
 	}
 	/* Write destination node address */
-	if err2 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestAddr.Node); err2 != nil {
+	if err2 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestNode); err2 != nil {
 		return err2
 	}
 
 	/* Write packet create (12 byte) */
-	if err3 := self.writePacketHeaderDateTime(&pktHeader.pktCreated); err3 != nil {
+	if err1 := self.binaryStreamWriter.WriteUINT16(pktHeader.Year); err1 != nil {
+		return err1
+	}
+	if err2 := self.binaryStreamWriter.WriteUINT16(pktHeader.Month); err2 != nil {
+		return err2
+	}
+	if err3 := self.binaryStreamWriter.WriteUINT16(pktHeader.Day); err3 != nil {
 		return err3
 	}
+	if err4 := self.binaryStreamWriter.WriteUINT16(pktHeader.Hour); err4 != nil {
+		return err4
+	}
+	if err5 := self.binaryStreamWriter.WriteUINT16(pktHeader.Minute); err5 != nil {
+		return err5
+	}
+	if err6 := self.binaryStreamWriter.WriteUINT16(pktHeader.Second); err6 != nil {
+		return err6
+	}
 
-	/* Write unused (2 byte) */
+	/* Write baud (2 byte) */
 	if err4 := self.binaryStreamWriter.WriteUINT16(0); err4 != nil {
 		return err4
 	}
@@ -122,12 +112,12 @@ func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) (error) {
 	}
 
 	/* Write origination network (2 byte) */
-	if err6 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigAddr.Net); err6 != nil {
+	if err6 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigNet); err6 != nil {
 		return err6
 	}
 
 	/* Write destination network (2 byte) */
-	if err7 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestAddr.Net); err7 != nil {
+	if err7 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestNet); err7 != nil {
 		return err7
 	}
 
@@ -137,65 +127,24 @@ func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) (error) {
 	}
 
 	/* Write packet password (8 byte) */
-	if err10 := self.binaryStreamWriter.WriteBytes(pktHeader.pktPassword); err10 != nil {
+	if err10 := self.binaryStreamWriter.WriteBytes(pktHeader.PktPassword); err10 != nil {
 		return err10
 	}
 
 	/* Write packet zone (2 byte) */
-	if err11 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigAddr.Zone); err11 != nil {
+	if err11 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigZone); err11 != nil {
 		return err11
 	}
 
 	/* Write packet zone (2 byte) */
-	if err12 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestAddr.Zone); err12 != nil {
+	if err12 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestZone); err12 != nil {
 		return err12
 	}
 
-	/* Write auxNet (2 byte) */
-	if err13 := self.binaryStreamWriter.WriteUINT16(pktHeader.auxNet); err13 != nil {
+	/* Write packet fill (20 byte) */
+	var fill []byte = make([]byte, 20)
+	if err13 := self.binaryStreamWriter.WriteBytes(fill); err13 != nil {
 		return err13
-	}
-
-	/* Write capatiblity bytes (2 byte) */
-	if err14 := self.writePacketHeaderCapatiblityBytes(0, 1); err14 != nil {
-		return err14
-	}
-
-	/* Write product version (2 byte) */
-	if err15 := self.writePacketHeaderProductVersion(); err15 != nil {
-		return err15
-	}
-
-	/* Write capability word (2 byte) */
-	if err16 := self.binaryStreamWriter.WriteUINT16(1); err16 != nil {
-		return err16
-	}
-
-	/* Write additional zone info (2 byte) */
-	if err19 := self.binaryStreamWriter.WriteUINT16(0); err19 != nil {
-		return err19
-	}
-	/* Write additional zone info (2 byte) */
-	if err20 := self.binaryStreamWriter.WriteUINT16(0); err20 != nil {
-		return err20
-	}
-
-	/* Write point (2 byte) */
-	if err21 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigAddr.Point); err21 != nil {
-		return err21
-	}
-
-	/* Write point (2 byte) */
-	if err22 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestAddr.Point); err22 != nil {
-		return err22
-	}
-
-	/* Write production data (2 byte) */
-	if err23 := self.binaryStreamWriter.WriteUINT16(0); err23 != nil {
-		return err23
-	}
-	if err24 := self.binaryStreamWriter.WriteUINT16(0); err24 != nil {
-		return err24
 	}
 
 	return nil
