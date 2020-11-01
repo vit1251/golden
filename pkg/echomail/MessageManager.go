@@ -145,7 +145,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*m
 
 	var result *msg.Message
 
-	query1 := "SELECT `msgId`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate`, `msgPacket` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	query1 := "SELECT `msgId`, `msgArea`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate`, `msgPacket` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
 	var params []interface{}
 	params = append(params, echoTag)
 	params = append(params, msgHash)
@@ -154,6 +154,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*m
 
 		var ID string
 		var msgMsgId string
+		var msgArea string
 		var msgHash *string
 		var subject string
 		var from string
@@ -162,7 +163,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*m
 		var packet []byte
 		var written int64
 
-		err1 := rows.Scan(&ID, &msgMsgId, &msgHash, &subject, &from, &to, &content, &written, &packet)
+		err1 := rows.Scan(&ID, &msgArea, &msgMsgId, &msgHash, &subject, &from, &to, &content, &written, &packet)
 		if err1 != nil{
 			return err1
 		}
@@ -170,6 +171,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*m
 
 		/**/
 		msg := msg.NewMessage()
+		msg.SetArea(msgArea)
 		msg.SetMsgID(msgMsgId)
 		msg.SetSubject(subject)
 		msg.SetID(ID)

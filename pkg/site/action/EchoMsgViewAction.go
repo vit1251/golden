@@ -110,6 +110,13 @@ func (self EchoMsgViewAction) makeMessageHeaderSection(origMsg msg.Message) widg
 	headerTable := widgets.NewTableWidget().
 		SetClass("echo-msg-view-header")
 
+	/* Make "Area" section */
+	self.makeMessageHeaderRowSection(
+		headerTable,
+		widgets.NewTextWidgetWithText("Area:"),
+		widgets.NewTextWidgetWithText(origMsg.Area),
+	)
+
 	/* Make "From" section */
 	self.makeMessageHeaderRowSection(
 		headerTable,

@@ -478,8 +478,8 @@ span.hidden {
 /* Echo Message View */
 
 .echo-msg-view-header-wrapper {
-    border-top: 2px solid #883;
-    border-bottom: 2px solid #883;
+    border-top: 2px solid #338;
+    border-bottom: 2px solid #338;
     width: 100%;
     padding: 8px 0;
 }
