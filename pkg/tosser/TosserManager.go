@@ -193,6 +193,13 @@ func (self *TosserManager) prepareOrigin(Origin string) string {
 	return  result
 }
 
+const (
+	MSGID_KLUDGE string = "MSGID:"
+	MSGID_COMPAT_KLUDGE string = "MSGID"
+	REPLY_KLUDGE string = "REPLY:"
+	REPLY_COMPAT_KLUDGE string = "REPLY"
+)
+
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
 
 	configManager := self.restoreConfigManager()
@@ -230,17 +237,36 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 		return "", err
 	}
 
+	/* Prepare origin */
+	Origin = self.prepareOrigin(Origin)
+
+	/* Prepare new message */
+	t := tmpl.NewTemplate()
+	newTearLine, _ := t.Render(TearLine)
+	newOrigin, _ := t.Render(Origin)
+	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
+
+	/* Append */
+	em.body += msg.CR
+	em.body += fmt.Sprintf("--- %s", newTearLine) + msg.CR
+	em.body += fmt.Sprintf(" * Origin: %s (%s)", newOrigin, myAddr) + msg.CR
+
 	/* Encode message headers */
-	newSubject, err1 := charsetManager.Encode([]rune(em.Subject))
+	msgCharset := "CP866"
+	newSubject, err1 := charsetManager.EncodeMessageBody([]rune(em.Subject), msgCharset)
 	if err1 != nil {
 		return "", err1
 	}
-	newTo, err2 := charsetManager.Encode([]rune(em.To))
+	newTo, err2 := charsetManager.EncodeMessageBody([]rune(em.To), msgCharset)
 	if err2 != nil {
 		return "", err2
 	}
-	newFrom, err3 := charsetManager.Encode([]rune(realName))
+	newFrom, err3 := charsetManager.EncodeMessageBody([]rune(realName), msgCharset)
 	if err3 != nil {
+		return "", err3
+	}
+	newBody, err4 := charsetManager.EncodeMessageBody([]rune(em.GetBody()), msgCharset)
+	if err4 != nil {
 		return "", err3
 	}
 
@@ -260,27 +286,6 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 		return "", err
 	}
 
-	/* Prepare origin */
-	Origin = self.prepareOrigin(Origin)
-
-	/* Prepare new message */
-	t := tmpl.NewTemplate()
-	newTearLine, _ := t.Render(TearLine)
-	newOrigin, _ := t.Render(Origin)
-	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
-
-	/* Construct message content */
-	msgContent := msg.NewMessageContent(self.registry)
-
-	msgContent.SetCharset("CP866")
-
-	msgContent.AddLine(em.GetBody())
-	msgContent.AddLine("")
-	msgContent.AddLine(fmt.Sprintf("--- %s", newTearLine))
-	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", newOrigin, myAddr))
-
-	rawMsg := msgContent.Pack()
-
 	newZone := self.makeTimeZone()
 
 	/* Write message body */
@@ -291,14 +296,14 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	msgBody.AddKludge("TZUTC", newZone)
 	//msgBody.AddKludge("CHRS", "UTF-8 4")
 	msgBody.AddKludge("CHRS", "CP866 2")
-	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %s", myAddr, makeCRC32(rawMsg)))
+	msgBody.AddKludge(MSGID_KLUDGE, fmt.Sprintf("%s %s", myAddr, makeCRC32(newBody)))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", makeUUID()))
 	msgBody.AddKludge("TID", newTID)
 	if em.Reply != "" {
-		msgBody.AddKludge("REPLY", em.Reply)
+		msgBody.AddKludge(REPLY_KLUDGE, em.Reply)
 	}
 	//
-	msgBody.SetRaw(rawMsg)
+	msgBody.SetRaw(newBody)
 	//
 	if err5 := pw.WriteMessage(msgBody); err5 != nil {
 		return "", err5
@@ -400,18 +405,33 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 		return err
 	}
 
+	/* Prepare Origin */
+	t := tmpl.NewTemplate()
+	newTearLine, _ := t.Render(TearLine)
+	newOrigin, _ := t.Render(Origin)
+	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
+
+	nm.body += packet.CR
+	nm.body += fmt.Sprintf("--- %s", newTearLine) + packet.CR
+	nm.body += fmt.Sprintf(" * Origin: %s (%s)", newOrigin, From) + packet.CR
+
 	/* Encode message */
-	newSubject, err1 := charsetManager.Encode([]rune(nm.Subject))
+	msgCharset := "CP866"
+	newSubject, err1 := charsetManager.EncodeMessageBody([]rune(nm.Subject), msgCharset)
 	if err1 != nil {
 		return err1
 	}
-	newTo, err2 := charsetManager.Encode([]rune(nm.To))
+	newTo, err2 := charsetManager.EncodeMessageBody([]rune(nm.To), msgCharset)
 	if err2 != nil {
 		return err2
 	}
-	newFrom, err3 := charsetManager.Encode([]rune(FromName))
+	newFrom, err3 := charsetManager.EncodeMessageBody([]rune(FromName), msgCharset)
 	if err3 != nil {
 		return err3
+	}
+	newBody, err4 := charsetManager.EncodeMessageBody([]rune(nm.GetBody()), msgCharset)
+	if err4 != nil {
+		return err4
 	}
 
 	/* Prepare packet message */
@@ -432,21 +452,6 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 		return err
 	}
 
-	/* Prepare new message */
-	t := tmpl.NewTemplate()
-	newTearLine, _ := t.Render(TearLine)
-	newOrigin, _ := t.Render(Origin)
-	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
-
-	/* Construct message content */
-	msgContent := msg.NewMessageContent(self.registry)
-	msgContent.SetCharset("CP866")
-	msgContent.AddLine(nm.GetBody())
-	msgContent.AddLine("")
-	msgContent.AddLine(fmt.Sprintf("--- %s", newTearLine))
-	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", newOrigin, From))
-	rawMsg := msgContent.Pack()
-
 	/* Write message body */
 	msgBody := packet.NewMessageBody()
 
@@ -458,12 +463,12 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	msgBody.AddKludge("FMPT", fmt.Sprintf("%d", msgHeader.OrigAddr.Point))
 	msgBody.AddKludge("TOPT", fmt.Sprintf("%d", msgHeader.DestAddr.Point))
 	msgBody.AddKludge("CHRS", "CP866 2")
-	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %s", From, makeCRC32(rawMsg)))
+	msgBody.AddKludge(MSGID_KLUDGE, fmt.Sprintf("%s %s", From, makeCRC32(newBody)))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", makeUUID()))
 	msgBody.AddKludge("TID", newTID)
 
 	/* Set message body */
-	msgBody.SetRaw(rawMsg)
+	msgBody.SetRaw(newBody)
 
 	/* Write message in packet */
 	if err := pw.WriteMessage(msgBody); err != nil {
@@ -474,18 +479,21 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 }
 
 func (self *TosserManager) restoreMessageManager() *echomail.MessageManager {
-
 	managerPtr := self.registry.Get("MessageManager")
 	if manager, ok := managerPtr.(*echomail.MessageManager); ok {
 		return manager
 	} else {
 		panic("no message manager")
 	}
-
 }
 
 func (self *TosserManager) restoreCharsetManager() *charset.CharsetManager {
-	return nil
+	managerPtr := self.registry.Get("CharsetManager")
+	if manager, ok := managerPtr.(*charset.CharsetManager); ok {
+		return manager
+	} else {
+		panic("no charset manager")
+	}
 }
 
 func makeUUID() string {

@@ -1,53 +1,50 @@
 package msg
 
 import (
-	"fmt"
-	"github.com/vit1251/golden/pkg/charset"
-	"github.com/vit1251/golden/pkg/registry"
+	"bytes"
+	"github.com/vit1251/golden/pkg/packet"
 )
 
 type MessageContent struct {
-	RAW      []byte
-	charset  string
-	registry *registry.Container
+	rows    [][]byte
+	kludges []packet.Kludge
+	area    string
 }
 
-func NewMessageContent(r *registry.Container) *MessageContent {
+func NewMessageContent() *MessageContent {
 	mc := new(MessageContent)
-	mc.registry = r
 	return mc
 }
 
-func (self *MessageContent) AddLine(line string) {
-
-	charsetManager := self.restoreCharsetManager()
-
-	if self.charset == "CP866" {
-		newLine := fmt.Sprintf("%s\r", line)
-		var rawLine []rune = []rune(newLine)
-		chunk, err1 := charsetManager.Encode(rawLine)
-		if err1 != nil {
-			panic(err1)
-		}
-		self.RAW = append(self.RAW, chunk...)
-	} else {
-		panic("wrong charset")
+func (self *MessageContent) AddLine(line []byte) {
+	if bytes.HasPrefix(line, []byte(packet.SOH)) {
+		k := packet.NewKludge()
+		k.Set(line)
+		self.kludges = append(self.kludges, *k)
 	}
+	self.rows = append(self.rows, line)
 }
 
-func (self *MessageContent) Pack() []byte {
-	return self.RAW
+func (self MessageContent) GetKludges() []packet.Kludge {
+	return self.kludges
 }
 
-func (self *MessageContent) SetCharset(charset string) {
-	self.charset = charset
+func (self *MessageContent) AddKludge(k packet.Kludge) {
+	self.kludges = append(self.kludges, k)
 }
 
-func (self *MessageContent) restoreCharsetManager() *charset.CharsetManager {
-	managerPtr := self.registry.Get("CharsetManager")
-	if manager, ok := managerPtr.(*charset.CharsetManager); ok {
-		return manager
-	} else {
-		panic("no charset manager")
-	}
+func (self MessageContent) GetContent() []byte {
+	return bytes.Join(self.rows, []byte(CR))
+}
+
+func (self *MessageContent) SetArea(name string) {
+	self.area = name
+}
+
+func (self *MessageContent) IsArea() bool {
+	return self.area != ""
+}
+
+func (self *MessageContent) GetArea() string {
+	return self.area
 }

@@ -15,7 +15,7 @@ type NetmailMessage struct {
 	Content     string
 	UnixTime    int64
 	ViewCount   int
-	DateWritten *time.Time
+	DateWritten time.Time
 	Packet      []byte
 }
 
@@ -65,20 +65,16 @@ func (self *NetmailMessage) GetContent() string {
 
 func (self *NetmailMessage) SetUnixTime(unixTime int64) {
 	self.UnixTime = unixTime
-	tm := time.Unix(unixTime, 0)
-	self.DateWritten = &tm
+	self.DateWritten = time.Unix(unixTime, 0)
 }
 
-func (self *NetmailMessage) SetTime(ptm *time.Time) {
+func (self *NetmailMessage) SetTime(ptm time.Time) {
 	self.DateWritten = ptm
-	if ptm != nil {
-		var tm time.Time = *ptm
-		self.UnixTime = tm.Unix()
-	}
+	self.UnixTime = ptm.Unix()
 }
 
 func (self NetmailMessage) GetAge() string {
-	result := commonfunc.MakeHumanTime(*self.DateWritten)
+	result := commonfunc.MakeHumanTime(self.DateWritten)
 	return result
 }
 

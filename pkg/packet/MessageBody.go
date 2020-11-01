@@ -4,11 +4,6 @@ import (
 //	"log"
 )
 
-type Kludge struct {
-	Name string
-	Value string
-}
-
 type MessageBody struct {
 	Area    string
 	kludges []Kludge

@@ -1,6 +1,9 @@
 package msg
 
-import "strings"
+import (
+	"bytes"
+	"github.com/vit1251/golden/pkg/packet"
+)
 
 type MessageContentParser struct {
 }
@@ -14,13 +17,43 @@ const (
 	LF = "\x0A"
 )
 
-func (self MessageContentParser) Parse(content string) (*MessageContent, error) {
+func (self MessageContentParser) Parse(content []byte) (*MessageContent, error) {
 
-	mc := NewMessageContent(nil)
+	mc := NewMessageContent()
 
-	rows := strings.Split(content, CR)
+	rows := bytes.Split(content, []byte(CR))
+
+	/* Parse AREA */
+	if len(rows) > 0 {
+
+		row := rows[0]
+
+		if bytes.HasPrefix(row, []byte{'A', 'R', 'E', 'A', ':'}) {
+
+			/* Set AREA value */
+			areaName := string(row[5:])
+			mc.SetArea(areaName)
+
+			/* Remove AREA */
+			rows = rows[1:]
+		}
+
+	}
+
+	/* Process message body */
+	var msgBody bool = true
 	for _, row := range rows {
-		mc.AddLine(row)
+		if msgBody && !bytes.HasPrefix(row, []byte{'\x01'}) {
+			mc.AddLine(row)
+		}
+		if bytes.HasPrefix(row, []byte{'\x01'}) {
+			k := packet.NewKludge()
+			k.Set(row)
+			mc.AddKludge(*k)
+		}
+		if bytes.HasPrefix(row, []byte{' ', '*', ' ', 'O', 'r', 'i', 'g', 'i', 'n', ':'}) {
+			msgBody = false
+		}
 	}
 
 	return mc, nil

@@ -83,4 +83,5 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	//
 	newLocation := fmt.Sprintf("/echo/%s", echoTag)
 	http.Redirect(w, r, newLocation, 303)
+
 }
