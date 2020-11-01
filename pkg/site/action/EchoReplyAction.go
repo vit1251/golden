@@ -60,7 +60,7 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	newContent2 := mrt.Transform(newContent)
 	log.Printf("reply: reply = %+v", newContent2)
 
-	//    <form method="post" action="/echo/{{ .Area.Name }}/message/{{ .Msg.Hash }}/reply/complete">
+	//    <form method="post" action="/echo/{{ .Area.GetName }}/message/{{ .Msg.Hash }}/reply/complete">
 	//        <div><input class="input" type="text" name="to" value="{{ .Msg.From }}">
 	//        <div><input class="input" type="text" value="{{ .Msg.Subject }}" name="subject">
 	//        <textarea class="input input-area" name="body">{{ .Content }}</textarea>
@@ -80,7 +80,7 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	formWidget := widgets.NewFormWidget()
 	formWidget.
 		SetMethod("POST").
-		SetAction(fmt.Sprintf("/echo/%s/message/%s/reply/complete", area.Name(), origMsg.Hash)).
+		SetAction(fmt.Sprintf("/echo/%s/message/%s/reply/complete", area.GetName(), origMsg.Hash)).
 		SetWidget(formVBox)
 
 	formVBox.Add(widgets.NewFormInputWidget().SetTitle("TO").SetName("to").SetValue(origMsg.From))

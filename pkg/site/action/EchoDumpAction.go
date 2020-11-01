@@ -84,11 +84,11 @@ func (self *EchoDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	/* Context actions */
 	amw := widgets.NewActionMenuWidget().
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.Name(), origMsg.Hash)).
+			SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.GetName(), origMsg.Hash)).
 			SetIcon("icofont-edit").
 			SetLabel("Reply")).
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.Name(), origMsg.Hash)).
+			SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.GetName(), origMsg.Hash)).
 			SetIcon("icofont-remove").
 			SetLabel("Delete"))
 	containerVBox.Add(amw)

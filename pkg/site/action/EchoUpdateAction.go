@@ -53,24 +53,24 @@ func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	/* Context actions */
 	amw := widgets.NewActionMenuWidget().
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/remove", area.Name())).
+			SetLink(fmt.Sprintf("/echo/%s/remove", area.GetName())).
 			SetIcon("icofont-remove").
 			SetLabel("Remove echo")).
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/purge", area.Name())).
+			SetLink(fmt.Sprintf("/echo/%s/purge", area.GetName())).
 			SetIcon("icofont-purge").
 			SetLabel("Purge echo"))
 
 	containerVBox.Add(amw)
 
 	headerWidget := widgets.NewHeaderWidget().
-		SetTitle(fmt.Sprintf("Settings on area %s", area.Name()))
+		SetTitle(fmt.Sprintf("Settings on area %s", area.GetName()))
 
 	containerVBox.Add(headerWidget)
 
 	formWidget := widgets.NewFormWidget().
 		SetMethod("POST").
-		SetAction(fmt.Sprintf("/echo/%s/update/complete", area.Name()))
+		SetAction(fmt.Sprintf("/echo/%s/update/complete", area.GetName()))
 	formVBox := widgets.NewVBoxWidget()
 	formWidget.SetWidget(formVBox)
 	containerVBox.Add(formWidget)

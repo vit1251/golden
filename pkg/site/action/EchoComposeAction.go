@@ -60,7 +60,7 @@ func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	formWidget := widgets.NewFormWidget()
 	formWidget.
 		SetMethod("POST").
-		SetAction(fmt.Sprintf("/echo/%s/message/compose/complete", area.Name())).
+		SetAction(fmt.Sprintf("/echo/%s/message/compose/complete", area.GetName())).
 		SetWidget(formVBox)
 
 	formVBox.Add(widgets.NewFormInputWidget().SetTitle("TO").SetName("to"))

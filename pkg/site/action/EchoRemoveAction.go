@@ -57,13 +57,13 @@ func (self *EchoRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	//
 	formWidget := widgets.NewFormWidget().
 		SetMethod("POST").
-		SetAction(fmt.Sprintf("/echo/%s/remove/complete", area.Name()))
+		SetAction(fmt.Sprintf("/echo/%s/remove/complete", area.GetName()))
 	formVBox := widgets.NewVBoxWidget()
 	formWidget.SetWidget(formVBox)
 	containerVBox.Add(formWidget)
 
 	qustionWidget := widgets.NewDivWidget().
-		SetContent(fmt.Sprintf("A you sure to remove '%s' area?", area.Name()))
+		SetContent(fmt.Sprintf("A you sure to remove '%s' area?", area.GetName()))
 	formVBox.Add(qustionWidget)
 
 	buttonWidget := widgets.NewFormButtonWidget().

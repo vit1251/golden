@@ -54,7 +54,7 @@ func (av *AreaListView) Render(cs *ConnState) {
 	// Search maximum area name size
 	var areaListEchoMax int
 	for _, areas := range areas {
-		areaName := areas.Name()
+		areaName := areas.GetName()
 		areaNameSize := len(areaName)
 		if areaListEchoMax < areaNameSize {
 			areaListEchoMax = areaNameSize
@@ -188,7 +188,7 @@ func (av *AreaListView) Render(cs *ConnState) {
 			}
 			if col.Type == 'E' {
 				// Имя области
-				row += fmt.Sprintf("%-*s", col.Width, area.Name())
+				row += fmt.Sprintf("%-*s", col.Width, area.GetName())
 			}
 			if col.Type == 'D' {
 				// Имя области
@@ -265,7 +265,7 @@ func (av *AreaListView) ProcessEvent(cs *ConnState, event *TerminalEvent) {
 		av.activeIndex += 1
 	} else if event.Type == TerminalKey && event.Key == "ENTER" {
 		area := av.getAreaByIndex(cs, av.activeIndex)
-		cs.activeArea = area.Name()
+		cs.activeArea = area.GetName()
 		cs.activeView = NewMessageView()
 	} else {
 		fmt.Printf("AreaListView: event = %v\n", event)

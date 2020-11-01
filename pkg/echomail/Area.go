@@ -19,7 +19,7 @@ func NewArea() *Area {
 	return a
 }
 
-func (self *Area) Name() string {
+func (self *Area) GetName() string {
 	return self.name
 }
 

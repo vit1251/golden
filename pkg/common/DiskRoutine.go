@@ -1,6 +1,9 @@
 package commonfunc
 
-import "os/user"
+import (
+	"os/user"
+	"path"
+)
 
 func GetStorageDirectory() string {
 	usr, err1 := user.Current()
@@ -12,6 +15,8 @@ func GetStorageDirectory() string {
 }
 
 func GetLogDirectory() string {
-	return "."
+	storageDirectory := GetStorageDirectory()
+	debugDirectory := path.Join(storageDirectory, "Fido")
+	return debugDirectory
 }
 

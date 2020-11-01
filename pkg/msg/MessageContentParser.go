@@ -21,7 +21,12 @@ func (self MessageContentParser) Parse(content []byte) (*MessageContent, error) 
 
 	mc := NewMessageContent()
 
-	rows := bytes.Split(content, []byte(CR))
+	/* Remove "soft" linefeed */
+	parts := bytes.Split(content, []byte(LF))
+	newContent := bytes.Join(parts, []byte{})
+
+	/* Split by "hard" line split */
+	rows := bytes.Split(newContent, []byte(CR))
 
 	/* Parse AREA */
 	if len(rows) > 0 {

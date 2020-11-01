@@ -66,7 +66,7 @@ func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	//
 	formWidget := widgets.NewFormWidget().
 		SetMethod("POST").
-		SetAction(fmt.Sprintf("/echo/%s/message/%s/remove/complete", area.Name(), msg.Hash))
+		SetAction(fmt.Sprintf("/echo/%s/message/%s/remove/complete", area.GetName(), msg.Hash))
 	formVBox := widgets.NewVBoxWidget()
 	formWidget.SetWidget(formVBox)
 	containerVBox.Add(formWidget)

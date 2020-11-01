@@ -67,11 +67,11 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	/* Context actions */
 	amw := widgets.NewActionMenuWidget().
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/message/compose", newArea.Name())).
+			SetLink(fmt.Sprintf("/echo/%s/message/compose", newArea.GetName())).
 			SetIcon("icofont-edit").
 			SetLabel("Compose")).
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/update", newArea.Name())).
+			SetLink(fmt.Sprintf("/echo/%s/update", newArea.GetName())).
 			SetIcon("icofont-update").
 			SetLabel("Settings"))
 

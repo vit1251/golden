@@ -62,7 +62,7 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	em := tosser.NewEchoMessage()
 	em.Subject = subj
 	em.SetBody(body)
-	em.AreaName = area.Name()
+	em.AreaName = area.GetName()
 	em.To = to
 	em.Reply = origMsg.MsgID
 

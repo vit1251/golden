@@ -15,7 +15,7 @@ func (self *AreaList) Reset() {
 
 func (self *AreaList) SearchByName(echoTag string) (*Area, error) {
 	for _, area := range self.Areas {
-		var areaName string = area.Name()
+		var areaName string = area.GetName()
 		if strings.EqualFold(areaName, echoTag) {
 			return area, nil
 		}

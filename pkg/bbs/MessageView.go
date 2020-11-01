@@ -37,7 +37,7 @@ func (mw *MessageView) Render(cs *ConnState) {
 	cs.t.cursorhome()
 	cs.t.ED2()
 
-	areaName := area.Name()
+	areaName := area.GetName()
 	msgHeaders, err2 := messageManager.GetMessageHeaders(areaName)
 	if err2 != nil {
 		return
@@ -143,7 +143,7 @@ func (mw *MessageView) markMessageByIndex(cs *ConnState, activeIndex int) error 
 		return nil
 	}
 
-	areaName := newArea.Name()
+	areaName := newArea.GetName()
 	msgHeaders, err2 := messageManager.GetMessageHeaders(areaName)
 	if err2 != nil {
 		return nil

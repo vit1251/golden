@@ -58,6 +58,13 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	mmw := self.makeMenu()
 	vBox.Add(mmw)
 
+	container := widgets.NewDivWidget()
+	container.SetClass("container")
+
+	containerVBox := widgets.NewVBoxWidget()
+	container.SetWidget(containerVBox)
+	vBox.Add(container)
+
 	/* Context actions */
 	amw := widgets.NewActionMenuWidget().
 		Add(widgets.NewMenuAction().
@@ -69,13 +76,13 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 			SetIcon("icofont-update").
 			SetLabel("Settings"))
 
-	vBox.Add(amw)
+	containerVBox.Add(amw)
 
 	indexTable := widgets.NewTableWidget().
 		SetClass("table")
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("GetName"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Age"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
@@ -91,7 +98,7 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 				SetLink(fmt.Sprintf("/file/%s/tic/%s/view", f.GetArea(), f.File)))))
 	}
 
-	vBox.Add(indexTable)
+	containerVBox.Add(indexTable)
 
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)

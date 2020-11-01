@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/echomail"
@@ -21,6 +22,7 @@ import (
 	"os/signal"
 	path2 "path"
 	"syscall"
+	"time"
 )
 
 type Application struct {
@@ -37,8 +39,11 @@ func NewApplication() *Application {
 
 func (self *Application) Run() {
 
+	cur := time.Now()
+
 	logBaseDirectory := cmn.GetLogDirectory()
-	logPath := path2.Join(logBaseDirectory, "golden.log")
+	debugName := fmt.Sprintf("debug_%d%02d%02d_%02d%02d.log", cur.Year(), cur.Month(), cur.Day(), cur.Hour(), cur.Minute())
+	logPath := path2.Join(logBaseDirectory, debugName)
 	stream, err1 := os.OpenFile(logPath, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err1 != nil {
 		log.Printf("Error while open debug.log: err = %+v", err1)
