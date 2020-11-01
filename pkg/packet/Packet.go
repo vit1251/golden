@@ -2,7 +2,6 @@ package packet
 
 import (
 	"github.com/vit1251/golden/pkg/fidotime"
-	"log"
 )
 
 type PktVersion int
@@ -19,10 +18,8 @@ func NewPacketHeader() *PacketHeader {
 }
 
 func (self *PacketHeader) SetPassword(password string) {
-	newPasswordSize := 8
-	newPassword := make([]byte, newPasswordSize)
+	newPassword := make([]byte, 8)
 	copy(newPassword, password)
-	log.Printf("newPass: str = %s raw = %+v", newPassword, newPassword)
 	self.PktPassword = newPassword
 }
 

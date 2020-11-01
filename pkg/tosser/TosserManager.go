@@ -201,7 +201,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 
 	/* Create packet name */
 	tempOutbound, _ := configManager.Get("main", "TempOutbound")
-	password, _ := configManager.Get("main", "Password")
+	pktPassword, _ := configManager.Get("main", "Password")
 
 	packetName := self.makePacketName()
 	tempPacketPath := path.Join(tempOutbound, packetName)
@@ -224,7 +224,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	pktHeader := packet.NewPacketHeader()
 	pktHeader.SetOrigAddr(myAddr)
 	pktHeader.SetDestAddr(bossAddr)
-	pktHeader.SetPassword(password)
+	pktHeader.SetPassword(pktPassword)
 
 	if err := pw.WritePacketHeader(pktHeader); err != nil {
 		return "", err
@@ -361,29 +361,26 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	//messageManager := self.restoreMessageManager()
 	charsetManager := self.restoreCharsetManager()
 
-	var params struct {
-		Outbound string
-		From string
-		FromName string
-		TearLine string
-		Origin string
-	}
+	var Outbound string
+	var From string
+	var FromName string
+	var TearLine string
+	var Origin string
 
 	/* Create packet name */
-	params.Outbound, _ = configManager.Get("main", "Outbound")
-	params.From, _ = configManager.Get("main", "Address")
-	params.FromName, _ = configManager.Get("main", "RealName")
+	Outbound, _ = configManager.Get("main", "Outbound")
+	From, _ = configManager.Get("main", "Address")
+	FromName, _ = configManager.Get("main", "RealName")
+	pktPassword, _ := configManager.Get("main", "Password")
+	TearLine, _ = configManager.Get("main", "TearLine")
 
 	origin, _ := configManager.Get("main", "Origin")
 	origin1 := self.prepareOrigin(origin)
-	params.Origin = origin1
-
-	TearLine, _ := configManager.Get("main", "TearLine")
-	params.TearLine = TearLine
+	Origin = origin1
 
 	/* Create packet name */
 	pktName := self.makePacketName()
-	name := path.Join(params.Outbound, pktName)
+	name := path.Join(Outbound, pktName)
 	log.Printf("Write Netmail packet %s", name)
 
 	/* Open outbound packet */
@@ -395,8 +392,9 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
 	/* Write packet header */
 	pktHeader := packet.NewPacketHeader()
-	pktHeader.SetOrigAddr(params.From)
+	pktHeader.SetOrigAddr(From)
 	pktHeader.SetDestAddr(nm.ToAddr)
+	pktHeader.SetPassword(pktPassword)
 
 	if err := pw.WritePacketHeader(pktHeader); err != nil {
 		return err
@@ -411,14 +409,14 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	if err2 != nil {
 		return err2
 	}
-	newFrom, err3 := charsetManager.Encode([]rune(params.FromName))
+	newFrom, err3 := charsetManager.Encode([]rune(FromName))
 	if err3 != nil {
 		return err3
 	}
 
 	/* Prepare packet message */
 	msgHeader := packet.NewPacketMessageHeader()
-	msgHeader.OrigAddr.SetAddr(params.From)
+	msgHeader.OrigAddr.SetAddr(From)
 	msgHeader.DestAddr.SetAddr(nm.ToAddr)
 	msgHeader.SetAttribute(packet.PacketAttrDirect)
 	msgHeader.SetToUserName(newTo)
@@ -436,8 +434,8 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
 	/* Prepare new message */
 	t := tmpl.NewTemplate()
-	newTearLine, _ := t.Render(params.TearLine)
-	newOrigin, _ := t.Render(params.Origin)
+	newTearLine, _ := t.Render(TearLine)
+	newOrigin, _ := t.Render(Origin)
 	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
 
 	/* Construct message content */
@@ -446,7 +444,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	msgContent.AddLine(nm.GetBody())
 	msgContent.AddLine("")
 	msgContent.AddLine(fmt.Sprintf("--- %s", newTearLine))
-	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", newOrigin, params.From))
+	msgContent.AddLine(fmt.Sprintf(" * Origin: %s (%s)", newOrigin, From))
 	rawMsg := msgContent.Pack()
 
 	/* Write message body */
@@ -460,7 +458,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	msgBody.AddKludge("FMPT", fmt.Sprintf("%d", msgHeader.OrigAddr.Point))
 	msgBody.AddKludge("TOPT", fmt.Sprintf("%d", msgHeader.DestAddr.Point))
 	msgBody.AddKludge("CHRS", "CP866 2")
-	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %s", params.From, makeCRC32(rawMsg)))
+	msgBody.AddKludge("MSGID", fmt.Sprintf("%s %s", From, makeCRC32(rawMsg)))
 	msgBody.AddKludge("UUID", fmt.Sprintf("%s", makeUUID()))
 	msgBody.AddKludge("TID", newTID)
 
