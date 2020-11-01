@@ -15,4 +15,11 @@ tasks:
       - task: build:depend
       - task: build:generate
       - task: build:build
+
+  check:
+    cmds:
+      - go test ./...
+
+  package:
+    cmds:
       - task: build:package

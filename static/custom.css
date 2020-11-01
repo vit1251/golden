@@ -475,6 +475,14 @@ span.hidden {
     text-align: center;
 }
 
+/* Echo Message Index */
+
+.echo-msg-index-date {
+    text-align: right;
+    font-size: 12pt;
+    white-space: nowrap;
+}
+
 /* Echo Message View */
 
 .echo-msg-view-header-wrapper {
