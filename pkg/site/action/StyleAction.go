@@ -20,13 +20,8 @@ func (self *StyleAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	rule1 := style.NewCSSRule()
 
 	// Message preview box
-	rule1.SetSelectorText(".message-preview")
-	rule1.Set("border", "1px solid yellow")
-	rule1.Set("margin-top", "10px")
-	rule1.Set("flex-shrink", "0")
-	rule1.Set("flex-grow", "0")
-	rule1.Set("white-space", "pre-wrap")
-	rule1.Set("font-family", "\"Courier New\", monospace")
+//	rule1.SetSelectorText(".message-preview")
+//	rule1.Set("border", "1px solid yellow")
 
 	css1.InsertRule(rule1)
 

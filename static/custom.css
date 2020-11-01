@@ -446,3 +446,39 @@ span.hidden {
 .stat-index-header {
     background-color: #646464;
 }
+
+/* Echo Message View */
+
+.echo-msg-view-header-wrapper {
+    border-top: 2px solid #883;
+    border-bottom: 2px solid #883;
+    width: 100%;
+    padding: 8px 0;
+}
+
+.echo-msg-view-header {
+    padding-bottom: 4px;
+}
+
+.echo-msg-view-header-name {
+    color: #883;
+    font-weight: bold;
+    text-align: right;
+    padding-right: 4px;
+}
+
+.echo-msg-view-header-value {
+    padding-left: 4px;
+}
+
+.echo-msg-view-body-wrapper {
+
+}
+
+.echo-msg-view-body {
+    margin-top: 10px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    white-space: pre-wrap;
+    font-family: "Courier New", monospace;
+}

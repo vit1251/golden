@@ -76,7 +76,7 @@ func (self *SiteManager) registerFrontend() {
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update/complete", action.NewEchoUpdateCompleteAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", action.NewEchoComposeAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose/complete", action.NewEchoComposeCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/view", action.NewEchoViewAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/view", action.NewEchoMsgViewAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/dump", action.NewEchoDumpAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply", action.NewEchoReplyAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply/complete", action.NewReplyCompleteAction())

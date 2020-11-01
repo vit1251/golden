@@ -9,16 +9,16 @@ import (
 	"net/http"
 )
 
-type EchoViewAction struct {
+type EchoMsgViewAction struct {
 	Action
 }
 
-func NewEchoViewAction() *EchoViewAction {
-	va := new(EchoViewAction)
+func NewEchoMsgViewAction() *EchoMsgViewAction {
+	va := new(EchoMsgViewAction)
 	return va
 }
 
-func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	areaManager := self.restoreAreaManager()
 	messageManager := self.restoreMessageManager()
@@ -49,17 +49,20 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	msgHash := vars["msgid"]
 	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
 	if err3 != nil {
-		response := fmt.Sprintf("Fail on GetAreas")
+		response := fmt.Sprintf("Fail on GetMessageByHash")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+	if origMsg == nil {
+		response := fmt.Sprintf("Fail on GetMessageByHash")
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 
-	var content string
-	if origMsg != nil {
-		content = origMsg.GetContent()
-	} else {
-		content = "!! Unable restore message !!"
-	}
+	fmt.Printf("orgMsg = %+v", origMsg)
+
+	content := origMsg.GetContent()
+
 	//
 	mtp := msg.NewMessageTextProcessor()
 	err4 := mtp.Prepare(content)
@@ -106,42 +109,80 @@ func (self *EchoViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			SetLabel("Delete"))
 	containerVBox.Add(amw)
 
-	indexTable := widgets.NewTableWidget().
-		SetClass("table")
+	/* Message header section */
+	msgHeader := self.makeMessageHeaderSection(*origMsg)
+	msgHeaderWrapper := widgets.NewDivWidget().SetClass("echo-msg-view-header-wrapper").SetWidget(msgHeader)
+	containerVBox.Add(msgHeaderWrapper)
 
-	//                <div>{{ .Msg.From }}</div>
-	//                <div>{{ .Msg.To }}</div>
-	//                <div>{{ .Msg.Subject }}</div>
-
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("FROM"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.From))))
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("TO"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.To))))
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("SUBJ"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.Subject))))
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("DATE"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
-			fmt.Sprintf("%s", origMsg.DateWritten)))))
-
-	containerVBox.Add(indexTable)
-
+	/* Message body */
 	previewWidget := widgets.NewDivWidget().
-		SetClass("message-preview").
+		SetClass("echo-msg-view-body").
 		SetContent(string(outDoc))
 	containerVBox.Add(previewWidget)
 
+	/* Render process */
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
+
+}
+
+
+func (self EchoMsgViewAction) makeMessageHeaderRowSection(headerTable *widgets.TableWidget, name widgets.IWidget, value widgets.IWidget) {
+
+	headerFromName := widgets.NewTableCellWidget()
+	headerFromName.SetClass("echo-msg-view-header-name")
+	headerFromName.SetWidget(name)
+
+	headerFromValue := widgets.NewTableCellWidget()
+	headerFromValue.SetClass("echo-msg-view-header-value")
+	headerFromValue.SetWidget(value)
+
+	headerTable.AddRow(
+		widgets.NewTableRowWidget().
+			AddCell(headerFromName).
+			AddCell(headerFromValue),
+	)
+
+}
+
+func (self EchoMsgViewAction) makeMessageHeaderSection(origMsg msg.Message) widgets.IWidget {
+
+	/* Make main header widget */
+	headerTable := widgets.NewTableWidget().
+		SetClass("echo-msg-view-header")
+
+	/* Make "From" section */
+	self.makeMessageHeaderRowSection(
+		headerTable,
+		widgets.NewTextWidgetWithText("From:"),
+		widgets.NewTextWidgetWithText(origMsg.From),
+	)
+
+	/* Make "To" section */
+	self.makeMessageHeaderRowSection(
+		headerTable,
+		widgets.NewTextWidgetWithText("To:"),
+		widgets.NewTextWidgetWithText(origMsg.To),
+	)
+
+	/* Make "Subject" section */
+	self.makeMessageHeaderRowSection(
+		headerTable,
+		widgets.NewTextWidgetWithText("Subject:"),
+		widgets.NewTextWidgetWithText(origMsg.To),
+	)
+
+	/* Make "Date" section */
+	newDate := fmt.Sprintf("%s", origMsg.DateWritten)
+	self.makeMessageHeaderRowSection(
+		headerTable,
+		widgets.NewTextWidgetWithText("Date:"),
+		widgets.NewTextWidgetWithText(newDate),
+	)
+
+	return headerTable
 
 }
