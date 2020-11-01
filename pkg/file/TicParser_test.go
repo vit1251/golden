@@ -3,13 +3,17 @@ package file
 import (
 	"bytes"
 	"github.com/vit1251/golden/pkg/charset"
+	"github.com/vit1251/golden/pkg/registry"
 	"testing"
 )
 
 func TestTicParserParse1(t *testing.T) {
 
+	/* Create new registry */
+	r := registry.NewContainer()
+
 	/* Charset manager */
-	cm := charset.NewCharsetManager()
+	cm := charset.NewCharsetManager(r)
 
 	/* Create TIC description */
 	sampleTic := bytes.NewBuffer(nil)

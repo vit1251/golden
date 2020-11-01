@@ -61,7 +61,7 @@ func ReceiveRoutineRxWriteD(mailer *Mailer) ReceiveRoutineResult {
 		makeFileGotPacket(mailer, offset)
 
 		/* Report File Received */
-		log.Printf("Recieved file - %s", mailer.recvName)
+		log.Printf("Recieved file - %+v", mailer.recvName)
 		mailer.InFileCount += 1
 
 		/* Move in incoming directory */
