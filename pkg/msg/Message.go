@@ -79,12 +79,12 @@ func (self *Message) SetContent(content string) {
 
 func (self *Message) SetUnixTime(unixTime int64) {
 	self.UnixTime = unixTime
-	tm := time.Unix(unixTime, 0)
-	self.DateWritten = tm
+	self.DateWritten = time.Unix(unixTime, 0)
 }
 
 func (self *Message) SetTime(ptm time.Time) {
 	self.DateWritten = ptm
+	self.UnixTime = ptm.Unix()
 }
 
 func (self *Message) SetViewCount(count int) {

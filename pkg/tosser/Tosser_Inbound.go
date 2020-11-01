@@ -295,7 +295,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	newMsg.SetPacket(msgBody.RAW)
 
 	/* Save message in storage */
-	if err := messageManager.Write(newMsg); err != nil {
+	if err := messageManager.Write(*newMsg); err != nil {
 		log.Printf("Fail on Write in MessageManager: err = %+v", err)
 	}
 

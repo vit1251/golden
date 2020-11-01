@@ -254,7 +254,7 @@ func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string
 	return result, nil
 }
 
-func (self *MessageManager) Write(msg *msg.Message) (error) {
+func (self *MessageManager) Write(msg msg.Message) error {
 
 	storageManager := self.restoreStorageManager()
 
