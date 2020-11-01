@@ -5,7 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/site/widgets"
-	"log"
+	"html/template"
 	"net/http"
 )
 
@@ -20,60 +20,51 @@ func NewEchoMsgViewAction() *EchoMsgViewAction {
 
 func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	/* Restore managers */
 	areaManager := self.restoreAreaManager()
 	messageManager := self.restoreMessageManager()
-	//configManager := self.restoreConfigManager()
 
-	//
+	/* Get "echoname" in user request */
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
 
-	//
+	/* Restore area by "echoname" key */
+	echoTag := vars["echoname"]
+	//log.Printf("echoTag = %+v", echoTag)
 	area, err1 := areaManager.GetAreaByName(echoTag)
 	if err1 != nil {
-		panic(err1)
-	}
-	log.Printf("area = %+v", area)
-
-	//
-	msgHeaders, err112 := messageManager.GetMessageHeaders(echoTag)
-	if err112 != nil {
-		response := fmt.Sprintf("Fail on GetAreas")
+		response := fmt.Sprintf("Fail on GetAreaByName in AreaManager: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
-	log.Printf("msgHeaders = %+v", msgHeaders)
 
-	//
+	/* Restore message by "echoname" and "msgid" key */
 	msgHash := vars["msgid"]
+	//log.Printf("msgid = %+v", msgid)
 	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
 	if err3 != nil {
-		response := fmt.Sprintf("Fail on GetMessageByHash")
+		response := fmt.Sprintf("Fail on GetMessageByHash in MessageManager: err = %+v", err3)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 	if origMsg == nil {
-		response := fmt.Sprintf("Fail on GetMessageByHash")
+		response := fmt.Sprintf("Fail on GetMessageByHash in MessageManager: err = %+v", fmt.Errorf("origMsg is emprty"))
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Printf("orgMsg = %+v", origMsg)
-
+	/* Get message body */
 	content := origMsg.GetContent()
 
-	//
+	/* Prepare HTML message body */
 	mtp := msg.NewMessageTextProcessor()
-	err4 := mtp.Prepare(content)
-	if err4 != nil {
-		response := fmt.Sprintf("Fail on Prepare on MessageTextProcessor")
+	if err4 := mtp.Prepare(content); err4 != nil {
+		response := fmt.Sprintf("Fail on Prepare in MessageTextProcessor: err = %+v", err4)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 	outDoc := mtp.HTML()
 
-	/* Update view counter */
+	/* Update message view counter */
 	err5 := messageManager.ViewMessageByHash(echoTag, msgHash)
 	if err5 != nil {
 		response := fmt.Sprintf("Fail on ViewMessageByHash on messageManager: err = %+v", err5)
@@ -81,48 +72,12 @@ func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	bw := widgets.NewBaseWidget()
-
-	vBox := widgets.NewVBoxWidget()
-	bw.SetWidget(vBox)
-
-	mmw := self.makeMenu()
-	vBox.Add(mmw)
-
-	container := widgets.NewDivWidget()
-	container.SetClass("container")
-	vBox.Add(container)
-
-	containerVBox := widgets.NewVBoxWidget()
-	container.SetWidget(containerVBox)
-
-
-	/* Context actions */
-	amw := widgets.NewActionMenuWidget().
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.Name(), origMsg.Hash)).
-			SetIcon("icofont-edit").
-			SetLabel("Reply")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.Name(), origMsg.Hash)).
-			SetIcon("icofont-remove").
-			SetLabel("Delete"))
-	containerVBox.Add(amw)
-
-	/* Message header section */
-	msgHeader := self.makeMessageHeaderSection(*origMsg)
-	msgHeaderWrapper := widgets.NewDivWidget().SetClass("echo-msg-view-header-wrapper").SetWidget(msgHeader)
-	containerVBox.Add(msgHeaderWrapper)
-
-	/* Message body */
-	previewWidget := widgets.NewDivWidget().
-		SetClass("echo-msg-view-body").
-		SetContent(string(outDoc))
-	containerVBox.Add(previewWidget)
+	/* Make HTML page content */
+	mainWidget := self.makeMainEchoMsgViewWidget(area, origMsg, outDoc)
 
 	/* Render process */
-	if err := bw.Render(w); err != nil {
-		status := fmt.Sprintf("%+v", err)
+	if err := mainWidget.Render(w); err != nil {
+		status := fmt.Sprintf("Fail on Render in Widget: err = %+v", err)
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
@@ -184,5 +139,50 @@ func (self EchoMsgViewAction) makeMessageHeaderSection(origMsg msg.Message) widg
 	)
 
 	return headerTable
+
+}
+
+func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *msg.Area, origMsg *msg.Message, outDoc template.HTML) widgets.IWidget {
+
+	mainWidget := widgets.NewBaseWidget()
+
+	vBox := widgets.NewVBoxWidget()
+	mainWidget.SetWidget(vBox)
+
+	mmw := self.makeMenu()
+	vBox.Add(mmw)
+
+	container := widgets.NewDivWidget()
+	container.SetClass("container")
+	vBox.Add(container)
+
+	containerVBox := widgets.NewVBoxWidget()
+	container.SetWidget(containerVBox)
+
+
+	/* Context actions */
+	amw := widgets.NewActionMenuWidget().
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.Name(), origMsg.Hash)).
+			SetIcon("icofont-edit").
+			SetLabel("Reply")).
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.Name(), origMsg.Hash)).
+			SetIcon("icofont-remove").
+			SetLabel("Delete"))
+	containerVBox.Add(amw)
+
+	/* Message header section */
+	msgHeader := self.makeMessageHeaderSection(*origMsg)
+	msgHeaderWrapper := widgets.NewDivWidget().SetClass("echo-msg-view-header-wrapper").SetWidget(msgHeader)
+	containerVBox.Add(msgHeaderWrapper)
+
+	/* Message body */
+	previewWidget := widgets.NewDivWidget().
+		SetClass("echo-msg-view-body").
+		SetContent(string(outDoc))
+	containerVBox.Add(previewWidget)
+
+	return mainWidget
 
 }
