@@ -23,18 +23,8 @@ func (self *PacketHeader) SetPassword(password string) {
 	self.PktPassword = newPassword
 }
 
-type PacketAttr int8
-
-const (
-	PacketAttrDirect PacketAttr = 0x01
-)
-
-func (self *PacketMessageHeader) UnsetAttribute(attr PacketAttr) error {
-	return nil
-}
-
-func (self *PacketMessageHeader) SetAttribute(attr PacketAttr) error {
-	return nil
+func (self *PacketMessageHeader) SetAttribute(attr MsgAttr) {
+	self.Attributes = uint16(attr)
 }
 
 func (self *PacketMessageHeader) SetToUserName(ToUserName []byte) error {

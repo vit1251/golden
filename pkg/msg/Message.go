@@ -6,25 +6,6 @@ import (
 	"time"
 )
 
-type MsgAttr uint16
-
-const MsgAttrPrivate       = 1 << 0
-const MsgAttrCrash         = 1 << 1
-const MsgAttrRecd          = 1 << 2
-const MsgAttrSent          = 1 << 3
-const MsgAttrFileAttached  = 1 << 4
-const MsgAttrInTransit     = 1 << 5
-const MsgAttrOrphan        = 1 << 6
-const MsgAttrKillSent      = 1 << 7
-const MsgAttrLocal         = 1 << 8
-const MsgAttrHoldForPickup = 1 << 9
-//const MsgAttr       = 1 << 10
-const MsgAttrFileRequest   = 1 << 11
-const MsgAttrReturnReceiptRequest = 1 << 12
-const MsgAttrIsReturnReceipt = 1 << 13
-const MsgAttrAuditRequest   = 1 << 14
-const FileUpdateReq = 1 << 15
-
 type Message struct {
 	ID          string
 	MsgID       string
