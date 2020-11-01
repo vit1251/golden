@@ -58,7 +58,7 @@ type DateParser struct {
 	date      FidoDate
 }
 
-func NewDateParser() (*DateParser) {
+func NewDateParser() *DateParser {
 	result := new(DateParser)
 	return result
 }

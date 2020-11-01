@@ -1,6 +1,7 @@
 package charset
 
 import (
+	"fmt"
 	"github.com/vit1251/golden/pkg/registry"
 	"golang.org/x/text/encoding/charmap"
 )
@@ -52,5 +53,23 @@ func (self *CharsetManager) Encode(source []rune) ([]byte, error) {
 		}
 	}
 
+	return result, nil
+}
+
+func (self CharsetManager) DecodeMessageBody(msgBody []byte, charset string) (string, error) {
+	var result string
+	if charset == "CP866" {
+		if unicodeBody, err1 := self.Decode(msgBody); err1 == nil {
+			result = string(unicodeBody)
+		} else {
+				return result, err1
+			}
+	} else if charset == "UTF-8" {
+		result = string(msgBody)
+	} else if charset == "LATIN-1" {
+		result = string(msgBody)
+	} else {
+		return result, fmt.Errorf("wrong charset on message")
+	}
 	return result, nil
 }

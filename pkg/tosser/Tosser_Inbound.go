@@ -2,7 +2,6 @@ package tosser
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/fidotime"
@@ -11,12 +10,14 @@ import (
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/packet"
+	"github.com/vit1251/golden/pkg/tosser/arcmail"
 	"io"
 	"log"
 	"os"
 	"path"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func (self *Tosser) parseCharsetKludge(charsetKludge string) (string) {
@@ -37,38 +38,6 @@ func (self *Tosser) parseCharsetKludge(charsetKludge string) (string) {
 
 	return result
 
-}
-
-func (self *Tosser) decodeMessageBody(msgBody []byte, charset string) (string, error) {
-
-
-	charsetManager := self.restoreCharsetManager()
-
-	var result string
-
-	if charset == "CP866" {
-
-		if unicodeBody, err1 := charsetManager.Decode(msgBody); err1 == nil {
-			result = string(unicodeBody)
-		} else {
-			return result, err1
-		}
-
-	} else if charset == "UTF-8" {
-
-		result = string(msgBody)
-
-	} else if charset == "LATIN-1" {
-
-		result = string(msgBody)
-
-	} else {
-
-		return result, errors.New("wrong charset on message")
-
-	}
-
-	return result, nil
 }
 
 func (self *Tosser) processNewMessage(msg *TosserPacketMessage) error {
@@ -180,7 +149,7 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 	newMsg.SetPacket(msgBody.RAW)
 
 	/* Decode message body */
-	newBody, err9 := self.decodeMessageBody(msgBody.RAW, charset)
+	newBody, err9 := charsetManager.DecodeMessageBody(msgBody.RAW, charset)
 	if err9 != nil {
 		return err9
 	}
@@ -211,52 +180,92 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	a.SetName(areaName)
 	areaManager.Register(a)
 
-	/* Decode message */
-	charsetKludge := msgBody.GetKludge("CHRS", "CP866 2")
-	charset := self.parseCharsetKludge(charsetKludge)
+	/* No message encoding */
+	var msgID string
+	var msgHash string // TODO - make message hash ...
+	var msgTime time.Time = time.Now()
+	var newBody string = string(msgBody.RAW)
+	var newSubject string = string(msgHeader.Subject)
+	var newFrom string = string(msgHeader.FromUserName)
+	var newTo string = string(msgHeader.ToUserName)
 
-	/* Decode message body */
-	newBody, err9 := self.decodeMessageBody(msgBody.RAW, charset)
-	if err9 != nil {
-		return err9
+	/* Process message kludges */
+	for _, k := range msgBody.GetKludges() {
+		if k.Name == "CHRS" {
+
+			charset := self.parseCharsetKludge(k.Value)
+
+			var err1 error
+			var err2 error
+			var err3 error
+			var err4 error
+
+			/* Decode body */
+			newBody, err1 = charsetManager.DecodeMessageBody(msgBody.RAW, charset)
+			if err1 != nil {
+				return err1
+			}
+
+			/* Decode headers */
+			newSubject, err2 = charsetManager.DecodeMessageBody(msgHeader.Subject, charset)
+			if err2 != nil {
+				return err2
+			}
+
+			newFrom, err3 = charsetManager.DecodeMessageBody(msgHeader.FromUserName, charset)
+			if err3 != nil{
+				return err3
+			}
+
+			newTo, err4 = charsetManager.DecodeMessageBody(msgHeader.ToUserName, charset)
+			if err4 != nil {
+				return err4
+			}
+
+		} else if k.Name == "MSGID" {
+
+			value := strings.Trim(k.Value, " ")
+			msgID = value
+
+			parts := strings.Split(value, " ")
+			if len(parts) == 2 {
+				//source := msgidParts[0]
+				msgHash = parts[1]
+			} else {
+				log.Printf("Problem with MSGID kludge: value = %s", value)
+			}
+
+		} else if k.Name == "REPLY" {
+
+			value := strings.Trim(k.Value, " ")
+			reply := strings.Trim(value, " ")
+			log.Printf("reply = %s", reply)
+			// TODO - save reply chains ...
+
+		} else if k.Name == "TZUTC" {
+
+			value := strings.Trim(k.Value, " ")
+
+			zParser := fidotime.NewTimeZoneParser()
+			msgZone, err10 := zParser.Parse(value)
+			if err10 != nil {
+				return err10
+			}
+			log.Printf("Message zone: zone = %+v", msgZone)
+
+			msgTimePtr, err11 := msgHeader.Time.CreateTime(msgZone)
+			if err11 != nil {
+				return err11
+			}
+			msgTime = *msgTimePtr // TODO - I check this is legal ... buy require clarification ...
+			log.Printf("fidoTime = %+v timezone = %+v msgTime = %+v", msgHeader.Time, msgZone, msgTime)
+
+		} else {
+			log.Printf("Unknown kludge: name = %s value = %s", k.Name, k.Value)
+		}
 	}
 
-	/* Determine message ID */
-	msgid := msgBody.GetKludge("MSGID", "")
-	msgid = strings.Trim(msgid, " ")
-	log.Printf("msgid = %s", msgid)
-	msgidParts := strings.Split(msgid, " ")
-	var msgHash string
-	if len(msgidParts) == 2 {
-		//source := msgidParts[0]
-		msgHash = msgidParts[1]
-	}
-
-	/* Determine reply */
-	reply := msgBody.GetKludge("REPLY", "")
-	reply = strings.Trim(reply, " ")
-	log.Printf("reply = %s", reply)
-
-	/* Determine zone */
-	zone := msgBody.GetKludge("TZUTC", " 0300")
-	log.Printf("zone = %+v", zone)
-	zone = strings.Trim(zone, " \t")
-	zParser := fidotime.NewTimeZoneParser()
-	msgZone, err10 := zParser.Parse(zone)
-	if err10 != nil {
-		return err10
-	}
-	log.Printf("Message zone: zone = %+v", msgZone)
-
-	log.Printf("orig: msgTime = %+v", msgHeader.Time)
-	msgTime, err11 := msgHeader.Time.CreateTime(msgZone)
-	if err11 != nil {
-		return err11
-	}
-	log.Printf("msgTime = %+v", msgTime)
-	log.Printf("msgTime (Local) = %+v", msgTime.Local())
-
-	/* Check unique item */
+	/* Check duplicate message */
 	exists, err9 := messageManager.IsMessageExistsByHash(areaName, msgHash)
 	if err9 != nil {
 		return err9
@@ -267,41 +276,28 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 		return nil
 	}
 
-	/* Decode headers */
-	newSubject, err1 := charsetManager.DecodeString(msgHeader.Subject)
-	if err1 != nil {
-		return err1
-	}
-	newFrom, err2 := charsetManager.DecodeString(msgHeader.FromUserName)
-	if err2 != nil {
-		return err2
-	}
-	newTo, err3 := charsetManager.DecodeString(msgHeader.ToUserName)
-	if err3 != nil {
-		return err3
-	}
 
 	/* Debug message */
 	newFromAddr := fmt.Sprintf("\"%s\" <%s>", newFrom, msgHeader.OrigAddr)
 	newToAddr := fmt.Sprintf("\"%s\" <%s>", newTo, msgHeader.DestAddr)
 	log.Printf("Process ECHOMAIL message:\n\tFrom: %s\n\tTo: %s", newFromAddr, newToAddr)
 
-	/* Create msgapi.Message */
+	/* Create Message */
 	newMsg := msg.NewMessage()
-	newMsg.SetMsgID(msgid)
+	newMsg.SetMsgID(msgID)
 	newMsg.SetMsgHash(msgHash)
 	newMsg.SetArea(areaName)
 	newMsg.SetFrom(newFrom)
 	newMsg.SetTo(newTo)
 	newMsg.SetSubject(newSubject)
-	newMsg.SetTime(*msgTime)
+	newMsg.SetTime(msgTime)
+	newMsg.SetContent(newBody)
 	newMsg.SetPacket(msgBody.RAW)
 
-	newMsg.SetContent(newBody)
-
-	/* Store message */
-	err := messageManager.Write(newMsg)
-	log.Printf("err = %v", err)
+	/* Save message in storage */
+	if err := messageManager.Write(newMsg); err != nil {
+		log.Printf("Fail on Write in MessageManager: err = %+v", err)
+	}
 
 	/* Update counter */
 	statManager.RegisterInMessage()
@@ -409,7 +405,7 @@ func (self *Tosser) processARCmail(item *cache.FileEntry) error {
 	newInbTempDir, _ := configManager.Get("main", "TempInbound")
 
 	/* Unpack */
-	packets, err1 := Unpack(item.AbsolutePath, newInbTempDir)
+	packets, err1 := archmail.Unpack(item.AbsolutePath, newInbTempDir)
 	if err1 != nil {
 		return err1
 	}
