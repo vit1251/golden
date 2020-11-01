@@ -1,4 +1,4 @@
-package msg
+package echomail
 
 import (
 	"errors"

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/mailer/cache"
@@ -206,7 +207,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	areaName := msgBody.GetArea()
 
 	/* Auto create area */
-	a := msg.NewArea()
+	a := echomail.NewArea()
 	a.SetName(areaName)
 	areaManager.Register(a)
 
@@ -293,7 +294,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	newMsg.SetFrom(newFrom)
 	newMsg.SetTo(newTo)
 	newMsg.SetSubject(newSubject)
-	newMsg.SetTime(msgTime)
+	newMsg.SetTime(*msgTime)
 	newMsg.SetPacket(msgBody.RAW)
 
 	newMsg.SetContent(newBody)

@@ -6,6 +6,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/msg"
@@ -195,7 +196,7 @@ func (self *TosserManager) prepareOrigin(Origin string) string {
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
 
 	configManager := self.restoreConfigManager()
-	messageManager := self.restoreMessageManager()
+	//messageManager := self.restoreMessageManager()
 	charsetManager := self.restoreCharsetManager()
 
 	/* Create packet name */
@@ -269,7 +270,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
 
 	/* Construct message content */
-	msgContent := messageManager.NewMessageContent(self.registry)
+	msgContent := msg.NewMessageContent(self.registry)
 
 	msgContent.SetCharset("CP866")
 
@@ -357,7 +358,7 @@ func (self *TosserManager) PushPacket(src string, dst string) error {
 func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
 	configManager := self.restoreConfigManager()
-	messageManager := self.restoreMessageManager()
+	//messageManager := self.restoreMessageManager()
 	charsetManager := self.restoreCharsetManager()
 
 	var params struct {
@@ -440,7 +441,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
 
 	/* Construct message content */
-	msgContent := messageManager.NewMessageContent(self.registry)
+	msgContent := msg.NewMessageContent(self.registry)
 	msgContent.SetCharset("CP866")
 	msgContent.AddLine(nm.GetBody())
 	msgContent.AddLine("")
@@ -474,10 +475,10 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	return nil
 }
 
-func (self *TosserManager) restoreMessageManager() *msg.MessageManager {
+func (self *TosserManager) restoreMessageManager() *echomail.MessageManager {
 
 	managerPtr := self.registry.Get("MessageManager")
-	if manager, ok := managerPtr.(*msg.MessageManager); ok {
+	if manager, ok := managerPtr.(*echomail.MessageManager); ok {
 		return manager
 	} else {
 		panic("no message manager")

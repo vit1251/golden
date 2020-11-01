@@ -2,6 +2,7 @@ package bbs
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/msg"
 	"strings"
 )
@@ -19,9 +20,9 @@ func NewMessageView() *MessageView {
 
 func (mw *MessageView) Render(cs *ConnState) {
 
-	var areaManager *msg.AreaManager
-	var messageManager *msg.MessageManager
-	cs.container.Invoke(func(am *msg.AreaManager, mm *msg.MessageManager) {
+	var areaManager *echomail.AreaManager
+	var messageManager *echomail.MessageManager
+	cs.container.Invoke(func(am *echomail.AreaManager, mm *echomail.MessageManager) {
 		areaManager = am
 		messageManager = mm
 	})
@@ -127,44 +128,11 @@ func (mw *MessageView) Render(cs *ConnState) {
 
 }
 
-func (mw *MessageView) getMessageByIndex(cs *ConnState, activeIndex int) *msg.Message {
-
-	var areaManager *msg.AreaManager
-	var messageManager *msg.MessageManager
-	cs.container.Invoke(func(am *msg.AreaManager, mm *msg.MessageManager) {
-		areaManager = am
-		messageManager = mm
-	})
-
-	//
-	newArea, err1 := areaManager.GetAreaByName(cs.activeArea)
-	if err1 != nil {
-		return nil
-	}
-
-	areaName := newArea.Name()
-	msgHeaders, err2 := messageManager.GetMessageHeaders(areaName)
-	if err2 != nil {
-		return nil
-	}
-
-	for idx, msgHeader := range msgHeaders {
-		if idx == activeIndex {
-			msgHash := msgHeader.Hash
-			msg, _ := messageManager.GetMessageByHash(areaName, msgHash)
-			return msg
-		}
-	}
-
-	return nil
-
-}
-
 func (mw *MessageView) markMessageByIndex(cs *ConnState, activeIndex int) error {
 
-	var areaManager *msg.AreaManager
-	var messageManager *msg.MessageManager
-	cs.container.Invoke(func(am *msg.AreaManager, mm *msg.MessageManager) {
+	var areaManager *echomail.AreaManager
+	var messageManager *echomail.MessageManager
+	cs.container.Invoke(func(am *echomail.AreaManager, mm *echomail.MessageManager) {
 		areaManager = am
 		messageManager = mm
 	})

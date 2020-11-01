@@ -2,7 +2,7 @@ package bbs
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/echomail"
 	"unicode"
 )
 
@@ -39,8 +39,8 @@ func (av *AreaListView) Render(cs *ConnState) {
 	cs.t.SetAttr(B_BLUE)
 	cs.scr.DrawLineY( 1,"─")
 
-	var areaManager *msg.AreaManager
-	cs.container.Invoke(func(am *msg.AreaManager) {
+	var areaManager *echomail.AreaManager
+	cs.container.Invoke(func(am *echomail.AreaManager) {
 		areaManager = am
 	})
 
@@ -224,9 +224,9 @@ func (av *AreaListView) Render(cs *ConnState) {
 
 }
 
-func (av *AreaListView) getAreaByIndex(cs *ConnState, idx int) *msg.Area {
-	var areaManager *msg.AreaManager
-	cs.container.Invoke(func(am *msg.AreaManager) {
+func (av *AreaListView) getAreaByIndex(cs *ConnState, idx int) *echomail.Area {
+	var areaManager *echomail.AreaManager
+	cs.container.Invoke(func(am *echomail.AreaManager) {
 		areaManager = am
 	})
 

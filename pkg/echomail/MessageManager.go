@@ -1,14 +1,14 @@
-package msg
+package echomail
 
 import (
 	"database/sql"
+	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
 )
 
 type MessageManager struct {
-	conn           *sql.DB
 	registry       *registry.Container
 }
 
@@ -93,11 +93,11 @@ func (self *MessageManager) GetAreaList3() ([]*Area, error) {
 	return result, nil
 }
 
-func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error) {
+func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*msg.Message, error) {
 
 	storageManager := self.restoreStorageManager()
 
-	var result []*Message
+	var result []*msg.Message
 
 	query1 := "SELECT `msgId`, `msgArea`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
 	var params []interface{}
@@ -119,7 +119,7 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 			return err2
 		}
 
-		msg := NewMessage()
+		msg := msg.NewMessage()
 		if msgHash != nil {
 			msg.SetMsgHash(*msgHash)
 		}
@@ -139,11 +139,11 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*Message, error
 	return result, nil
 }
 
-func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*Message, error) {
+func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*msg.Message, error) {
 
 	storageManager := self.restoreStorageManager()
 
-	var result *Message
+	var result *msg.Message
 
 	query1 := "SELECT `msgId`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate`, `msgPacket` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
 	var params []interface{}
@@ -169,7 +169,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*M
 		log.Printf("subject = %q", subject)
 
 		/**/
-		msg := NewMessage()
+		msg := msg.NewMessage()
 		msg.SetMsgID(msgMsgId)
 		msg.SetSubject(subject)
 		msg.SetID(ID)
@@ -252,7 +252,7 @@ func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string
 	return result, nil
 }
 
-func (self *MessageManager) Write(msg *Message) (error) {
+func (self *MessageManager) Write(msg *msg.Message) (error) {
 
 	storageManager := self.restoreStorageManager()
 

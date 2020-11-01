@@ -4,11 +4,11 @@ import (
 	"flag"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/installer"
 	"github.com/vit1251/golden/pkg/mailer"
-	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
@@ -60,11 +60,12 @@ func (self *Application) Run() {
 
 	self.registry.Register("CharsetManager", charset.NewCharsetManager(self.registry))
 
-	self.registry.Register("MessageManager", msg.NewMessageManager(self.registry))
-	self.registry.Register("AreaManager", msg.NewAreaManager(self.registry))
+	self.registry.Register("MessageManager", echomail.NewMessageManager(self.registry))
+	self.registry.Register("AreaManager", echomail.NewAreaManager(self.registry))
 	self.registry.Register("FileManager", file.NewFileManager(self.registry))
 	self.registry.Register("NetmailManager", netmail.NewNetmailManager(self.registry))
 	self.registry.Register("StatManager", stat.NewStatManager(self.registry))
+	self.registry.Register("EchoManager", echomail.NewEchoManager(self.registry))
 
 	self.registry.Register("TosserManager",	tosser.NewTosserManager(self.registry))
 	self.registry.Register("MailerManager", mailer.NewMailerManager(self.registry))

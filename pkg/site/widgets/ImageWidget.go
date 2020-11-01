@@ -6,12 +6,14 @@ import (
 )
 
 type ImageWidget struct {
-	Source string /* Source */
-	Alt    string
+	source string
+	alt    string
+	class  string
 }
 
-func (self *ImageWidget) SetSource(s string) {
-	self.Source = s
+func (self *ImageWidget) SetSource(s string) *ImageWidget {
+	self.source = s
+	return self
 }
 
 func NewImageWidget() *ImageWidget {
@@ -20,6 +22,11 @@ func NewImageWidget() *ImageWidget {
 }
 
 func (self *ImageWidget) Render(w http.ResponseWriter) error {
-	fmt.Fprintf(w, "<img src=\"%s\" alt=\"%s\" />\n", self.Source, self.Alt)
+	fmt.Fprintf(w, "<img src=\"%s\" alt=\"%s\" class=\"%s\" />\n", self.source, self.alt, self.class)
 	return nil
+}
+
+func (self *ImageWidget) SetClass(class string) *ImageWidget {
+	self.class = class
+	return self
 }

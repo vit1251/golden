@@ -2,8 +2,8 @@ package tosser
 
 import (
 	"github.com/vit1251/golden/pkg/charset"
+	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/file"
-	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
@@ -59,18 +59,18 @@ func (self *Tosser) restoreNetmailManager() *netmail.NetmailManager {
 	}
 }
 
-func (self *Tosser) restoreAreaManager() *msg.AreaManager {
+func (self *Tosser) restoreAreaManager() *echomail.AreaManager {
 	managerPtr := self.registry.Get("AreaManager")
-	if manager, ok := managerPtr.(*msg.AreaManager); ok {
+	if manager, ok := managerPtr.(*echomail.AreaManager); ok {
 		return manager
 	} else {
 		panic("no area manager")
 	}
 }
 
-func (self *Tosser) restoreMessageManager() *msg.MessageManager {
+func (self *Tosser) restoreMessageManager() *echomail.MessageManager {
 	managerPtr := self.registry.Get("MessageManager")
-	if manager, ok := managerPtr.(*msg.MessageManager); ok {
+	if manager, ok := managerPtr.(*echomail.MessageManager); ok {
 		return manager
 	} else {
 		panic("no message manager")

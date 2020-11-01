@@ -3,6 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"html/template"
@@ -127,7 +128,7 @@ func (self EchoMsgViewAction) makeMessageHeaderSection(origMsg msg.Message) widg
 	self.makeMessageHeaderRowSection(
 		headerTable,
 		widgets.NewTextWidgetWithText("Subject:"),
-		widgets.NewTextWidgetWithText(origMsg.To),
+		widgets.NewTextWidgetWithText(origMsg.Subject),
 	)
 
 	/* Make "Date" section */
@@ -142,7 +143,7 @@ func (self EchoMsgViewAction) makeMessageHeaderSection(origMsg msg.Message) widg
 
 }
 
-func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *msg.Area, origMsg *msg.Message, outDoc template.HTML) widgets.IWidget {
+func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *echomail.Area, origMsg *msg.Message, outDoc template.HTML) widgets.IWidget {
 
 	mainWidget := widgets.NewBaseWidget()
 

@@ -1,7 +1,7 @@
 package netmail
 
 import (
-	"github.com/xeonx/timeago"
+	commonfunc "github.com/vit1251/golden/pkg/common"
 	"time"
 )
 
@@ -77,11 +77,8 @@ func (self *NetmailMessage) SetTime(ptm *time.Time) {
 	}
 }
 
-func (self *NetmailMessage) Age() string {
-	var result string = "-"
-	if self.DateWritten != nil {
-		result = timeago.English.Format(*self.DateWritten)
-	}
+func (self NetmailMessage) GetAge() string {
+	result := commonfunc.MakeHumanTime(*self.DateWritten)
 	return result
 }
 

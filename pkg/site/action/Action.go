@@ -1,8 +1,8 @@
 package action
 
 import (
+	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/file"
-	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
@@ -40,10 +40,10 @@ func (self *Action) makeMenu() *widgets.MainMenuWidget {
 	return mainMenu
 }
 
-func (self *Action) restoreMessageManager() *msg.MessageManager {
+func (self *Action) restoreMessageManager() *echomail.MessageManager {
 
 	managerPtr := self.registry.Get("MessageManager")
-	if manager, ok := managerPtr.(*msg.MessageManager); ok {
+	if manager, ok := managerPtr.(*echomail.MessageManager); ok {
 		return manager
 	} else {
 		panic("no message manager")
@@ -51,10 +51,10 @@ func (self *Action) restoreMessageManager() *msg.MessageManager {
 
 }
 
-func (self *Action) restoreAreaManager() *msg.AreaManager {
+func (self *Action) restoreAreaManager() *echomail.AreaManager {
 
 	managerPtr := self.registry.Get("AreaManager")
-	if manager, ok := managerPtr.(*msg.AreaManager); ok {
+	if manager, ok := managerPtr.(*echomail.AreaManager); ok {
 		return manager
 	} else {
 		panic("no area manager")

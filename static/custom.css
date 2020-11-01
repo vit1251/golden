@@ -447,6 +447,34 @@ span.hidden {
     background-color: #646464;
 }
 
+/* Welcome section */
+
+.welcome-img {
+    margin: 0 auto;
+    display: block;
+    padding: 64px 0;
+}
+
+.welcome-header {
+    text-align: center;
+    font-size: 26pt;
+}
+
+.welcome-version {
+    text-align: center;
+}
+
+.welcome-contributor-header {
+    text-align: center;
+    font-size: 23pt;
+}
+
+.welcome-contributor-list {
+    text-underline-color: #838;
+    text-underline-style: single;
+    text-align: center;
+}
+
 /* Echo Message View */
 
 .echo-msg-view-header-wrapper {
@@ -481,4 +509,42 @@ span.hidden {
     flex-grow: 0;
     white-space: pre-wrap;
     font-family: "Courier New", monospace;
+    line-height: 1.0;
+}
+
+/* Netmail Message View */
+
+.netmail-msg-view-header-wrapper {
+    border-top: 2px solid #833;
+    border-bottom: 2px solid #833;
+    width: 100%;
+    padding: 8px 0;
+}
+
+.netmail-msg-view-header {
+    padding-bottom: 4px;
+}
+
+.netmail-msg-view-header-name {
+    color: #883;
+    font-weight: bold;
+    text-align: right;
+    padding-right: 4px;
+}
+
+.netmail-msg-view-header-value {
+    padding-left: 4px;
+}
+
+.netmail-msg-view-body-wrapper {
+
+}
+
+.netmail-msg-view-body {
+    margin-top: 10px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    white-space: pre-wrap;
+    font-family: "Courier New", monospace;
+    line-height: 1.0;
 }

@@ -12,7 +12,7 @@ type MessageContent struct {
 	registry *registry.Container
 }
 
-func (self *MessageManager) NewMessageContent(r *registry.Container) *MessageContent {
+func NewMessageContent(r *registry.Container) *MessageContent {
 	mc := new(MessageContent)
 	mc.registry = r
 	return mc

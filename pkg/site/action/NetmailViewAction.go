@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"net/http"
 )
@@ -17,10 +18,9 @@ func NewNetmailViewAction() *NetmailViewAction {
 	return va
 }
 
-func (self *NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	netmailManager := self.restoreNetmailManager()
-	//configManager := self.restoreConfigManager()
 
 	//
 	vars := mux.Vars(r)
@@ -89,30 +89,12 @@ func (self *NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 			SetLabel("Delete"))
 	containerVBox.Add(amw)
 
-	indexTable := widgets.NewTableWidget().
-		SetClass("table")
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("FROM"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.From))))
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("TO"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.To))))
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("SUBJ"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.Subject))))
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("DATE"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
-			fmt.Sprintf("%s", origMsg.DateWritten)))))
-
-	containerVBox.Add(indexTable)
+	msgHeader  := self.makeMessageHeaderSection(origMsg)
+	msgHeaderWrapper := widgets.NewDivWidget().SetClass("netmail-msg-view-header-wrapper").SetWidget(msgHeader)
+	containerVBox.Add(msgHeaderWrapper)
 
 	previewWidget := widgets.NewDivWidget().
-		SetClass("message-preview").
+		SetClass("netmail-msg-view-body").
 		SetContent(string(outDoc))
 	containerVBox.Add(previewWidget)
 
@@ -121,5 +103,62 @@ func (self *NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
+
+}
+
+func (self NetmailViewAction) makeMessageHeaderRowSection(headerTable *widgets.TableWidget, name widgets.IWidget, value widgets.IWidget) {
+
+	headerFromName := widgets.NewTableCellWidget()
+	headerFromName.SetClass("netmail-msg-view-header-name")
+	headerFromName.SetWidget(name)
+
+	headerFromValue := widgets.NewTableCellWidget()
+	headerFromValue.SetClass("netmail-msg-view-header-value")
+	headerFromValue.SetWidget(value)
+
+	headerTable.AddRow(
+		widgets.NewTableRowWidget().
+			AddCell(headerFromName).
+			AddCell(headerFromValue),
+	)
+
+}
+
+func (self NetmailViewAction) makeMessageHeaderSection(origMsg *netmail.NetmailMessage) widgets.IWidget {
+
+	/* Make main header widget */
+	headerTable := widgets.NewTableWidget().
+		SetClass("netmail-msg-view-header")
+
+	/* Make "From" section */
+	self.makeMessageHeaderRowSection(
+		headerTable,
+		widgets.NewTextWidgetWithText("From:"),
+		widgets.NewTextWidgetWithText(origMsg.From),
+	)
+
+	/* Make "To" section */
+	self.makeMessageHeaderRowSection(
+		headerTable,
+		widgets.NewTextWidgetWithText("To:"),
+		widgets.NewTextWidgetWithText(origMsg.To),
+	)
+
+	/* Make "Subject" section */
+	self.makeMessageHeaderRowSection(
+		headerTable,
+		widgets.NewTextWidgetWithText("Subject:"),
+		widgets.NewTextWidgetWithText(origMsg.Subject),
+	)
+
+	/* Make "Date" section */
+	newDate := fmt.Sprintf("%s", origMsg.DateWritten)
+	self.makeMessageHeaderRowSection(
+		headerTable,
+		widgets.NewTextWidgetWithText("Date:"),
+		widgets.NewTextWidgetWithText(newDate),
+	)
+
+	return headerTable
 
 }

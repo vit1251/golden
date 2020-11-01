@@ -40,26 +40,26 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vBox.Add(container)
 
 	imageWidget := widgets.NewImageWidget()
-	imageWidget.SetSource("/static/fido.svg")
+	imageWidget.SetSource("/static/fido.svg").SetClass("welcome-img")
 	containerVBox.Add(imageWidget)
 
 	nameWidget := widgets.NewDivWidget().
-		SetClass("welcomeHeader").
+		SetClass("welcome-header").
 		SetContent("Golden point")
 	containerVBox.Add(nameWidget)
 
 	versionWidget := widgets.NewDivWidget()
-	versionWidget.SetClass("welcomeVersion")
+	versionWidget.SetClass("welcome-version")
 	versionWidget.SetContent(fmt.Sprintf("Version %s", version))
 	containerVBox.Add(versionWidget)
 
 	contributorHeader := widgets.NewDivWidget().
-		SetClass("contributorHeader").
+		SetClass("welcome-contributor-header").
 		SetContent("Contributers")
 	containerVBox.Add(contributorHeader)
 
 	contributorList := widgets.NewDivWidget().
-		SetClass("contributorList").
+		SetClass("welcome-contributor-list").
 		SetContent("Sergey Anohin")
 
 	containerVBox.Add(contributorList)

@@ -93,7 +93,7 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.From))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.To))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Subject))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Age()))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.GetAge()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
 				SetContent("View").
 				SetClass("btn").

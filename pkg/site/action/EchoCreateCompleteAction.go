@@ -2,7 +2,7 @@ package action
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/echomail"
 	"net/http"
 )
 
@@ -27,7 +27,7 @@ func (self *EchoCreateComplete) ServeHTTP(w http.ResponseWriter, r *http.Request
 	echoTag := r.Form.Get("echoname")
 	fmt.Printf("echoTag = %v", echoTag)
 
-	a := msg.NewArea()
+	a := echomail.NewArea()
 	a.SetName(echoTag)
 	areaManager.Register(a)
 

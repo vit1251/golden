@@ -76,7 +76,7 @@ func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.From)))
 		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.To)))
 		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Subject)))
-		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Age())))
+		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.GetAge())))
 
 		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
 			SetContent("View").

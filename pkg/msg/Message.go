@@ -1,7 +1,7 @@
 package msg
 
 import (
-	"github.com/xeonx/timeago"
+	"github.com/vit1251/golden/pkg/common"
 	"strings"
 	"time"
 )
@@ -35,7 +35,7 @@ type Message struct {
 	Subject     string
 	Content     string
 	UnixTime    int64
-	DateWritten *time.Time
+	DateWritten time.Time
 	ViewCount   int
 	Packet      []byte
 }
@@ -45,7 +45,7 @@ func NewMessage() *Message {
 	return msg
 }
 
-func (self *Message) GetContent() string {
+func (self Message) GetContent() string {
 	return self.Content
 }
 
@@ -80,15 +80,11 @@ func (self *Message) SetContent(content string) {
 func (self *Message) SetUnixTime(unixTime int64) {
 	self.UnixTime = unixTime
 	tm := time.Unix(unixTime, 0)
-	self.DateWritten = &tm
+	self.DateWritten = tm
 }
 
-func (self *Message) SetTime(ptm *time.Time) {
+func (self *Message) SetTime(ptm time.Time) {
 	self.DateWritten = ptm
-	if ptm != nil {
-		var tm time.Time = *ptm
-		self.UnixTime = tm.Unix()
-	}
 }
 
 func (self *Message) SetViewCount(count int) {
@@ -99,11 +95,8 @@ func (self *Message) SetMsgHash(hash string) {
 	self.Hash = hash
 }
 
-func (self *Message) Age() string {
-	var result string = "-"
-	if self.DateWritten != nil {
-		result = timeago.English.Format(*self.DateWritten)
-	}
+func (self Message) GetAge() string {
+	result := commonfunc.MakeHumanTime(self.DateWritten)
 	return result
 }
 
