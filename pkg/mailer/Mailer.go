@@ -65,6 +65,9 @@ type Mailer struct {
 	userName   string
 	location   string
 
+	rxRoutineResult ReceiveRoutineResult
+	txRoutineResult TransmitRoutineResult
+
 	outboundQueue []cache.FileEntry
 	inboundQueue  []cache.FileEntry
 
