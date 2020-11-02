@@ -84,6 +84,8 @@ func (self *SiteManager) registerFrontend() {
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", action.NewEchoMsgRemoveCompleteAction())
 	self.Register("/file", action.NewFileAreaIndexAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}", action.NewFileAreaViewAction())
+	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/compose", action.NewFileAreaComposeAction())
+	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/compose/complete", action.NewFileAreaComposeCompleteAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/view", action.NewFileAreaDownloadAction())
 	self.Register("/netmail", action.NewNetmailAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/view", action.NewNetmailViewAction())
