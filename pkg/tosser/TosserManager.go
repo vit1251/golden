@@ -197,6 +197,7 @@ func (self *TosserManager) prepareOrigin(Origin string) string {
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
 
 	configManager := self.restoreConfigManager()
+	areaManager := self.restoreAreaManager()
 	//messageManager := self.restoreMessageManager()
 	charsetManager := self.restoreCharsetManager()
 
@@ -232,6 +233,17 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	TearLine, _ := configManager.Get("main", "TearLine")
 	Origin, _ := configManager.Get("main", "Origin")
 
+	/* Restore area */
+	area, err2 := areaManager.GetAreaByName(em.AreaName)
+	if err2 != nil {
+		return "", err2
+	}
+	log.Printf("area = %+v", area)
+	msgCharset := area.Charset
+	if msgCharset == "" {
+		msgCharset = "CP866"
+	}
+
 	/* Write packet header */
 	pktHeader := packet.NewPacketHeader()
 	pktHeader.SetOrigAddr(myAddr)
@@ -257,7 +269,6 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	em.body += fmt.Sprintf(" * Origin: %s (%s)", newOrigin, myAddr) + msg.CR
 
 	/* Encode message headers */
-	msgCharset := "CP866"
 	newSubject, err1 := charsetManager.EncodeMessageBody([]rune(em.Subject), msgCharset)
 	if err1 != nil {
 		return "", err1
@@ -302,7 +313,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 		Value: newZone,
 		Raw: []byte(fmt.Sprintf("\x01TZUTC %s", newZone)),
 	})
-	chrsKludge := "CP866 2"  // TODO - "UTF-8 4"
+	chrsKludge := self.makeChrsKludgeByCharsetName(area.Charset)
 	msgBody.AddKludge(packet.Kludge{
 		Name: "CHRS",
 		Value: chrsKludge,
@@ -527,7 +538,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 		Value: toptKludge,
 		Raw: []byte(fmt.Sprintf("\x01TOPT %s", toptKludge)),
 	})
-	chrsKludge := "CP866 2"  // TODO - "UTF-8 4"
+	chrsKludge := self.makeChrsKludgeByCharsetName(msgCharset)
 	msgBody.AddKludge(packet.Kludge{
 		Name: "CHRS",
 		Value: chrsKludge,
@@ -582,6 +593,25 @@ func (self *TosserManager) restoreCharsetManager() *charset.CharsetManager {
 		return manager
 	} else {
 		panic("no charset manager")
+	}
+}
+
+func (self *TosserManager) restoreAreaManager() *echomail.AreaManager {
+	managerPtr := self.registry.Get("AreaManager")
+	if manager, ok := managerPtr.(*echomail.AreaManager); ok {
+		return manager
+	} else {
+		panic("no area manager")
+	}
+}
+
+func (self *TosserManager) makeChrsKludgeByCharsetName(charset string) string {
+	if charset == "UTF-8" {
+		return "UTF-8 4"
+	} else if charset == "CP866" {
+		return "CP866 2"
+	} else {
+		return "CP866 2"
 	}
 }
 
