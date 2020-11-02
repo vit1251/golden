@@ -102,7 +102,7 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 
 			log.Printf("fidoTime = %+v zone = %+v msgTime = %+v", msgHeader.Time, msgZone, msgTime)
 
-		} else if k.Name == MSGID_KLUDGE || k.Name == MSGID_COMPAT_KLUDGE  {
+		} else if k.Name == "MSGID" {
 
 			value := strings.Trim(k.Value, " ")
 			msgID = value
@@ -114,7 +114,7 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 				msgHash = parts[1]
 			}
 
-		} else if k.Name == REPLY_KLUDGE || k.Name == REPLY_COMPAT_KLUDGE {
+		} else if k.Name == "REPLY" {
 
 			// TODO - ...
 
@@ -203,7 +203,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 				msgCharset = parts[0]
 			}
 
-		} else if k.Name == MSGID_KLUDGE || k.Name == MSGID_COMPAT_KLUDGE {
+		} else if k.Name == "MSGID" {
 
 			value := strings.Trim(k.Value, " ")
 			msgID = value
@@ -216,7 +216,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 				log.Printf("Problem with MSGID kludge: value = %s", value)
 			}
 
-		} else if k.Name == REPLY_KLUDGE || k.Name == REPLY_COMPAT_KLUDGE {
+		} else if k.Name == "REPLY" {
 
 			value := strings.Trim(k.Value, " ")
 			reply := strings.Trim(value, " ")

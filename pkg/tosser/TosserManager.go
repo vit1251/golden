@@ -193,13 +193,6 @@ func (self *TosserManager) prepareOrigin(Origin string) string {
 	return  result
 }
 
-const (
-	MSGID_KLUDGE string = "MSGID:"
-	MSGID_COMPAT_KLUDGE string = "MSGID"
-	REPLY_KLUDGE string = "REPLY:"
-	REPLY_COMPAT_KLUDGE string = "REPLY"
-)
-
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
 
 	configManager := self.restoreConfigManager()
@@ -292,18 +285,45 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	//
 	msgBody.SetArea(em.AreaName)
 	//
-	msgBody.AddKludge("TZUTC", newZone)
-	//msgBody.AddKludge("CHRS", "UTF-8 4")
-	msgBody.AddKludge("CHRS", "CP866 2")
-	msgBody.AddKludge(MSGID_KLUDGE, fmt.Sprintf("%s %s", myAddr, makeCRC32(newBody)))
-	msgBody.AddKludge("UUID", fmt.Sprintf("%s", makeUUID()))
-	msgBody.AddKludge("TID", newTID)
+	msgBody.AddKludge(packet.Kludge{
+		Name: "TZUTC",
+		Value: newZone,
+		Raw: []byte(fmt.Sprintf("\x01TZUTC %s", newZone)),
+	})
+	chrsKludge := "CP866 2"  // TODO - "UTF-8 4"
+	msgBody.AddKludge(packet.Kludge{
+		Name: "CHRS",
+		Value: chrsKludge,
+		Raw: []byte(fmt.Sprintf("\x01CHRS: %s", chrsKludge)),
+	})
+	msgIdValue := fmt.Sprintf("%s %s", myAddr, makeCRC32(newBody))
+	msgBody.AddKludge(packet.Kludge{
+		Name: "MSGID",
+		Value: msgIdValue,
+		Raw: []byte(fmt.Sprintf("\x01MSGID: %s", msgIdValue)),
+	})
+	uuidValue := fmt.Sprintf("%s", makeUUID())
+	msgBody.AddKludge(packet.Kludge{
+		Name: "UUID",
+		Value: uuidValue,
+		Raw: []byte(fmt.Sprintf("\x01UUID: %s", uuidValue)),
+	})
+	msgBody.AddKludge(packet.Kludge{
+		Name: "TID",
+		Value: newTID,
+		Raw: []byte(fmt.Sprintf("\x01TID: %s", newTID)),
+	})
+
 	if em.Reply != "" {
-		msgBody.AddKludge(REPLY_KLUDGE, em.Reply)
+		msgBody.AddKludge(packet.Kludge{
+			Name: "REPLY",
+			Value: em.Reply,
+			Raw: []byte(fmt.Sprintf("\x01REPLY: %s", em.Reply)),
+		})
 	}
-	//
+
 	msgBody.SetRaw(newBody)
-	//
+
 	if err5 := pw.WriteMessage(msgBody); err5 != nil {
 		return "", err5
 	}
@@ -458,13 +478,48 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	destinationAddress := fmt.Sprintf("%d:%d/%d", msgHeader.DestAddr.Zone, msgHeader.DestAddr.Net, msgHeader.DestAddr.Node)
 	originAddress := fmt.Sprintf("%d:%d/%d", msgHeader.OrigAddr.Zone, msgHeader.OrigAddr.Net,  msgHeader.OrigAddr.Node)
 
-	msgBody.AddKludge("INTL", fmt.Sprintf("%s %s", destinationAddress, originAddress))
-	msgBody.AddKludge("FMPT", fmt.Sprintf("%d", msgHeader.OrigAddr.Point))
-	msgBody.AddKludge("TOPT", fmt.Sprintf("%d", msgHeader.DestAddr.Point))
-	msgBody.AddKludge("CHRS", "CP866 2")
-	msgBody.AddKludge(MSGID_KLUDGE, fmt.Sprintf("%s %s", From, makeCRC32(newBody)))
-	msgBody.AddKludge("UUID", fmt.Sprintf("%s", makeUUID()))
-	msgBody.AddKludge("TID", newTID)
+	/* Control paragraph write section */
+	intlKludge := fmt.Sprintf("%s %s", destinationAddress, originAddress)
+	msgBody.AddKludge(packet.Kludge{
+		Name: "INTL",
+		Value: intlKludge,
+		Raw: []byte(fmt.Sprintf("\x01INTL %s", intlKludge)),
+	})
+	fmptKludge := fmt.Sprintf("%d", msgHeader.OrigAddr.Point)
+	msgBody.AddKludge(packet.Kludge{
+		Name: "FMPT",
+		Value: fmptKludge,
+		Raw: []byte(fmt.Sprintf("\x01FMPT %s", fmptKludge)),
+	})
+	toptKludge := fmt.Sprintf("%d", msgHeader.DestAddr.Point)
+	msgBody.AddKludge(packet.Kludge{
+		Name: "TOPT",
+		Value: toptKludge,
+		Raw: []byte(fmt.Sprintf("\x01TOPT %s", toptKludge)),
+	})
+	chrsKludge := "CP866 2"  // TODO - "UTF-8 4"
+	msgBody.AddKludge(packet.Kludge{
+		Name: "CHRS",
+		Value: chrsKludge,
+		Raw: []byte(fmt.Sprintf("\x01CHRS: %s", chrsKludge)),
+	})
+	msgIdKludge := fmt.Sprintf("%s %s", From, makeCRC32(newBody))
+	msgBody.AddKludge(packet.Kludge{
+		Name: "MSGID",
+		Value: msgIdKludge,
+		Raw: []byte(fmt.Sprintf("\x01MSGID: %s", msgIdKludge)),
+	})
+	uuidKludge := fmt.Sprintf("%s", makeUUID())
+	msgBody.AddKludge(packet.Kludge{
+		Name: "UUID",
+		Value: uuidKludge,
+		Raw: []byte(fmt.Sprintf("\x01UUID: %s", uuidKludge)),
+	})
+	msgBody.AddKludge(packet.Kludge{
+		Name: "TID",
+		Value: newTID,
+		Raw: []byte(fmt.Sprintf("\x01TID: %s", newTID)),
+	})
 
 	/* Set message body */
 	msgBody.SetRaw(newBody)

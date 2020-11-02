@@ -2,12 +2,13 @@ package packet
 
 import (
 //	"log"
+	"bytes"
 )
 
 type MessageBody struct {
-	Area    string
+	area    string
 	kludges []Kludge
-	RAW     []byte
+	lines   [][]byte
 }
 
 func NewMessageBody() *MessageBody {
@@ -15,52 +16,37 @@ func NewMessageBody() *MessageBody {
 	return mb
 }
 
-func (self *MessageBody) IsEchoMail() bool {
-	var result bool = false
-	for _, k := range self.kludges {
-		if k.Name == "AREA" {
-			result = true
-			break
-		}
-	}
-	return result
+func (self MessageBody) IsArea() bool {
+	return self.area != ""
 }
 
-func (self *MessageBody) GetArea() (string) {
-	return self.Area
+func (self MessageBody) GetArea() string {
+	return self.area
 }
 
 func (self *MessageBody) SetArea(area string) {
-	self.Area = area
+	self.area = area
 }
 
-func (self *MessageBody) AddKludge(name string, value string) {
-	newKludge := Kludge{
-		Name: name,
-		Value: value,
-	}
-	self.kludges = append(self.kludges, newKludge)
+func (self *MessageBody) AddKludge(k Kludge) {
+	self.kludges = append(self.kludges, k)
 }
 
 func (self *MessageBody) GetKludges() []Kludge {
 	return self.kludges
 }
 
-func (self *MessageBody) GetKludge(name string, defaultValue string) string {
-	var result string = defaultValue
-	for _, k := range self.kludges {
-		if k.Name == name {
-			result = k.Value
-			break
-		}
-	}
-	return result
+func (self *MessageBody) AddLine(line []byte) {
+	self.lines = append(self.lines, line)
 }
 
-func (self *MessageBody) GetRaw() ([]byte) {
-	return self.RAW
+func (self *MessageBody) GetRaw() []byte {
+	return bytes.Join(self.lines, []byte(CR))
 }
 
 func (self *MessageBody) SetRaw(rawBody []byte) {
-	self.RAW = rawBody
+	rows := bytes.Split(rawBody, []byte(CR))
+	for _, row := range rows {
+		self.AddLine(row)
+	}
 }

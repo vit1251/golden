@@ -228,15 +228,13 @@ func (self *PacketWriter) WriteMessage(msgBody *MessageBody) error {
 
 	/* Step 2. Write kludges */
 	for _, k := range msgBody.kludges {
-		self.binaryStreamWriter.WriteBytes([]byte(SOH))
-		self.binaryStreamWriter.WriteBytes([]byte(k.Name))
-		self.binaryStreamWriter.WriteBytes([]byte(" "))
-		self.binaryStreamWriter.WriteBytes([]byte(k.Value))
+		self.binaryStreamWriter.WriteBytes(k.Raw)
 		self.binaryStreamWriter.WriteBytes([]byte(CR))
 	}
 
 	/* Step 3. Write message body */
-	if err1 := self.binaryStreamWriter.WriteZString(msgBody.RAW, 0); err1 != nil {
+	msgBodyRaw := msgBody.GetRaw()
+	if err1 := self.binaryStreamWriter.WriteZString(msgBodyRaw, 0); err1 != nil {
 		return err1
 	}
 
