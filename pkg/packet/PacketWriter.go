@@ -241,6 +241,17 @@ func (self *PacketWriter) WriteMessage(msgBody *MessageBody) error {
 	return nil
 }
 
+func (self *PacketWriter) WritePacketEnd() error {
+
+	var packetEndMarker uint16 = 0
+	if err6 := self.binaryStreamWriter.WriteUINT16(packetEndMarker); err6 != nil {
+		return err6
+	}
+
+	return nil
+
+}
+
 func (self *PacketWriter) Close() {
 
 	/* Close binary writer */

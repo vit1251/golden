@@ -328,7 +328,13 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 		return "", err5
 	}
 
+	/* Write complete bytes */
+	if err := pw.WritePacketEnd(); err != nil {
+		return "", err
+	}
+
 	return packetName, nil
+
 }
 
 func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
@@ -526,6 +532,11 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
 	/* Write message in packet */
 	if err := pw.WriteMessage(msgBody); err != nil {
+		return err
+	}
+
+	/* Write complete bytes */
+	if err := pw.WritePacketEnd(); err != nil {
 		return err
 	}
 
