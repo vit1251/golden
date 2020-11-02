@@ -60,12 +60,11 @@ func (self *NetmailReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 	msgFrom := origMsg.From
 	msgFromAddr := "" // origMsg.FromAddr
-	newSubject := fmt.Sprintf("RE: %s", origMsg.Subject)
 	newBody := self.preprocessMessage(origMsg)
 
 	/* Compact header*/
 	sc:= msg.NewSubjectCompactor()
-	newSubject = sc.Compact(newSubject)
+	newSubject := sc.Compact(origMsg.Subject)
 
 	/* Render */
 	bw := widgets.NewBaseWidget()

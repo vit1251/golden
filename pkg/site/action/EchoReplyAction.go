@@ -63,12 +63,11 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Preprocess message body */
-	newSubject := fmt.Sprintf("RE: %s", origMsg.Subject)
 	newBody := self.preprocessMessage(origMsg)
 
 	/* Compact header*/
 	sc:= msg.NewSubjectCompactor()
-	newSubject = sc.Compact(newSubject)
+	newSubject := sc.Compact(origMsg.Subject)
 
 	/* Start render */
 	bw := widgets.NewBaseWidget()
