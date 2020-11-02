@@ -1,39 +1,28 @@
 package packet
 
 import (
-	"bufio"
-	"fmt"
 	"github.com/vit1251/golden/pkg/fidotime"
-	"os"
+	"io"
 )
 
 type PacketWriter struct {
-	stream                   *os.File      /* Native OS stream */
-	streamWriter             *bufio.Writer /* Cache */
-	binaryStreamWriter       *BinaryWriter /* ...              */
+	streamWriter             io.Writer
+	binaryStreamWriter       *BinaryWriter
+	extension                *PacketWriterExtension
 }
 
-func NewPacketWriter(name string) (*PacketWriter, error) {
+func NewPacketWriter(stream io.Writer) (*PacketWriter, error) {
 
 	/* Crete new packet writer */
 	pw := new(PacketWriter)
-
-	/* Create native OS stream */
-	if stream, err := os.Create(name); err != nil {
-		return nil, err
-	} else {
-		pw.stream = stream
-	}
-
-	/* Create cache stream */
-	pw.streamWriter = bufio.NewWriter(pw.stream)
+	pw.streamWriter = stream
+	pw.extension = NewPacketWriterExtension()
 
 	/* Create binary stream reader */
-	if binaryStreamWriter, err := NewBinaryWriter(pw.streamWriter); err != nil {
-		pw.Close()
-		return nil, err
-	} else {
+	if binaryStreamWriter, err := NewBinaryWriter(stream); err == nil {
 		pw.binaryStreamWriter = binaryStreamWriter
+	} else {
+		return nil, err
 	}
 
 	/* Done */
@@ -119,7 +108,6 @@ func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) error {
 	/* Write packet password (8 byte) */
 	pktPassword := make([]byte, 8)
 	copy(pktPassword, pktHeader.PktPassword)
-	fmt.Printf("pktPassword = %d\n", len(pktPassword))
 	if err10 := self.binaryStreamWriter.WriteBytes(pktPassword); err10 != nil {
 		return err10
 	}
@@ -135,9 +123,15 @@ func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) error {
 	}
 
 	/* Write packet fill (20 byte) */
-	fill := make([]byte, 20)
-	if err13 := self.binaryStreamWriter.WriteBytes(fill); err13 != nil {
-		return err13
+	if self.extension != nil {
+		if err1 := self.extension.WritePacketHeaderFill(self.binaryStreamWriter, pktHeader); err1 != nil {
+			return err1
+		}
+	} else {
+		fill := make([]byte, 20)
+		if err13 := self.binaryStreamWriter.WriteBytes(fill); err13 != nil {
+			return err13
+		}
 	}
 
 	return nil
@@ -249,27 +243,5 @@ func (self *PacketWriter) WritePacketEnd() error {
 	}
 
 	return nil
-
-}
-
-func (self *PacketWriter) Close() {
-
-	/* Close binary writer */
-	if self.binaryStreamWriter != nil {
-		self.binaryStreamWriter.Close()
-		self.binaryStreamWriter = nil
-	}
-
-	/* Flush output cache */
-	if self.streamWriter != nil {
-		self.streamWriter.Flush()
-		self.streamWriter = nil
-	}
-
-	/* Close OS stream */
-	if self.stream != nil {
-		self.stream.Close()
-		self.stream = nil
-	}
 
 }

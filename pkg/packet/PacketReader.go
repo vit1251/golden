@@ -8,14 +8,17 @@ import (
 )
 
 type PacketReader struct {
-//	stream                   io.Reader
-	binaryStreamReader      *BinaryReader
+	sourceStream io.Reader
+	binaryStreamReader *BinaryReader
+	extension *PacketReaderExtension
 }
 
 func NewPacketReader(stream io.Reader) *PacketReader {
 
 	/* Create packet reader */
 	pr := new(PacketReader)
+	pr.sourceStream = stream
+	pr.extension = NewPacketReaderExtension()
 
 	/* Create binary stream reader */
 	binaryStreamReader := NewBinaryReader(stream)
@@ -135,8 +138,14 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 	}
 
 	/* Read packet fill (20 byte) */
-	if _, err13 := self.binaryStreamReader.ReadBytes(20); err13 != nil {
-		return nil, err13
+	if self.extension != nil {
+		if err1 := self.extension.ReadPacketHeaderFill(self.binaryStreamReader, pktHeader); err1 != nil {
+			return nil, err1
+		}
+	} else {
+		if _, err13 := self.binaryStreamReader.ReadBytes(20); err13 != nil {
+			return nil, err13
+		}
 	}
 
 	return pktHeader, nil

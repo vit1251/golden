@@ -36,6 +36,13 @@ func (self *BinaryReader) ReadUINT16() (uint16, error) {
 	return i, err
 }
 
+func (self *BinaryReader) ReadUINT32() (uint32, error) {
+	var i uint32
+	err := binary.Read(self.reader, binary.LittleEndian, &i)
+	self.offset += 4
+	return i, err
+}
+
 func (self *BinaryReader) ReadBytes(size int) ([]byte, error) {
 	var i byte
 	var cache []byte
@@ -70,3 +77,4 @@ func (self *BinaryReader) ReadUntil(ch byte) ([]byte, error) {
 	}
 	return cache, nil
 }
+

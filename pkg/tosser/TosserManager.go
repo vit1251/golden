@@ -1,6 +1,7 @@
 package tosser
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	uuid "github.com/satori/go.uuid"
@@ -204,14 +205,25 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	pktPassword, _ := configManager.Get("main", "Password")
 
 	packetName := self.makePacketName()
-	tempPacketPath := path.Join(tempOutbound, packetName)
+	newPacketName := path.Join(tempOutbound, packetName)
+
+	stream, err0 := os.Create(newPacketName)
+	if err0 != nil {
+		return "", err0
+	}
+	defer stream.Close()
+
+	cacheStream := bufio.NewWriter(stream)
 
 	/* Open outbound packet */
-	pw, err1 := packet.NewPacketWriter(tempPacketPath)
+	pw, err1 := packet.NewPacketWriter(cacheStream)
 	if err1 != nil {
 		return "", err1
 	}
-	defer pw.Close()
+	defer func() {
+		cacheStream.Flush()
+		stream.Close()
+	}()
 
 	/* Ask source address */
 	myAddr, _ := configManager.Get("main", "Address")
@@ -413,12 +425,24 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	name := path.Join(Outbound, pktName)
 	log.Printf("Write Netmail packet %s", name)
 
+	/* Create write stream */
+	stream, err0 := os.Create(name)
+	if err0 != nil {
+		return err0
+	}
+
+	cacheStream := bufio.NewWriter(stream)
+
+	defer func() {
+		cacheStream.Flush()
+		stream.Close()
+	}()
+
 	/* Open outbound packet */
-	pw, err1 := packet.NewPacketWriter(name)
+	pw, err1 := packet.NewPacketWriter(cacheStream)
 	if err1 != nil {
 		return err1
 	}
-	defer pw.Close()
 
 	/* Write packet header */
 	pktHeader := packet.NewPacketHeader()

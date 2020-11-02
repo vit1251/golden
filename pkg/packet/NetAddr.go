@@ -13,6 +13,10 @@ type NetAddr struct {
 	Point   uint16
 }
 
+func NewNetAddr() *NetAddr {
+	return new(NetAddr)
+}
+
 func (self *NetAddr) SetAddr(addr string) error {
 	/* Parse address */
 	nap := ftn.NewNetAddressParser()

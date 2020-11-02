@@ -56,10 +56,30 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 			value := strings.Trim(k.Value, " ")
 			parts := strings.Split(value, " ")
 			if len(parts) == 2 {
+
 				orig := parts[0]
 				dest := parts[1]
 
+				origAddr := packet.NewNetAddr()
+				if err := origAddr.SetAddr(orig); err == nil {
+					msgHeader.OrigAddr.Zone = origAddr.Zone
+					msgHeader.OrigAddr.Net = origAddr.Net
+					msgHeader.OrigAddr.Node = origAddr.Node
+				} else {
+					log.Printf("INTL parse addr error: err = %+v", err)
+				}
+
+				destAddr := packet.NewNetAddr()
+				if err := destAddr.SetAddr(dest); err == nil {
+					msgHeader.DestAddr.Zone = destAddr.Zone
+					msgHeader.DestAddr.Net = destAddr.Net
+					msgHeader.DestAddr.Node = destAddr.Node
+				} else {
+					log.Printf("INTL parse addr error: err = %+v", err)
+				}
+
 				log.Printf("NETMAIL kludge INTL: orig = %+v dest = %+v", orig, dest)
+
 			}
 
 		} else if k.Name == "TOPT" {
