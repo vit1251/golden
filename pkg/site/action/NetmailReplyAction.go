@@ -3,7 +3,10 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/site/widgets"
+	"log"
 	"net/http"
 )
 
@@ -13,6 +16,24 @@ type NetmailReplyAction struct {
 
 func NewNetmailReplyAction() *NetmailReplyAction {
 	return new(NetmailReplyAction)
+}
+
+func (self *NetmailReplyAction) preprocessMessage(origMsg *netmail.NetmailMessage) string {
+	cmap := msg.NewMessageAuthorParser()
+	ma, _ := cmap.Parse(origMsg.From)
+
+	/* Make reply content */
+	mtp := msg.NewMessageTextProcessor()
+	mtp.Prepare(origMsg.Content)
+	newContent := mtp.Content()
+	log.Printf("reply: orig = %+v", newContent)
+
+	/* Message replay transform */
+	mrt := msg.NewMessageReplyTransformer()
+	mrt.SetAuthor(ma.QuoteName)
+	newContent2 := mrt.Transform(newContent)
+
+	return newContent2
 }
 
 func (self *NetmailReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -36,13 +57,11 @@ func (self *NetmailReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
-	content := origMsg.GetContent()
 
 	msgFrom := origMsg.From
 	msgFromAddr := "" // origMsg.FromAddr
-	msgSubject := origMsg.Subject
-
-	newContent := content
+	newSubject := fmt.Sprintf("RE: %s", origMsg.Subject)
+	newBody := self.preprocessMessage(origMsg)
 
 	bw := widgets.NewBaseWidget()
 
@@ -65,10 +84,10 @@ func (self *NetmailReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 		SetMethod("POST")
 
 	composeForm.SetWidget(widgets.NewVBoxWidget().
-		Add(widgets.NewFormInputWidget().SetTitle("ToName").SetName("to").SetPlaceholder("Vitold Sedyshev").SetValue(msgFrom)).
-		Add(widgets.NewFormInputWidget().SetTitle("ToAddr").SetName("to_addr").SetPlaceholder("2:5023/24.3752").SetValue(msgFromAddr)).
-		Add(widgets.NewFormInputWidget().SetTitle("Subject").SetName("subject").SetPlaceholder("RE: Hello, world!").SetValue(msgSubject)).
-		Add(widgets.NewFormTextWidget().SetName("body").SetValue(newContent)).
+		Add(widgets.NewFormInputWidget().SetTitle("ToName").SetName("to").SetPlaceholder("Enter FidoNet destination name").SetValue(msgFrom)).
+		Add(widgets.NewFormInputWidget().SetTitle("ToAddr").SetName("to_addr").SetPlaceholder("Enter FidoNet destination address Zone:Net/Node.Point").SetValue(msgFromAddr)).
+		Add(widgets.NewFormInputWidget().SetTitle("Subject").SetName("subject").SetPlaceholder("Enter message body").SetValue(newSubject)).
+		Add(widgets.NewFormTextWidget().SetName("body").SetValue(newBody)).
 		Add(widgets.NewFormButtonWidget().SetType("submit").SetTitle("Send")))
 
 	section.SetWidget(composeForm)

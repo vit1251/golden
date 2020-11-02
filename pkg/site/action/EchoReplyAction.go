@@ -18,6 +18,24 @@ func NewEchoReplyAction() *EchoReplyAction {
 	return ra
 }
 
+func (self *EchoReplyAction) preprocessMessage(origMsg *msg.Message) string {
+	cmap := msg.NewMessageAuthorParser()
+	ma, _ := cmap.Parse(origMsg.From)
+
+	/* Make reply content */
+	mtp := msg.NewMessageTextProcessor()
+	mtp.Prepare(origMsg.Content)
+	newContent := mtp.Content()
+	log.Printf("reply: orig = %+v", newContent)
+
+	/* Message replay transform */
+	mrt := msg.NewMessageReplyTransformer()
+	mrt.SetAuthor(ma.QuoteName)
+	newContent2 := mrt.Transform(newContent)
+
+	return newContent2
+}
+
 func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	areaManager := self.restoreAreaManager()
@@ -35,7 +53,7 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("area = %+v", area)
 
-	//
+	/* Restore original message */
 	msgHash := vars["msgid"]
 	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
 	if err3 != nil {
@@ -44,22 +62,11 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	/* Detect sender */
-	cmap := msg.NewMessageAuthorParser()
-	ma, _ := cmap.Parse(origMsg.From)
+	/* Preprocess message body */
+	newSubject := fmt.Sprintf("RE: %s", origMsg.Subject)
+	newBody := self.preprocessMessage(origMsg)
 
-	/* Make reply content */
-	mtp := msg.NewMessageTextProcessor()
-	mtp.Prepare(origMsg.Content)
-	newContent := mtp.Content()
-	log.Printf("reply: orig = %+v", newContent)
-
-	/* Message replay transform */
-	mrt := msg.NewMessageReplyTransformer()
-	mrt.SetAuthor(ma.QuoteName)
-	newContent2 := mrt.Transform(newContent)
-	log.Printf("reply: reply = %+v", newContent2)
-
+	/* Start render */
 	bw := widgets.NewBaseWidget()
 
 	vBox := widgets.NewVBoxWidget()
@@ -83,8 +90,8 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		SetWidget(formVBox)
 
 	formVBox.Add(widgets.NewFormInputWidget().SetTitle("TO").SetName("to").SetValue(origMsg.From))
-	formVBox.Add(widgets.NewFormInputWidget().SetClass("echomail-input").SetTitle("SUBJ").SetName("subject").SetValue(fmt.Sprintf("RE: %s", origMsg.Subject)))
-	formVBox.Add(widgets.NewFormTextWidget().SetClass("echomail-text").SetName("body").SetValue(newContent2))
+	formVBox.Add(widgets.NewFormInputWidget().SetClass("echomail-input").SetTitle("SUBJ").SetName("subject").SetValue(newSubject))
+	formVBox.Add(widgets.NewFormTextWidget().SetClass("echomail-text").SetName("body").SetValue(newBody))
 	formVBox.Add(widgets.NewFormButtonWidget().SetTitle("Compose").SetType("submit"))
 
 	containerVBox.Add(formWidget)
