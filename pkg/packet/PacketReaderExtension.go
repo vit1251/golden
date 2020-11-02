@@ -11,7 +11,7 @@ func NewPacketReaderExtension() *PacketReaderExtension {
 
 func (self PacketReaderExtension) ReadPacketHeaderFill(stream *BinaryReader, pktHeader *PacketHeader) error {
 
-	log.Printf("Read 20 bytes in extension section")
+	log.Printf("Read 20 byte extension section")
 
 //	_, err0 := stream.ReadBytes(20)
 //	if err0 != nil {

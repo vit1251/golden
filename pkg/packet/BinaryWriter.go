@@ -22,15 +22,21 @@ func (self *BinaryWriter) Offset() int64 {
 	return self.offset
 }
 
-func (self *BinaryWriter) WriteUINT8(value uint8) (error) {
+func (self *BinaryWriter) WriteUINT8(value uint8) error {
 	err := binary.Write(self.writer, binary.LittleEndian, &value)
 	self.offset += 1
 	return err
 }
 
-func (self *BinaryWriter) WriteUINT16(value uint16) (error) {
+func (self *BinaryWriter) WriteUINT16(value uint16) error {
 	err := binary.Write(self.writer, binary.LittleEndian, value)
 	self.offset += 2
+	return err
+}
+
+func (self *BinaryWriter) WriteUINT32(value uint32) error {
+	err := binary.Write(self.writer, binary.LittleEndian, value)
+	self.offset += 4
 	return err
 }
 
