@@ -60,13 +60,6 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	newContent2 := mrt.Transform(newContent)
 	log.Printf("reply: reply = %+v", newContent2)
 
-	//    <form method="post" action="/echo/{{ .Area.GetName }}/message/{{ .Msg.Hash }}/reply/complete">
-	//        <div><input class="input" type="text" name="to" value="{{ .Msg.From }}">
-	//        <div><input class="input" type="text" value="{{ .Msg.Subject }}" name="subject">
-	//        <textarea class="input input-area" name="body">{{ .Content }}</textarea>
-	//        <button type="submit" name="action" value="send">Send</button>
-	//    </form>
-
 	bw := widgets.NewBaseWidget()
 
 	vBox := widgets.NewVBoxWidget()
@@ -74,6 +67,12 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mmw := self.makeMenu()
 	vBox.Add(mmw)
+
+	container := widgets.NewDivWidget().SetClass("container")
+	vBox.Add(container)
+
+	containerVBox := widgets.NewVBoxWidget()
+	container.SetWidget(containerVBox)
 
 	formVBox := widgets.NewVBoxWidget()
 
@@ -88,7 +87,7 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	formVBox.Add(widgets.NewFormTextWidget().SetClass("echomail-text").SetName("body").SetValue(newContent2))
 	formVBox.Add(widgets.NewFormButtonWidget().SetTitle("Compose").SetType("submit"))
 
-	vBox.Add(formWidget)
+	containerVBox.Add(formWidget)
 
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)

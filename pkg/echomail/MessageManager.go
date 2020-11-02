@@ -6,6 +6,7 @@ import (
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
+	"strings"
 )
 
 type MessageManager struct {
@@ -40,7 +41,7 @@ func (self *MessageManager) GetAreaList() ([]string, error) {
 	return result, nil
 }
 
-func (self *MessageManager) GetAreaList2() ([]*Area, error) {
+func (self *MessageManager) getAreaListCount() ([]*Area, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -66,7 +67,7 @@ func (self *MessageManager) GetAreaList2() ([]*Area, error) {
 	return result, nil
 }
 
-func (self *MessageManager) GetAreaList3() ([]*Area, error) {
+func (self *MessageManager) getAreaListNewCount() ([]*Area, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -332,3 +333,55 @@ func (self *MessageManager) restoreStorageManager() *storage.StorageManager {
 	}
 
 }
+
+func (self *MessageManager) UpdateAreaMessageCounters(areas []Area) ([]Area, error) {
+
+	var newAreas []Area
+
+	//log.Printf("areas = %+v", areas)
+
+	/* Get message count */
+	areas2, err1 := self.getAreaListCount()
+	if err1 != nil {
+		return nil, err1
+	}
+	//log.Printf("areas = %+v", areas2)
+
+	/* Get message new count */
+	areas3, err2 := self.getAreaListNewCount()
+	if err2 != nil {
+		//log.Printf("err2 = %+v", err2)
+		return nil, err2
+	}
+	//log.Printf("areas = %+v", areas3)
+
+	/* Update original areas values */
+	for _, area := range areas {
+
+		/* Search area count */
+		for _, area2 := range areas2 {
+			var areaName string = area.GetName()
+			var area2Name string = area2.GetName()
+			if strings.EqualFold(areaName, area2Name) {
+				//log.Printf("area = '%+v' area2 = '%+v'", areaName, area2Name)
+				area.MessageCount = area2.MessageCount
+			}
+		}
+
+		/* Search area new count */
+		for _, area3 := range areas3 {
+			var areaName string = area.GetName()
+			var area3Name string = area3.GetName()
+			if strings.EqualFold(areaName, area3Name) {
+				//log.Printf("area = '%+v' area3 = '%+v'", areaName, area3Name)
+				area.NewMessageCount = area3.NewMessageCount
+			}
+		}
+
+		newAreas = append(newAreas, area)
+
+	}
+
+	return newAreas, nil
+}
+

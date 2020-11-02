@@ -38,10 +38,16 @@ func (self *EchoUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.R
 	}
 	log.Printf("area = %+v", area)
 
-	/**/
+	/* Update summary */
 	area.Summary = r.PostForm.Get("summary")
 
-	/* ... */
+	/* Update charset */
+	newCharset := r.PostForm.Get("charset")
+	if newCharset == "CP866" || newCharset == "UTF-8" {
+		area.Charset = newCharset
+	}
+
+	/* Update area property */
 	err2 := areaManager.Update(area)
 	if err2 != nil {
 		panic(err2)
@@ -50,4 +56,5 @@ func (self *EchoUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.R
 	/* Render */
 	newLocation := fmt.Sprintf("/echo/%s", echoTag)
 	http.Redirect(w, r, newLocation, 303)
+
 }

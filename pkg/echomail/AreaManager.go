@@ -5,7 +5,6 @@ import (
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
-	"strings"
 )
 
 type AreaManager struct {
@@ -15,87 +14,7 @@ type AreaManager struct {
 func NewAreaManager(r *registry.Container) *AreaManager {
 	am := new(AreaManager)
 	am.registry = r
-	am.Rescan()
 	return am
-}
-
-
-func (self *AreaManager) Rescan() {
-
-	messageManager := self.restoreMessageManager()
-
-	/* Preload echo areas */
-	areas, err3 := messageManager.GetAreaList2()
-	if err3 != nil {
-		panic(err3)
-	}
-
-	/* Reset areas */
-	for _, area := range areas {
-
-		log.Printf("AreaManager: Scan areas: name = %q new = %d count = %d",
-			area.GetName(),
-			area.NewMessageCount,
-			area.MessageCount,
-		)
-
-		var areaName string = area.GetName()
-
-		a := NewArea()
-		a.SetName(areaName)
-		a.MessageCount = area.MessageCount
-	}
-
-}
-
-func (self *AreaManager) updateMsgCount(areas []*Area) error {
-
-	messageManager := self.restoreMessageManager()
-
-	log.Printf("areas = %+v", areas)
-
-	/* Get message count */
-	areas2, err1 := messageManager.GetAreaList2()
-	if err1 != nil {
-		//log.Printf("err1 = %+v", err1)
-		return err1
-	}
-	//log.Printf("areas = %+v", areas2)
-
-	/* Get message new count */
-	areas3, err2 := messageManager.GetAreaList3()
-	if err2 != nil {
-		//log.Printf("err2 = %+v", err2)
-		return err2
-	}
-	//log.Printf("areas = %+v", areas3)
-
-	/* Update original areas values */
-	for _, area := range areas {
-
-		/* Search area count */
-		for _, area2 := range areas2 {
-			var areaName string = area.GetName()
-			var area2Name string = area2.GetName()
-			if strings.EqualFold(areaName, area2Name) {
-				//log.Printf("area = '%+v' area2 = '%+v'", areaName, area2Name)
-				area.MessageCount = area2.MessageCount
-			}
-		}
-
-		/* Search area new count */
-		for _, area3 := range areas3 {
-			var areaName string = area.GetName()
-			var area3Name string = area3.GetName()
-			if strings.EqualFold(areaName, area3Name) {
-				//log.Printf("area = '%+v' area3 = '%+v'", areaName, area3Name)
-				area.NewMessageCount = area3.NewMessageCount
-			}
-		}
-
-	}
-
-	return nil
 }
 
 func (self *AreaManager) Register(a *Area) error {
@@ -116,41 +35,43 @@ func (self *AreaManager) Register(a *Area) error {
 	return err1
 }
 
-func (self *AreaManager) GetAreas() ([]*Area, error) {
+func (self *AreaManager) GetAreas() ([]Area, error) {
 
 	storageManager := self.restoreStorageManager()
+	messageManager := self.restoreMessageManager()
 
-	var areas []*Area
+	var result []Area
 
-	query1 := "SELECT `areaName`, `areaSummary` FROM `area` ORDER BY `areaName` ASC"
+	query1 := "SELECT `areaName`, `areaSummary`, `areaCharset` FROM `area` ORDER BY `areaName` ASC"
 	var params []interface{}
 
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var areaName string
 		var areaSummary string
+		var areaCharset string
 
-		err3 := rows.Scan(&areaName, &areaSummary)
+		err3 := rows.Scan(&areaName, &areaSummary, &areaCharset)
 		if err3 != nil {
 			return err3
-		}
-
-		if areaSummary == "" {
-			areaSummary = "Нет описания"
 		}
 
 		area := NewArea()
 		area.SetName(areaName)
 		area.Summary = areaSummary
+		area.Charset = areaCharset
 
-		areas = append(areas, area)
+		result = append(result, *area)
 
 		return nil
 	})
 
-	self.updateMsgCount(areas)
+	newAreas, err1 := messageManager.UpdateAreaMessageCounters(result)
+	if err1 != nil {
+		return nil, err1
+	}
 
-	return areas, nil
+	return newAreas, nil
 }
 
 
@@ -161,7 +82,7 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 	var result *Area
 
 	/* Restore parameters */
-	query1 := "SELECT `areaName`, `areaSummary` FROM `area` WHERE `areaName` = ?"
+	query1 := "SELECT `areaName`, `areaSummary`, `areaCharset` FROM `area` WHERE `areaName` = ?"
 	var params []interface{}
 	params = append(params, echoTag)
 
@@ -169,8 +90,9 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 
 		var areaName string
 		var areaSummary string
+		var areaCharset string
 
-		err3 := rows.Scan(&areaName, &areaSummary)
+		err3 := rows.Scan(&areaName, &areaSummary, &areaCharset)
 		if err3 != nil {
 			return err3
 		}
@@ -178,6 +100,7 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 		area := NewArea()
 		area.SetName(areaName)
 		area.Summary = areaSummary
+		area.Charset = areaCharset
 
 		result = area
 
@@ -192,10 +115,11 @@ func (self *AreaManager) Update(area *Area) error {
 
 	storageManager := self.restoreStorageManager()
 
-	query1 := "UPDATE `area` SET `areaSummary` = ? WHERE `areaName` = ?"
+	query1 := "UPDATE `area` SET `areaSummary` = ?, `areaCharset` = ? WHERE `areaName` = ?"
 	var params []interface{}
 	params = append(params, area.Summary)
 	params = append(params, area.GetName())
+	params = append(params, area.Charset)
 
 	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)

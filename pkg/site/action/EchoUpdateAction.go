@@ -75,16 +75,23 @@ func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	formWidget.SetWidget(formVBox)
 	containerVBox.Add(formWidget)
 
-	inputWidget := widgets.NewFormInputWidget().
+	/* Summary */
+	summaryInputWidget := widgets.NewFormInputWidget().
 		SetTitle("Summary").SetName("summary").SetValue(area.Summary)
 
-	formVBox.Add(inputWidget)
+	formVBox.Add(summaryInputWidget)
 
+	/* Charset */
+	chrsInputWidget := widgets.NewFormInputWidget().
+		SetTitle("Charset").SetName("charset").SetValue(area.Charset)
+	formVBox.Add(chrsInputWidget)
+
+	/* Save button */
 	btnWidget := widgets.NewFormButtonWidget().
 		SetTitle("Save")
 	formVBox.Add(btnWidget)
 
-	//
+	/* Render */
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)
 		http.Error(w, status, http.StatusInternalServerError)
