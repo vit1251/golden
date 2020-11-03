@@ -11,6 +11,8 @@ type NetmailMessage struct {
 	Hash        string
 	From        string
 	To          string
+	OrigAddr    string
+	DestAddr    string
 	Subject     string
 	Content     string
 	UnixTime    int64
@@ -80,5 +82,13 @@ func (self NetmailMessage) GetAge() string {
 
 func (self *NetmailMessage) SetPacket(packet []byte) {
 	self.Packet = packet
+}
+
+func (self *NetmailMessage) SetOrigAddr(addr string) {
+	self.OrigAddr = addr
+}
+
+func (self *NetmailMessage) SetDestAddr(addr string) {
+	self.DestAddr = addr
 }
 

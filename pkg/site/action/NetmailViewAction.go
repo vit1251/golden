@@ -131,17 +131,29 @@ func (self NetmailViewAction) makeMessageHeaderSection(origMsg *netmail.NetmailM
 		SetClass("netmail-msg-view-header")
 
 	/* Make "From" section */
+	var msgFrom string
+	if origMsg.OrigAddr == "" {
+		msgFrom = fmt.Sprintf("%s", origMsg.From)
+	} else {
+		msgFrom = fmt.Sprintf("%s (%s)", origMsg.From, origMsg.OrigAddr)
+	}
 	self.makeMessageHeaderRowSection(
 		headerTable,
 		widgets.NewTextWidgetWithText("From:"),
-		widgets.NewTextWidgetWithText(origMsg.From),
+		widgets.NewTextWidgetWithText(msgFrom),
 	)
 
 	/* Make "To" section */
+	var msgTo string
+	if origMsg.DestAddr == "" {
+		msgTo = fmt.Sprintf("%s", origMsg.To)
+	} else {
+		msgTo = fmt.Sprintf("%s (%s)", origMsg.To, origMsg.DestAddr)
+	}
 	self.makeMessageHeaderRowSection(
 		headerTable,
 		widgets.NewTextWidgetWithText("To:"),
-		widgets.NewTextWidgetWithText(origMsg.To),
+		widgets.NewTextWidgetWithText(msgTo),
 	)
 
 	/* Make "Subject" section */

@@ -59,7 +59,7 @@ func (self *NetmailReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	}
 
 	msgFrom := origMsg.From
-	msgFromAddr := "" // origMsg.FromAddr
+	msgFromAddr := fmt.Sprintf("%s", origMsg.OrigAddr)
 	newBody := self.preprocessMessage(origMsg)
 
 	/* Compact header*/

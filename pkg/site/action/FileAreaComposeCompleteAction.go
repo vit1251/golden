@@ -9,11 +9,11 @@ type FileAreaComposeCompleteAction struct {
 	Action
 }
 
-func NewFileAreaComposeCompleteAction() *FileAreaComposeAction {
-	return new(FileAreaComposeAction)
+func NewFileAreaComposeCompleteAction() *FileAreaComposeCompleteAction {
+	return new(FileAreaComposeCompleteAction)
 }
 
-func (self *FileAreaComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self FileAreaComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	//fileArea := "NASA"
 

@@ -162,13 +162,14 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 	/* Populate message */
 	newMsg := netmail.NewNetmailMessage()
 
-	newMsg.SetFrom(string(newFrom))
-	newMsg.SetTo(string(newTo))
-	newMsg.SetSubject(string(newSubject))
+	newMsg.SetFrom(newFrom)
+	newMsg.SetTo(newTo)
+	newMsg.SetSubject(newSubject)
 	newMsg.SetTime(msgTime)
 	newMsg.SetMsgID(msgID)
 	newMsg.SetHash(msgHash)
-	//newMsg.SetPacket(msgBody.RAW)
+	newMsg.SetOrigAddr(msgHeader.OrigAddr.String())
+	newMsg.SetDestAddr(msgHeader.DestAddr.String())
 
 	/* Decode message body */
 	msgContent := msgBody.GetContent()
