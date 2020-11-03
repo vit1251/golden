@@ -4,7 +4,7 @@ version: '3'
 
 vars:
   PROJECT_NAME: "Golden Point"
-  VERSION: "1.2.14"
+  VERSION: "1.2.15"
 
 includes:
   build: Taskfile_{{OS}}.yml
@@ -19,7 +19,3 @@ tasks:
   check:
     cmds:
       - go test ./...
-
-  package:
-    cmds:
-      - task: build:package

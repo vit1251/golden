@@ -1,8 +1,0 @@
-Package: gpoint
-Priority: extra
-Version: 1.2.14-1
-Section: misc
-Architecture: amd64
-Depends:
-Maintainer: Vitold Sedyshev <vit1251@gmail.com>
-Description: Golden point is Fido point system

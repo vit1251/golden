@@ -3,21 +3,21 @@ package bbs
 import (
 	"fmt"
 	"github.com/gliderlabs/ssh"
-	"go.uber.org/dig"
+	"github.com/vit1251/golden/pkg/registry"
 	"log"
 )
 
 type ConnState struct {
-	t          *Terminal      /* Terminal       */
-	scr        *Screen        /* Screen         */
-	activeView Widget         /* Area widget    */
-	container  *dig.Container /* DI container   */
-	activeArea string         /* Active area    */
+	t            *Terminal      /* Terminal       */
+	scr          *Screen        /* Screen         */
+	activeView   Widget         /* Area widget    */
+	registry     *registry.Container
+	activeArea   string
 }
 
-func NewConnState(c *dig.Container) *ConnState {
+func NewConnState(r *registry.Container) *ConnState {
 	cs := new(ConnState)
-	cs.container = c
+	cs.registry = r
 	return cs
 }
 

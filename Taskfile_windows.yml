@@ -38,6 +38,3 @@ tasks:
     cmds:
       - go build -o golden-windows-amd64.exe .
 
-  package:
-    cmds:
-      - build.bat

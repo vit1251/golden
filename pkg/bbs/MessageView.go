@@ -18,14 +18,10 @@ func NewMessageView() *MessageView {
 	return mw
 }
 
-func (mw *MessageView) Render(cs *ConnState) {
+func (self *MessageView) Render(cs *ConnState) {
 
-	var areaManager *echomail.AreaManager
-	var messageManager *echomail.MessageManager
-	cs.container.Invoke(func(am *echomail.AreaManager, mm *echomail.MessageManager) {
-		areaManager = am
-		messageManager = mm
-	})
+	areaManager := self.resotreAreaManager()
+	messageManager := self.restoreMessageManager()
 
 	//
 	area, err1 := areaManager.GetAreaByName(cs.activeArea)
@@ -45,14 +41,14 @@ func (mw *MessageView) Render(cs *ConnState) {
 
 	for i, msgHeader := range msgHeaders {
 
-		if i == mw.activeIndex {
+		if i == self.activeIndex {
 
 			if msgHeader.ViewCount > 0 {
 				cs.t.SetAttr(F_WHITE)
 			} else {
 				cs.t.SetAttr(F_YELLOW)
 			}
-			if i == mw.activeIndex {
+			if i == self.activeIndex {
 				cs.t.SetAttr(B_RED)
 			} else {
 				cs.t.SetAttr(B_BLACK)
@@ -128,14 +124,10 @@ func (mw *MessageView) Render(cs *ConnState) {
 
 }
 
-func (mw *MessageView) markMessageByIndex(cs *ConnState, activeIndex int) error {
+func (self *MessageView) markMessageByIndex(cs *ConnState, activeIndex int) error {
 
-	var areaManager *echomail.AreaManager
-	var messageManager *echomail.MessageManager
-	cs.container.Invoke(func(am *echomail.AreaManager, mm *echomail.MessageManager) {
-		areaManager = am
-		messageManager = mm
-	})
+	areaManager := self.resotreAreaManager()
+	messageManager := self.restoreMessageManager()
 
 	//
 	newArea, err1 := areaManager.GetAreaByName(cs.activeArea)
@@ -179,4 +171,12 @@ func (mw *MessageView) ProcessEvent(cs *ConnState, event *TerminalEvent) {
 		mw.markMessageByIndex(cs, mw.activeIndex)
 	}
 
+}
+
+func (self *MessageView) restoreMessageManager() *echomail.MessageManager {
+	return nil
+}
+
+func (self *MessageView) resotreAreaManager() *echomail.AreaManager {
+	return nil
 }

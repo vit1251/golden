@@ -1,0 +1,75 @@
+gpoint (1.2.14-1) stable; urgency=medium
+ - Improve message body parser (enhancement)
+ - Remove JQuery dependency (enhancement)
+ - No store new config parameters (bug)
+ - No TZUTC kludge with timezone (bug)
+ - Unsafe kludge parsing TZUTC (bug)
+ - Missing EOB packet in mailer component (bug)
+ - Show message source (enhancement)
+ - Store original packet on storage (enhancement)
+gpoint (1.2.13-1) stable; urgency=medium
+ - Initial implementation terminal user interface
+ - Netmail view counter
+ - UI style improvements
+ - Provide echomail/nemtail/file area counter on UI side
+ - Process my own message (echomail message)
+ - Remove Netmail message
+ - Manual create echomail area in UI
+ - Purge echomail area
+ - Remove echomail area
+ - Download file with original filename
+ - Change audio in mailer
+-- Vitold Sedyshev <vit1251@gmail.com> Mon, 5 Oct 2020 13:36:13 +0300
+gpoint (1.2.12-1) stable; urgency=medium
+ - Create TearLine and Origin variable template (enhancement)
+ - Fix cross compilation scenario (bug)
+ - Update audio events (enhancement)
+ - Automatic mailer delivery (enhancement)
+ - Statistics improvements (enhancement)
+ - Store logging message in debug.log (enhancement)
+ - Outbound package name too long (bug)
+ - Binkp TCP connection not closed (bug)
+ - Netmail receive as Echomail (bug)
+ - Outgoing packets are not password signed (bug)
+ - Wrong message kludge parser (bug)
+ -- Vitold Sedyshev <vit1251@gmail.com> Mon, 5 Oct 2020 13:36:13 +0300
+gpoint (1.2.11-1) stable; urgency=medium
+ - Customize HTTP service port enhancement
+ - Implement basic audio event enhancement
+ - Widget base views enhancement
+ - Make storage schema migration subsystem enhancement
+ - Make 386 and amd64 building under Windows platform enhancement
+ - Default path does not exists on Windows platform bug
+ - Installation instruction for newcomers documentation enhancement help wanted
+ - Reply message auto quote bug enhancement
+ - Wrong message kludge parser bug
+ -- Vitold Sedyshev <vit1251@gmail.com> Mon, 5 Oct 2020 13:36:13 +0300
+gpoint (1.2.10-1) stable; urgency=medium
+ - Fix charset error in message header: To, From, Subject
+ - Add "@REPLY" kludge in reply action
+ - Chart with RX/TX message statistics
+ - UI redesign based on widget
+ - Service manual start
+ - Common style fix: user action button, message compose, setup input
+ - Area index counter metric performance improve
+-- Vitold Sedyshev <vit1251@gmail.com> Mon, 16 Mar 2020 10:00:00 +0300
+gpoint (1.2.9-1) stable; urgency=medium
+ - Исправлена ошибка возникающая при открытия конференций с символом "_" в названии.
+gpoint (1.2.8-1) stable; urgency=medium
+ - Добавлена отправка сообщений в эхоконференции
+ - Добавлена отправка сообщений нетмейлом
+ - Улушения производительности
+-- Vitold Sedyshev <vit1251@gmail.com> Tue, 18 Feb 2020 13:17:13 +0300
+gpoint (1.2.3-1) stable; urgency=medium
+ - Добавлена страница списка эхоконференций
+ - Добавлена страница настройки
+ - Добавлена навигация по компонентам
+-- Vitold Sedyshev <vit1251@gmail.com> Tue, 7 Jan 2020 05:03:13 +0300
+gpoint (1.2.2-1) stable; urgency=medium
+ - Добавлены действия для написание ответов (ReplyAction) и удаление сообщений (RemoveAction)
+ - Добавлен файл ChangeLog с списком внесенных изменений
+ - Добавлена начальная поддержка инраструктуры (SettingsManager) необходимая для хранения настроек программы
+ - Изменен вид страницы эхоконференции на полноэкранный вариант
+ - Изменен вид страницы просмотра сообщения на полноэкранный вариант
+ - Изменена реализация HTTP роутинга с "julienschmidt" на "gorilla"
+-- Vitold Sedyshev <vit1251@gmail.com> Tue, 7 Jan 2020 05:03:13 +0300

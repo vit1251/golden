@@ -22,13 +22,3 @@ tasks:
       CGO_ENABLED: "1"
     cmds:
       - go build -o golden-linux-amd64 .
-
-  package:
-    cmds:
-      - install -m 0755 -d ./package
-      - install -m 0755 -d ./package/DEBIAN
-      - install -m 0755 -d ./package/usr/local/bin
-      - install -m 0755 -d ./dist
-      - cp ./DEBIAN/control ./package/DEBIAN/control
-      - cp ./golden-linux-amd64 ./package/usr/local/bin/golden
-      - dpkg-deb -v --build ./package golden_{{.VERSION}}_amd64.deb

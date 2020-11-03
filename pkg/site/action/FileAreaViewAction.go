@@ -84,7 +84,7 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("GetName"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Age"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("GetAge"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
 
 	for _, f := range files {
@@ -92,7 +92,7 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 		indexTable.AddRow(widgets.NewTableRowWidget().
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.File))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.Desc))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.Age()))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.GetAge()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
 				SetContent("Download"). // /file/BOOK-DOP/tic/KORSAV01.RAR/view
 				SetLink(fmt.Sprintf("/file/%s/tic/%s/view", f.GetArea(), f.File)))))

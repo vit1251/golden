@@ -1,20 +1,20 @@
 package file
 
 import (
-	"github.com/xeonx/timeago"
+	commonfunc "github.com/vit1251/golden/pkg/common"
 	"strings"
 	"time"
 )
 
 type TicFile struct {
-	From        string
-	To          string
-	File        string
-	area        string
-	Desc        string
-	SeenBy      []string
-	UnixTime    int64
-	DateWritten *time.Time
+	From         string
+	To           string
+	File         string
+	area         string
+	Desc         string
+	SeenBy       []string
+	UnixTime     int64
+	DateWritten  time.Time
 }
 
 func NewTicFile() *TicFile {
@@ -27,16 +27,11 @@ func (self *TicFile) AddSeenBy(sb string) {
 }
 
 func (self *TicFile) SetUnixTime(unixTime int64) {
-	self.UnixTime = unixTime
-	tm := time.Unix(unixTime, 0)
-	self.DateWritten = &tm
+	self.DateWritten = time.Unix(unixTime, 0)
 }
 
-func (self *TicFile) Age() string {
-	var result string = "-"
-	if self.DateWritten != nil {
-		result = timeago.English.Format(*self.DateWritten)
-	}
+func (self *TicFile) GetAge() string {
+	result := commonfunc.MakeHumanTime(self.DateWritten)
 	return result
 }
 

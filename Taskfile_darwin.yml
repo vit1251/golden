@@ -28,7 +28,3 @@ tasks:
       - go build -o golden-darwin-amd64 .
     generates:
       - golden-darwin-amd64
-
-  package:
-    cmds:
-      - echo "No package."
