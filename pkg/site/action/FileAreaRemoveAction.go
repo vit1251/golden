@@ -8,15 +8,15 @@ import (
 	"net/http"
 )
 
-type FileAreaUpdateAction struct {
+type FileAreaRemoveAction struct {
 	Action
 }
 
-func NewFileAreaUpdateAction() *FileAreaUpdateAction {
-	return new(FileAreaUpdateAction)
+func NewFileAreaRemoveAction() *FileAreaRemoveAction {
+	return new(FileAreaRemoveAction)
 }
 
-func (self FileAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self FileAreaRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	fileManager := self.restoreFileManager()
 
@@ -32,6 +32,7 @@ func (self FileAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	}
 	log.Printf("area = %+v", area)
 
+	/* Render question */
 	bw := widgets.NewBaseWidget()
 
 	vBox := widgets.NewVBoxWidget()
@@ -42,39 +43,36 @@ func (self FileAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	container := widgets.NewDivWidget()
 	container.SetClass("container")
-
-	containerVBox := widgets.NewVBoxWidget()
-
-	container.SetWidget(containerVBox)
-
 	vBox.Add(container)
 
-	/* Context actions */
+	containerVBox := widgets.NewVBoxWidget()
+	container.SetWidget(containerVBox)
 
-	amw := widgets.NewActionMenuWidget()
-	amw.Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/file/%s/remove", area.GetName())).
-			SetIcon("icofont-remove").
-			SetLabel("Remove echo"))
-//		amw.Add(widgets.NewMenuAction().
-//			SetLink(fmt.Sprintf("/file/%s/purge", area.GetName())).
-//			SetIcon("icofont-purge").
-//			SetLabel("Purge echo"))
-
-	containerVBox.Add(amw)
-
+	//<h1>Delete message?</h1>
 	headerWidget := widgets.NewHeaderWidget().
-		SetTitle(fmt.Sprintf("Settings on area %s", area.GetName()))
-
+		SetTitle("Delete area?")
 	containerVBox.Add(headerWidget)
 
+	//
+	formWidget := widgets.NewFormWidget().
+		SetMethod("POST").
+		SetAction(fmt.Sprintf("/file/%s/remove/complete", area.GetName()))
+	formVBox := widgets.NewVBoxWidget()
+	formWidget.SetWidget(formVBox)
+	containerVBox.Add(formWidget)
 
-	/* Render */
+	qustionWidget := widgets.NewDivWidget().
+		SetContent(fmt.Sprintf("A you sure to remove '%s' area?", area.GetName()))
+	formVBox.Add(qustionWidget)
+
+	buttonWidget := widgets.NewFormButtonWidget().
+		SetTitle("Remove")
+	formVBox.Add(buttonWidget)
+
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
-
 
 }

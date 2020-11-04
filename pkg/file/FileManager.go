@@ -3,8 +3,10 @@ package file
 import (
 	"database/sql"
 	"github.com/vit1251/golden/pkg/registry"
+	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
+	"path/filepath"
 	"time"
 )
 
@@ -23,7 +25,7 @@ func (self *FileArea) SetName(name string) {
 	self.name = name
 }
 
-func (self *FileArea) Name() string {
+func (self FileArea) GetName() string {
 	return self.name
 }
 
@@ -38,11 +40,11 @@ func NewFileManager(r *registry.Container) *FileManager {
 	return fm
 }
 
-func (self *FileManager) GetAreas() ([]*FileArea, error) {
+func (self *FileManager) GetAreas() ([]FileArea, error) {
 
 	storageManager := self.restoreStorageManager()
 
-	var areas []*FileArea
+	var areas []FileArea
 
 	/* Restore parameters */
 	sqlStmt := "SELECT `areaName`, `areaPath`, `areaSummary` FROM `filearea`"
@@ -71,7 +73,7 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 		area.Path = areaPath
 		area.Summary = areaSummary
 
-		areas = append(areas, area)
+		areas = append(areas, *area)
 
 		return nil
 	})
@@ -79,12 +81,13 @@ func (self *FileManager) GetAreas() ([]*FileArea, error) {
 	return areas, err1
 }
 
-func (self *FileManager) GetAreas2() ([]*FileArea, error) {
+func (self *FileManager) GetAreasWithFileCount() ([]FileArea, error) {
 
 	storageManager := self.restoreStorageManager()
+
 	conn := storageManager.GetConnection() // TODO
 
-	var result []*FileArea
+	var result []FileArea
 
 	/* Step 2. Start SQL transaction */
 	ConnTransaction, err := conn.Begin()
@@ -110,7 +113,7 @@ func (self *FileManager) GetAreas2() ([]*FileArea, error) {
 		area.SetName(name)
 		area.Count = count
 
-		result = append(result, area)
+		result = append(result, *area)
 	}
 
 	ConnTransaction.Commit()
@@ -123,7 +126,7 @@ func (self *FileManager) CreateFileArea(a *FileArea) error {
 	storageManager := self.restoreStorageManager()
 	conn := storageManager.GetConnection() // TODO
 
-	var name string = a.Name()
+	var name string = a.GetName()
 	var path string = a.Path
 	var summary string = a.Summary
 
@@ -141,12 +144,12 @@ func (self *FileManager) CreateFileArea(a *FileArea) error {
 	return err1
 }
 
-func (self *FileManager) GetFileHeaders(echoTag string) ([]*TicFile, error) {
+func (self *FileManager) GetFileHeaders(echoTag string) ([]TicFile, error) {
 
 	storageManager := self.restoreStorageManager()
 	conn := storageManager.GetConnection() // TODO
 
-	var result []*TicFile
+	var result []TicFile
 
 	/* Step 2. Start SQL transaction */
 	ConnTransaction, err := conn.Begin()
@@ -183,7 +186,7 @@ func (self *FileManager) GetFileHeaders(echoTag string) ([]*TicFile, error) {
 			tic.SetUnixTime(*fileTime)
 		}
 
-		result = append(result, tic)
+		result = append(result, *tic)
 	}
 
 	ConnTransaction.Commit()
@@ -258,15 +261,66 @@ func (self *FileManager) GetAreaByName(areaName string) (*FileArea, error) {
 	return result, nil
 }
 
-func (self *FileManager) GetMessageNewCount() (int, error) {
+func (self FileManager) GetMessageNewCount() (int, error) {
 	return 0, nil
 }
 
-func (self *FileManager) restoreStorageManager() *storage.StorageManager {
+func (self FileManager) restoreStorageManager() *storage.StorageManager {
 	managerPtr := self.registry.Get("StorageManager")
 	if manager, ok := managerPtr.(*storage.StorageManager); ok {
 		return manager
 	} else {
 		panic("no storage manager")
 	}
+}
+
+func (self FileManager) GetFileAbsolutePath(areaName string, name string) string {
+	configManager := self.restoreConfigManager()
+	boxDirectory, _ := configManager.Get("main", "FileBox")
+	path := filepath.Join(boxDirectory, areaName, name)
+	return path
+}
+
+func (self FileManager) restoreConfigManager() *setup.ConfigManager {
+	managerPtr := self.registry.Get("ConfigManager")
+	if manager, ok := managerPtr.(*setup.ConfigManager); ok {
+		return manager
+	} else {
+		panic("no config manager")
+	}
+}
+
+func (self *FileManager) GetFileBoxAbsolutePath(areaName string) string {
+	configManager := self.restoreConfigManager()
+	boxDirectory, _ := configManager.Get("main", "FileBox")
+	path := filepath.Join(boxDirectory, areaName)
+	return path
+}
+
+func (self *FileManager) RemoveFilesByAreaName(areaName string) error {
+	storageManager := self.restoreStorageManager()
+
+	query1 := "DELETE FROM `file` WHERE `fileArea` = $1"
+	var params []interface{}
+	params = append(params, areaName)
+
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
+		return err
+	})
+
+	return err1
+}
+
+func (self *FileManager) RemoveAreaByName(areaName string) error {
+	storageManager := self.restoreStorageManager()
+
+	query1 := "DELETE FROM `filearea` WHERE `areaName` = $1"
+	var params []interface{}
+	params = append(params, areaName)
+
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
+		return err
+	})
+
+	return err1
 }

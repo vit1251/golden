@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 )
 
 type FileAreaDownloadAction struct {
@@ -21,10 +20,7 @@ func NewFileAreaDownloadAction() *FileAreaDownloadAction {
 
 func (self *FileAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	configManager := self.restoreConfigManager()
 	fileManager := self.restoreFileManager()
-
-	boxDirectory, _ := configManager.Get("main", "FileBox")
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
@@ -42,11 +38,9 @@ func (self *FileAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	}
 	log.Printf("area = %+v", area)
 
-	//fileManager.GetFileByName(newFile)
-
 	/* Path */
-	var areaName string = area.Name()
-	path := filepath.Join(boxDirectory, areaName, newFile)
+	var areaName string = area.GetName()
+	path := fileManager.GetFileAbsolutePath(areaName, newFile)
 
 	/* Open original file */
 	stream, err2 := os.Open(path)

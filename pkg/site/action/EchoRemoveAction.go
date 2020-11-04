@@ -34,6 +34,7 @@ func (self *EchoRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 	log.Printf("area = %+v", area)
 
+	/* Render question */
 	bw := widgets.NewBaseWidget()
 
 	vBox := widgets.NewVBoxWidget()

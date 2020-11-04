@@ -10,6 +10,7 @@ import (
 	"log"
 	"reflect"
 	"runtime"
+	"strconv"
 	"time"
 )
 
@@ -28,26 +29,64 @@ func NewMailerManager(r *registry.Container) *MailerManager {
 }
 
 func (self *MailerManager) Start() {
-	log.Printf("MailerManager: Start ")
+	log.Printf("MailerManager: Start")
 	go self.run()
 	self.running = true
 }
 
+func (self *MailerManager) GetMailerInterval() int {
+
+	configManager := self.restoreConfigManager()
+
+	mailerIntParam, _ := configManager.Get("mailer", "Interval")
+
+	mailerInt, _ := strconv.ParseInt(mailerIntParam, 10, 32)
+
+	/* Minimum 5 minute */
+	if mailerInt > 0 {
+		if mailerInt < 5 {
+			mailerInt = 5
+		}
+	}
+
+	return int(mailerInt)
+
+}
+
+func (self *MailerManager) IsAutoMailer() bool {
+	return self.GetMailerInterval() > 0
+}
+
+func (self *MailerManager) waitNext() {
+
+	mailerInt := self.GetMailerInterval()
+	if mailerInt == 0 {
+		time.Sleep(1 * time.Minute)
+	} else {
+		log.Printf("Wait %d minute before next call", mailerInt)
+		time.Sleep(time.Duration(mailerInt) * time.Minute)
+	}
+
+}
 
 func (self *MailerManager) run() {
 
 	for self.running {
 
-		self.procIteration += 1
+		autoMailer := self.IsAutoMailer()
 
-		log.Printf(" * Mailer start (%d)", self.procIteration)
-		if err := self.processMailer(); err != nil {
-			log.Printf("err = %+v", err)
+		if autoMailer {
+			self.procIteration += 1
+
+			log.Printf(" * Mailer start (%d)", self.procIteration)
+			if err := self.processMailer(); err != nil {
+				log.Printf("err = %+v", err)
+			}
+			log.Printf(" * Mailer complete (%d)", self.procIteration)
 		}
-		log.Printf(" * Mailer complete (%d)", self.procIteration)
 
 		/* Wait 5 minute */
-		time.Sleep(5 * time.Minute)
+		self.waitNext()
 
 	}
 
@@ -162,3 +201,4 @@ func (self *MailerManager) restoreEventBus() *eventbus.EventBus {
 	}
 
 }
+

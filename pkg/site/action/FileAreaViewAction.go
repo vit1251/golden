@@ -68,11 +68,11 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	/* Context actions */
 	amw := widgets.NewActionMenuWidget().
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/file/%s/compose", area.Name())).
+			SetLink(fmt.Sprintf("/file/%s/compose", area.GetName())).
 			SetIcon("icofont-edit").
 			SetLabel("Compose")).
 		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/file/%s/update", area.Name())).
+			SetLink(fmt.Sprintf("/file/%s/update", area.GetName())).
 			SetIcon("icofont-update").
 			SetLabel("Settings"))
 

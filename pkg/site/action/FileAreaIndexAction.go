@@ -21,7 +21,7 @@ func (self *FileAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	fileManager := self.restoreFileManager()
 
 	/* Get message area */
-	areas, err1 := fileManager.GetAreas2()
+	areas, err1 := fileManager.GetAreasWithFileCount()
 	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreas: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)
@@ -58,14 +58,14 @@ func (self *FileAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		log.Printf("area = %+v", area)
 
 		indexTable.AddRow(widgets.NewTableRowWidget().
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.Name()))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.GetName()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.Summary))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
 				fmt.Sprintf("%d", area.Count)))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
 				SetContent("View").
 				SetClass("btn").
-				SetLink(fmt.Sprintf("/file/%s", area.Name())))))
+				SetLink(fmt.Sprintf("/file/%s", area.GetName())))))
 	}
 
 	containerVBox.Add(indexTable)

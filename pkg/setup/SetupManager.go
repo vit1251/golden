@@ -8,16 +8,20 @@ import (
 	"log"
 )
 
-type ParamType int
+type ParamType string
 
-const ParamString ParamType = 1
+const (
+	ParamString     ParamType = "STRING"
+	ParamInt        ParamType = "INT"
+	ParamDuration   ParamType = "DURATION"
+	ParamBool       ParamType = "BOOL"
+)
 
 type ConfigValue struct {
 	Summary    string         /* Parameter summary     */
 	Section    string         /* Parameter section     */
 	Name       string         /* Parameter name        */
 	Value      string         /* Parameter value       */
-	IsSet      bool           /* Parameter exists mark */
 	Type       ParamType      /* Parameter value type  */
 }
 
@@ -52,6 +56,7 @@ func NewConfigManager(registry *registry.Container) *ConfigManager {
 	sem.Register("main", "City", "City where user is seat")
 	sem.Register("main", "FileBox", "Directory where store inbound file area files")
 	sem.Register("main", "StationName", "Station name is your nickname")
+	sem.Register("mailer", "Interval", "Mailer interval")
 
 	/* Overwrite user parameters */
 	err2 := sem.Restore()
@@ -68,24 +73,25 @@ func (self *ConfigManager) GetParams() []*ConfigValue {
 
 func (self *ConfigManager) Set(section string, name string, value string) error {
 
-	var updateCount int = 0
+	//var updateCount int = 0
 
 	for _, param := range self.Params {
 		if param.Section == section && param.Name == name {
 			param.SetValue(value)
-			updateCount += 1
+			//updateCount += 1
 		}
 	}
-	if updateCount == 0 {
-		log.Printf("config: parameter %s in section %s does not exists", name, section)
-	} else {
-		log.Printf("config: parameter %s in section %s update %d time(s)", name, section, updateCount)
-	}
+
+	//if updateCount == 0 {
+	//	log.Printf("config: parameter %s in section %s does not exists", name, section)
+	//} else {
+	//	log.Printf("config: parameter %s in section %s update %d time(s)", name, section, updateCount)
+	//}
 
 	return nil
 }
 
-func (self *ConfigManager) Get(section string, name string) (string, bool) {
+func (self ConfigManager) Get(section string, name string) (string, bool) {
 	for _, param := range self.Params {
 		if param.Section == section && param.Name == name {
 			return param.Value, true
@@ -106,7 +112,7 @@ func (self *ConfigManager) Register(section string, name string, summary string)
 	return nil
 }
 
-func (self *ConfigManager) restoreStorageManager() *storage.StorageManager {
+func (self ConfigManager) restoreStorageManager() *storage.StorageManager {
 	storageManagerPtr := self.registry.Get("StorageManager")
 	if storageManager, ok := storageManagerPtr.(*storage.StorageManager); ok {
 		return storageManager
@@ -115,7 +121,7 @@ func (self *ConfigManager) restoreStorageManager() *storage.StorageManager {
 	}
 }
 
-func (self *ConfigManager) Restore() error {
+func (self ConfigManager) Restore() error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -140,7 +146,7 @@ func (self *ConfigManager) Restore() error {
 	return nil
 }
 
-func (self *ConfigManager) UpdateValue(value string, section string, name string) error {
+func (self ConfigManager) UpdateValue(value string, section string, name string) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -165,7 +171,7 @@ func (self *ConfigManager) UpdateValue(value string, section string, name string
 	return err1
 }
 
-func (self *ConfigManager) InsertValue(value string, section string, name string) error {
+func (self ConfigManager) InsertValue(value string, section string, name string) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -181,13 +187,11 @@ func (self *ConfigManager) InsertValue(value string, section string, name string
 	return err1
 }
 
-func (self *ConfigManager) Store() error {
+func (self ConfigManager) Store() error {
 	for _, param := range self.Params {
 		err1 := self.UpdateValue(param.Value, param.Section, param.Name)
-		log.Printf("ConfigManager: Store: UpdateValue: err1 = %+v", err1)
 		if err1 != nil {
-			err2 := self.InsertValue(param.Value, param.Section, param.Name)
-			log.Printf("ConfigManager: Store: InsertValue: err2 = %+v", err2)
+			return err1
 		}
 	}
 	return nil
