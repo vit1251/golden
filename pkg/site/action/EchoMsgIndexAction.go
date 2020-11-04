@@ -89,15 +89,20 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 	for _, msg := range msgHeaders {
 		log.Printf("msg = %+v", msg)
+
+		actions := widgets.NewVBoxWidget()
+		actions.Add(
+			widgets.NewLinkWidget().
+				SetContent("View").
+				SetClass("btn").
+				SetLink(fmt.Sprintf("/echo/%s/message/%s/view", msg.Area, msg.Hash)))
+
 		row := widgets.NewTableRowWidget().
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.From))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.To))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Subject))).
 			AddCell(widgets.NewTableCellWidget().SetClass("echo-msg-index-date").SetWidget(widgets.NewTextWidgetWithText(msg.GetAge()))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
-				SetContent("View").
-				SetClass("btn").
-				SetLink(fmt.Sprintf("/echo/%s/message/%s/view", msg.Area, msg.Hash))))
+			AddCell(widgets.NewTableCellWidget().SetWidget(actions))
 		//
 		row.SetClass("")
 		if msg.ViewCount == 0 {

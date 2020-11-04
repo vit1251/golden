@@ -206,6 +206,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 
 	/* No message encoding */
 	var msgID string
+	var reply string
 	var msgHash string // TODO - make message hash ...
 	var msgTime time.Time = time.Now()
 	var newSubject string = string(msgHeader.Subject)
@@ -240,9 +241,9 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 		} else if k.Name == "REPLY" {
 
 			value := strings.Trim(k.Value, " ")
-			reply := strings.Trim(value, " ")
+
+			reply = value
 			log.Printf("reply = %s", reply)
-			// TODO - save reply chains ...
 
 		} else if k.Name == "TZUTC" {
 
@@ -314,7 +315,8 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	newMsg.SetSubject(newSubject)
 	newMsg.SetTime(msgTime)
 	newMsg.SetContent(newBody)
-	//newMsg.SetPacket(msgBody.RAW)
+	newMsg.SetPacket(msgBody.GetPacket())
+	newMsg.SetReply(reply)
 
 	/* Save message in storage */
 	if err := messageManager.Write(*newMsg); err != nil {

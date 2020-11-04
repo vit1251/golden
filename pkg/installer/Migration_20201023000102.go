@@ -19,7 +19,7 @@ func migration_000102_Up(conn *sql.DB) error {
 	params = append(params, param{"main", "City", "Moscow"})
 	params = append(params, param{"main", "Origin", "Yo Adrian, I Did It! (c) Rocky II"})
 	params = append(params, param{"main", "TearLine", "Golden/{GOLDEN_PLATFORM}-{GOLDEN_ARCH} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})"})
-	params = append(params, param{ "main", "Address", ""})
+	params = append(params, param{"main", "Address", ""})
 	params = append(params, param{"main", "Link", ""})
 	params = append(params, param{"main", "NetAddr", ""})
 	params = append(params, param{"main", "Inbound", ""})

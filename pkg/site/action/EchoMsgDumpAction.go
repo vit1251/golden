@@ -9,16 +9,16 @@ import (
 	"net/http"
 )
 
-type EchoDumpAction struct {
+type EchoMsgDumpAction struct {
 	Action
 }
 
-func NewEchoDumpAction() *EchoDumpAction {
-	va := new(EchoDumpAction)
+func NewEchoMsgDumpAction() *EchoMsgDumpAction {
+	va := new(EchoMsgDumpAction)
 	return va
 }
 
-func (self *EchoDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	areaManager := self.restoreAreaManager()
 	//configManager := self.restoreConfigManager()
@@ -96,11 +96,6 @@ func (self *EchoDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	indexTable := widgets.NewTableWidget().
 		SetClass("table")
 
-	//                <div>{{ .Msg.From }}</div>
-	//                <div>{{ .Msg.To }}</div>
-	//                <div>{{ .Msg.Subject }}</div>
-
-
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("FROM"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.From))))
@@ -117,6 +112,16 @@ func (self *EchoDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("DATE"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
 			fmt.Sprintf("%s", origMsg.DateWritten)))))
+
+	indexTable.AddRow(widgets.NewTableRowWidget().
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("MSGID"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
+			fmt.Sprintf("%s", origMsg.MsgID)))))
+
+	indexTable.AddRow(widgets.NewTableRowWidget().
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("REPLY"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
+			fmt.Sprintf("%s", origMsg.Reply)))))
 
 	containerVBox.Add(indexTable)
 

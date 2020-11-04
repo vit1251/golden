@@ -100,13 +100,14 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]msg.Message, er
 
 	var result []msg.Message
 
-	query1 := "SELECT `msgId`, `msgArea`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
+	query1 := "SELECT `msgId`, `msgMsgId`, `msgReply`, `msgArea`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
 	var params []interface{}
 	params = append(params, echoTag)
 
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var ID string
+		var msgId string
 		var reply string
 		var msgHash *string
 		var subject string
@@ -116,7 +117,7 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]msg.Message, er
 		var msgDate int64
 		var viewCount int
 
-		err2 := rows.Scan(&ID, &area, &msgHash, &subject, &viewCount, &from, &to, &msgDate)
+		err2 := rows.Scan(&ID, &msgId, &reply, &area, &msgHash, &subject, &viewCount, &from, &to, &msgDate)
 		if err2 != nil{
 			return err2
 		}
@@ -125,14 +126,15 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]msg.Message, er
 		if msgHash != nil {
 			newMsg.SetMsgHash(*msgHash)
 		}
+		newMsg.SetID(ID)
+		newMsg.SetMsgID(msgId)
+		newMsg.SetReply(reply)
 		newMsg.SetArea(area)
 		newMsg.SetSubject(subject)
-		newMsg.SetID(ID)
 		newMsg.SetFrom(from)
 		newMsg.SetTo(to)
 		newMsg.SetUnixTime(msgDate)
 		newMsg.SetViewCount(viewCount)
-		newMsg.SetReply(reply)
 
 		result = append(result, *newMsg)
 
@@ -148,7 +150,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*m
 
 	var result *msg.Message
 
-	query1 := "SELECT `msgId`, `msgArea`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate`, `msgPacket` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	query1 := "SELECT `msgId`, `msgReply`, `msgArea`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate`, `msgPacket` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
 	var params []interface{}
 	params = append(params, echoTag)
 	params = append(params, msgHash)
@@ -156,6 +158,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*m
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var ID string
+		var reply string
 		var msgMsgId string
 		var msgArea string
 		var msgHash *string
@@ -166,29 +169,30 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*m
 		var packet []byte
 		var written int64
 
-		err1 := rows.Scan(&ID, &msgArea, &msgMsgId, &msgHash, &subject, &from, &to, &content, &written, &packet)
+		err1 := rows.Scan(&ID, &reply, &msgArea, &msgMsgId, &msgHash, &subject, &from, &to, &content, &written, &packet)
 		if err1 != nil{
 			return err1
 		}
 		log.Printf("subject = %q", subject)
 
 		/**/
-		msg := msg.NewMessage()
-		msg.SetArea(msgArea)
-		msg.SetMsgID(msgMsgId)
-		msg.SetSubject(subject)
-		msg.SetID(ID)
-		msg.SetUnixTime(written)
+		newMsg := msg.NewMessage()
+		newMsg.SetReply(reply)
+		newMsg.SetArea(msgArea)
+		newMsg.SetMsgID(msgMsgId)
+		newMsg.SetSubject(subject)
+		newMsg.SetID(ID)
+		newMsg.SetUnixTime(written)
 		if msgHash != nil {
-			msg.SetMsgHash(*msgHash)
+			newMsg.SetMsgHash(*msgHash)
 		}
-		msg.SetFrom(from)
-		msg.SetTo(to)
-		msg.SetContent(content)
-		msg.SetPacket(packet)
+		newMsg.SetFrom(from)
+		newMsg.SetTo(to)
+		newMsg.SetContent(content)
+		newMsg.SetPacket(packet)
 
 		/* Save result */
-		result = msg
+		result = newMsg
 
 		return nil
 	})
@@ -263,12 +267,13 @@ func (self *MessageManager) Write(msg msg.Message) error {
 
 	/* Step 3. Make prepare SQL insert query */
 	query1 := "INSERT INTO message " +
-	           "(msgMsgId, msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate, msgPacket) " +
+	           "(msgMsgId, msgReply, msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate, msgPacket) " +
 	           "VALUES " +
-	           "(?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	           "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 	var params []interface{}
-	params = append(params, msg.MsgID)
+	params = append(params, msg.MsgID) // 1
+	params = append(params, msg.Reply) // 2
 	params = append(params, msg.Hash)
 	params = append(params, msg.Area)
 	params = append(params, msg.From)

@@ -102,11 +102,19 @@ func (self *EchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			row.AddCell(cell)
 		}
 
-		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
+		actions := widgets.NewVBoxWidget()
+		actions.Add(
+			widgets.NewLinkWidget().
 				SetContent("View").
 				SetClass("btn").
-				SetLink(fmt.Sprintf("/echo/%s", area.GetName()))))
+				SetLink(fmt.Sprintf("/echo/%s", area.GetName())))
+		actions.Add(
+			widgets.NewLinkWidget().
+				SetContent("Tree").
+				SetClass("btn").
+				SetLink(fmt.Sprintf("/echo/%s/tree", area.GetName())))
 
+		row.AddCell(widgets.NewTableCellWidget().SetWidget(actions))
 
 		indexTable.AddRow(row)
 	}

@@ -9,6 +9,8 @@ type MessageContent struct {
 	rows    [][]byte
 	kludges []packet.Kludge
 	area    string
+	raw     []byte
+	packet  []byte
 }
 
 func NewMessageContent() *MessageContent {
@@ -41,10 +43,18 @@ func (self *MessageContent) SetArea(name string) {
 	self.area = name
 }
 
-func (self *MessageContent) IsArea() bool {
+func (self MessageContent) IsArea() bool {
 	return self.area != ""
 }
 
-func (self *MessageContent) GetArea() string {
+func (self MessageContent) GetArea() string {
 	return self.area
+}
+
+func (self *MessageContent) SetPacket(content []byte) {
+	self.packet = content
+}
+
+func (self MessageContent) GetPacket() []byte {
+	return self.packet
 }

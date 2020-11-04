@@ -20,6 +20,7 @@ const (
 func (self MessageContentParser) Parse(content []byte) (*MessageContent, error) {
 
 	mc := NewMessageContent()
+	mc.SetPacket(content)
 
 	/* Remove "soft" linefeed */
 	parts := bytes.Split(content, []byte(LF))

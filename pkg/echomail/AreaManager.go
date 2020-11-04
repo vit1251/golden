@@ -113,13 +113,15 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 
 func (self *AreaManager) Update(area *Area) error {
 
+	log.Printf("AreaManager: Update: area = %+v", area)
+
 	storageManager := self.restoreStorageManager()
 
 	query1 := "UPDATE `area` SET `areaSummary` = ?, `areaCharset` = ? WHERE `areaName` = ?"
 	var params []interface{}
-	params = append(params, area.Summary)
-	params = append(params, area.GetName())
-	params = append(params, area.Charset)
+	params = append(params, area.Summary) // 1
+	params = append(params, area.Charset) // 2
+	params = append(params, area.GetName()) // 3
 
 	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)

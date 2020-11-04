@@ -86,6 +86,6 @@ func (self *Message) SetPacket(packet []byte) {
 	self.Packet = packet
 }
 
-func (self Message) SetReply(reply string) {
+func (self *Message) SetReply(reply string) {
 	self.Reply = reply
 }
