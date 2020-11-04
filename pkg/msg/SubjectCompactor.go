@@ -34,14 +34,18 @@ func (self SubjectCompactor) Compact(subject string) string {
 
 	/* Parse with number */
 	re2 := regexp.MustCompile(`^[Rr][Ee]\[(\d+)\]:`)
-	match2 := re2.FindStringSubmatch(subject)
-	if match2 != nil {
-		size := len(match2[0])
-		newSubject = newSubject[size:]
-		newSubject = strings.TrimLeft(newSubject, " ")
-		//fmt.Printf("re = %q", match2)
-		num, _ := strconv.Atoi(match2[1])
-		level += num
+	for {
+		match2 := re2.FindStringSubmatch(newSubject)
+		if match2 != nil {
+			size := len(match2[0])
+			newSubject = newSubject[size:]
+			newSubject = strings.TrimLeft(newSubject, " ")
+			//fmt.Printf("re = %q", match2)
+			num, _ := strconv.Atoi(match2[1])
+			level += num
+		} else {
+			break
+		}
 	}
 
 	/* Remove leading spaces */

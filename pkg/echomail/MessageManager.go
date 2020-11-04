@@ -94,11 +94,11 @@ func (self *MessageManager) getAreaListNewCount() ([]*Area, error) {
 	return result, nil
 }
 
-func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*msg.Message, error) {
+func (self *MessageManager) GetMessageHeaders(echoTag string) ([]msg.Message, error) {
 
 	storageManager := self.restoreStorageManager()
 
-	var result []*msg.Message
+	var result []msg.Message
 
 	query1 := "SELECT `msgId`, `msgArea`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
 	var params []interface{}
@@ -107,6 +107,7 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*msg.Message, e
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var ID string
+		var reply string
 		var msgHash *string
 		var subject string
 		var area string
@@ -120,19 +121,20 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]*msg.Message, e
 			return err2
 		}
 
-		msg := msg.NewMessage()
+		newMsg := msg.NewMessage()
 		if msgHash != nil {
-			msg.SetMsgHash(*msgHash)
+			newMsg.SetMsgHash(*msgHash)
 		}
-		msg.SetArea(area)
-		msg.SetSubject(subject)
-		msg.SetID(ID)
-		msg.SetFrom(from)
-		msg.SetTo(to)
-		msg.SetUnixTime(msgDate)
-		msg.SetViewCount(viewCount)
+		newMsg.SetArea(area)
+		newMsg.SetSubject(subject)
+		newMsg.SetID(ID)
+		newMsg.SetFrom(from)
+		newMsg.SetTo(to)
+		newMsg.SetUnixTime(msgDate)
+		newMsg.SetViewCount(viewCount)
+		newMsg.SetReply(reply)
 
-		result = append(result, msg)
+		result = append(result, *newMsg)
 
 		return nil
 	})

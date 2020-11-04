@@ -14,7 +14,7 @@ func TestSubjectCompactorSingle(t *testing.T) {
 
 }
 
-func TestSubjectCompactorWithMultiply(t *testing.T) {
+func TestSubjectCompactorMultiply(t *testing.T) {
 
 	subject := "RE: RE: RE: RE: RE: RE: RU.GOLANG"
 
@@ -26,9 +26,21 @@ func TestSubjectCompactorWithMultiply(t *testing.T) {
 
 }
 
-func TestSubjectCompactorWithCounter(t *testing.T) {
+func TestSubjectCompactorWithCounterSingle(t *testing.T) {
 
 	subject := "RE[1]: RU.GOLANG"
+
+	sc := NewSubjectCompactor()
+	newSubject := sc.Compact(subject)
+
+	t.Logf("subject = %s", subject)
+	t.Logf("newSubject = %s", newSubject)
+
+}
+
+func TestSubjectCompactorWithCounterMultiply(t *testing.T) {
+
+	subject := "Re[3]: RE[2]: RU.GOLANG"
 
 	sc := NewSubjectCompactor()
 	newSubject := sc.Compact(subject)

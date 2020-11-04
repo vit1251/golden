@@ -19,6 +19,7 @@ type Message struct {
 	DateWritten time.Time
 	ViewCount   int
 	Packet      []byte
+	Reply       string
 }
 
 func NewMessage() *Message {
@@ -83,4 +84,8 @@ func (self Message) GetAge() string {
 
 func (self *Message) SetPacket(packet []byte) {
 	self.Packet = packet
+}
+
+func (self Message) SetReply(reply string) {
+	self.Reply = reply
 }
