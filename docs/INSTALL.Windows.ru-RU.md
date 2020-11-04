@@ -1,38 +1,15 @@
-# Инструкция по устновке
+# РРЅСЃС‚СЂСѓРєС†РёСЏ РїРѕ СѓСЃС‚РЅРѕРІРєРµ
 
-## Установка пакета Golden Point для Windows платформы
+## РЈСЃС‚Р°РЅРѕРІРєР° РїР°РєРµС‚Р° Golden Point РґР»СЏ Windows РїР»Р°С‚С„РѕСЂРјС‹
 
-1. Создайте директории. Например, можно использовать домашнюю директорию:
+1. РЎРєР°С‡Р°Р№С‚Рµ РїРѕСЃР»РµРґРЅСЋСЋ СЃР±РѕСЂРєСѓ РїСЂРѕРіСЂР°РјРјС‹ Golden Point РґРѕСЃС‚СѓРїРЅСѓСЋ РїРѕ СЃСЃС‹Р»РєРµ https://github.com/vit1251/golden/releases
 
-    C:\> mkdir C:\Users\%username%\Fido\Files
-    C:\> mkdir C:\Users\%username%\Fido\Inbound
-    C:\> mkdir C:\Users\%username%\Fido\Outbound
-    C:\> mkdir C:\Users\%username%\Fido\TempInbound
-    C:\> mkdir C:\Users\%username%\Fido\TempOutbound 
+2. Р Р°СЃРїР°РєСѓР№С‚Рµ РёСЃРїРѕР»РЅСЏРµРјС‹Р№ С„Р°Р№Р» Golden Point
 
-2. Скачайте пакет Golden Point
+3. Р—Р°РїСѓСЃС‚РёС‚Рµ РёСЃРїРѕР»РЅСЏРµРјС‹Р№ С„Р°Р№Р» Golden Point. РќР°РїСЂРёРјРµСЂ, golden-windows-amd64.exe РґР»СЏ x86_64 РёР»Рё golden-windows-i386.exe РґР»СЏ x86
 
-    C:\> firefox https://github.com/vit1251/golden/releases
+4. РћС‚РєСЂРѕР№С‚Рµ Golden Point РІ РІР°С€РµРј Web-РѕР±РѕР·СЂРµРІР°С‚РµР»Рµ РЅР° СЃРµРєС†РёРё *Setup* (РќР°СЃС‚СЂРѕР№РєР°), С‚.Рµ. РїРµСЂРµР№РґРёС‚Рµ РїРѕ СЃСЃС‹Р»РєРµ http://127.0.0.1:8080/setup
 
-3. Распакуйте исполняемый файл Golden Point
+5. Р—Р°РїРѕР»РЅРёС‚Рµ РїРѕР»СЏ РЅР°СЃС‚СЂРѕР№РєРё Golden Point РїСЂР°РјРµС‚СЂР°РјРё РІР°С€РµРіРѕ СѓР·Р»Р° Рё СЃРѕС…СЂР°РЅРёС‚Рµ РїР°СЂР°РјРµС‚СЂС‹
 
-4. Запустите исполняемый файл Golden Point
-
-    C:\> golden-windows-amd64.exe 
-
-5. Откройте Golden Point в вашем Web-обозревателе на секции *Setup* (Настройка)
-
-    C:\> firefox http://127.0.0.1:8080/setup
-
-6. Настройте Golden Point
-
-7. Остановите Golden Point (можно использовать Ctrl+C для остановки приложения).
-
-8. Запустите Golden Point
-
-    C:\> golden-windows-amd64.exe 
-
-9. Откройте Golden Point в вашем Web-интернет обозревателе
-
-    C:\> firefox http://127.0.0.1:8080
-
+РџСЂРѕРіСЂР°РјРјР° Golden Point РЅР°С‡РЅРµС‚ РїСЂРѕРёР·РІРѕРґРёС‚СЊ РїСЂРѕРІРµСЂРєСѓ РїРѕС‡С‚Сѓ РєР°Р¶РґС‹Рµ 5 РјРёРЅСѓС‚
