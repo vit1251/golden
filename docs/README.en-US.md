@@ -1,4 +1,4 @@
-# Golden Point 1.x
+# Golden Point 1.2
 
 Golden Point is Fido point package
 
@@ -14,11 +14,11 @@ For work with GoldenPoint after starting you will open browser on address http:/
 In most cases, there is no need to build from source. The exceptions are when these assemblies produce
 node owners to add specific characteristics to their Points (example: pre-flashing node speciffic settings).
 
-See BUILD.Windows.en-US.md, BUILD.Linux.en-US.md или BUILD.MacOS.en-US.md
+See BUILD.Windows.en-US.md, BUILD.Linux.en-US.md ГЁГ«ГЁ BUILD.MacOS.en-US.md
 
 ## Installation
 
-See INSTALL.Windows.en-US.md, INSTALL.Linux.en-US.md или INSTALL.MacOS.en-US.md
+See INSTALL.Windows.en-US.md, INSTALL.Linux.en-US.md ГЁГ«ГЁ INSTALL.MacOS.en-US.md
 
 ## Contributors
 
