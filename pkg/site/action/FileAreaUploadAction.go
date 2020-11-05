@@ -53,6 +53,7 @@ func (self FileAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	composeForm := widgets.NewFormWidget().
 		SetAction(fmt.Sprintf("/file/%s/upload/complete", area.GetName())).
+		SetEnctype("multipart/form-data").
 		SetMethod("POST")
 
 	/* Create form */

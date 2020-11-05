@@ -6,9 +6,10 @@ import (
 )
 
 type FormWidget struct {
-	Action string
-	Method string
-	Widget IWidget
+	Action  string
+	Method  string
+	Widget  IWidget
+	enctype string
 }
 
 func (self *FormWidget) SetAction(s string) *FormWidget {
@@ -38,4 +39,9 @@ func (self *FormWidget) Render(w http.ResponseWriter) error {
 	}
 	fmt.Fprintf(w, "</form>\n")
 	return nil
+}
+
+func (self *FormWidget) SetEnctype(enctype string) *FormWidget {
+	self.enctype = enctype
+	return self
 }
