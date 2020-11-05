@@ -59,7 +59,7 @@ func (self FileAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	newForm := widgets.NewVBoxWidget()
 
 	/* File AP200830.ZIP */
-	newForm.Add(widgets.NewFormInputWidget().SetTitle("File").SetName("file"))
+	newForm.Add(widgets.NewFormFileInputWidget().SetTitle("File").SetName("file"))
 
 	/* Desc NASA Astronomy Picture of the Day (plus published report) */
 	newForm.Add(widgets.NewFormInputWidget().SetTitle("Desc").SetName("desc"))
