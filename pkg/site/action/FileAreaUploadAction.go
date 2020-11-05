@@ -52,7 +52,7 @@ func (self FileAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	vBox.Add(container)
 
 	composeForm := widgets.NewFormWidget().
-		SetAction(fmt.Sprintf("/file/%s/compose/complete", area.GetName())).
+		SetAction(fmt.Sprintf("/file/%s/upload/complete", area.GetName())).
 		SetMethod("POST")
 
 	/* Create form */
