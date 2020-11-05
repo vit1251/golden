@@ -208,11 +208,12 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	var msgID string
 	var reply string
 	var msgHash string // TODO - make message hash ...
-	var msgTime time.Time = time.Now()
+	var msgTime time.Time
 	var newSubject string = string(msgHeader.Subject)
 	var newFrom string = string(msgHeader.FromUserName)
 	var newTo string = string(msgHeader.ToUserName)
 	var msgCharset string = "CP866"
+	var noTimeZone bool = true
 
 	/* Process message kludges */
 	for _, k := range msgBody.GetKludges() {
@@ -247,6 +248,9 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 
 		} else if k.Name == "TZUTC" {
 
+			/* Check filezone exist */
+			noTimeZone = false
+
 			value := strings.Trim(k.Value, " ")
 
 			zParser := fidotime.NewTimeZoneParser()
@@ -268,6 +272,14 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 		}
 	}
 
+	/* Failsafe time */
+	if noTimeZone {
+		if msgTimePtr, err := msgHeader.Time.CreateTime(time.Local); err == nil {
+			msgTime = *msgTimePtr
+		}
+	}
+
+	/**/
 	msgContent := msgBody.GetContent()
 
 	/* Decode routine */

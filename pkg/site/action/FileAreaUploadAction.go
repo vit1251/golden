@@ -2,21 +2,36 @@ package action
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/site/widgets"
+	"log"
 	"net/http"
 )
 
-type FileAreaComposeAction struct {
+
+type FileAreaUploadAction struct {
 	Action
 }
 
-func NewFileAreaComposeAction() *FileAreaComposeAction {
-	return new(FileAreaComposeAction)
+func NewFileAreaUploadAction() *FileAreaUploadAction {
+	return new(FileAreaUploadAction)
 }
 
-func (self *FileAreaComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self FileAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	fileArea := "NASA"
+	fileManager := self.restoreFileManager()
+
+	//
+	vars := mux.Vars(r)
+	echoTag := vars["echoname"]
+	log.Printf("echoTag = %v", echoTag)
+
+	//
+	area, err1 := fileManager.GetAreaByName(echoTag)
+	if err1 != nil {
+		panic(err1)
+	}
+	log.Printf("area = %+v", area)
 
 	/* Render */
 	bw := widgets.NewBaseWidget()
@@ -37,7 +52,7 @@ func (self *FileAreaComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Requ
 	vBox.Add(container)
 
 	composeForm := widgets.NewFormWidget().
-		SetAction(fmt.Sprintf("/file/%s/compose/complete", fileArea)).
+		SetAction(fmt.Sprintf("/file/%s/compose/complete", area.GetName())).
 		SetMethod("POST")
 
 	/* Create form */

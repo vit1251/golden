@@ -132,15 +132,6 @@ func (self *TosserManager) run() {
 	log.Printf(" * Tosser service stop")
 }
 
-func (self *TosserManager) makePacketName() string {
-	now := time.Now()
-	unixTime := now.Unix()
-	log.Printf("unixTime: dec = %d hex = %x", unixTime, unixTime)
-	pktName := fmt.Sprintf("%08x.pkt", unixTime)
-	log.Printf("pktName: name = %s", pktName)
-	return pktName
-}
-
 func (self *TosserManager) makeTimeZone() string {
 	newTime := time.Now()
 	_, offset := newTime.Zone()
@@ -205,7 +196,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	tempOutbound, _ := configManager.Get("main", "TempOutbound")
 	pktPassword, _ := configManager.Get("main", "Password")
 
-	packetName := self.makePacketName()
+	packetName := cmn.MakePacketName()
 	newPacketName := path.Join(tempOutbound, packetName)
 
 	stream, err0 := os.Create(newPacketName)
@@ -432,7 +423,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	Origin = origin1
 
 	/* Create packet name */
-	pktName := self.makePacketName()
+	pktName := cmn.MakePacketName()
 	name := path.Join(Outbound, pktName)
 	log.Printf("Write Netmail packet %s", name)
 

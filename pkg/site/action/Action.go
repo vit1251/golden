@@ -2,6 +2,7 @@ package action
 
 import (
 	"github.com/vit1251/golden/pkg/echomail"
+	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/registry"
@@ -25,7 +26,7 @@ func (self *Action) SetContainer(r *registry.Container) {
 	self.registry = r
 }
 
-func (self *Action) makeMenu() *widgets.MainMenuWidget {
+func (self Action) makeMenu() *widgets.MainMenuWidget {
 
 	messageManager := self.restoreMessageManager()
 	newCount, _ := messageManager.GetMessageNewCount()
@@ -40,29 +41,25 @@ func (self *Action) makeMenu() *widgets.MainMenuWidget {
 	return mainMenu
 }
 
-func (self *Action) restoreMessageManager() *echomail.MessageManager {
-
+func (self Action) restoreMessageManager() *echomail.MessageManager {
 	managerPtr := self.registry.Get("MessageManager")
 	if manager, ok := managerPtr.(*echomail.MessageManager); ok {
 		return manager
 	} else {
 		panic("no message manager")
 	}
-
 }
 
-func (self *Action) restoreAreaManager() *echomail.AreaManager {
-
+func (self Action) restoreAreaManager() *echomail.AreaManager {
 	managerPtr := self.registry.Get("AreaManager")
 	if manager, ok := managerPtr.(*echomail.AreaManager); ok {
 		return manager
 	} else {
 		panic("no area manager")
 	}
-
 }
 
-func (self *Action) restoreTosserManager() *tosser.TosserManager {
+func (self Action) restoreTosserManager() *tosser.TosserManager {
 	managerPtr := self.registry.Get("TosserManager")
 	if manager, ok := managerPtr.(*tosser.TosserManager); ok {
 		return manager
@@ -71,7 +68,7 @@ func (self *Action) restoreTosserManager() *tosser.TosserManager {
 	}
 }
 
-func (self *Action) restoreStatManager() *stat.StatManager {
+func (self Action) restoreStatManager() *stat.StatManager {
 	managerPtr := self.registry.Get("StatManager")
 	if manager, ok := managerPtr.(*stat.StatManager); ok {
 		return manager
@@ -80,7 +77,7 @@ func (self *Action) restoreStatManager() *stat.StatManager {
 	}
 }
 
-func (self *Action) restoreConfigManager() *setup.ConfigManager {
+func (self Action) restoreConfigManager() *setup.ConfigManager {
 	managerPtr := self.registry.Get("ConfigManager")
 	if manager, ok := managerPtr.(*setup.ConfigManager); ok {
 		return manager
@@ -89,7 +86,7 @@ func (self *Action) restoreConfigManager() *setup.ConfigManager {
 	}
 }
 
-func (self *Action) restoreFileManager() *file.FileManager {
+func (self Action) restoreFileManager() *file.FileManager {
 	managerPtr := self.registry.Get("FileManager")
 	if manager, ok := managerPtr.(*file.FileManager); ok {
 		return manager
@@ -98,11 +95,20 @@ func (self *Action) restoreFileManager() *file.FileManager {
 	}
 }
 
-func (self *Action) restoreNetmailManager() *netmail.NetmailManager {
+func (self Action) restoreNetmailManager() *netmail.NetmailManager {
 	managerPtr := self.registry.Get("NetmailManager")
 	if manager, ok := managerPtr.(*netmail.NetmailManager); ok {
 		return manager
 	} else {
 		panic("no netmail manager")
+	}
+}
+
+func (self Action) restoreEventBus() *eventbus.EventBus {
+	managerPtr := self.registry.Get("EventBus")
+	if manager, ok := managerPtr.(*eventbus.EventBus); ok {
+		return manager
+	} else {
+		panic("no eventbus manager")
 	}
 }

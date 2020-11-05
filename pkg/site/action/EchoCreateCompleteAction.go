@@ -32,7 +32,7 @@ func (self *EchoCreateComplete) ServeHTTP(w http.ResponseWriter, r *http.Request
 	areaManager.Register(a)
 
 	//
-	newLocation := fmt.Sprintf("/echo/%s", echoTag)
+	newLocation := fmt.Sprintf("/echo/%s", a.GetName())
 	http.Redirect(w, r, newLocation, 303)
 
 }

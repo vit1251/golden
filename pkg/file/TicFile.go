@@ -1,7 +1,10 @@
 package file
 
 import (
+	"bufio"
+	"fmt"
 	commonfunc "github.com/vit1251/golden/pkg/common"
+	"os"
 	"strings"
 	"time"
 )
@@ -15,6 +18,8 @@ type TicFile struct {
 	SeenBy       []string
 	UnixTime     int64
 	DateWritten  time.Time
+	Pw           string
+	lines        []string
 }
 
 func NewTicFile() *TicFile {
@@ -41,4 +46,33 @@ func (self *TicFile) SetArea(area string) {
 
 func (self *TicFile) GetArea() string {
 	return self.area
+}
+
+func (self *TicFile) SetPw(passwd string) {
+
+}
+
+func (self *TicFile) AddLine(line string) {
+	self.lines = append(self.lines, line)
+}
+
+func (self TicFile) Save(path string) error {
+	stream, err1 := os.Create(path)
+	if err1 != nil {
+		return err1
+	}
+
+	cacheStream := bufio.NewWriter(stream)
+
+	defer func() {
+		cacheStream.Flush()
+		stream.Close()
+	}()
+
+	for _, line := range self.lines {
+		newLine := fmt.Sprintf("%s\r", line)
+		cacheStream.Write([]byte(newLine))
+	}
+
+	return nil
 }

@@ -91,6 +91,8 @@ func (self *SiteManager) registerFrontend() {
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/compose", action.NewFileAreaComposeAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/compose/complete", action.NewFileAreaComposeCompleteAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/view", action.NewFileAreaDownloadAction())
+	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload", action.NewFileAreaUploadAction())
+	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload/complete", action.NewFileAreaUploadCompleteAction())
 	self.Register("/netmail", action.NewNetmailAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/view", action.NewNetmailViewAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/reply", action.NewNetmailReplyAction())
@@ -102,6 +104,8 @@ func (self *SiteManager) registerFrontend() {
 	self.Register("/setup", action.NewSetupAction())
 	self.Register("/setup/complete", action.NewSetupCompleteAction())
 	self.Register("/assets/css/main.css", action.NewStyleAction())
+	self.Register("/service", action.NewServiceAction())
+	self.Register("/service/{name:[A-Za-z0-9\\.\\_\\-]+}/event", action.NewServiceEventAction())
 	self.Register("/static/{name:[A-Za-z0-9\\.\\_\\-]+}", action.NewStaticAction())
 }
 
