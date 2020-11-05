@@ -29,11 +29,12 @@ func (self *FormWidget) SetWidget(w IWidget) *FormWidget {
 
 func NewFormWidget() *FormWidget {
 	fw:= new(FormWidget)
+	fw.enctype = "application/x-www-form-urlencoded"
 	return fw
 }
 
 func (self *FormWidget) Render(w http.ResponseWriter) error {
-	fmt.Fprintf(w, "<form action=\"%s\" method=\"%s\">\n", self.Action, self.Method)
+	fmt.Fprintf(w, "<form action=\"%s\" method=\"%s\" enctype\"%s\">\n", self.Action, self.Method, self.enctype)
 	if self.Widget != nil {
 		self.Widget.Render(w)
 	}
