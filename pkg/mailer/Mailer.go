@@ -46,13 +46,13 @@ type Mailer struct {
 	connComplete chan int /*  */
 	recvUnix     int      /*  */
 
-	sendName *cache.FileEntry   /* Upload entry     */
-	recvName *cache.FileEntry    /* Download entry   */
+	sendName *cache.FileEntry /* Upload entry     */
+	recvName *cache.FileEntry /* Download entry   */
 
 	workInbound  string /*  */
 	workOutbound string /*  */
 
-	work         string
+	work string
 
 	SetupManager *setup.ConfigManager /*   */
 
@@ -71,10 +71,10 @@ type Mailer struct {
 	outboundQueue []cache.FileEntry
 	inboundQueue  []cache.FileEntry
 
-	queue          *util.TheQueue       /* TheQueue      */
+	queue *util.TheQueue /* TheQueue      */
 
-	pendingFiles    util.Directory
-
+	pendingFiles util.Directory
+	chunk        []byte
 }
 
 func NewMailer(sm *setup.ConfigManager) *Mailer {

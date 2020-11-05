@@ -82,9 +82,6 @@ func processGotPacket(mailer *Mailer, nextFrame stream.Frame) {
 			log.Printf("ACK receive packet: name = %+v", gs.Name)
 			mailer.pendingFiles.RemoveByName(gs.Name)
 
-			/* Set TxState to TxGNF */
-			mailer.txState = TxGNF
-
 		} else {
 
 			/* Ignore frame */
