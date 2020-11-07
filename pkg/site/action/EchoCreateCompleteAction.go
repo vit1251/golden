@@ -2,7 +2,7 @@ package action
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/echomail"
+	"github.com/vit1251/golden/pkg/mapper"
 	"net/http"
 )
 
@@ -16,7 +16,8 @@ func NewEchoCreateCompleteAction() *EchoCreateComplete {
 
 func (self *EchoCreateComplete) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	areaManager := self.restoreAreaManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	err := r.ParseForm()
 	if err != nil {
@@ -27,9 +28,9 @@ func (self *EchoCreateComplete) ServeHTTP(w http.ResponseWriter, r *http.Request
 	echoTag := r.Form.Get("echoname")
 	fmt.Printf("echoTag = %v", echoTag)
 
-	a := echomail.NewArea()
+	a := mapper.NewArea()
 	a.SetName(echoTag)
-	areaManager.Register(a)
+	echoAreaMapper.Register(a)
 
 	//
 	newLocation := fmt.Sprintf("/echo/%s", a.GetName())

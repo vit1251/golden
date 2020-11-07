@@ -53,9 +53,9 @@ func (self *TrackerManager) run() {
 }
 
 func (self TrackerManager) restoreEventBus() *eventbus.EventBus {
-	ConfigManagerPtr := self.registry.Get("EventBus")
-	if eventBus, ok := ConfigManagerPtr.(*eventbus.EventBus); ok {
-		return eventBus
+	managerPtr := self.registry.Get("EventBus")
+	if manager, ok := managerPtr.(*eventbus.EventBus); ok {
+		return manager
 	} else {
 		panic("no event bus")
 	}

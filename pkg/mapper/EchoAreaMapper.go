@@ -1,23 +1,22 @@
-package echomail
+package mapper
 
 import (
 	"database/sql"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/storage"
 	"log"
 )
 
-type AreaManager struct {
-	registry       *registry.Container
+type EchoAreaMapper struct {
+	Mapper
 }
 
-func NewAreaManager(r *registry.Container) *AreaManager {
-	am := new(AreaManager)
-	am.registry = r
-	return am
+func NewEchoAreaMapper(r *registry.Container) *EchoAreaMapper {
+	newEchoAreaMapper := new(EchoAreaMapper)
+	newEchoAreaMapper.SetRegistry(r)
+	return newEchoAreaMapper
 }
 
-func (self *AreaManager) Register(a *Area) error {
+func (self *EchoAreaMapper) Register(a *Area) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -35,10 +34,11 @@ func (self *AreaManager) Register(a *Area) error {
 	return err1
 }
 
-func (self *AreaManager) GetAreas() ([]Area, error) {
+func (self *EchoAreaMapper) GetAreas() ([]Area, error) {
 
 	storageManager := self.restoreStorageManager()
-	messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	echoMapper := mapperManager.GetEchoMapper()
 
 	var result []Area
 
@@ -66,7 +66,7 @@ func (self *AreaManager) GetAreas() ([]Area, error) {
 		return nil
 	})
 
-	newAreas, err1 := messageManager.UpdateAreaMessageCounters(result)
+	newAreas, err1 := echoMapper.UpdateAreaMessageCounters(result)
 	if err1 != nil {
 		return nil, err1
 	}
@@ -75,7 +75,7 @@ func (self *AreaManager) GetAreas() ([]Area, error) {
 }
 
 
-func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
+func (self *EchoAreaMapper) GetAreaByName(echoTag string) (*Area, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -111,9 +111,9 @@ func (self *AreaManager) GetAreaByName(echoTag string) (*Area, error) {
 
 }
 
-func (self *AreaManager) Update(area *Area) error {
+func (self *EchoAreaMapper) Update(area *Area) error {
 
-	log.Printf("AreaManager: Update: area = %+v", area)
+	log.Printf("EchoAreaMapper: Update: area = %+v", area)
 
 	storageManager := self.restoreStorageManager()
 
@@ -131,7 +131,7 @@ func (self *AreaManager) Update(area *Area) error {
 	return err1
 }
 
-func (self *AreaManager) RemoveAreaByName(echoName string) error {
+func (self *EchoAreaMapper) RemoveAreaByName(echoName string) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -145,26 +145,4 @@ func (self *AreaManager) RemoveAreaByName(echoName string) error {
 	})
 
 	return err1
-}
-
-func (self *AreaManager) restoreMessageManager() *MessageManager {
-
-	managerPtr := self.registry.Get("MessageManager")
-	if manager, ok := managerPtr.(*MessageManager); ok {
-		return manager
-	} else {
-		panic("no message manager")
-	}
-
-}
-
-func (self *AreaManager) restoreStorageManager() *storage.StorageManager {
-
-	managerPtr := self.registry.Get("StorageManager")
-	if manager, ok := managerPtr.(*storage.StorageManager); ok {
-		return manager
-	} else {
-		panic("no message manager")
-	}
-
 }

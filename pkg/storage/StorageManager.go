@@ -12,7 +12,7 @@ import (
 )
 
 type StorageManager struct {
-	conn *sql.DB
+	conn           *sql.DB
 }
 
 func (self *StorageManager) GetConnection() *sql.DB {
@@ -20,7 +20,7 @@ func (self *StorageManager) GetConnection() *sql.DB {
 }
 
 /// Initialize storage
-func NewStorageManager(container *registry.Container) *StorageManager {
+func NewStorageManager(r *registry.Container) *StorageManager {
 	sm := new(StorageManager)
 	sm.Open()
 	return sm

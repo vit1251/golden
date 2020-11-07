@@ -1,43 +1,24 @@
-package stat
+package mapper
 
 import (
 	"database/sql"
 	"fmt"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/storage"
 	"time"
 )
 
-type StatManager struct {
-	registry       *registry.Container
+type StatMapper struct {
+	Mapper
 }
 
-type Stat struct {
-	TicReceived      int
-	TicSent          int
-	EchomailReceived int
-	EchomailSent     int
-	NetmailReceived  int
-	NetmailSent      int
-
-	PacketReceived   int
-	PacketSent       int
-
-	MessageReceived  int
-	MessageSent      int
-
-	SessionIn        int
-	SessionOut       int
+func NewStatMapper(r *registry.Container) *StatMapper {
+	newStatMapper := new(StatMapper)
+	newStatMapper.SetRegistry(r)
+	newStatMapper.createStat()
+	return newStatMapper
 }
 
-func NewStatManager(r *registry.Container) *StatManager {
-	statm := new(StatManager)
-	statm.registry = r
-	statm.createStat()
-	return statm
-}
-
-func (self *StatManager) RegisterInFile(filename string) error {
+func (self *StatMapper) RegisterInFile(filename string) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -54,7 +35,7 @@ func (self *StatManager) RegisterInFile(filename string) error {
 	return err1
 }
 
-func (self *StatManager) RegisterOutFile(filename string) error {
+func (self *StatMapper) RegisterOutFile(filename string) error {
 	self.createStat()
 	return nil
 }
@@ -64,7 +45,7 @@ type SummaryRow struct {
 	Value int
 }
 
-func (self *StatManager) GetStatRow(statDate string) (*Stat, error) {
+func (self *StatMapper) GetStatRow(statDate string) (*Stat, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -106,13 +87,13 @@ func (self *StatManager) GetStatRow(statDate string) (*Stat, error) {
 	return result, err1
 }
 
-func (self *StatManager) GetStat() (*Stat, error) {
+func (self *StatMapper) GetStat() (*Stat, error) {
 	statDate := self.makeToday()
 	stat, err := self.GetStatRow(statDate)
 	return stat, err
 }
 
-func (self *StatManager) RegisterInPacket() error {
+func (self *StatMapper) RegisterInPacket() error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -129,7 +110,7 @@ func (self *StatManager) RegisterInPacket() error {
 	return err1
 }
 
-func (self *StatManager) RegisterOutPacket() error {
+func (self *StatMapper) RegisterOutPacket() error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -146,12 +127,12 @@ func (self *StatManager) RegisterOutPacket() error {
 	return err1
 }
 
-func (self *StatManager) RegisterDupe() error {
+func (self *StatMapper) RegisterDupe() error {
 	self.createStat()
 	return nil
 }
 
-func (self *StatManager) RegisterInMessage() error {
+func (self *StatMapper) RegisterInMessage() error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -168,7 +149,7 @@ func (self *StatManager) RegisterInMessage() error {
 	return err1
 }
 
-func (self *StatManager) RegisterOutMessage() error {
+func (self *StatMapper) RegisterOutMessage() error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -185,14 +166,14 @@ func (self *StatManager) RegisterOutMessage() error {
 	return err1
 }
 
-func (self *StatManager) makeToday() string {
+func (self *StatMapper) makeToday() string {
 	currentTime := time.Now()
 	//result := currentTime.Format("2006-01-02")
 	result := fmt.Sprintf("%04d-%02d-%02d", currentTime.Year(), currentTime.Month(), currentTime.Day())
 	return result
 }
 
-func (self *StatManager) createStat() error {
+func (self *StatMapper) createStat() error {
 	statDate := self.makeToday()
 	stat, err1 := self.GetStatRow(statDate)
 	if err1 != nil {
@@ -204,7 +185,7 @@ func (self *StatManager) createStat() error {
 	return nil
 }
 
-func (self *StatManager) createStat2(statDate string) error {
+func (self *StatMapper) createStat2(statDate string) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -220,7 +201,7 @@ func (self *StatManager) createStat2(statDate string) error {
 	return err1
 }
 
-func (self *StatManager) RegisterInSession() error {
+func (self *StatMapper) RegisterInSession() error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -241,7 +222,7 @@ func (self *StatManager) RegisterInSession() error {
 	return err1
 }
 
-func (self *StatManager) RegisterOutSession() error {
+func (self *StatMapper) RegisterOutSession() error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -261,15 +242,4 @@ func (self *StatManager) RegisterOutSession() error {
 	})
 
 	return err1
-}
-
-func (self *StatManager) restoreStorageManager() *storage.StorageManager {
-
-	storageManagerPtr := self.registry.Get("StorageManager")
-	if storageManager, ok := storageManagerPtr.(*storage.StorageManager); ok {
-		return storageManager
-	} else {
-		panic("no storage manager")
-	}
-
 }

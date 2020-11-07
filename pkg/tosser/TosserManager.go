@@ -7,13 +7,12 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
-	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/fidotime"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/tmpl"
 	"hash/crc32"
 	"io"
@@ -54,20 +53,11 @@ func (self *TosserManager) HandleEvent(event string ) {
 }
 
 func (self *TosserManager) restoreEventBus() *eventbus.EventBus {
-	ConfigManagerPtr := self.registry.Get("EventBus")
-	if eventBus, ok := ConfigManagerPtr.(*eventbus.EventBus); ok {
-		return eventBus
+	managerPtr := self.registry.Get("EventBus")
+	if manager, ok := managerPtr.(*eventbus.EventBus); ok {
+		return manager
 	} else {
 		panic("no event bus")
-	}
-}
-
-func (self *TosserManager) restoreConfigManager() *setup.ConfigManager {
-	ConfigManagerPtr := self.registry.Get("ConfigManager")
-	if configManager, ok := ConfigManagerPtr.(*setup.ConfigManager); ok {
-		return configManager
-	} else {
-		panic("no config manager")
 	}
 }
 
@@ -147,13 +137,13 @@ func (self *TosserManager) prepareOrigin(Origin string) string {
 
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
 
-	configManager := self.restoreConfigManager()
-	areaManager := self.restoreAreaManager()
-	//messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	configMapper := mapperManager.GetConfigMapper()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	charsetManager := self.restoreCharsetManager()
 
 	/* Create packet name */
-	pktPassword, _ := configManager.Get("main", "Password")
+	pktPassword, _ := configMapper.Get("main", "Password")
 
 	//
 	tempOutbound := cmn.GetTempOutboundDirectory()
@@ -179,14 +169,14 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	}()
 
 	/* Ask source address */
-	myAddr, _ := configManager.Get("main", "Address")
-	bossAddr, _ := configManager.Get("main", "Link")
-	realName, _ := configManager.Get("main", "RealName")
-	TearLine, _ := configManager.Get("main", "TearLine")
-	Origin, _ := configManager.Get("main", "Origin")
+	myAddr, _ := configMapper.Get("main", "Address")
+	bossAddr, _ := configMapper.Get("main", "Link")
+	realName, _ := configMapper.Get("main", "RealName")
+	TearLine, _ := configMapper.Get("main", "TearLine")
+	Origin, _ := configMapper.Get("main", "Origin")
 
 	/* Restore area */
-	area, err2 := areaManager.GetAreaByName(em.AreaName)
+	area, err2 := echoAreaMapper.GetAreaByName(em.AreaName)
 	if err2 != nil {
 		return "", err2
 	}
@@ -360,8 +350,8 @@ func (self *TosserManager) PushPacket(src string, dst string) error {
 
 func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
-	configManager := self.restoreConfigManager()
-	//messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	configMapper := mapperManager.GetConfigMapper()
 	charsetManager := self.restoreCharsetManager()
 
 	var From string
@@ -370,12 +360,12 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	var Origin string
 
 	/* Create packet name */
-	From, _ = configManager.Get("main", "Address")
-	FromName, _ = configManager.Get("main", "RealName")
-	pktPassword, _ := configManager.Get("main", "Password")
-	TearLine, _ = configManager.Get("main", "TearLine")
+	From, _ = configMapper.Get("main", "Address")
+	FromName, _ = configMapper.Get("main", "RealName")
+	pktPassword, _ := configMapper.Get("main", "Password")
+	TearLine, _ = configMapper.Get("main", "TearLine")
 
-	origin, _ := configManager.Get("main", "Origin")
+	origin, _ := configMapper.Get("main", "Origin")
 	origin1 := self.prepareOrigin(origin)
 	Origin = origin1
 
@@ -527,30 +517,12 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	return nil
 }
 
-func (self *TosserManager) restoreMessageManager() *echomail.MessageManager {
-	managerPtr := self.registry.Get("MessageManager")
-	if manager, ok := managerPtr.(*echomail.MessageManager); ok {
-		return manager
-	} else {
-		panic("no message manager")
-	}
-}
-
 func (self *TosserManager) restoreCharsetManager() *charset.CharsetManager {
 	managerPtr := self.registry.Get("CharsetManager")
 	if manager, ok := managerPtr.(*charset.CharsetManager); ok {
 		return manager
 	} else {
 		panic("no charset manager")
-	}
-}
-
-func (self *TosserManager) restoreAreaManager() *echomail.AreaManager {
-	managerPtr := self.registry.Get("AreaManager")
-	if manager, ok := managerPtr.(*echomail.AreaManager); ok {
-		return manager
-	} else {
-		panic("no area manager")
 	}
 }
 
@@ -561,6 +533,15 @@ func (self *TosserManager) makeChrsKludgeByCharsetName(charset string) string {
 		return "CP866 2"
 	} else {
 		return "CP866 2"
+	}
+}
+
+func (self TosserManager) restoreMapperManager() *mapper.MapperManager {
+	managerPtr := self.registry.Get("MapperManager")
+	if manager, ok := managerPtr.(*mapper.MapperManager); ok {
+		return manager
+	} else {
+		panic("no mapper manager")
 	}
 }
 

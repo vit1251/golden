@@ -15,25 +15,26 @@ func NewNetmailRemoveAction() *NetmailRemoveAction {
 	return new(NetmailRemoveAction)
 }
 
-func (self *NetmailRemoveAction)  ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *NetmailRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	netmailManager := self.restoreNetmailManager()
+	mapperManager := self.restoreMapperManager()
+	netmailMapper := mapperManager.GetNetmailMapper()
 
 	//
 	vars := mux.Vars(r)
 
 	//
 	msgHash := vars["msgid"]
-	//origMsg, err3 := netmailManager.GetMessageByHash(msgHash)
-	//if err3 != nil {
-	//	response := fmt.Sprintf("Fail on GetMessageByHash")
-	//	http.Error(w, response, http.StatusInternalServerError)
-	//	return
-	//}
+	_, err3 := netmailMapper.GetMessageByHash(msgHash)
+	if err3 != nil {
+		response := fmt.Sprintf("Fail on GetMessageByHash")
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
 
 	log.Printf("msg = %s\n", msgHash)
 
-	if err := netmailManager.RemoveMessageByHash(msgHash) ; err != nil {
+	if err := netmailMapper.RemoveMessageByHash(msgHash) ; err != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
 		http.Error(w, response, http.StatusInternalServerError)
 		return

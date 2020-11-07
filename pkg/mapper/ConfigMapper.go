@@ -1,4 +1,4 @@
-package setup
+package mapper
 
 import (
 	"database/sql"
@@ -8,64 +8,43 @@ import (
 	"log"
 )
 
-type ParamType string
-
-const (
-	ParamString     ParamType = "STRING"
-	ParamInt        ParamType = "INT"
-	ParamDuration   ParamType = "DURATION"
-	ParamBool       ParamType = "BOOL"
-)
-
-type ConfigValue struct {
-	Summary    string         /* Parameter summary     */
-	Section    string         /* Parameter section     */
-	Name       string         /* Parameter name        */
-	Value      string         /* Parameter value       */
-	Type       ParamType      /* Parameter value type  */
-}
-
-func (self *ConfigValue) SetValue(value string) {
-	self.Value = value
-}
-
-type ConfigManager struct {
+type ConfigMapper struct {
+	Mapper
 	Params         []*ConfigValue
-	registry       *registry.Container
 }
 
-func NewConfigManager(registry *registry.Container) *ConfigManager {
-	sem := new(ConfigManager)
+func NewConfigMapper(r *registry.Container) *ConfigMapper {
+	newConfigMapper := new(ConfigMapper)
 
-	sem.registry = registry
+	newConfigMapper.SetRegistry(r)
 
 	/* Set item i18n */
-	sem.Register("main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
-	sem.Register("main", "Origin", "Origin was provide BBS station name and network address")
-	sem.Register("main", "TearLine", "Tearline provide person sign in all their messages")
-	sem.Register("main", "Address", "FidoNet network point address (i.e. POINT address)")
-	sem.Register("main", "NetAddr", "FidoNet network BOSS address (example: f24.n5023.z2.binkp.net:24554)")
-	sem.Register("main", "Password", "FidoNet point password")
-	sem.Register("main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
-	sem.Register("main", "Country", "Country where user is seat")
-	sem.Register("main", "City", "City where user is seat")
-	sem.Register("main", "StationName", "Station name is your nickname")
-	sem.Register("mailer", "Interval", "Mailer interval")
+	newConfigMapper.Register("main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
+	newConfigMapper.Register("main", "Origin", "Origin was provide BBS station name and network address")
+	newConfigMapper.Register("main", "TearLine", "Tearline provide person sign in all their messages")
+	newConfigMapper.Register("main", "Address", "FidoNet network point address (i.e. POINT address)")
+	newConfigMapper.Register("main", "NetAddr", "FidoNet network BOSS address (example: f24.n5023.z2.binkp.net:24554)")
+	newConfigMapper.Register("main", "Password", "FidoNet point password")
+	newConfigMapper.Register("main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
+	newConfigMapper.Register("main", "Country", "Country where user is seat")
+	newConfigMapper.Register("main", "City", "City where user is seat")
+	newConfigMapper.Register("main", "StationName", "Station name is your nickname")
+	newConfigMapper.Register("mailer", "Interval", "Mailer interval")
 
 	/* Overwrite user parameters */
-	err2 := sem.Restore()
+	err2 := newConfigMapper.Restore()
 	if err2 != nil {
 		panic(err2)
 	}
 
-	return sem
+	return newConfigMapper
 }
 
-func (self *ConfigManager) GetParams() []*ConfigValue {
+func (self *ConfigMapper) GetParams() []*ConfigValue {
 	return self.Params
 }
 
-func (self *ConfigManager) Set(section string, name string, value string) error {
+func (self *ConfigMapper) Set(section string, name string, value string) error {
 
 	//var updateCount int = 0
 
@@ -85,7 +64,7 @@ func (self *ConfigManager) Set(section string, name string, value string) error 
 	return nil
 }
 
-func (self ConfigManager) Get(section string, name string) (string, bool) {
+func (self ConfigMapper) Get(section string, name string) (string, bool) {
 	for _, param := range self.Params {
 		if param.Section == section && param.Name == name {
 			return param.Value, true
@@ -94,7 +73,7 @@ func (self ConfigManager) Get(section string, name string) (string, bool) {
 	return "", false
 }
 
-func (self *ConfigManager) Register(section string, name string, summary string) error {
+func (self *ConfigMapper) Register(section string, name string, summary string) error {
 
 	param := new(ConfigValue)
 	param.Section = section
@@ -106,7 +85,7 @@ func (self *ConfigManager) Register(section string, name string, summary string)
 	return nil
 }
 
-func (self ConfigManager) restoreStorageManager() *storage.StorageManager {
+func (self ConfigMapper) restoreStorageManager() *storage.StorageManager {
 	storageManagerPtr := self.registry.Get("StorageManager")
 	if storageManager, ok := storageManagerPtr.(*storage.StorageManager); ok {
 		return storageManager
@@ -115,7 +94,7 @@ func (self ConfigManager) restoreStorageManager() *storage.StorageManager {
 	}
 }
 
-func (self ConfigManager) Restore() error {
+func (self ConfigMapper) Restore() error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -140,7 +119,7 @@ func (self ConfigManager) Restore() error {
 	return nil
 }
 
-func (self ConfigManager) UpdateValue(value string, section string, name string) error {
+func (self ConfigMapper) UpdateValue(value string, section string, name string) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -165,7 +144,7 @@ func (self ConfigManager) UpdateValue(value string, section string, name string)
 	return err1
 }
 
-func (self ConfigManager) InsertValue(value string, section string, name string) error {
+func (self ConfigMapper) InsertValue(value string, section string, name string) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -175,13 +154,13 @@ func (self ConfigManager) InsertValue(value string, section string, name string)
 	params = append(params, name)
 	params = append(params, value)
 	err1 := storageManager.Exec(query1, params, func (result sql.Result, err error) error {
-		log.Printf("ConfigManager: InsertValue: Exec: err = %+v", err)
+		log.Printf("ConfigMapper: InsertValue: Exec: err = %+v", err)
 		return nil
 	})
 	return err1
 }
 
-func (self ConfigManager) Store() error {
+func (self ConfigMapper) Store() error {
 	for _, param := range self.Params {
 		err1 := self.UpdateValue(param.Value, param.Section, param.Name)
 		if err1 != nil {

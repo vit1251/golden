@@ -18,10 +18,10 @@ func NewSetupAction() (*SetupAction) {
 
 func (self *SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	/* Setup manager operation */
-	configManager := self.restoreConfigManager()
+	mapperManager := self.restoreMapperManager()
+	configMapper := mapperManager.GetConfigMapper()
 
-	params := configManager.GetParams()
+	params := configMapper.GetParams()
 	log.Printf("params = %+v", params)
 
 	/* Render */

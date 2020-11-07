@@ -5,16 +5,12 @@ import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
-	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/eventbus"
-	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/installer"
 	"github.com/vit1251/golden/pkg/mailer"
-	"github.com/vit1251/golden/pkg/netmail"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/site"
-	"github.com/vit1251/golden/pkg/stat"
 	"github.com/vit1251/golden/pkg/storage"
 	"github.com/vit1251/golden/pkg/tosser"
 	"github.com/vit1251/golden/pkg/tracker"
@@ -61,17 +57,11 @@ func (self *Application) Run() {
 	/* Start storage service */
 	self.registry.Register("EventBus", eventbus.NewEventBus(self.registry))
 	self.registry.Register("StorageManager", storage.NewStorageManager(self.registry))
+	self.registry.Register("MapperManager", mapper.NewMapperManager(self.registry))
+
 	self.registry.Register("MigrationManager", installer.NewMigrationManager(self.registry))
-	self.registry.Register("ConfigManager", setup.NewConfigManager(self.registry))
 
 	self.registry.Register("CharsetManager", charset.NewCharsetManager(self.registry))
-
-	self.registry.Register("MessageManager", echomail.NewMessageManager(self.registry))
-	self.registry.Register("AreaManager", echomail.NewAreaManager(self.registry))
-	self.registry.Register("FileManager", file.NewFileManager(self.registry))
-	self.registry.Register("NetmailManager", netmail.NewNetmailManager(self.registry))
-	self.registry.Register("StatManager", stat.NewStatManager(self.registry))
-	self.registry.Register("EchoManager", echomail.NewEchoManager(self.registry))
 
 	self.registry.Register("TrackerManager", tracker.NewTrackerManager(self.registry))
 	self.registry.Register("TosserManager", tosser.NewTosserManager(self.registry))

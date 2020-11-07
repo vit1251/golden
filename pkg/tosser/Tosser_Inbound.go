@@ -4,11 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	cmn "github.com/vit1251/golden/pkg/common"
-	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/mailer/cache"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/tosser/arcmail"
 	"io"
@@ -42,7 +41,8 @@ func (self *Tosser) processNewMessage(pktMessage *TosserPacketMessage) error {
 func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeader, msgBody *msg.MessageContent) error {
 
 	charsetManager := self.restoreCharsetManager()
-	netmailManager := self.restoreNetmailManager()
+	mapperManager := self.restoreMapperManager()
+	netmailMapper := mapperManager.GetNetmailMapper()
 
 	var msgID string
 	var msgHash string
@@ -160,7 +160,7 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 	}
 
 	/* Populate message */
-	newMsg := netmail.NewNetmailMessage()
+	newMsg := mapper.NewNetmailMsg()
 
 	newMsg.SetFrom(newFrom)
 	newMsg.SetTo(newTo)
@@ -181,7 +181,7 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 	newMsg.SetContent(newBody)
 
 	/* Write message */
-	err := netmailManager.Write(newMsg)
+	err := netmailMapper.Write(newMsg)
 	log.Printf("err = %v", err)
 
 	return nil
@@ -190,9 +190,10 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 
 func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader, msgBody *msg.MessageContent) error {
 
-	areaManager := self.restoreAreaManager()
-	messageManager := self.restoreMessageManager()
-	statManager := self.restoreStatManager()
+	mapperManager := self.restoreMapperManager()
+	echoMapper := mapperManager.GetEchoMapper()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+	statMapper := mapperManager.GetStatMapper()
 	charsetManager := self.restoreCharsetManager()
 
 	log.Printf("Process ECHOMAIL message: %q -> %q", msgHeader.OrigAddr, msgHeader.DestAddr)
@@ -200,9 +201,9 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	areaName := msgBody.GetArea()
 
 	/* Auto create area */
-	a := echomail.NewArea()
+	a := mapper.NewArea()
 	a.SetName(areaName)
-	areaManager.Register(a)
+	echoAreaMapper.Register(a)
 
 	/* No message encoding */
 	var msgID string
@@ -301,13 +302,13 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	}
 
 	/* Check duplicate message */
-	exists, err9 := messageManager.IsMessageExistsByHash(areaName, msgHash)
+	exists, err9 := echoMapper.IsMessageExistsByHash(areaName, msgHash)
 	if err9 != nil {
 		return err9
 	}
 	if exists {
 		log.Printf("Message %s already exists", msgHash)
-		statManager.RegisterDupe()
+		statMapper.RegisterDupe()
 		return nil
 	}
 
@@ -331,12 +332,12 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader,
 	newMsg.SetReply(reply)
 
 	/* Save message in storage */
-	if err := messageManager.Write(*newMsg); err != nil {
-		log.Printf("Fail on Write in MessageManager: err = %+v", err)
+	if err := echoMapper.Write(*newMsg); err != nil {
+		log.Printf("Fail on Write in echoMapper: err = %+v", err)
 	}
 
 	/* Update counter */
-	statManager.RegisterInMessage()
+	statMapper.RegisterInMessage()
 
 	return nil
 }
@@ -410,9 +411,10 @@ func (self *Tosser) ProcessPacket(name string) error {
 
 func (self *Tosser) processNetmail(item cache.FileEntry) error {
 
-	statManager := self.restoreStatManager()
+	mapperManager := self.restoreMapperManager()
+	statMapper := mapperManager.GetStatMapper()
 
-	statManager.RegisterInPacket()
+	statMapper.RegisterInPacket()
 
 	err1 := self.ProcessPacket(item.AbsolutePath)
 	if err1 != nil {
@@ -434,7 +436,8 @@ func (self *Tosser) processNetmail(item cache.FileEntry) error {
 
 func (self *Tosser) processARCmail(item cache.FileEntry) error {
 
-	statManager := self.restoreStatManager()
+	mapperManager := self.restoreMapperManager()
+	statMapper := mapperManager.GetStatMapper()
 
 	newInbTempDir := cmn.GetTempInboundDirectory()
 
@@ -451,7 +454,7 @@ func (self *Tosser) processARCmail(item cache.FileEntry) error {
 		log.Printf("-- Process FTN packet start: packet = %+v", p)
 
 		/* Register packet */
-		if err := statManager.RegisterInPacket(); err != nil {
+		if err := statMapper.RegisterInPacket(); err != nil {
 			log.Printf("Fail on RegisterInPacket: err = %+v", err)
 		}
 

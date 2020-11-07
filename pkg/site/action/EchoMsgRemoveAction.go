@@ -19,8 +19,9 @@ func NewEchoMsgRemoveAction() *EchoMsgRemoveAction {
 
 func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	areaManager := self.restoreAreaManager()
-	messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+	echoMapper := mapperManager.GetEchoMapper()
 
 	//
 	vars := mux.Vars(r)
@@ -28,7 +29,7 @@ func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	area, err1 := areaManager.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -36,9 +37,9 @@ func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	//
 	msgHash := vars["msgid"]
-	msg, err2 := messageManager.GetMessageByHash(echoTag, msgHash)
+	msg, err2 := echoMapper.GetMessageByHash(echoTag, msgHash)
 	if err2 != nil {
-		response := fmt.Sprintf("Fail on GetMessageByHash on MessageManager: err = %+v", err2)
+		response := fmt.Sprintf("Fail on GetMessageByHash on echoMapper: err = %+v", err2)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}

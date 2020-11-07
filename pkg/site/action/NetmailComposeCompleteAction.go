@@ -18,8 +18,9 @@ func NewNetmailComposeCompleteAction() (*NetmailComposeCompleteAction) {
 
 func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	mapperManager := self.restoreMapperManager()
 	tosserManager := self.restoreTosserManager()
-	statManager := self.restoreStatManager()
+	statMapper := mapperManager.GetStatMapper()
 
 	/* Parse */
 	err1 := r.ParseForm()
@@ -47,10 +48,10 @@ func (self *NetmailComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 	}
 
 	/* Register packet */
-	if err := statManager.RegisterOutPacket(); err != nil {
+	if err := statMapper.RegisterOutPacket(); err != nil {
 		log.Printf("Fail on RegisterInPacket: err = %+v", err)
 	}
-	if err := statManager.RegisterOutMessage(); err != nil {
+	if err := statMapper.RegisterOutMessage(); err != nil {
 		log.Printf("Fail on RegisterOutMessage: err = %+v", err)
 	}
 

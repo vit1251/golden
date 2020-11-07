@@ -18,8 +18,9 @@ func NewEchoRemoveCompleteAction() *EchoRemoveCompleteAction {
 
 func (self *EchoRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	messageManager := self.restoreMessageManager()
-	areaManager := self.restoreAreaManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+	echoMapper := mapperManager.GetEchoMapper()
 
 	//
 	err := r.ParseForm()
@@ -32,11 +33,11 @@ func (self *EchoRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.R
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
-	if err1 := messageManager.RemoveMessagesByAreaName(echoTag); err1 != nil {
+	if err1 := echoMapper.RemoveMessagesByAreaName(echoTag); err1 != nil {
 		log.Printf("err1 = %+v", err1)
 	}
 
-	areaManager.RemoveAreaByName(echoTag)
+	echoAreaMapper.RemoveAreaByName(echoTag)
 
 	//
 	newLocation := fmt.Sprintf("/echo")

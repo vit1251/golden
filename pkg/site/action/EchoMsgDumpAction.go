@@ -20,9 +20,9 @@ func NewEchoMsgDumpAction() *EchoMsgDumpAction {
 
 func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	areaManager := self.restoreAreaManager()
-	//configManager := self.restoreConfigManager()
-	messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+	echoMapper := mapperManager.GetEchoMapper()
 
 	//
 	vars := mux.Vars(r)
@@ -30,14 +30,14 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	area, err1 := areaManager.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}
 	log.Printf("area = %+v", area)
 
 	//
-	msgHeaders, err112 := messageManager.GetMessageHeaders(echoTag)
+	msgHeaders, err112 := echoMapper.GetMessageHeaders(echoTag)
 	if err112 != nil {
 		response := fmt.Sprintf("Fail on GetAreas")
 		http.Error(w, response, http.StatusInternalServerError)
@@ -47,7 +47,7 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	//
 	msgHash := vars["msgid"]
-	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
+	origMsg, err3 := echoMapper.GetMessageByHash(echoTag, msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetAreas")
 		http.Error(w, response, http.StatusInternalServerError)
@@ -58,9 +58,9 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	outDoc := hex.Dump(origMsg.Packet)
 
 	/* Update view counter */
-	err5 := messageManager.ViewMessageByHash(echoTag, msgHash)
+	err5 := echoMapper.ViewMessageByHash(echoTag, msgHash)
 	if err5 != nil {
-		response := fmt.Sprintf("Fail on ViewMessageByHash on messageManager: err = %+v", err5)
+		response := fmt.Sprintf("Fail on ViewMessageByHash on echoMapper: err = %+v", err5)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}

@@ -18,7 +18,8 @@ func NewFileAreaRemoveCompleteAction() *FileAreaRemoveCompleteAction {
 
 func (self FileAreaRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	fileManager := self.restoreFileManager()
+	mapperManager := self.restoreMapperManager()
+	fileMapper := mapperManager.GetFileMapper()
 
 	/* Restore area name */
 	vars := mux.Vars(r)
@@ -26,14 +27,14 @@ func (self FileAreaRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	log.Printf("echoTag = %v", echoTag)
 
 	/* Restore area by name */
-	area, err1 := fileManager.GetAreaByName(echoTag)
+	area, err1 := fileMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}
 	log.Printf("area = %+v", area)
 
 	/* Restore areas file */
-	items, err2 := fileManager.GetFileHeaders(echoTag)
+	items, err2 := fileMapper.GetFileHeaders(echoTag)
 	if err2 != nil {
 		panic(err2)
 	}
@@ -41,7 +42,7 @@ func (self FileAreaRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	/* Remove files */
 	var areaName string = area.GetName()
 	for _, i := range items {
-		newPath := fileManager.GetFileAbsolutePath(areaName, i.GetFile())
+		newPath := fileMapper.GetFileAbsolutePath(areaName, i.GetFile())
 		log.Printf("Remove(%s)", newPath)
 		//err1 := os.Remove(newPath)
 		//if err1 != nil {
@@ -51,7 +52,7 @@ func (self FileAreaRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	}
 
 	/* Remove directory with box */
-	newBoxPath := fileManager.GetFileBoxAbsolutePath(areaName)
+	newBoxPath := fileMapper.GetFileBoxAbsolutePath(areaName)
 	log.Printf("RemoveAll(%s)", newBoxPath)
 	err3 := os.RemoveAll(newBoxPath)
 	if err3 != nil {
@@ -59,13 +60,13 @@ func (self FileAreaRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	}
 
 	/* Remove files in area */
-	err4 := fileManager.RemoveFilesByAreaName(echoTag)
+	err4 := fileMapper.RemoveFilesByAreaName(echoTag)
 	if err4 != nil {
 		log.Printf("err4 = %+v", err4)
 	}
 
 	/* Remove area by name */
-	err5 := fileManager.RemoveAreaByName(echoTag)
+	err5 := fileMapper.RemoveAreaByName(echoTag)
 	if err5 != nil {
 		log.Printf("err5 = %+v", err5)
 	}

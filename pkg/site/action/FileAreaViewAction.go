@@ -21,7 +21,8 @@ func NewFileAreaViewAction() *FileAreaViewAction {
 
 func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	fileManager := self.restoreFileManager()
+	mapperManager := self.restoreMapperManager()
+	fileMapper := mapperManager.GetFileMapper()
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
@@ -29,22 +30,22 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	log.Printf("echoTag = %v", echoTag)
 
 	/* Get message area */
-	area, err1 := fileManager.GetAreaByName(echoTag)
+	area, err1 := fileMapper.GetAreaByName(echoTag)
 	if err1 != nil {
-		response := fmt.Sprintf("Fail on GetAreaByName on FileManager")
+		response := fmt.Sprintf("Fail on GetAreaByName on fileMapper")
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 	if area == nil {
-		response := fmt.Sprintf("Fail on GetAreaByName on FileManager with area name %s", echoTag)
+		response := fmt.Sprintf("Fail on GetAreaByName on fileMapper with area name %s", echoTag)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 	log.Printf("area = %+v", area)
 
-	files, err2 := fileManager.GetFileHeaders(echoTag)
+	files, err2 := fileMapper.GetFileHeaders(echoTag)
 	if err2 != nil {
-		response := fmt.Sprintf("Fail on GetFileHeaders on FileManager")
+		response := fmt.Sprintf("Fail on GetFileHeaders on fileMapper")
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}

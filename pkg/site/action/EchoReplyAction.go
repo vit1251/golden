@@ -38,8 +38,9 @@ func (self *EchoReplyAction) preprocessMessage(origMsg *msg.Message) string {
 
 func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	areaManager := self.restoreAreaManager()
-	messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+	echoMapper := mapperManager.GetEchoMapper()
 
 	//
 	vars := mux.Vars(r)
@@ -47,7 +48,7 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	area, err1 := areaManager.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -55,7 +56,7 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Restore original message */
 	msgHash := vars["msgid"]
-	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
+	origMsg, err3 := echoMapper.GetMessageByHash(echoTag, msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
 		http.Error(w, response, http.StatusInternalServerError)

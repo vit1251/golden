@@ -1,25 +1,25 @@
-package echomail
+package mapper
 
 import (
 	"database/sql"
+	"github.com/huandu/go-sqlbuilder"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/storage"
 	"log"
 	"strings"
 )
 
-type MessageManager struct {
-	registry       *registry.Container
+type EchoMapper struct {
+	Mapper
 }
 
-func NewMessageManager(r *registry.Container) *MessageManager {
-	mm := new(MessageManager)
-	mm.registry = r
-	return mm
+func NewEchoMapper(r *registry.Container) *EchoMapper {
+	manager := new(EchoMapper)
+	manager.SetRegistry(r)
+	return manager
 }
 
-func (self *MessageManager) GetAreaList() ([]string, error) {
+func (self *EchoMapper) GetAreaList() ([]string, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -41,7 +41,7 @@ func (self *MessageManager) GetAreaList() ([]string, error) {
 	return result, nil
 }
 
-func (self *MessageManager) getAreaListCount() ([]*Area, error) {
+func (self *EchoMapper) getAreaListCount() ([]*Area, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -67,7 +67,7 @@ func (self *MessageManager) getAreaListCount() ([]*Area, error) {
 	return result, nil
 }
 
-func (self *MessageManager) getAreaListNewCount() ([]*Area, error) {
+func (self *EchoMapper) getAreaListNewCount() ([]*Area, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -94,17 +94,27 @@ func (self *MessageManager) getAreaListNewCount() ([]*Area, error) {
 	return result, nil
 }
 
-func (self *MessageManager) GetMessageHeaders(echoTag string) ([]msg.Message, error) {
+func (self *EchoMapper) GetMessageHeaders(echoTag string) ([]msg.Message, error) {
 
 	storageManager := self.restoreStorageManager()
 
 	var result []msg.Message
 
-	query1 := "SELECT `msgId`, `msgMsgId`, `msgReply`, `msgArea`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
-	var params []interface{}
-	params = append(params, echoTag)
+	//	query1 := "SELECT `msgId`, `msgMsgId`, `msgReply`, `msgArea`, `msgHash`, `msgSubject`, `msgViewCount`, `msgFrom`, `msgTo`, `msgDate` FROM `message` WHERE `msgArea` = $1 ORDER BY `msgDate` ASC, `msgId` ASC"
+	//	var params []interface{}
+	//	params = append(params, echoTag)
 
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	sb := sqlbuilder.NewSelectBuilder()
+	sb.Select("msgId", "msgMsgId", "msgReply", "msgArea", "msgHash", "msgSubject", "msgViewCount", "msgFrom", "msgTo", "msgDate")
+	sb.From("message")
+	sb.Where(sb.Equal("msgArea", echoTag))
+	sb.OrderBy("msgDate ASC", "msgId ASC")
+
+	query1, args := sb.Build()
+
+	log.Printf("EchoMapper: query = %+v args = %+v", query1, args)
+
+	storageManager.Query(query1, args, func(rows *sql.Rows) error {
 
 		var ID string
 		var msgId string
@@ -144,7 +154,7 @@ func (self *MessageManager) GetMessageHeaders(echoTag string) ([]msg.Message, er
 	return result, nil
 }
 
-func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*msg.Message, error) {
+func (self *EchoMapper) GetMessageByHash(echoTag string, msgHash string) (*msg.Message, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -200,7 +210,7 @@ func (self *MessageManager) GetMessageByHash(echoTag string, msgHash string) (*m
 	return result, nil
 }
 
-func (self *MessageManager) ViewMessageByHash(echoTag string, msgHash string) error {
+func (self *EchoMapper) ViewMessageByHash(echoTag string, msgHash string) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -218,7 +228,7 @@ func (self *MessageManager) ViewMessageByHash(echoTag string, msgHash string) er
 
 }
 
-func (self *MessageManager) RemoveMessageByHash(echoTag string, msgHash string) error {
+func (self *EchoMapper) RemoveMessageByHash(echoTag string, msgHash string) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -235,7 +245,7 @@ func (self *MessageManager) RemoveMessageByHash(echoTag string, msgHash string) 
 	return err1
 }
 
-func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string) (bool, error) {
+func (self *EchoMapper) IsMessageExistsByHash(echoTag string, msgHash string) (bool, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -261,15 +271,15 @@ func (self *MessageManager) IsMessageExistsByHash(echoTag string, msgHash string
 	return result, nil
 }
 
-func (self *MessageManager) Write(msg msg.Message) error {
+func (self *EchoMapper) Write(msg msg.Message) error {
 
 	storageManager := self.restoreStorageManager()
 
 	/* Step 3. Make prepare SQL insert query */
 	query1 := "INSERT INTO message " +
-	           "(msgMsgId, msgReply, msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate, msgPacket) " +
-	           "VALUES " +
-	           "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+		"(msgMsgId, msgReply, msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate, msgPacket) " +
+		"VALUES " +
+		"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 	var params []interface{}
 	params = append(params, msg.MsgID) // 1
@@ -292,7 +302,7 @@ func (self *MessageManager) Write(msg msg.Message) error {
 
 }
 
-func (self *MessageManager) GetMessageNewCount() (int, error) {
+func (self *EchoMapper) GetMessageNewCount() (int, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -313,7 +323,7 @@ func (self *MessageManager) GetMessageNewCount() (int, error) {
 	return newMessageCount, nil
 }
 
-func (self *MessageManager) RemoveMessagesByAreaName(echoTag string) error {
+func (self *EchoMapper) RemoveMessagesByAreaName(echoTag string) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -330,18 +340,7 @@ func (self *MessageManager) RemoveMessagesByAreaName(echoTag string) error {
 
 }
 
-func (self *MessageManager) restoreStorageManager() *storage.StorageManager {
-
-	managerPtr := self.registry.Get("StorageManager")
-	if manager, ok := managerPtr.(*storage.StorageManager); ok {
-		return manager
-	} else {
-		panic("no storage manager")
-	}
-
-}
-
-func (self *MessageManager) UpdateAreaMessageCounters(areas []Area) ([]Area, error) {
+func (self *EchoMapper) UpdateAreaMessageCounters(areas []Area) ([]Area, error) {
 
 	var newAreas []Area
 

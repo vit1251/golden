@@ -19,9 +19,10 @@ func NewEchoComposeCompleteAction() *EchoComposeCompleteAction {
 
 func (self *EchoComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	areaManager := self.restoreAreaManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	tosserManager := self.restoreTosserManager()
-	statManager := self.restoreStatManager()
+	statMapper := mapperManager.GetStatMapper()
 
 	//
 	vars := mux.Vars(r)
@@ -35,7 +36,7 @@ func (self *EchoComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	area, err1 := areaManager.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -61,10 +62,10 @@ func (self *EchoComposeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.
 	}
 
 	/* Register packet */
-	if err := statManager.RegisterOutPacket(); err != nil {
+	if err := statMapper.RegisterOutPacket(); err != nil {
 		log.Printf("Fail on RegisterInPacket: err = %+v", err)
 	}
-	if err := statManager.RegisterOutMessage(); err != nil {
+	if err := statMapper.RegisterOutMessage(); err != nil {
 		log.Printf("Fail on RegisterOutMessage: err = %+v", err)
 	}
 

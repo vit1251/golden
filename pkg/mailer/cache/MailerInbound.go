@@ -3,7 +3,6 @@ package cache
 import (
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/setup"
 	"io/ioutil"
 	"path"
 	"path/filepath"
@@ -74,13 +73,4 @@ func (self *MailerInbound) Scan() ([]FileEntry, error) {
 
 	return result, nil
 
-}
-
-func (self *MailerInbound) restoreConifgManager() *setup.ConfigManager {
-	managerPtr := self.registry.Get("ConfigManager")
-	if manager, ok := managerPtr.(*setup.ConfigManager); ok {
-		return manager
-	} else {
-		panic("no config manager")
-	}
 }

@@ -19,7 +19,8 @@ func NewFileAreaUploadAction() *FileAreaUploadAction {
 
 func (self FileAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	fileManager := self.restoreFileManager()
+	mapperManager := self.restoreMapperManager()
+	fileMapper := mapperManager.GetFileMapper()
 
 	//
 	vars := mux.Vars(r)
@@ -27,7 +28,7 @@ func (self FileAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	area, err1 := fileManager.GetAreaByName(echoTag)
+	area, err1 := fileMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}

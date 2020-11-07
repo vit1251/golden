@@ -18,10 +18,11 @@ func NewFileAreaIndexAction() *FileAreaIndexAction {
 
 func (self *FileAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	fileManager := self.restoreFileManager()
+	mapperManager := self.restoreMapperManager()
+	fileMapper := mapperManager.GetFileMapper()
 
 	/* Get message area */
-	areas, err1 := fileManager.GetAreasWithFileCount()
+	areas, err1 := fileMapper.GetAreasWithFileCount()
 	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreas: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)

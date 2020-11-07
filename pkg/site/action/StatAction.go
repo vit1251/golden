@@ -24,12 +24,13 @@ func (self *StatAction) createMetric(tw *widgets.TableWidget, name string, rx st
 
 func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	statManager := self.restoreStatManager()
+	mapperManager := self.restoreMapperManager()
+	statMapper := mapperManager.GetStatMapper()
 
 	/* Get statistics */
-	stat, err1 := statManager.GetStat()
+	stat, err1 := statMapper.GetStat()
 	if err1 != nil {
-		response := fmt.Sprintf("Fail GetStat on StatManager: err = %+v", err1)
+		response := fmt.Sprintf("Fail GetStat on statMapper: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}

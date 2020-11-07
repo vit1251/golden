@@ -5,9 +5,8 @@ import (
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/mailer/cache"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/setup"
-	"github.com/vit1251/golden/pkg/stat"
 	"log"
 	"reflect"
 	"runtime"
@@ -49,9 +48,10 @@ func (self *MailerManager) Start() {
 
 func (self *MailerManager) GetMailerInterval() int {
 
-	configManager := self.restoreConfigManager()
+	mapperManager := self.restoreMapperManager()
+	configMapper := mapperManager.GetConfigMapper()
 
-	mailerIntParam, _ := configManager.Get("mailer", "Interval")
+	mailerIntParam, _ := configMapper.Get("mailer", "Interval")
 
 	mailerInt, _ := strconv.ParseInt(mailerIntParam, 10, 32)
 
@@ -127,11 +127,12 @@ func GetFunctionName(i interface{}) string {
 
 func (self *MailerManager) processMailer() error {
 
-	log.Printf("MailerManager: processMailer")
-
-	configManager := self.restoreConfigManager()
-	statManager := self.restoreStatManager()
+	mapperManager := self.restoreMapperManager()
+	configMapper := mapperManager.GetConfigMapper()
+	statMapper := mapperManager.GetStatMapper()
 	eventBus := self.restoreEventBus()
+
+	log.Printf("MailerManager: processMailer")
 
 	/* Directory */
 	inb := cmn.GetInboundDirectory()
@@ -141,19 +142,19 @@ func (self *MailerManager) processMailer() error {
 	Temp := cmn.GetTempDirectory()
 
 	/* Construct node address */
-	netAddr, _ := configManager.Get("main", "NetAddr")
-	password, _ := configManager.Get("main", "Password")
-	address, _ := configManager.Get("main", "Address")
-	Country, _ := configManager.Get("main", "Country")
-	City, _ := configManager.Get("main", "City")
-	realName, _ := configManager.Get("main", "RealName")
-	stationName, _ := configManager.Get("main", "StationName")
+	netAddr, _ := configMapper.Get("main", "NetAddr")
+	password, _ := configMapper.Get("main", "Password")
+	address, _ := configMapper.Get("main", "Address")
+	Country, _ := configMapper.Get("main", "Country")
+	City, _ := configMapper.Get("main", "City")
+	realName, _ := configMapper.Get("main", "RealName")
+	stationName, _ := configMapper.Get("main", "StationName")
 
 	/* */
 	newAddress := fmt.Sprintf("%s@fidonet", address)
 
 	/* Get parameters */
-	m := NewMailer(configManager)
+	m := NewMailer(self.registry)
 	m.SetTempOutbound(TempOutbound)
 	m.SetTempInbound(TempInbound)
 	m.SetTemp(Temp)
@@ -187,7 +188,7 @@ func (self *MailerManager) processMailer() error {
 	log.Printf("--- Mailer complete ---")
 
 	/* Complete start tosser */
-	if err := statManager.RegisterOutSession(); err != nil {
+	if err := statMapper.RegisterOutSession(); err != nil {
 		log.Printf("Fail on mailer routine: err = %+v", err)
 	}
 
@@ -198,35 +199,22 @@ func (self *MailerManager) processMailer() error {
 	return nil
 }
 
-func (self *MailerManager) restoreConfigManager() *setup.ConfigManager {
-
-	managerPtr := self.registry.Get("ConfigManager")
-	if manager, ok := managerPtr.(*setup.ConfigManager); ok {
-		return manager
-	} else {
-		panic("no config manager")
-	}
-}
-
-func (self *MailerManager) restoreStatManager() *stat.StatManager {
-
-	managerPtr := self.registry.Get("StatManager")
-	if manager, ok := managerPtr.(*stat.StatManager); ok {
-		return manager
-	} else {
-		panic("no stat manager")
-	}
-
-}
-
 func (self *MailerManager) restoreEventBus() *eventbus.EventBus {
-
 	managerPtr := self.registry.Get("EventBus")
 	if manager, ok := managerPtr.(*eventbus.EventBus); ok {
 		return manager
 	} else {
 		panic("no eventbus manager")
 	}
-
 }
+
+func (self MailerManager) restoreMapperManager() *mapper.MapperManager {
+	managerPtr := self.registry.Get("MapperManager")
+	if manager, ok := managerPtr.(*mapper.MapperManager); ok {
+		return manager
+	} else {
+		panic("no mapper manager")
+	}
+}
+
 

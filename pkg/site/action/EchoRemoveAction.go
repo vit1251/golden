@@ -19,8 +19,8 @@ func NewEchoRemoveAction() *EchoRemoveAction {
 
 func (self *EchoRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	areaManager := self.restoreAreaManager()
-	//messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	//
 	vars := mux.Vars(r)
@@ -28,7 +28,7 @@ func (self *EchoRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	area, err1 := areaManager.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}

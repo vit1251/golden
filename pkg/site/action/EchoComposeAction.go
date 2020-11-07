@@ -19,7 +19,8 @@ func NewEchoComposeAction() *EchoComposeAction {
 
 func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	areaManager := self.restoreAreaManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
@@ -28,7 +29,7 @@ func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	/* Search echo area */
 
-	area, err1 := areaManager.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreaByName")
 		http.Error(w, response, http.StatusInternalServerError)

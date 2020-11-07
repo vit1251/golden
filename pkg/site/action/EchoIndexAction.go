@@ -18,10 +18,11 @@ func NewEchoIndexAction() *EchoIndexAction {
 
 func (self *EchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	areaManager := self.restoreAreaManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	/* Get message area */
-	areas, err1 := areaManager.GetAreas()
+	areas, err1 := echoAreaMapper.GetAreas()
 	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreas")
 		http.Error(w, response, http.StatusInternalServerError)

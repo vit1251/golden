@@ -3,8 +3,8 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"net/http"
 )
@@ -20,14 +20,15 @@ func NewNetmailViewAction() *NetmailViewAction {
 
 func (self NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	netmailManager := self.restoreNetmailManager()
+	mapperManager := self.restoreMapperManager()
+	netmailMapper := mapperManager.GetNetmailMapper()
 
 	//
 	vars := mux.Vars(r)
 
 	//
 	msgHash := vars["msgid"]
-	origMsg, err3 := netmailManager.GetMessageByHash(msgHash)
+	origMsg, err3 := netmailMapper.GetMessageByHash(msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
 		http.Error(w, response, http.StatusInternalServerError)
@@ -51,9 +52,9 @@ func (self NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	outDoc := mtp.HTML()
 
 	/* Update view counter */
-	err5 := netmailManager.ViewMessageByHash(msgHash)
+	err5 := netmailMapper.ViewMessageByHash(msgHash)
 	if err5 != nil {
-		response := fmt.Sprintf("Fail on ViewMessageByHash on messageManager: err = %+v", err5)
+		response := fmt.Sprintf("Fail on ViewMessageByHash on netmailMapper: err = %+v", err5)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
@@ -124,7 +125,7 @@ func (self NetmailViewAction) makeMessageHeaderRowSection(headerTable *widgets.T
 
 }
 
-func (self NetmailViewAction) makeMessageHeaderSection(origMsg *netmail.NetmailMessage) widgets.IWidget {
+func (self NetmailViewAction) makeMessageHeaderSection(origMsg *mapper.NetmailMsg) widgets.IWidget {
 
 	/* Make main header widget */
 	headerTable := widgets.NewTableWidget().

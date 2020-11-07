@@ -24,11 +24,12 @@ func NewFileAreaUploadCompleteAction() *FileAreaUploadCompleteAction {
 
 func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	fileManager := self.restoreFileManager()
-	configManager := self.restoreConfigManager()
+	mapperManager := self.restoreMapperManager()
+	fileMapper := mapperManager.GetFileMapper()
+	configMapper := mapperManager.GetConfigMapper()
 
-	passwd, _ := configManager.Get("main", "Password")
-	from, _ := configManager.Get("main", "Address")
+	passwd, _ := configMapper.Get("main", "Password")
+	from, _ := configMapper.Get("main", "Address")
 
 	//
 	vars := mux.Vars(r)
@@ -36,7 +37,7 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	log.Printf("echoTag = %v", echoTag)
 
 	/* Get file area */
-	area, err1 := fileManager.GetAreaByName(echoTag)
+	area, err1 := fileMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}

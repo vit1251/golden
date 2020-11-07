@@ -18,7 +18,8 @@ func NewEchoPurgeCompleteAction() *EchoPurgeCompleteAction {
 
 func (self *EchoPurgeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	echoMapper := mapperManager.GetEchoMapper()
 
 	//
 	err := r.ParseForm()
@@ -31,7 +32,7 @@ func (self *EchoPurgeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
-	messageManager.RemoveMessagesByAreaName(echoTag)
+	echoMapper.RemoveMessagesByAreaName(echoTag)
 
 	//
 	newLocation := fmt.Sprintf("/echo")

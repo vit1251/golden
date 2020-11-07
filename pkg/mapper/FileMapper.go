@@ -1,46 +1,25 @@
-package file
+package mapper
 
 import (
 	"database/sql"
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
 	"path/filepath"
 )
 
-type FileManager struct {
-	registry      *registry.Container
+type FileMapper struct {
+	Mapper
 }
 
-type FileArea struct {
-	name    string
-	Path    string
-	Summary string
-	Count   int
+func NewFileMapper(r *registry.Container) *FileMapper {
+	newFileMapper := new(FileMapper)
+	newFileMapper.SetRegistry(r)
+	return newFileMapper
 }
 
-func (self *FileArea) SetName(name string) {
-	self.name = name
-}
-
-func (self FileArea) GetName() string {
-	return self.name
-}
-
-func NewFileArea() *FileArea {
-	fa := new(FileArea)
-	return fa
-}
-
-func NewFileManager(r *registry.Container) *FileManager {
-	fm := new(FileManager)
-	fm.registry = r
-	return fm
-}
-
-func (self *FileManager) GetAreas() ([]FileArea, error) {
+func (self *FileMapper) GetAreas() ([]FileArea, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -81,7 +60,7 @@ func (self *FileManager) GetAreas() ([]FileArea, error) {
 	return areas, err1
 }
 
-func (self *FileManager) GetAreasWithFileCount() ([]FileArea, error) {
+func (self *FileMapper) GetAreasWithFileCount() ([]FileArea, error) {
 
 	storageManager := self.restoreStorageManager()
 
@@ -121,7 +100,7 @@ func (self *FileManager) GetAreasWithFileCount() ([]FileArea, error) {
 	return result, nil
 }
 
-func (self *FileManager) CreateFileArea(a *FileArea) error {
+func (self *FileMapper) CreateFileArea(a *FileArea) error {
 
 	storageManager := self.restoreStorageManager()
 	conn := storageManager.GetConnection() // TODO
@@ -144,7 +123,7 @@ func (self *FileManager) CreateFileArea(a *FileArea) error {
 	return err1
 }
 
-func (self *FileManager) GetFileHeaders(echoTag string) ([]File, error) {
+func (self *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 
 	storageManager := self.restoreStorageManager()
 	conn := storageManager.GetConnection() // TODO
@@ -194,11 +173,11 @@ func (self *FileManager) GetFileHeaders(echoTag string) ([]File, error) {
 	return result, nil
 }
 
-func (self *FileManager) CheckFileExists(tic File) (bool, error) {
+func (self *FileMapper) CheckFileExists(tic File) (bool, error) {
 	return true, nil
 }
 
-func (self *FileManager) RegisterFile(tic File) error {
+func (self *FileMapper) RegisterFile(tic File) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -217,7 +196,7 @@ func (self *FileManager) RegisterFile(tic File) error {
 	return nil
 }
 
-func (self *FileManager) GetAreaByName(areaName string) (*FileArea, error) {
+func (self *FileMapper) GetAreaByName(areaName string) (*FileArea, error) {
 
 	storageManager := self.restoreStorageManager()
 	conn := storageManager.GetConnection() // TODO
@@ -257,11 +236,11 @@ func (self *FileManager) GetAreaByName(areaName string) (*FileArea, error) {
 	return result, nil
 }
 
-func (self FileManager) GetMessageNewCount() (int, error) {
+func (self FileMapper) GetMessageNewCount() (int, error) {
 	return 0, nil
 }
 
-func (self FileManager) restoreStorageManager() *storage.StorageManager {
+func (self FileMapper) restoreStorageManager() *storage.StorageManager {
 	managerPtr := self.registry.Get("StorageManager")
 	if manager, ok := managerPtr.(*storage.StorageManager); ok {
 		return manager
@@ -270,28 +249,19 @@ func (self FileManager) restoreStorageManager() *storage.StorageManager {
 	}
 }
 
-func (self FileManager) GetFileAbsolutePath(areaName string, name string) string {
+func (self FileMapper) GetFileAbsolutePath(areaName string, name string) string {
 	boxDirectory := cmn.GetFilesDirectory()
 	path := filepath.Join(boxDirectory, areaName, name)
 	return path
 }
 
-func (self FileManager) restoreConfigManager() *setup.ConfigManager {
-	managerPtr := self.registry.Get("ConfigManager")
-	if manager, ok := managerPtr.(*setup.ConfigManager); ok {
-		return manager
-	} else {
-		panic("no config manager")
-	}
-}
-
-func (self *FileManager) GetFileBoxAbsolutePath(areaName string) string {
+func (self *FileMapper) GetFileBoxAbsolutePath(areaName string) string {
 	boxDirectory := cmn.GetFilesDirectory()
 	path := filepath.Join(boxDirectory, areaName)
 	return path
 }
 
-func (self *FileManager) RemoveFilesByAreaName(areaName string) error {
+func (self *FileMapper) RemoveFilesByAreaName(areaName string) error {
 	storageManager := self.restoreStorageManager()
 
 	query1 := "DELETE FROM `file` WHERE `fileArea` = $1"
@@ -305,7 +275,7 @@ func (self *FileManager) RemoveFilesByAreaName(areaName string) error {
 	return err1
 }
 
-func (self *FileManager) RemoveAreaByName(areaName string) error {
+func (self *FileMapper) RemoveAreaByName(areaName string) error {
 	storageManager := self.restoreStorageManager()
 
 	query1 := "DELETE FROM `filearea` WHERE `areaName` = $1"

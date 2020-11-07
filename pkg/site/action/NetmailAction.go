@@ -18,12 +18,13 @@ func NewNetmailAction() *NetmailAction {
 
 func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	netmailManager := self.restoreNetmailManager()
+	mapperManager := self.restoreMapperManager()
+	netmailMapper := mapperManager.GetNetmailMapper()
 
 	/* Message headers */
-	msgHeaders, err1 := netmailManager.GetMessageHeaders()
+	msgHeaders, err1 := netmailMapper.GetMessageHeaders()
 	if err1 != nil {
-		response := fmt.Sprintf("Fail on GetMessageHeaders on NetmailManager: err = %+v", err1)
+		response := fmt.Sprintf("Fail on GetMessageHeaders on netmailMapper: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}

@@ -3,8 +3,8 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/netmail"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
@@ -18,7 +18,7 @@ func NewNetmailReplyAction() *NetmailReplyAction {
 	return new(NetmailReplyAction)
 }
 
-func (self *NetmailReplyAction) preprocessMessage(origMsg *netmail.NetmailMessage) string {
+func (self *NetmailReplyAction) preprocessMessage(origMsg *mapper.NetmailMsg) string {
 	cmap := msg.NewMessageAuthorParser()
 	ma, _ := cmap.Parse(origMsg.From)
 
@@ -38,15 +38,15 @@ func (self *NetmailReplyAction) preprocessMessage(origMsg *netmail.NetmailMessag
 
 func (self *NetmailReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	netmailManager := self.restoreNetmailManager()
-	//configManager := self.restoreConfigManager()
+	mapperManager := self.restoreMapperManager()
+	netmailMapper := mapperManager.GetNetmailMapper()
 
 	vars := mux.Vars(r)
 
 	/* Recover message */
 	msgHash := vars["msgid"]
 
-	origMsg, err3 := netmailManager.GetMessageByHash(msgHash)
+	origMsg, err3 := netmailMapper.GetMessageByHash(msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
 		http.Error(w, response, http.StatusInternalServerError)

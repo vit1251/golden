@@ -19,10 +19,11 @@ func NewReplyCompleteAction() *ReplyCompleteAction {
 
 func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	areaManager := self.restoreAreaManager()
-	messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+	echoMapper := mapperManager.GetEchoMapper()
 	tosserManager := self.restoreTosserManager()
-	statManager := self.restoreStatManager()
+	statMapper := mapperManager.GetStatMapper()
 
 	//
 	err := r.ParseForm()
@@ -36,7 +37,7 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
-	area, err1 := areaManager.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -44,7 +45,7 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	/* Recover message */
 	msgHash := vars["msgid"]
-	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
+	origMsg, err3 := echoMapper.GetMessageByHash(echoTag, msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
 		http.Error(w, response, http.StatusInternalServerError)
@@ -73,10 +74,10 @@ func (self *ReplyCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	}
 
 	/* Register packet */
-	if err := statManager.RegisterOutPacket(); err != nil {
+	if err := statMapper.RegisterOutPacket(); err != nil {
 		log.Printf("Fail on RegisterInPacket: err = %+v", err)
 	}
-	if err := statManager.RegisterOutMessage(); err != nil {
+	if err := statMapper.RegisterOutMessage(); err != nil {
 		log.Printf("Fail on RegisterOutMessage: err = %+v", err)
 	}
 

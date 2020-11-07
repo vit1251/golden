@@ -16,18 +16,19 @@ func NewStatApiAction() *StatApiAction {
 
 func (self *StatApiAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	netmailManager := self.restoreNetmailManager()
-	messageManager := self.restoreMessageManager()
-	fileManager := self.restoreFileManager()
+	mapperManager := self.restoreMapperManager()
+	echoMapper := mapperManager.GetEchoMapper()
+	netmailMapper := mapperManager.GetNetmailMapper()
+	fileMapper := mapperManager.GetFileMapper()
 
 	/* Calculate summary */
 	var newDirectMsgCount int
 	var newEchoMsgCount int
 	var newFileCount int
 
-	newEchoMsgCount, _ = messageManager.GetMessageNewCount()
-	newDirectMsgCount, _ = netmailManager.GetMessageNewCount()
-	newFileCount, _ = fileManager.GetMessageNewCount()
+	newEchoMsgCount, _ = echoMapper.GetMessageNewCount()
+	newDirectMsgCount, _ = netmailMapper.GetMessageNewCount()
+	newFileCount, _ = fileMapper.GetMessageNewCount()
 
 	p := make(map[string]interface{})
 	p["code"] = 0

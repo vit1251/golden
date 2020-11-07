@@ -19,15 +19,16 @@ func NewEchoMsgIndexAction() *EchoMsgIndexAction {
 
 func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	areaManager := self.restoreAreaManager()
-	messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+	echoMapper := mapperManager.GetEchoMapper()
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
 
-	newArea, err1 := areaManager.GetAreaByName(echoTag)
+	newArea, err1 := echoAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreaByName where echoTag is %s: err = %+v", echoTag, err1)
 		http.Error(w, response, http.StatusInternalServerError)
@@ -36,7 +37,7 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	log.Printf("area = %+v", newArea)
 
 	/* Get message headers */
-	msgHeaders, err2 := messageManager.GetMessageHeaders(echoTag)
+	msgHeaders, err2 := echoMapper.GetMessageHeaders(echoTag)
 	if err2 != nil {
 		response := fmt.Sprintf("Fail on GetMessageHeaders where echoTag is %s: err = %+v", echoTag, err2)
 		http.Error(w, response, http.StatusInternalServerError)

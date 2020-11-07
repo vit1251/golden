@@ -18,7 +18,8 @@ func NewEchoUpdateCompleteAction() *EchoUpdateCompleteAction {
 
 func (self *EchoUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	areaManager := self.restoreAreaManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	/* Parse POST parameters */
 	err := r.ParseForm()
@@ -32,7 +33,7 @@ func (self *EchoUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.R
 	log.Printf("echoTag = %v", echoTag)
 
 	/* ... */
-	area, err1 := areaManager.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -48,7 +49,7 @@ func (self *EchoUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.R
 	}
 
 	/* Update area property */
-	err2 := areaManager.Update(area)
+	err2 := echoAreaMapper.Update(area)
 	if err2 != nil {
 		panic(err2)
 	}

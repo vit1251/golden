@@ -3,7 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/echomail"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"html/template"
@@ -21,9 +21,9 @@ func NewEchoMsgViewAction() *EchoMsgViewAction {
 
 func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	/* Restore managers */
-	areaManager := self.restoreAreaManager()
-	messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+	echoMapper := mapperManager.GetEchoMapper()
 
 	/* Get "echoname" in user request */
 	vars := mux.Vars(r)
@@ -31,9 +31,9 @@ func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	/* Restore area by "echoname" key */
 	echoTag := vars["echoname"]
 	//log.Printf("echoTag = %+v", echoTag)
-	area, err1 := areaManager.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
-		response := fmt.Sprintf("Fail on GetAreaByName in AreaManager: err = %+v", err1)
+		response := fmt.Sprintf("Fail on GetAreaByName in echoAreaMapper: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
@@ -41,14 +41,14 @@ func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	/* Restore message by "echoname" and "msgid" key */
 	msgHash := vars["msgid"]
 	//log.Printf("msgid = %+v", msgid)
-	origMsg, err3 := messageManager.GetMessageByHash(echoTag, msgHash)
+	origMsg, err3 := echoMapper.GetMessageByHash(echoTag, msgHash)
 	if err3 != nil {
-		response := fmt.Sprintf("Fail on GetMessageByHash in MessageManager: err = %+v", err3)
+		response := fmt.Sprintf("Fail on GetMessageByHash in echoMapper: err = %+v", err3)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 	if origMsg == nil {
-		response := fmt.Sprintf("Fail on GetMessageByHash in MessageManager: err = %+v", fmt.Errorf("origMsg is emprty"))
+		response := fmt.Sprintf("Fail on GetMessageByHash in echoMapper: err = %+v", fmt.Errorf("origMsg is emprty"))
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
@@ -66,9 +66,9 @@ func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	outDoc := mtp.HTML()
 
 	/* Update message view counter */
-	err5 := messageManager.ViewMessageByHash(echoTag, msgHash)
+	err5 := echoMapper.ViewMessageByHash(echoTag, msgHash)
 	if err5 != nil {
-		response := fmt.Sprintf("Fail on ViewMessageByHash on messageManager: err = %+v", err5)
+		response := fmt.Sprintf("Fail on ViewMessageByHash on echoMapper: err = %+v", err5)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
@@ -150,7 +150,7 @@ func (self EchoMsgViewAction) makeMessageHeaderSection(origMsg msg.Message) widg
 
 }
 
-func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *echomail.Area, origMsg *msg.Message, outDoc template.HTML) widgets.IWidget {
+func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *mapper.Area, origMsg *msg.Message, outDoc template.HTML) widgets.IWidget {
 
 	mainWidget := widgets.NewBaseWidget()
 

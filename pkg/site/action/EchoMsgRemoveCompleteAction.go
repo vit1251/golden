@@ -18,7 +18,8 @@ func NewEchoMsgRemoveCompleteAction() *EchoMsgRemoveCompleteAction {
 
 func (self *EchoMsgRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	messageManager := self.restoreMessageManager()
+	mapperManager := self.restoreMapperManager()
+	echoMapper := mapperManager.GetEchoMapper()
 
 	//
 	err := r.ParseForm()
@@ -34,7 +35,7 @@ func (self *EchoMsgRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 
 	//
 	msgid := vars["msgid"]
-	messageManager.RemoveMessageByHash(echoTag, msgid)
+	echoMapper.RemoveMessageByHash(echoTag, msgid)
 
 	//
 	newLocation := fmt.Sprintf("/echo/%s", echoTag)

@@ -17,10 +17,11 @@ func NewSetupCompleteAction() *SetupCompleteAction {
 
 func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	configManager := self.restoreConfigManager()
+	mapperManager := self.restoreMapperManager()
+	configMapper := mapperManager.GetConfigMapper()
 
 	/* Setup manager operation */
-	params := configManager.GetParams()
+	params := configMapper.GetParams()
 	log.Printf("params = %+v", params)
 
 	/* Update parameters */
@@ -32,7 +33,7 @@ func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	}
 
 	/* Store update */
-	err1 := configManager.Store()
+	err1 := configMapper.Store()
 	if err1 != nil {
 		panic(err1)
 	}

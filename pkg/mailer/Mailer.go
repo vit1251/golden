@@ -8,7 +8,7 @@ import (
 	"github.com/vit1251/golden/pkg/mailer/cache"
 	stream2 "github.com/vit1251/golden/pkg/mailer/stream"
 	"github.com/vit1251/golden/pkg/mailer/util"
-	"github.com/vit1251/golden/pkg/setup"
+	"github.com/vit1251/golden/pkg/registry"
 	"log"
 	"os"
 	"sync"
@@ -16,6 +16,9 @@ import (
 )
 
 type Mailer struct {
+
+	registry     *registry.Container
+
 	activeState IMailerState /* Mailer state                */
 
 	rxState RxState /*                             */
@@ -54,8 +57,6 @@ type Mailer struct {
 
 	work string
 
-	SetupManager *setup.ConfigManager /*   */
-
 	InFileCount  int
 	OutFileCount int
 
@@ -75,13 +76,15 @@ type Mailer struct {
 
 	pendingFiles util.Directory
 	chunk        []byte
+
+
 }
 
-func NewMailer(sm *setup.ConfigManager) *Mailer {
+func NewMailer(r *registry.Container) *Mailer {
 	m := new(Mailer)
 
 	m.connComplete = make(chan int)
-	m.SetupManager = sm
+	m.registry = r
 	m.queue = util.NewTheQueue()
 
 	return m

@@ -15,14 +15,15 @@ func NewNetmailRemoveApiAction() *NetmailRemoveApiAction {
 
 func (self *NetmailRemoveApiAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	netmailManager := self.restoreNetmailManager()
+	mapperManager := self.restoreMapperManager()
+	netmailMapper := mapperManager.GetNetmailMapper()
 
 	var code int = 0
 
 	r.ParseForm()
 	msgHash := r.PostForm.Get("msgHash")
 
-	err := netmailManager.RemoveMessageByHash(msgHash)
+	err := netmailMapper.RemoveMessageByHash(msgHash)
 	if err != nil {
 		code = 1
 	}

@@ -3,13 +3,9 @@ package tracker
 import (
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
-	"github.com/vit1251/golden/pkg/echomail"
-	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/mailer/cache"
-	"github.com/vit1251/golden/pkg/netmail"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/setup"
-	"github.com/vit1251/golden/pkg/stat"
 	"log"
 	"os"
 	"path"
@@ -78,8 +74,9 @@ func (self *Tracker) ProcessOutbound() error {
 
 func (self *Tracker) processTICmail(item cache.FileEntry) error {
 
-	fileManager := self.restoreFileManager()
-	statManager := self.restoreStatManager()
+	mapperManager := self.restoreMapperManager()
+	fileMapper := mapperManager.GetFileMapper()
+	statMapper := mapperManager.GetStatMapper()
 
 	/* Parse */
 	newTicParser := NewTicParser(self.registry)
@@ -92,7 +89,7 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	areaName := tic.GetArea()
 
 	/* Search area */
-	fa, err1 := fileManager.GetAreaByName(areaName)
+	fa, err1 := fileMapper.GetAreaByName(areaName)
 	if err1 != nil {
 		return err1
 	}
@@ -107,12 +104,12 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	/* Create area */
 	if fa == nil {
 		/* Prepare area */
-		newFa := file.NewFileArea()
+		newFa := mapper.NewFileArea()
 		newFa.SetName(areaName)
 		newFa.Path = areaLocation
 		/* Create area */
-		if err := fileManager.CreateFileArea(newFa); err != nil {
-			log.Printf("Fail CreateFileArea on FileManager: area = %s err = %+v", areaName, err)
+		if err := fileMapper.CreateFileArea(newFa); err != nil {
+			log.Printf("Fail CreateFileArea on fileMapper: area = %s err = %+v", areaName, err)
 			return err
 		}
 	}
@@ -128,15 +125,15 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	}
 
 	/* Register file */
-	newFile := file.NewFile()
+	newFile := mapper.NewFile()
 	newFile.SetArea(tic.GetArea())
 	newFile.SetDesc(tic.Desc)
 	newFile.SetUnixTime(tic.UnixTime)
 	newFile.SetFile(tic.File)
-	fileManager.RegisterFile(*newFile)
+	fileMapper.RegisterFile(*newFile)
 
 	/* Register status */
-	statManager.RegisterInFile(tic.File)
+	statMapper.RegisterInFile(tic.File)
 
 	/* Move TIC */
 	areaTicLocation := path.Join(areaLocation, item.Name)
@@ -157,56 +154,11 @@ func (self Tracker) restoreCharsetManager() *charset.CharsetManager {
 	}
 }
 
-func (self Tracker) restoreNetmailManager() *netmail.NetmailManager {
-	managerPtr := self.registry.Get("NetmailManager")
-	if manager, ok := managerPtr.(*netmail.NetmailManager); ok {
+func (self Tracker) restoreMapperManager() *mapper.MapperManager {
+	managerPtr := self.registry.Get("MapperManager")
+	if manager, ok := managerPtr.(*mapper.MapperManager); ok {
 		return manager
 	} else {
-		panic("no netmail manager")
-	}
-}
-
-func (self Tracker) restoreAreaManager() *echomail.AreaManager {
-	managerPtr := self.registry.Get("AreaManager")
-	if manager, ok := managerPtr.(*echomail.AreaManager); ok {
-		return manager
-	} else {
-		panic("no area manager")
-	}
-}
-
-func (self Tracker) restoreMessageManager() *echomail.MessageManager {
-	managerPtr := self.registry.Get("MessageManager")
-	if manager, ok := managerPtr.(*echomail.MessageManager); ok {
-		return manager
-	} else {
-		panic("no message manager")
-	}
-}
-
-func (self Tracker) restoreStatManager() *stat.StatManager {
-	managerPtr := self.registry.Get("StatManager")
-	if manager, ok := managerPtr.(*stat.StatManager); ok {
-		return manager
-	} else {
-		panic("no stat manager")
-	}
-}
-
-func (self Tracker) restoreConfigManager() *setup.ConfigManager {
-	managerPtr := self.registry.Get("ConfigManager")
-	if manager, ok := managerPtr.(*setup.ConfigManager); ok {
-		return manager
-	} else {
-		panic("no config manager")
-	}
-}
-
-func (self Tracker) restoreFileManager() *file.FileManager {
-	managerPtr := self.registry.Get("FileManager")
-	if manager, ok := managerPtr.(*file.FileManager); ok {
-		return manager
-	} else {
-		panic("no file manager")
+		panic("no mapper manager")
 	}
 }
