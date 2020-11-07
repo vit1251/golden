@@ -27,27 +27,38 @@ func checkDirectory(dir string) {
 	}
 }
 
-func checkDirectoryStructure(baseDirectory string) error {
+const (
+	InboundName string = "Inbound"
+	OutboundName string = "Outbound"
+	TempInboundName string = "TempInbound"
+	TempOutboundName string = "TempOutbound"
+	TempName string = "Temp"
+	FileBoxName string = "Files"
+)
+
+func checkDirectoryStructure(baseDirectory string) {
 
 	/* Check */
-	checkDirectory(path.Join(baseDirectory, "Inbound"))
-	checkDirectory(path.Join(baseDirectory, "Outbound"))
+	checkDirectory(path.Join(baseDirectory, InboundName))
+	checkDirectory(path.Join(baseDirectory, OutboundName))
 
-	checkDirectory(path.Join(baseDirectory, "TempInbound"))
-	checkDirectory(path.Join(baseDirectory, "TempOutbound"))
-	checkDirectory(path.Join(baseDirectory, "Temp"))
+	checkDirectory(path.Join(baseDirectory, TempInboundName))
+	checkDirectory(path.Join(baseDirectory, TempOutboundName))
+	checkDirectory(path.Join(baseDirectory, TempName))
 
-	checkDirectory(path.Join(baseDirectory, "FileBox"))
-
-	return nil
+	checkDirectory(path.Join(baseDirectory, FileBoxName))
 
 }
+
+const (
+	FidoName string = "Fido"
+)
 
 func GetFidoDirectory() string {
 
 	/* Check portable version execute */
 	if currentDirectory, err1 := os.Getwd(); err1 == nil {
-		newRoot := path.Join(currentDirectory, "Fido")
+		newRoot := path.Join(currentDirectory, FidoName)
 		if _ , err2 := os.Stat(newRoot); err2 == nil {
 			checkDirectoryStructure(newRoot)
 			return newRoot
@@ -56,7 +67,7 @@ func GetFidoDirectory() string {
 
 	/* Check classic version execute */
 	if homeDirectory, err1 := GetHomeDirectory(); err1 == nil {
-		newRoot := path.Join(homeDirectory, "Fido")
+		newRoot := path.Join(homeDirectory, FidoName)
 //		if _ , err2 := os.Stat(newRoot); err2 == nil {
 		checkDirectoryStructure(newRoot)
 		return newRoot
@@ -68,30 +79,30 @@ func GetFidoDirectory() string {
 
 func GetInboundDirectory() string {
 	fidoDirectory := GetFidoDirectory()
-	return path.Join(fidoDirectory, "Inbound")
+	return path.Join(fidoDirectory, InboundName)
 }
 
 func GetFilesDirectory() string {
 	fidoDirectory := GetFidoDirectory()
-	return path.Join(fidoDirectory, "Files")
+	return path.Join(fidoDirectory, FileBoxName)
 }
 
 func GetOutboundDirectory() string {
 	fidoDirectory := GetFidoDirectory()
-	return path.Join(fidoDirectory, "Outbound")
+	return path.Join(fidoDirectory, OutboundName)
 }
 
 func GetTempOutboundDirectory() string {
 	fidoDirectory := GetFidoDirectory()
-	return path.Join(fidoDirectory, "TempOutbound")
+	return path.Join(fidoDirectory, TempOutboundName)
 }
 
 func GetTempInboundDirectory() string {
 	fidoDirectory := GetFidoDirectory()
-	return path.Join(fidoDirectory, "TempInbound")
+	return path.Join(fidoDirectory, TempInboundName)
 }
 
 func GetTempDirectory() string{
 	fidoDirectory := GetFidoDirectory()
-	return path.Join(fidoDirectory, "Temp")
+	return path.Join(fidoDirectory, TempName)
 }
