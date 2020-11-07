@@ -2,6 +2,7 @@ package mailer
 
 import (
 	"fmt"
+	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/mailer/cache"
 	"github.com/vit1251/golden/pkg/registry"
@@ -108,15 +109,17 @@ func (self *MailerManager) processMailer() error {
 	statManager := self.restoreStatManager()
 	eventBus := self.restoreEventBus()
 
+	/* Directory */
+	inb := cmn.GetInboundDirectory()
+	outb := cmn.GetOutboundDirectory()
+	TempOutbound := cmn.GetTempOutboundDirectory()
+	TempInbound := cmn.GetTempInboundDirectory()
+	Temp := cmn.GetTempDirectory()
+
 	/* Construct node address */
 	netAddr, _ := configManager.Get("main", "NetAddr")
 	password, _ := configManager.Get("main", "Password")
 	address, _ := configManager.Get("main", "Address")
-	inb, _ := configManager.Get("main", "Inbound")
-	outb, _ := configManager.Get("main", "Outbound")
-	TempOutbound, _ := configManager.Get("main", "TempOutbound")
-	TempInbound, _ := configManager.Get("main", "TempInbound")
-	Temp, _ := configManager.Get("main", "Temp")
 	Country, _ := configManager.Get("main", "Country")
 	City, _ := configManager.Get("main", "City")
 	realName, _ := configManager.Get("main", "RealName")

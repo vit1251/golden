@@ -22,12 +22,6 @@ func migration_000102_Up(conn *sql.DB) error {
 	params = append(params, param{"main", "Address", ""})
 	params = append(params, param{"main", "Link", ""})
 	params = append(params, param{"main", "NetAddr", ""})
-	params = append(params, param{"main", "Inbound", ""})
-	params = append(params, param{"main", "Outbound", ""})
-	params = append(params, param{"main", "TempInbound", ""})
-	params = append(params, param{"main", "Temp", ""})
-	params = append(params, param{"main", "TempOutbound", ""})
-	params = append(params, param{"main", "FileBox", ""})
 	params = append(params, param{"main", "Password", ""})
 
 	/* Execute */

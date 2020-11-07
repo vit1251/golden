@@ -27,7 +27,6 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	fileManager := self.restoreFileManager()
 	configManager := self.restoreConfigManager()
 
-	outb, _ := configManager.Get("main", "Outbound")
 	passwd, _ := configManager.Get("main", "Password")
 	from, _ := configManager.Get("main", "Address")
 
@@ -61,8 +60,8 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	log.Printf("FileAreaUploadCompleteAction: filename = %+v", header.Filename)
 
 	// Copy the file data to my buffer
-
-	tmpFile := path.Join(outb, header.Filename)
+	outboundDirectory := cmn.GetOutboundDirectory()
+	tmpFile := path.Join(outboundDirectory, header.Filename)
 	writeStream, err3 := os.Create(tmpFile)
 	if err3 != nil {
 		panic(err3)
@@ -100,7 +99,7 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 
 	/* Save TIC on disk */
 	newName := cmn.MakeTickName()
-	newPath := path.Join(outb, newName)
+	newPath := path.Join(outboundDirectory, newName)
 
 	newContent := ticBuilder.Build()
 	writer, err5 := os.Create(newPath)

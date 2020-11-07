@@ -2,6 +2,7 @@ package tracker
 
 import (
 	"github.com/vit1251/golden/pkg/charset"
+	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/mailer/cache"
@@ -75,10 +76,9 @@ func (self *Tracker) ProcessOutbound() error {
 	return nil
 }
 
-func (self *Tracker) processTICmail(item *cache.FileEntry) error {
+func (self *Tracker) processTICmail(item cache.FileEntry) error {
 
 	fileManager := self.restoreFileManager()
-	configManager := self.restoreConfigManager()
 	statManager := self.restoreStatManager()
 
 	/* Parse */
@@ -98,10 +98,10 @@ func (self *Tracker) processTICmail(item *cache.FileEntry) error {
 	}
 
 	/* Prepare area directory */
-	boxBasePath, _ := configManager.Get("main", "FileBox")
-	inboxBasePath, _ := configManager.Get("main", "Inbound")
+	boxDirectory := cmn.GetFilesDirectory()
+	inboundDirectory := cmn.GetInboundDirectory()
 
-	areaLocation := path.Join(boxBasePath, areaName)
+	areaLocation := path.Join(boxDirectory, areaName)
 	os.MkdirAll(areaLocation, 0755)
 
 	/* Create area */
@@ -118,12 +118,14 @@ func (self *Tracker) processTICmail(item *cache.FileEntry) error {
 	}
 
 	/* Create new path */
-	inboxTicLocation := path.Join(inboxBasePath, tic.File)
+	inboxTicLocation := path.Join(inboundDirectory, tic.File)
 	areaFileLocation := path.Join(areaLocation, tic.File)
 	log.Printf("inboxTicLocation = %s areaFileLocation = %s", inboxTicLocation, areaFileLocation)
 
 	/* Move */
-	os.Rename(inboxTicLocation, areaFileLocation)
+	if err := os.Rename(inboxTicLocation, areaFileLocation); err != nil {
+		log.Printf("Fail on Rename: err = %+v", err)
+	}
 
 	/* Register file */
 	newFile := file.NewFile()
@@ -138,8 +140,10 @@ func (self *Tracker) processTICmail(item *cache.FileEntry) error {
 
 	/* Move TIC */
 	areaTicLocation := path.Join(areaLocation, item.Name)
-	log.Printf("areaTicLocation = %s", areaTicLocation)
-	os.Rename(item.AbsolutePath, areaTicLocation)
+	log.Printf("Move %+v -> %+v", item.AbsolutePath, areaTicLocation)
+	if err := os.Rename(item.AbsolutePath, areaTicLocation);err != nil {
+		log.Printf("Fail on Rename: err = %+v", err)
+	}
 
 	return nil
 }

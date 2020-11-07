@@ -2,6 +2,7 @@ package file
 
 import (
 	"database/sql"
+	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
 	"github.com/vit1251/golden/pkg/storage"
@@ -270,8 +271,7 @@ func (self FileManager) restoreStorageManager() *storage.StorageManager {
 }
 
 func (self FileManager) GetFileAbsolutePath(areaName string, name string) string {
-	configManager := self.restoreConfigManager()
-	boxDirectory, _ := configManager.Get("main", "FileBox")
+	boxDirectory := cmn.GetFilesDirectory()
 	path := filepath.Join(boxDirectory, areaName, name)
 	return path
 }
@@ -286,8 +286,7 @@ func (self FileManager) restoreConfigManager() *setup.ConfigManager {
 }
 
 func (self *FileManager) GetFileBoxAbsolutePath(areaName string) string {
-	configManager := self.restoreConfigManager()
-	boxDirectory, _ := configManager.Get("main", "FileBox")
+	boxDirectory := cmn.GetFilesDirectory()
 	path := filepath.Join(boxDirectory, areaName)
 	return path
 }

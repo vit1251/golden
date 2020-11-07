@@ -36,8 +36,6 @@ func NewTosserManager(registry *registry.Container) *TosserManager {
 	tm := new(TosserManager)
 	tm.registry = registry
 
-	tm.checkDirectories()
-	//
 	tm.event = make(chan bool)
 
 	eventBus := tm.restoreEventBus()
@@ -69,46 +67,6 @@ func (self *TosserManager) restoreConfigManager() *setup.ConfigManager {
 	} else {
 		panic("no config manager")
 	}
-}
-
-func (self *TosserManager) checkDirectory(cacheSection string) {
-
-	configManager := self.restoreConfigManager()
-
-	cacheDirectory, _ := configManager.Get("main", cacheSection)
-	if cacheDirectory == "" {
-		log.Printf("Wrong directory: section = %+v", cacheSection)
-		storageDirectory := cmn.GetStorageDirectory()
-		cacheDirectory = path.Join(storageDirectory, "Fido", cacheSection)
-		log.Printf("Construct new directory: section = %+v cacheDirectory = %+v", cacheSection, cacheDirectory)
-		configManager.Set("main", cacheSection, cacheDirectory)
-	}
-	if _, err1 := os.Stat(cacheDirectory); err1 != nil {
-		log.Printf("Directory check: name = %v - ERR", cacheSection)
-		if os.IsNotExist(err1) {
-			log.Printf("Initial create directory: path = %+v", cacheDirectory)
-			os.MkdirAll(cacheDirectory, os.ModeDir|0755)
-		} else {
-			log.Fatalf("TosserManager: checkDirectory: err = %+v", err1)
-		}
-	} else {
-		log.Printf("Directory check: name = %v - OK", cacheSection)
-	}
-
-}
-
-func (self *TosserManager) checkDirectories() {
-
-	/* Check mailer directory */
-	self.checkDirectory("Inbound")
-	self.checkDirectory("Outbound")
-	self.checkDirectory("TempInbound")
-	self.checkDirectory("TempOutbound")
-	self.checkDirectory("Temp")
-
-	/* Check FileBox directory */
-	self.checkDirectory("FileBox")
-
 }
 
 func (self *TosserManager) Start() {
@@ -193,9 +151,10 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	charsetManager := self.restoreCharsetManager()
 
 	/* Create packet name */
-	tempOutbound, _ := configManager.Get("main", "TempOutbound")
 	pktPassword, _ := configManager.Get("main", "Password")
 
+	//
+	tempOutbound := cmn.GetTempOutboundDirectory()
 	packetName := cmn.MakePacketName()
 	newPacketName := path.Join(tempOutbound, packetName)
 
@@ -353,11 +312,9 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 
 func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 
-	configManager := self.restoreConfigManager()
-
-	inbound, _ := configManager.Get("main", "Inbound")
-	outbound, _ := configManager.Get("main", "Outbound")
-	tempOutbound, _ := configManager.Get("main", "TempOutbound")
+	inbound := cmn.GetInboundDirectory()
+	outbound := cmn.GetOutboundDirectory()
+	tempOutbound := cmn.GetTempOutboundDirectory()
 
 	packetName, err1 := self.makePacketEchoMessage(em)
 	if err1 != nil {
@@ -405,14 +362,12 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	//messageManager := self.restoreMessageManager()
 	charsetManager := self.restoreCharsetManager()
 
-	var Outbound string
 	var From string
 	var FromName string
 	var TearLine string
 	var Origin string
 
 	/* Create packet name */
-	Outbound, _ = configManager.Get("main", "Outbound")
 	From, _ = configManager.Get("main", "Address")
 	FromName, _ = configManager.Get("main", "RealName")
 	pktPassword, _ := configManager.Get("main", "Password")
@@ -424,7 +379,8 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
 	/* Create packet name */
 	pktName := cmn.MakePacketName()
-	name := path.Join(Outbound, pktName)
+	outboundDirectory := cmn.GetOutboundDirectory()
+	name := path.Join(outboundDirectory, pktName)
 	log.Printf("Write Netmail packet %s", name)
 
 	/* Create write stream */

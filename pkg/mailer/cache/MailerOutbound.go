@@ -1,6 +1,7 @@
 package cache
 
 import (
+	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
 	"io/ioutil"
@@ -24,24 +25,19 @@ func NewMailerOutbound(r *registry.Container) *MailerOutbound {
 
 func (self *MailerOutbound) GetItems() ([]FileEntry, error) {
 
-	configManager := self.restoreConfigManager()
-
 	var items []FileEntry
 
-	outb, _ := configManager.Get("main", "Outbound")
-
-	files, err2 := ioutil.ReadDir(outb)
+	outboundDirectory := cmn.GetOutboundDirectory()
+	files, err2 := ioutil.ReadDir(outboundDirectory)
 	if err2 != nil {
 		return nil, err2
 	}
 
 	for _, f := range files {
-		log.Printf("Oubound item %s", f.Name())
-		i := FileEntry{
-			AbsolutePath: path.Join(outb, f.Name()),
-			Name: f.Name(),
-		}
-		items = append(items, i)
+		entry := NewFileEntry()
+		entry.AbsolutePath = path.Join(outboundDirectory, f.Name())
+		entry.Name = f.Name()
+		items = append(items, *entry)
 	}
 
 	return items, nil

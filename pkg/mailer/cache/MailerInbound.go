@@ -1,6 +1,7 @@
 package cache
 
 import (
+	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/setup"
 	"io/ioutil"
@@ -48,28 +49,26 @@ func (self *MailerInbound) nodeTypePrediction(name string) (FileEntryType) {
 	return result
 }
 
-func (self *MailerInbound) Scan() ([]*FileEntry, error) {
+func (self *MailerInbound) Scan() ([]FileEntry, error) {
 
-	conifgManager := self.restoreConifgManager()
+	var result []FileEntry
 
-	var result []*FileEntry
+	inboundDirectory := cmn.GetInboundDirectory()
 
-	inb, _ := conifgManager.Get("main", "Inbound")
-
-	items, err1 := ioutil.ReadDir(inb)
+	items, err1 := ioutil.ReadDir(inboundDirectory)
 	if err1 != nil {
 		return nil, err1
 	}
 
 	for _, item := range items {
-		absPath := path.Join(inb, item.Name())
+		absPath := path.Join(inboundDirectory, item.Name())
 		itemMode := item.Mode()
 		if itemMode.IsRegular() {
 			rec := NewFileEntry()
 			rec.SetAbsolutePath(absPath)
 			rec.SetName(item.Name())
 			rec.SetType(self.nodeTypePrediction(absPath))
-			result = append(result, rec)
+			result = append(result, *rec)
 		}
 	}
 
@@ -78,12 +77,10 @@ func (self *MailerInbound) Scan() ([]*FileEntry, error) {
 }
 
 func (self *MailerInbound) restoreConifgManager() *setup.ConfigManager {
-
 	managerPtr := self.registry.Get("ConfigManager")
 	if manager, ok := managerPtr.(*setup.ConfigManager); ok {
 		return manager
 	} else {
 		panic("no config manager")
 	}
-
 }

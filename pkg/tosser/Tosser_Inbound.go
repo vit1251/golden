@@ -3,6 +3,7 @@ package tosser
 import (
 	"bufio"
 	"fmt"
+	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/mailer/cache"
@@ -407,12 +408,9 @@ func (self *Tosser) ProcessPacket(name string) error {
 	return nil
 }
 
-func (self *Tosser) processNetmail(item *cache.FileEntry) error {
+func (self *Tosser) processNetmail(item cache.FileEntry) error {
 
-	configManager := self.restoreConfigManager()
 	statManager := self.restoreStatManager()
-
-	inbTempPath, _ := configManager.Get("main", "TempInbound")
 
 	statManager.RegisterInPacket()
 
@@ -422,22 +420,23 @@ func (self *Tosser) processNetmail(item *cache.FileEntry) error {
 	}
 
 	/* Construct new path */
+	inbTempPath := cmn.GetTempInboundDirectory()
 	newArcPath := path.Join(inbTempPath, item.Name)
 
-	/* Move in area*/
+	/* Move in area */
 	log.Printf("Move %s -> %s", item.AbsolutePath, newArcPath)
-	os.Rename(item.AbsolutePath, newArcPath)
-
+	if err2 := os.Rename(item.AbsolutePath, newArcPath);err2 != nil {
+		log.Printf("Fail on Rename: err = %+v", err2)
+	}
 
 	return nil
 }
 
-func (self *Tosser) processARCmail(item *cache.FileEntry) error {
+func (self *Tosser) processARCmail(item cache.FileEntry) error {
 
-	configManager := self.restoreConfigManager()
 	statManager := self.restoreStatManager()
 
-	newInbTempDir, _ := configManager.Get("main", "TempInbound")
+	newInbTempDir := cmn.GetTempInboundDirectory()
 
 	/* Unpack */
 	packets, err1 := archmail.Unpack(item.AbsolutePath, newInbTempDir)
@@ -470,7 +469,9 @@ func (self *Tosser) processARCmail(item *cache.FileEntry) error {
 
 	/* Move in area*/
 	log.Printf("Move %s -> %s", item.AbsolutePath, newArcPath)
-	os.Rename(item.AbsolutePath, newArcPath)
+	if err3 := os.Rename(item.AbsolutePath, newArcPath); err3 != nil {
+		log.Printf("Fail on Rename: err = %+v", err3)
+	}
 
 	return nil
 
