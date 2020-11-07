@@ -520,6 +520,12 @@ span.hidden {
     line-height: 1.0;
 }
 
+/* Echo message preview */
+
+.echo-msg-dump-preview {
+    white-space: pre;
+}
+
 /* Netmail Message View */
 
 .netmail-msg-view-header-wrapper {

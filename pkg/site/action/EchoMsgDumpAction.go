@@ -126,7 +126,7 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	containerVBox.Add(indexTable)
 
 	previewWidget := widgets.NewDivWidget().
-		SetClass("message-preview").
+		SetClass("echo-msg-dump-preview").
 		SetContent(string(outDoc))
 	containerVBox.Add(previewWidget)
 

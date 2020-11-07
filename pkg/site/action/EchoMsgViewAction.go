@@ -169,15 +169,35 @@ func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *mapper.Area, origM
 
 
 	/* Context actions */
-	amw := widgets.NewActionMenuWidget().
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.GetName(), origMsg.Hash)).
-			SetIcon("icofont-edit").
-			SetLabel("Reply")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.GetName(), origMsg.Hash)).
-			SetIcon("icofont-remove").
-			SetLabel("Delete"))
+	var actions []*widgets.MenuAction
+	/* Action Reply */
+	if action := widgets.NewMenuAction(); action != nil {
+		action.SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.GetName(), origMsg.Hash))
+		//action.SetIcon("icofont-edit")
+		action.SetLabel("Reply")
+		actions = append(actions, action)
+	}
+	/* Action Remove */
+	if action := widgets.NewMenuAction(); action != nil {
+		action.SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.GetName(), origMsg.Hash))
+		//action.SetIcon("icofont-remove")
+		action.SetLabel("Remove")
+		actions = append(actions, action)
+	}
+	/* Action Dump */
+	if action := widgets.NewMenuAction(); action != nil {
+		action.SetLink(fmt.Sprintf("/echo/%s/message/%s/dump", area.GetName(), origMsg.Hash))
+		//action.SetIcon("icofont-remove")
+		action.SetLabel("Dump")
+		actions = append(actions, action)
+	}
+
+	/* Render actions menu */
+	amw := widgets.NewActionMenuWidget()
+	for _, a := range actions {
+		amw.Add(a)
+	}
+
 	containerVBox.Add(amw)
 
 	/* Message header section */
