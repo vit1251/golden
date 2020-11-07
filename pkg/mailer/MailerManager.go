@@ -20,19 +20,31 @@ type MailerManager struct {
 	event         chan bool
 	procIteration int
 	running       bool
+	mailerActive  bool
 }
 
 func NewMailerManager(r *registry.Container) *MailerManager {
-	mm := new(MailerManager)
-	mm.registry = r
-	mm.event = make(chan bool)
-	return mm
+	newMailerManager := new(MailerManager)
+	newMailerManager.registry = r
+	newMailerManager.event = make(chan bool)
+	newMailerManager.mailerActive = false
+	eventBus := newMailerManager.restoreEventBus()
+	eventBus.Register(newMailerManager)
+	return newMailerManager
+}
+
+func (self *MailerManager) HandleEvent(event string) {
+	if event == "Mailer" {
+		if self.event != nil {
+			self.event <- true
+		}
+	}
 }
 
 func (self *MailerManager) Start() {
 	log.Printf("MailerManager: Start")
 	go self.run()
-	self.running = true
+	go self.processTimer()
 }
 
 func (self *MailerManager) GetMailerInterval() int {
@@ -55,46 +67,58 @@ func (self *MailerManager) GetMailerInterval() int {
 }
 
 func (self *MailerManager) IsAutoMailer() bool {
-	return self.GetMailerInterval() > 0
+	var result bool = true
+	if self.GetMailerInterval() == 0 {
+		result = false
+	}
+	if self.mailerActive {
+		log.Printf("Mailer already in progress. Skip.")
+		result = false
+	}
+	return result
 }
 
-func (self *MailerManager) waitNext() {
-
-	mailerInt := self.GetMailerInterval()
-	if mailerInt == 0 {
-		time.Sleep(1 * time.Minute)
-	} else {
-		log.Printf("Wait %d minute before next call", mailerInt)
-		time.Sleep(time.Duration(mailerInt) * time.Minute)
+func (self *MailerManager) processTimer() {
+	log.Printf(" * Mailer timer routine start")
+	self.running = true
+	for self.running {
+		autoMailer := self.IsAutoMailer()
+		if autoMailer {
+			log.Printf(" * Mailer auto event")
+			if self.event != nil {
+				self.event <- true
+			}
+		}
+		/* Wait next iteration */
+		mailerInt := self.GetMailerInterval()
+		if mailerInt == 0 {
+			time.Sleep(1 * time.Minute) // This loop only for support user change 0 -> positive value in setup without reloading process.
+		} else {
+			log.Printf("Wait %d minute before next call", mailerInt)
+			time.Sleep(time.Duration(mailerInt) * time.Minute)
+		}
 	}
-
+	log.Printf(" * Mailer timer routine stop")
 }
 
 func (self *MailerManager) run() {
-
-	for self.running {
-
-		autoMailer := self.IsAutoMailer()
-
-		if autoMailer {
-			self.procIteration += 1
-
-			log.Printf(" * Mailer start (%d)", self.procIteration)
-			if err := self.processMailer(); err != nil {
-				log.Printf("err = %+v", err)
-			}
-			log.Printf(" * Mailer complete (%d)", self.procIteration)
+	log.Printf(" * Mailer routine start")
+	for range self.event {
+		self.procIteration += 1
+		log.Printf(" * Mailer start (%d)", self.procIteration)
+		self.mailerActive = true
+		if err := self.processMailer(); err != nil {
+			log.Printf("err = %+v", err)
 		}
-
-		/* Wait 5 minute */
-		self.waitNext()
-
+		self.mailerActive = false
+		log.Printf(" * Mailer complete (%d)", self.procIteration)
 	}
-
+	log.Printf(" * Mailer routine stop")
 }
 
 func (self *MailerManager) Stop() {
 	self.running = false
+	close(self.event)
 }
 
 func GetFunctionName(i interface{}) string {
@@ -168,8 +192,8 @@ func (self *MailerManager) processMailer() error {
 	}
 
 	/* Start tossing */
-	eventBus.Event("Toss")
-	eventBus.Event("Track")
+	eventBus.Event("Tosser")
+	eventBus.Event("Tracker")
 
 	return nil
 }

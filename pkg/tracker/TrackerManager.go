@@ -24,8 +24,10 @@ func NewTrackerManager(r *registry.Container) *TrackerManager {
 
 func (self *TrackerManager) HandleEvent(event string) {
 	log.Printf("Tosser event receive")
-	if event == "Track" {
-		self.event <- true
+	if event == "Tracker" {
+		if self.event != nil {
+			self.event <- true
+		}
 	}
 }
 

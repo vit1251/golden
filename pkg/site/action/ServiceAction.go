@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"net/http"
+	"strings"
 )
 
 type ServiceAction struct {
@@ -42,29 +43,24 @@ func (self ServiceAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Service"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
 
-	/* Render mailer service */
-	serviceTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Mailer"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
-			SetContent("Event").
-			SetClass("btn").
-			SetLink(fmt.Sprintf("/service/%s/event", "mailer")))))
+	var services []string
+	services = append(services, "mailer")
+	services = append(services, "tosser")
+	services = append(services, "tracker")
 
-	/* Render mailer service */
-	serviceTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Tosser"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
-			SetContent("Event").
-			SetClass("btn").
-			SetLink(fmt.Sprintf("/service/%s/event", "tosser")))))
+	for _, s := range services {
 
-	/* Render mailer service */
-	//serviceTable.AddRow(widgets.NewTableRowWidget().
-	//	AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Ticker"))).
-	//	AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
-	//		SetContent("Event").
-	//		SetClass("btn").
-	//		SetLink(fmt.Sprintf("/service/%s/event", "ticker")))))
+		serviceName := strings.Title(s)
+
+		/* Render mailer service */
+		serviceTable.AddRow(widgets.NewTableRowWidget().
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(serviceName))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
+				SetContent("Event").
+				SetClass("btn").
+				SetLink(fmt.Sprintf("/service/%s/event", s)))))
+
+	}
 
 	containerVBox.Add(serviceTable)
 

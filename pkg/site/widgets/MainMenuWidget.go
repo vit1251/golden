@@ -51,6 +51,13 @@ func (self *MainMenuWidget) Init() []*MenuAction {
 	}
 
 	if menuAction := NewMenuAction(); menuAction != nil {
+		menuAction.ID = "mainMenuService"
+		menuAction.Link = "/service"
+		menuAction.Label = "Service"
+		menus = append(menus, menuAction)
+	}
+
+	if menuAction := NewMenuAction(); menuAction != nil {
 		menuAction.ID = "mainMenuStat"
 		menuAction.Link = "/stat"
 		menuAction.Label = "Statistics"

@@ -46,8 +46,10 @@ func NewTosserManager(registry *registry.Container) *TosserManager {
 
 func (self *TosserManager) HandleEvent(event string ) {
 	log.Printf("Tosser event receive")
-	if event == "Toss" {
-		self.event <- true
+	if event == "Tosser" {
+		if self.event != nil {
+			self.event <- true
+		}
 	}
 }
 
