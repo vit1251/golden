@@ -3,10 +3,12 @@ package cache
 
 type FileEntryType int
 
-const TypeUnknown FileEntryType = 0
-const TypeNetmail FileEntryType = 1
-const TypeARCmail FileEntryType = 2
-const TypeTICmail FileEntryType = 3
+const (
+	TypeUnknown FileEntryType = 0
+	TypeNetmail FileEntryType = 1
+	TypeARCmail FileEntryType = 2
+	TypeTICmail FileEntryType = 3
+)
 
 type FileEntry struct {
 	Type         FileEntryType

@@ -41,7 +41,7 @@ func (self FileAreaRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	/* Remove files */
 	var areaName string = area.GetName()
 	for _, i := range items {
-		newPath := fileManager.GetFileAbsolutePath(areaName, i.File)
+		newPath := fileManager.GetFileAbsolutePath(areaName, i.GetFile())
 		log.Printf("Remove(%s)", newPath)
 		//err1 := os.Remove(newPath)
 		//if err1 != nil {

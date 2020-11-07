@@ -3,6 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	commonfunc "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
@@ -88,14 +89,17 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
 
 	for _, f := range files {
+
+		newDate := commonfunc.MakeHumanTime(f.GetTime())
+
 		log.Printf("file = %+v", f)
 		indexTable.AddRow(widgets.NewTableRowWidget().
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.File))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.Desc))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.GetAge()))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.GetFile()))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.GetDesc()))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(newDate))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
 				SetContent("Download"). // /file/BOOK-DOP/tic/KORSAV01.RAR/view
-				SetLink(fmt.Sprintf("/file/%s/tic/%s/view", f.GetArea(), f.File)))))
+				SetLink(fmt.Sprintf("/file/%s/tic/%s/view", f.GetArea(), f.GetFile())))))
 	}
 
 	containerVBox.Add(indexTable)

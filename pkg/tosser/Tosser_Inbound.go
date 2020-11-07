@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/echomail"
 	"github.com/vit1251/golden/pkg/fidotime"
-	"github.com/vit1251/golden/pkg/file"
 	"github.com/vit1251/golden/pkg/mailer/cache"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/netmail"
@@ -477,71 +476,6 @@ func (self *Tosser) processARCmail(item *cache.FileEntry) error {
 
 }
 
-func (self *Tosser) processTICmail(item *cache.FileEntry) (error) {
-
-	charsetManager := self.restoreCharsetManager()
-	fileManager := self.restoreFileManager()
-	configManager := self.restoreConfigManager()
-	statManager := self.restoreStatManager()
-
-	/* Parse */
-	newTicParser := file.NewTicParser(charsetManager)
-	tic, err1 := newTicParser.ParseFile(item.AbsolutePath)
-	if err1 != nil {
-		return err1
-	}
-	log.Printf("tic = %+v", tic)
-
-	areaName := tic.GetArea()
-
-	/* Search area */
-	fa, err1 := fileManager.GetAreaByName(areaName)
-	if err1 != nil {
-		return err1
-	}
-
-	/* Prepare area directory */
-	boxBasePath, _ := configManager.Get("main", "FileBox")
-	inboxBasePath, _ := configManager.Get("main", "Inbound")
-
-	areaLocation := path.Join(boxBasePath, areaName)
-	os.MkdirAll(areaLocation, 0755)
-
-	/* Create area */
-	if fa == nil {
-		/* Prepare area */
-		newFa := file.NewFileArea()
-		newFa.SetName(areaName)
-		newFa.Path = areaLocation
-		/* Create area */
-		if err := fileManager.CreateFileArea(newFa); err != nil {
-			log.Printf("Fail CreateFileArea on FileManager: area = %s err = %+v", areaName, err)
-			return err
-		}
-	}
-
-	/* Create new path */
-	inboxTicLocation := path.Join(inboxBasePath, tic.File)
-	areaFileLocation := path.Join(areaLocation, tic.File)
-	log.Printf("inboxTicLocation = %s areaFileLocation = %s", inboxTicLocation, areaFileLocation)
-
-	/* Move */
-	os.Rename(inboxTicLocation, areaFileLocation)
-
-	/* Register file */
-	fileManager.RegisterFile(tic)
-
-	/* Register status */
-	statManager.RegisterInFile(tic.File)
-
-	/* Move TIC */
-	areaTicLocation := path.Join(areaLocation, item.Name)
-	log.Printf("areaTicLocation = %s", areaTicLocation)
-	os.Rename(item.AbsolutePath, areaTicLocation)
-
-	return nil
-}
-
 func (self *Tosser) ProcessInbound() error {
 
 	log.Printf("ProcessInbound")
@@ -563,9 +497,6 @@ func (self *Tosser) ProcessInbound() error {
 		} else if item.Type == cache.TypeARCmail {
 			log.Printf("Tosser: ARCmail packet: name = %s", item.Name)
 			self.processARCmail(item)
-		} else if item.Type == cache.TypeTICmail {
-			log.Printf("Tosser: TIC packet: name = %s", item.Name)
-			self.processTICmail(item)
 		} else {
 			log.Printf("Tosser: Unknoen packet: name = %s", item.Name)
 		}

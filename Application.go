@@ -17,6 +17,7 @@ import (
 	"github.com/vit1251/golden/pkg/stat"
 	"github.com/vit1251/golden/pkg/storage"
 	"github.com/vit1251/golden/pkg/tosser"
+	"github.com/vit1251/golden/pkg/tracker"
 	"log"
 	"os"
 	"os/signal"
@@ -72,7 +73,8 @@ func (self *Application) Run() {
 	self.registry.Register("StatManager", stat.NewStatManager(self.registry))
 	self.registry.Register("EchoManager", echomail.NewEchoManager(self.registry))
 
-	self.registry.Register("TosserManager",	tosser.NewTosserManager(self.registry))
+	self.registry.Register("TrackerManager", tracker.NewTrackerManager(self.registry))
+	self.registry.Register("TosserManager", tosser.NewTosserManager(self.registry))
 	self.registry.Register("MailerManager", mailer.NewMailerManager(self.registry))
 
 	self.registry.Register("SiteManager", site.NewSiteManager(self.registry))
@@ -84,6 +86,10 @@ func (self *Application) Run() {
 	/* Start tosser */
 	tosserManager := self.restoreTosserManager()
 	tosserManager.Start()
+
+	/* Start tracker */
+	trackerManager := self.restoreTrackerManager()
+	trackerManager.Start()
 
 	/* Start site */
 	siteManager := self.restoreSiteManager()
@@ -171,12 +177,19 @@ func (self *Application) restoreMigrationManager() *installer.MigrationManager {
 }
 
 func (self *Application) restoreTosserManager() *tosser.TosserManager {
-
 	managerPtr := self.registry.Get("TosserManager")
 	if manager, ok := managerPtr.(*tosser.TosserManager); ok {
 		return manager
 	} else {
 		panic("no tosser manager")
 	}
+}
 
+func (self *Application) restoreTrackerManager() *tracker.TrackerManager {
+	managerPtr := self.registry.Get("TrackerManager")
+	if manager, ok := managerPtr.(*tracker.TrackerManager); ok {
+		return manager
+	} else {
+		panic("no tracker manager")
+	}
 }

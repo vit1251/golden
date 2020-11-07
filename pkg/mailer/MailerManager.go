@@ -166,6 +166,7 @@ func (self *MailerManager) processMailer() error {
 
 	/* Start tossing */
 	eventBus.Event("Toss")
+	eventBus.Event("Track")
 
 	return nil
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
 	"path/filepath"
-	"time"
 )
 
 type FileManager struct {
@@ -144,12 +143,12 @@ func (self *FileManager) CreateFileArea(a *FileArea) error {
 	return err1
 }
 
-func (self *FileManager) GetFileHeaders(echoTag string) ([]TicFile, error) {
+func (self *FileManager) GetFileHeaders(echoTag string) ([]File, error) {
 
 	storageManager := self.restoreStorageManager()
 	conn := storageManager.GetConnection() // TODO
 
-	var result []TicFile
+	var result []File
 
 	/* Step 2. Start SQL transaction */
 	ConnTransaction, err := conn.Begin()
@@ -178,15 +177,15 @@ func (self *FileManager) GetFileHeaders(echoTag string) ([]TicFile, error) {
 			return nil, err2
 		}
 
-		tic := NewTicFile()
-		tic.SetArea(fileArea)
-		tic.Desc = fileDesc
-		tic.File = fileName
+		newFile := NewFile()
+		newFile.SetArea(fileArea)
+		newFile.SetDesc(fileDesc)
+		newFile.SetFile(fileName)
 		if fileTime != nil {
-			tic.SetUnixTime(*fileTime)
+			newFile.SetUnixTime(*fileTime)
 		}
 
-		result = append(result, *tic)
+		result = append(result, *newFile)
 	}
 
 	ConnTransaction.Commit()
@@ -194,29 +193,25 @@ func (self *FileManager) GetFileHeaders(echoTag string) ([]TicFile, error) {
 	return result, nil
 }
 
-func (self *FileManager) CheckFileExists(tic *TicFile) (bool, error) {
+func (self *FileManager) CheckFileExists(tic File) (bool, error) {
 	return true, nil
 }
 
-func (self *FileManager) RegisterFile(tic *TicFile) error {
+func (self *FileManager) RegisterFile(tic File) error {
 
 	storageManager := self.restoreStorageManager()
-	conn := storageManager.GetConnection() // TODO
 
-	var unixTime int64 = time.Now().Unix()
+	query1 := "INSERT INTO `file` ( `fileName`, `fileArea`, `fileDesc`, `fileTime` ) VALUES ( ?, ?, ?, ? )"
 
-	/* Insert new one area */
-	sqlStmt1 := "INSERT INTO `file` ( `fileName`, `fileArea`, `fileDesc`, `fileTime` ) VALUES ( ?, ?, ?, ? )"
-	stmt1, err2 := conn.Prepare(sqlStmt1)
-	if err2 != nil {
-		return err2
-	}
-	areaName := tic.GetArea()
-	_, err3 := stmt1.Exec(tic.File, areaName, tic.Desc, unixTime)
-	log.Printf("err3 = %+v", err3)
-	if err3 != nil {
-		return err3
-	}
+	var params []interface{}
+	params = append(params, tic.GetFile())
+	params = append(params, tic.GetArea())
+	params = append(params, tic.GetDesc())
+	params = append(params, tic.GetUnixTime())
+
+	storageManager.Exec(query1, params, func(result sql.Result, err error) error {
+		return err
+	})
 
 	return nil
 }

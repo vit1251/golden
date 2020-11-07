@@ -20,12 +20,12 @@ For work with GoldenPoint after starting you will open browser on address http:/
  - [x] Tosser
    - [x] [FTS-0001] A Basic FidoNet(r) Technical Standard
    - [x] [FTS-0009] MSGID / REPLY; A standard for unique message identifiers and reply chain linkage
-   - [ ] [FTS-0039]	A Type-2 Packet Extension Proposal
+   - [x] [FTS-0039] A Type-2 Packet Extension Proposal
    - [x] [FTS-4000] CONTROL PARAGRAPHS
    - [x] [FTS-4001] ADDRESSING CONTROL PARAGRAPHS
  - [x] Tracker
-   - [ ] TIC parser
-   - [ ] TIC creator
+   - [x] [FTS-5006] TIC parser
+   - [x] [FTS-5006] TIC builder
  - [x] Editor
    - [x] Create NETMAIL messages
    - [x] Create ECHOMAIL messages

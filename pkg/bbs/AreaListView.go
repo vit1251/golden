@@ -3,16 +3,20 @@ package bbs
 import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/echomail"
+	"github.com/vit1251/golden/pkg/registry"
 	"unicode"
 )
 
 type AreaListView struct {
 	Widget
 	activeIndex int
+	registry    *registry.Container
 }
 
-func NewAreaWidget() *AreaListView {
-	return new(AreaListView)
+func NewAreaWidget(r *registry.Container) *AreaListView {
+	newAreaWidget := new(AreaListView)
+	newAreaWidget.registry = r
+	return newAreaWidget
 }
 
 type Col struct {
@@ -29,7 +33,9 @@ type AreaListWidget struct {
 /**
  * Отрисовываем меню выбора области
  */
-func (av *AreaListView) Render(cs *ConnState) {
+func (self *AreaListView) Render(cs *ConnState) {
+
+	areaManager := self.restoreAreaManager()
 
 	cs.t.ResetAttr()
 	cs.t.cursorhome()
@@ -38,11 +44,6 @@ func (av *AreaListView) Render(cs *ConnState) {
 	cs.t.ResetAttr()
 	cs.t.SetAttr(B_BLUE)
 	cs.scr.DrawLineY( 1,"─")
-
-	var areaManager *echomail.AreaManager
-	cs.container.Invoke(func(am *echomail.AreaManager) {
-		areaManager = am
-	})
 
 	/* Get message area */
 	areas, err1 := areaManager.GetAreas()
@@ -208,7 +209,7 @@ func (av *AreaListView) Render(cs *ConnState) {
 
 		}
 
-		if av.activeIndex == areaIndex {
+		if self.activeIndex == areaIndex {
 			cs.t.SetAttr(B_RED)
 		} else {
 			cs.t.SetAttr(B_BLACK)
@@ -224,11 +225,9 @@ func (av *AreaListView) Render(cs *ConnState) {
 
 }
 
-func (av *AreaListView) getAreaByIndex(cs *ConnState, idx int) *echomail.Area {
-	var areaManager *echomail.AreaManager
-	cs.container.Invoke(func(am *echomail.AreaManager) {
-		areaManager = am
-	})
+func (self *AreaListView) getAreaByIndex(cs *ConnState, idx int) *echomail.Area {
+
+	areaManager := self.restoreAreaManager()
 
 	/* Get message area */
 	areas, err1 := areaManager.GetAreas()
@@ -239,7 +238,7 @@ func (av *AreaListView) getAreaByIndex(cs *ConnState, idx int) *echomail.Area {
 
 	for areaIndex, area := range areas {
 		if idx == areaIndex {
-			return area
+			return &area
 		}
 	}
 
@@ -271,4 +270,13 @@ func (av *AreaListView) ProcessEvent(cs *ConnState, event *TerminalEvent) {
 		fmt.Printf("AreaListView: event = %v\n", event)
 	}
 
+}
+
+func (self AreaListView) restoreAreaManager() *echomail.AreaManager {
+	managerPtr := self.registry.Get("AreaManager")
+	if manager, ok := managerPtr.(*echomail.AreaManager); ok {
+		return manager
+	} else {
+		panic("no area manager")
+	}
 }

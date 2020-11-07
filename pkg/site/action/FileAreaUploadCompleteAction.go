@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	cmn "github.com/vit1251/golden/pkg/common"
-	"github.com/vit1251/golden/pkg/file"
+	"github.com/vit1251/golden/pkg/tracker"
 	"io"
 	"log"
 	"net/http"
@@ -29,7 +29,6 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	outb, _ := configManager.Get("main", "Outbound")
 	passwd, _ := configManager.Get("main", "Password")
 	from, _ := configManager.Get("main", "Address")
-	to, _ := configManager.Get("main", "Link")
 
 	//
 	vars := mux.Vars(r)
@@ -79,33 +78,31 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	}
 
 	/* Create TIC description */
-	ticFile := file.NewTicFile()
+	ticBuilder := tracker.NewTicBuilder()
 
-	/* Area RU.GOLDEN */
-	ticFile.AddLine(fmt.Sprintf("Area %s", area.GetName()))
+	ticBuilder.SetArea(area.GetName())
+	ticBuilder.SetOrigin(from)
+	ticBuilder.SetFrom(from)
+	ticBuilder.SetFile(header.Filename)
+	ticBuilder.SetDesc(desc)
+	ticBuilder.SetSize(size)
+	ticBuilder.SetPw(passwd)
 
-	/* From 2:5023/24.3752 */
-	ticFile.AddLine(fmt.Sprintf("From %s", from))
-
-	/* To 2:5023/24 */
-	ticFile.AddLine(fmt.Sprintf("To %s", to))
-
-	/* File GoldenPoint-20200423.zip */
-	ticFile.AddLine(fmt.Sprintf("File %s", header.Filename))
-
-	/* Desc Golden Point - Night - 2020-04-23 */
-	ticFile.AddLine(fmt.Sprintf("Desc %s", desc))
-
-	/* Size 0 */
-	ticFile.AddLine(fmt.Sprintf("Size %d", size))
-
-	/* Pw ****** */
-	ticFile.AddLine(fmt.Sprintf("Pw %s", passwd))
-
-	/* Save TIC on disnk */
+	/* Save TIC on disk */
 	newName := cmn.MakeTickName()
 	newPath := path.Join(outb, newName)
-	ticFile.Save(newPath)
+
+	newContent := ticBuilder.Build()
+	writer, err5 := os.Create(newPath)
+	if err5 != nil {
+		panic(err5)
+	}
+	cacheWriter2 := bufio.NewWriter(writer)
+	defer func() {
+		cacheWriter2.Flush()
+		writer.Close()
+	}()
+	cacheWriter2.WriteString(newContent)
 
 	/* Redirect */
 	newLocation := fmt.Sprintf("/file/%s", area.GetName())

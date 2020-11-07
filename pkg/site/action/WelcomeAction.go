@@ -5,6 +5,7 @@ import (
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"net/http"
+	"strings"
 )
 
 type WelcomeAction struct {
@@ -58,9 +59,16 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		SetContent("Contributers")
 	containerVBox.Add(contributorHeader)
 
+	contributors := cmn.GetContributors()
+	var newContributros []string
+	for _, c := range contributors {
+		newContributros = append(newContributros, c)
+	}
+	newContrib := strings.Join(newContributros, ", ")
+
 	contributorList := widgets.NewDivWidget().
 		SetClass("welcome-contributor-list").
-		SetContent("Sergey Anohin")
+		SetContent(newContrib)
 
 	containerVBox.Add(contributorList)
 
