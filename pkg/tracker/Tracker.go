@@ -115,8 +115,8 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	}
 
 	/* Create new path */
-	inboxTicLocation := path.Join(inboundDirectory, tic.File)
-	areaFileLocation := path.Join(areaLocation, tic.File)
+	inboxTicLocation := path.Join(inboundDirectory, tic.GetFile())
+	areaFileLocation := path.Join(areaLocation, tic.GetLFile())
 	log.Printf("inboxTicLocation = %s areaFileLocation = %s", inboxTicLocation, areaFileLocation)
 
 	/* Move */
@@ -127,13 +127,13 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	/* Register file */
 	newFile := mapper.NewFile()
 	newFile.SetArea(tic.GetArea())
-	newFile.SetDesc(tic.Desc)
-	newFile.SetUnixTime(tic.UnixTime)
-	newFile.SetFile(tic.File)
+	newFile.SetDesc(tic.GetDesc())
+	newFile.SetUnixTime(tic.GetUnixTime())
+	newFile.SetFile(tic.GetFile())
 	fileMapper.RegisterFile(*newFile)
 
 	/* Register status */
-	statMapper.RegisterInFile(tic.File)
+	statMapper.RegisterInFile(tic.GetFile())
 
 	/* Move TIC */
 	areaTicLocation := path.Join(areaLocation, item.Name)

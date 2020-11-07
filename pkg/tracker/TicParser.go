@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -33,12 +34,23 @@ func (self *TicParser) prcessLine(ticFile TicFile, newLine string) (TicFile, err
 		var name string = parts[0]
 		var value string = parts[1]
 
+		/* Trim parameters */
+		name = strings.Trim(name, " \t")
+		value = strings.Trim(value, " \t")
+
+		/* Process directive */
 		if strings.EqualFold(name, "Area") {
 			ticFile.SetArea(value)
 		} else if strings.EqualFold(name, "Desc") {
-			ticFile.Desc = value
+			ticFile.SetDesc(value)
 		} else if strings.EqualFold(name, "File") {
-			ticFile.File = value
+			ticFile.SetFile(value)
+		} else if strings.EqualFold(name, "LFile") {
+			ticFile.SetLFile(value)
+		} else if strings.EqualFold(name, "Date") {
+			if unixTime, err := strconv.ParseInt(value, 10, 64); err == nil {
+				ticFile.SetUnixTime(unixTime)
+			}
 		} else {
 			log.Printf("Unknown TIC directive: name = %+v value = %+v", name, value)
 		}
