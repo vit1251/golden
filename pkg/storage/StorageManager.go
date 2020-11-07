@@ -28,7 +28,7 @@ func NewStorageManager(container *registry.Container) *StorageManager {
 
 func (self *StorageManager) Open() error {
 
-	storageBaseDir := cmn.GetStorageDirectory()
+	storageBaseDir := cmn.GetHomeDirectory()
 	storageFile := filepath.Join(storageBaseDir, "golden.sqlite3")
 
 	log.Printf("StorageManager: Open storage: path = %s", storageFile)

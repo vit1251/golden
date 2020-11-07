@@ -5,7 +5,7 @@ import (
 	"path"
 )
 
-func GetStorageDirectory() string {
+func GetHomeDirectory() string {
 	usr, err1 := user.Current()
 	if err1 != nil {
 		panic(err1)
@@ -15,8 +15,11 @@ func GetStorageDirectory() string {
 }
 
 func GetLogDirectory() string {
-	storageDirectory := GetStorageDirectory()
+	return GetFidoDirectory()
+}
+
+func GetFidoDirectory() string {
+	storageDirectory := GetHomeDirectory()
 	debugDirectory := path.Join(storageDirectory, "Fido")
 	return debugDirectory
 }
-

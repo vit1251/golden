@@ -56,3 +56,8 @@ func (self *TicBuilder) SetPw(passwd string) {
 	/* Pw ****** */
 	self.addLine(fmt.Sprintf("Pw %s", passwd))
 }
+
+func (self *TicBuilder) SetCrc(crc string) {
+	/* Crc ****** */
+	self.addLine(fmt.Sprintf("Crc %s", crc))
+}

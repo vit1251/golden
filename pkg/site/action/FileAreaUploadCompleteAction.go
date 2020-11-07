@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/tracker"
+	"hash/crc32"
 	"io"
 	"log"
 	"net/http"
@@ -72,10 +73,18 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 		writeStream.Close()
 	}()
 
-	size, err4 := io.Copy(cacheWriter, stream)
+	/* Copy */
+	crcWriter := crc32.NewIEEE()
+
+	outStreams := io.MultiWriter(cacheWriter, crcWriter)
+
+	size, err4 := io.Copy(outStreams, stream)
 	if err4 != nil {
 		panic(err4)
 	}
+
+	crc := crcWriter.Sum32()
+	crcValue := fmt.Sprintf("%08X", crc)
 
 	/* Create TIC description */
 	ticBuilder := tracker.NewTicBuilder()
@@ -87,6 +96,7 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	ticBuilder.SetDesc(desc)
 	ticBuilder.SetSize(size)
 	ticBuilder.SetPw(passwd)
+	ticBuilder.SetCrc(crcValue)
 
 	/* Save TIC on disk */
 	newName := cmn.MakeTickName()
