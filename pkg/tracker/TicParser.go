@@ -14,67 +14,40 @@ import (
 type TicParserHandler func(string)
 
 type TicParser struct {
-	ticFile  *TicFile
-	handlers map[string]TicParserHandler
 	registry *registry.Container
 }
 
 func NewTicParser(r *registry.Container) *TicParser {
 	tp := new(TicParser)
 	tp.registry = r
-	tp.handlers = make(map[string]TicParserHandler)
-	tp.initializeHandler()
 	return tp
 }
 
-func (self *TicParser) registerHandler(name string, handler TicParserHandler) {
-	self.handlers[name] = handler
-}
-
-func (self *TicParser) initializeHandler() {
-	self.registerHandler("Area", self.processArea)
-	self.registerHandler("Desc", self.processDesc)
-	self.registerHandler("File", self.processFile)
-	self.registerHandler("From", nil)
-	self.registerHandler("To", nil)
-	self.registerHandler("Pw", nil)
-	self.registerHandler("File", self.processFile)
-	self.registerHandler("Path", nil)
-	self.registerHandler("Crc", nil)
-	self.registerHandler("Size", nil)
-	self.registerHandler("Origin", nil)
-	self.registerHandler("LDesc", nil)
-	self.registerHandler("LDesc", nil)
-	self.registerHandler("Seenby", nil)
-}
-
-func (self *TicParser) prcessLine(newLine string) {
+func (self *TicParser) prcessLine(ticFile TicFile, newLine string) (TicFile, error) {
 
 	parts := strings.SplitN(newLine, " ", 2)
 	partCount := len(parts)
 
 	if partCount == 2 {
-		var key string = parts[0]
-		var value string = parts[1]
-		//
-		var processCount int = 0
-		for handerKey, handleService := range self.handlers {
-			if strings.EqualFold(handerKey, key) {
-				if handleService != nil {
-					handleService(value)
-				}
-				processCount += 1
-			}
-		}
 
-		if processCount == 0 {
-			log.Printf("Unknown TIC keyword: %+v", parts)
+		var name string = parts[0]
+		var value string = parts[1]
+
+		if strings.EqualFold(name, "Area") {
+			ticFile.SetArea(value)
+		} else if strings.EqualFold(name, "Desc") {
+			ticFile.Desc = value
+		} else if strings.EqualFold(name, "File") {
+			ticFile.File = value
+		} else {
+			log.Printf("Unknown TIC directive: name = %+v value = %+v", name, value)
 		}
 
 	} else {
-		log.Printf("Unknown TIC directive: %+v", newLine)
+		log.Printf("Unknown TIC line: line = %+v", newLine)
 	}
 
+	return ticFile, nil
 }
 
 func (self *TicParser) Parse(stream io.Reader) (*TicFile, error) {
@@ -93,13 +66,13 @@ func (self *TicParser) Parse(stream io.Reader) (*TicFile, error) {
 
 	rows := strings.Split(newContent, CRLF)
 
-	self.ticFile = new(TicFile)
+	ticFile := NewTicFile()
 
 	for _, row := range rows {
-		self.prcessLine(row)
+		*ticFile, _ = self.prcessLine(*ticFile, row)
 	}
 
-	return self.ticFile, nil
+	return ticFile, nil
 }
 
 func (self TicParser) ParseFile(filename string) (*TicFile, error) {
@@ -121,18 +94,6 @@ func (self TicParser) ParseFile(filename string) (*TicFile, error) {
 	}
 
 	return ticFile, nil
-}
-
-func (self *TicParser) processArea(value string) {
-	self.ticFile.SetArea(value)
-}
-
-func (self *TicParser) processDesc(value string) {
-	self.ticFile.Desc = value
-}
-
-func (self *TicParser) processFile(value string) {
-	self.ticFile.File = value
 }
 
 func (self TicParser) restoreCharsetManager() *charset.CharsetManager {
