@@ -124,7 +124,7 @@ func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) error {
 
 	/* Write packet fill (20 byte) */
 	if self.extension != nil {
-		if err1 := self.extension.WritePacketHeaderFill(self.binaryStreamWriter, pktHeader); err1 != nil {
+		if err1 := self.extension.WritePacketHeaderExtension(self.binaryStreamWriter, pktHeader); err1 != nil {
 			return err1
 		}
 	} else {

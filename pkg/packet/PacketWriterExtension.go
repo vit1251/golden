@@ -1,7 +1,5 @@
 package packet
 
-import "log"
-
 type PacketWriterExtension struct {
 }
 
@@ -9,16 +7,8 @@ func NewPacketWriterExtension() *PacketWriterExtension {
 	return new(PacketWriterExtension)
 }
 
-
-func (self PacketWriterExtension) WritePacketHeaderFill(writer *BinaryWriter, pktHeader *PacketHeader) error {
-
-	log.Printf("Write 20 byte extension section")
-
-	//mem := make([]byte, 20)
-	//err0 := writer.WriteBytes(mem)
-	//if err0 != nil {
-	//	return err0
-	//}
+/// WritePacketHeaderExtension write packet 20 byte extension section
+func (self PacketWriterExtension) WritePacketHeaderExtension(writer *BinaryWriter, pktHeader *PacketHeader) error {
 
 	/* FSC-0039 - Filler - 4 Byte */
 	mem := make([]byte, 4)

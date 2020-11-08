@@ -138,13 +138,13 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 	}
 
 	/* Read packet fill (20 byte) */
-	if self.extension != nil {
-		if err1 := self.extension.ReadPacketHeaderFill(self.binaryStreamReader, pktHeader); err1 != nil {
-			return nil, err1
-		}
-	} else {
+	if self.extension == nil {
 		if _, err13 := self.binaryStreamReader.ReadBytes(20); err13 != nil {
 			return nil, err13
+		}
+	} else {
+		if err1 := self.extension.ReadPacketHeaderExtension(self.binaryStreamReader, pktHeader); err1 != nil {
+			return nil, err1
 		}
 	}
 

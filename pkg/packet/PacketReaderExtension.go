@@ -1,7 +1,5 @@
 package packet
 
-import "log"
-
 type PacketReaderExtension struct {
 }
 
@@ -9,14 +7,8 @@ func NewPacketReaderExtension() *PacketReaderExtension {
 	return new(PacketReaderExtension)
 }
 
-func (self PacketReaderExtension) ReadPacketHeaderFill(stream *BinaryReader, pktHeader *PacketHeader) error {
-
-	log.Printf("Read 20 byte extension section")
-
-//	_, err0 := stream.ReadBytes(20)
-//	if err0 != nil {
-//		return err0
-//	}
+// ReadPacketHeaderExtension read packet 20 byte extension section
+func (self PacketReaderExtension) ReadPacketHeaderExtension(stream *BinaryReader, pktHeader *PacketHeader) error {
 
 	/* FSC-0039 - Filler - 4 Byte */
 	_, err1 := stream.ReadBytes(4)
@@ -37,11 +29,11 @@ func (self PacketReaderExtension) ReadPacketHeaderFill(stream *BinaryReader, pkt
 	}
 
 	/* FSC-0039 - CapWord - 2 Byte */
-	capWord, err4 := stream.ReadUINT16()
+	_, err4 := stream.ReadUINT16()
 	if err4 != nil {
 		return err4
 	}
-	log.Printf("capWord = %x", capWord)
+	//log.Printf("capWord = %x", capWord)
 
 	/* FSC-0039 - OrigZone - 2 Int */
 	origZone, err5 := stream.ReadUINT16()

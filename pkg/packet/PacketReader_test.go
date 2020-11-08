@@ -8,11 +8,15 @@ import (
 	"testing"
 )
 
-func TestToPacketReadPacket(t *testing.T) {
+var packetReaderPath string = "C:\\Users\\vit12\\Fido\\TempOutbound\\5fa748b6.pkt"
 
-	packetPath := "C:\\Users\\vit12\\Fido\\TempInbound\\9c6b8409.pkt"
+func TestPacketReaderReadPacketHeader(t *testing.T) {
 
-	stream, _ := os.Open(packetPath)
+	stream, err1 := os.Open(packetReaderPath)
+	if err1 != nil {
+		t.Errorf("i/o error on open: err = %+v", err1)
+		return
+	}
 	defer stream.Close()
 
 	cacheReader := bufio.NewReader(stream)
@@ -30,14 +34,15 @@ func TestToPacketReadPacket(t *testing.T) {
 
 	t.Logf("msgHeader = %+v", msgHeader)
 
-
 }
 
-func BenchmarkToPackerReadPacketHeader(b *testing.B) {
+func BenchmarkPacketReaderReadPacketHeader(b *testing.B) {
 
-	packetPath := "C:\\Users\\vit12\\Fido\\TempInbound\\9c6b8409.pkt"
-
-	stream, _ := os.Open(packetPath)
+	stream, err1 := os.Open(packetReaderPath)
+	if err1 != nil {
+		b.Errorf("i/o error on open: err = %+v", err1)
+		return
+	}
 	defer stream.Close()
 
 	cacheReader := bufio.NewReader(stream)

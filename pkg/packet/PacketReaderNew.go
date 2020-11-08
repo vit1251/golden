@@ -5,19 +5,21 @@ import (
 	"io"
 )
 
-type PacketReader2 struct {
-	reader io.Reader
+type PacketReaderNew struct {
+	reader    io.Reader
+	extension interface{}
 }
 
-func NewPacketReader2(stream io.Reader) *PacketReader2 {
-	packetReader2 := new(PacketReader2)
-	packetReader2.reader = stream
-	return packetReader2
+func NewPacketReaderNew(stream io.Reader) *PacketReaderNew {
+	newPacketReaderNew := new(PacketReaderNew)
+	newPacketReaderNew.reader = stream
+	newPacketReaderNew.extension = nil
+	return newPacketReaderNew
 }
 
-func (self PacketReader2) ReadPacketHeader() (*PacketHeader, error) {
+func (self PacketReaderNew) ReadPacketHeader() (*PacketHeader, error) {
 
-	type pktHeader struct {
+	type pktHeaderNew struct {
 		OrigNode uint16
 		DestNode uint16
 		Year uint16
@@ -35,10 +37,9 @@ func (self PacketReader2) ReadPacketHeader() (*PacketHeader, error) {
 		Password [8]byte
 		OrigZone uint16
 		DestZone uint16
-		Fill [20]byte
 	}
 
-	packetHeader := pktHeader{}
+	packetHeader := pktHeaderNew{}
 
 	err1 := binary.Read(self.reader, binary.LittleEndian, &packetHeader)
 	if err1 != nil {
@@ -72,10 +73,24 @@ func (self PacketReader2) ReadPacketHeader() (*PacketHeader, error) {
 		PktPassword: packetHeader.Password[:],
 	}
 
+	/* Process extension */
+	if self.extension == nil {
+		type PacketHeaderExtension struct {
+			Fill [20]byte
+		}
+		packetHeaderExtension := PacketHeaderExtension{}
+		err2 := binary.Read(self.reader, binary.LittleEndian, &packetHeaderExtension)
+		if err2 != nil {
+			return nil, err1
+		}
+	} else {
+		panic("not implement")
+	}
+
 	return &result, nil
 
 }
 
-func (self PacketReader2) ReadMessageHeader() (interface{}, error) {
+func (self PacketReaderNew) ReadMessageHeader() (interface{}, error) {
 	return nil, nil
 }
