@@ -8,7 +8,6 @@ import (
 type PacketWriter struct {
 	streamWriter             io.Writer
 	binaryStreamWriter       *BinaryWriter
-	extension                *PacketWriterExtension
 }
 
 func NewPacketWriter(stream io.Writer) (*PacketWriter, error) {
@@ -16,7 +15,6 @@ func NewPacketWriter(stream io.Writer) (*PacketWriter, error) {
 	/* Crete new packet writer */
 	pw := new(PacketWriter)
 	pw.streamWriter = stream
-	pw.extension = NewPacketWriterExtension()
 
 	/* Create binary stream reader */
 	if binaryStreamWriter, err := NewBinaryWriter(stream); err == nil {
@@ -29,110 +27,176 @@ func NewPacketWriter(stream io.Writer) (*PacketWriter, error) {
 	return pw, nil
 }
 
-func (self *PacketWriter) writePacketHeaderCapatiblityBytes(capByte1 uint8, capByte2 uint8) (error) {
-
-	if err1 := self.binaryStreamWriter.WriteUINT8(capByte1); err1 != nil {
-		return err1
-	}
-
-	if err2 := self.binaryStreamWriter.WriteUINT8(capByte2); err2 != nil {
-		return err2
-	}
-
-	return nil
-}
-
-const PKT_VERSION = 2
-
 func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) error {
 
+	writer := self.binaryStreamWriter
+
 	/* Write origin node address */
-	if err1 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigNode); err1 != nil {
+	err1 := writer.WriteUINT16(pktHeader.OrigNode)
+	if err1 != nil {
 		return err1
 	}
 
 	/* Write dest node address */
-	if err2 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestNode); err2 != nil {
+	err2 := writer.WriteUINT16(pktHeader.DestNode)
+	if err2 != nil {
 		return err2
 	}
 
 	/* Write packet create (12 byte) */
-	if err1 := self.binaryStreamWriter.WriteUINT16(pktHeader.Year); err1 != nil {
-		return err1
-	}
-	if err2 := self.binaryStreamWriter.WriteUINT16(pktHeader.Month); err2 != nil {
-		return err2
-	}
-	if err3 := self.binaryStreamWriter.WriteUINT16(pktHeader.Day); err3 != nil {
+	err3 := writer.WriteUINT16(pktHeader.Year)
+	if err3 != nil {
 		return err3
 	}
-	if err4 := self.binaryStreamWriter.WriteUINT16(pktHeader.Hour); err4 != nil {
+	err4 := writer.WriteUINT16(pktHeader.Month)
+	if err4 != nil {
 		return err4
 	}
-	if err5 := self.binaryStreamWriter.WriteUINT16(pktHeader.Minute); err5 != nil {
+	err5 := writer.WriteUINT16(pktHeader.Day)
+	if err5 != nil {
 		return err5
 	}
-	if err6 := self.binaryStreamWriter.WriteUINT16(pktHeader.Second); err6 != nil {
+	err6 := writer.WriteUINT16(pktHeader.Hour)
+	if err6 != nil {
 		return err6
+	}
+	err7 := writer.WriteUINT16(pktHeader.Minute)
+	if err7 != nil {
+		return err7
+	}
+	err8 := writer.WriteUINT16(pktHeader.Second)
+	if err8 != nil {
+		return err8
 	}
 
 	/* Write baud (2 byte) */
-	if err4 := self.binaryStreamWriter.WriteUINT16(0); err4 != nil {
-		return err4
+	err9 := writer.WriteUINT16(0)
+	if err9 != nil {
+		return err9
 	}
 
 	/* Write packet version (2 byte) */
-	if err5 := self.binaryStreamWriter.WriteUINT16(PKT_VERSION); err5 != nil {
-		return err5
+	var pktVersion uint16 = 2
+	err10 := writer.WriteUINT16(pktVersion)
+	if err10 != nil {
+		return err10
 	}
 
 	/* Write orig network (2 byte) */
-	if err6 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigNet); err6 != nil {
-		return err6
+	var origNet uint16 = pktHeader.OrigNet
+	if pktHeader.OrigPoint != 0 {
+		origNet = 65535
+	}
+	err11 := writer.WriteUINT16(origNet)
+	if err11 != nil {
+		return err11
 	}
 
 	/* Write dest network (2 byte) */
-	if err7 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestNet); err7 != nil {
-		return err7
+	err12 := writer.WriteUINT16(pktHeader.DestNet)
+	if err12 != nil {
+		return err12
 	}
 
 	/* Write prodCode version (1 byte)*/
-	if err1 := self.binaryStreamWriter.WriteUINT8(0); err1 != nil {
-		return err1
+	err13 := writer.WriteUINT8(0)
+	if err13 != nil {
+		return err13
 	}
 
 	/* Write serialNo version (1 byte)*/
-	if err2 := self.binaryStreamWriter.WriteUINT8(0); err2 != nil {
-		return err2
+	err14 := writer.WriteUINT8(0)
+	if err14 != nil {
+		return err14
 	}
 
 	/* Write packet password (8 byte) */
 	pktPassword := make([]byte, 8)
 	copy(pktPassword, pktHeader.PktPassword)
-	if err10 := self.binaryStreamWriter.WriteBytes(pktPassword); err10 != nil {
-		return err10
+	err15 := writer.WriteBytes(pktPassword)
+	if err15 != nil {
+		return err15
 	}
 
 	/* Write orig zone (2 byte) */
-	if err11 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigZone); err11 != nil {
-		return err11
+	err16 := writer.WriteUINT16(pktHeader.OrigZone)
+	if err16 != nil {
+		return err16
 	}
 
 	/* Write dest zone (2 byte) */
-	if err12 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestZone); err12 != nil {
-		return err12
+	err17 := writer.WriteUINT16(pktHeader.DestZone)
+	if err17 != nil {
+		return err17
 	}
 
-	/* Write packet fill (20 byte) */
-	if self.extension != nil {
-		if err1 := self.extension.WritePacketHeaderExtension(self.binaryStreamWriter, pktHeader); err1 != nil {
-			return err1
-		}
-	} else {
-		fill := make([]byte, 20)
-		if err13 := self.binaryStreamWriter.WriteBytes(fill); err13 != nil {
-			return err13
-		}
+	/* FSC-0048 - AuxNet - 2 Byte */
+	var auxNet uint16 = 0
+	if pktHeader.OrigPoint != 0 {
+		auxNet = pktHeader.OrigNet
+	}
+	err18 := writer.WriteUINT16(auxNet)
+	if err18 != nil {
+		return err18
+	}
+
+	/* FSC-0048 - CWvalidationCopy - 2 Byte */
+	var CWvalidationCopy uint16 = 0x100
+	err19 := writer.WriteUINT16(CWvalidationCopy)
+	if err19 != nil {
+		return err19
+	}
+
+	/* FSC-0048 - ProductCode - 1 Byte */
+	var productCode uint8 = 0
+	err20 := writer.WriteUINT8(productCode)
+	if err20 != nil {
+		return err20
+	}
+
+	/* FSC-0048 - Revision - 1 Byte */
+	var revision uint8 = 0
+	err21 := writer.WriteUINT8(revision)
+	if err21 != nil {
+		return err21
+	}
+
+	/* FSC-0048 - CapabilWord - 2 Byte */
+	var capabilWord uint16 = 1
+	err22 := writer.WriteUINT16(capabilWord)
+	if err22 != nil {
+		return err22
+	}
+
+	/* FSC-0048 - OrigZone - 2 Byte */
+	err23 := writer.WriteUINT16(pktHeader.OrigZone)
+	if err23 != nil {
+		return err23
+	}
+
+	/* FSC-0048 - DestZone - 2 Byte */
+	err24 := writer.WriteUINT16(pktHeader.DestZone)
+	if err24 != nil {
+		return err24
+	}
+
+	/* FSC-0048 - OrigPoint - 2 Byte */
+	err25 := writer.WriteUINT16(pktHeader.OrigPoint)
+	if err25 != nil {
+		return err25
+	}
+
+	/* FSC-0048 - DestPoint - 2 Byte */
+	err26 := writer.WriteUINT16(pktHeader.DestPoint)
+	if err26 != nil {
+		return err26
+	}
+
+	/* FSC-0048 - Product Specific Data - 4 Bytes */
+	var productData uint32 = 0
+	err27 := writer.WriteUINT32(productData)
+	if err27 != nil {
+		return err27
 	}
 
 	return nil
