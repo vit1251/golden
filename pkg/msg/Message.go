@@ -89,3 +89,11 @@ func (self *Message) SetPacket(packet []byte) {
 func (self *Message) SetReply(reply string) {
 	self.Reply = reply
 }
+
+func (self Message) GetFrom() string {
+	return self.From
+}
+
+func (self Message) GetMsgID() string {
+	return self.MsgID
+}

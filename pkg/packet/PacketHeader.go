@@ -47,7 +47,7 @@ func (self *PacketHeader) SetOrigAddr(addr string) {
 func (self *PacketHeader) SetDestAddr(addr string) {
 
 	/* Parse address */
-	netAddr := NetAddr{}
+	netAddr := NewNetAddr()
 	netAddr.SetAddr(addr)
 
 	/* Set Orig address */

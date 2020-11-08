@@ -3,8 +3,8 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
 )
@@ -18,7 +18,14 @@ func NewEchoReplyAction() *EchoReplyAction {
 	return ra
 }
 
-func (self *EchoReplyAction) preprocessMessage(origMsg *msg.Message) string {
+func (self *EchoReplyAction) preprocessSubject(origMsg msg.Message) string {
+	compactor := msg.NewSubjectCompactor()
+	newSubject := compactor.Compact(origMsg.Subject)
+	return newSubject
+}
+
+func (self EchoReplyAction) preprocessBody(origMsg msg.Message) string {
+
 	cmap := msg.NewMessageAuthorParser()
 	ma, _ := cmap.Parse(origMsg.From)
 
@@ -41,70 +48,57 @@ func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()
+	draftMapper := mapperManager.GetDraftMapper()
 
-	//
+	/* Get URL params */
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
 
-	//
+	/* Get area */
 	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
-		panic(err1)
-	}
-	log.Printf("area = %+v", area)
-
-	/* Restore original message */
-	msgHash := vars["msgid"]
-	origMsg, err3 := echoMapper.GetMessageByHash(echoTag, msgHash)
-	if err3 != nil {
-		response := fmt.Sprintf("Fail on GetMessageByHash")
+		response := fmt.Sprintf("Fail in GetAreaByName on echoAreaMapper: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 
-	/* Preprocess message body */
-	newBody := self.preprocessMessage(origMsg)
-
-	/* Compact header*/
-	sc:= msg.NewSubjectCompactor()
-	newSubject := sc.Compact(origMsg.Subject)
-
-	/* Start render */
-	bw := widgets.NewBaseWidget()
-
-	vBox := widgets.NewVBoxWidget()
-	bw.SetWidget(vBox)
-
-	mmw := self.makeMenu()
-	vBox.Add(mmw)
-
-	container := widgets.NewDivWidget().SetClass("container")
-	vBox.Add(container)
-
-	containerVBox := widgets.NewVBoxWidget()
-	container.SetWidget(containerVBox)
-
-	formVBox := widgets.NewVBoxWidget()
-
-	formWidget := widgets.NewFormWidget()
-	formWidget.
-		SetMethod("POST").
-		SetAction(fmt.Sprintf("/echo/%s/message/%s/reply/complete", area.GetName(), origMsg.Hash)).
-		SetWidget(formVBox)
-
-	formVBox.Add(widgets.NewFormInputWidget().SetTitle("TO").SetName("to").SetValue(origMsg.From))
-	formVBox.Add(widgets.NewFormInputWidget().SetClass("echomail-input").SetTitle("SUBJ").SetName("subject").SetValue(newSubject))
-	formVBox.Add(widgets.NewFormTextWidget().SetClass("echomail-text").SetName("body").SetValue(newBody))
-	formVBox.Add(widgets.NewFormButtonWidget().SetTitle("Compose").SetType("submit"))
-
-	containerVBox.Add(formWidget)
-
-	if err := bw.Render(w); err != nil {
-		status := fmt.Sprintf("%+v", err)
-		http.Error(w, status, http.StatusInternalServerError)
+	/* Get orig message */
+	msgHash := vars["msgid"]
+	origMsg, err3 := echoMapper.GetMessageByHash(echoTag, msgHash)
+	if err3 != nil {
+		response := fmt.Sprintf("Fail in GetMessageByHash on echoMapper: err = %+v", err3)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+	if origMsg == nil {
+		response := fmt.Sprintf("Fail in GetMessageByHash on echoMapper: err = %+v", err3)
+		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 
+	/* Create new draft message */
+	newDraft := mapper.NewDraft()
+
+	newSubject := self.preprocessSubject(*origMsg)
+	newDraft.SetSubject(newSubject)
+
+	newBody := self.preprocessBody(*origMsg)
+	newDraft.SetBody(newBody)
+
+	newDraft.SetTo(origMsg.GetFrom())
+	newDraft.SetArea(area.GetName())
+	newDraft.SetReply(origMsg.GetMsgID())
+
+	/* Store draft message */
+	err4 := draftMapper.RegisterNewDraft(*newDraft)
+	if err4 != nil {
+		response := fmt.Sprintf("Fail in RegisterNewDraft on draftMapper: err = %+v", err3)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+
+	/* Redirect on draft message */
+	newLocation := fmt.Sprintf("/draft/%s/edit", newDraft.GetUUID())
+	http.Redirect(w, r, newLocation, 303)
 
 }

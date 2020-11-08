@@ -29,6 +29,14 @@ func (self *EchoMessage) SetReply(reply string) {
 	self.Reply = reply
 }
 
+func (self *EchoMessage) SetArea(area string) {
+	self.AreaName = area
+}
+
+func (self *EchoMessage) SetTo(to string) {
+	self.To = to
+}
+
 func NewEchoMessage() *EchoMessage {
 	em := new(EchoMessage)
 	return em

@@ -457,11 +457,13 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	msgBody := packet.NewMessageBody()
 
 	/* Cross network NETMAIL */
-	destinationAddress := fmt.Sprintf("%d:%d/%d", msgHeader.DestAddr.Zone, msgHeader.DestAddr.Net, msgHeader.DestAddr.Node)
-	originAddress := fmt.Sprintf("%d:%d/%d", msgHeader.OrigAddr.Zone, msgHeader.OrigAddr.Net,  msgHeader.OrigAddr.Node)
+	origAddr := fmt.Sprintf("%d:%d/%d", msgHeader.OrigAddr.Zone, msgHeader.OrigAddr.Net,  msgHeader.OrigAddr.Node)
+	destAddr := fmt.Sprintf("%d:%d/%d", msgHeader.DestAddr.Zone, msgHeader.DestAddr.Net, msgHeader.DestAddr.Node)
+
+	log.Printf("Direct message: %+v -> %+v", origAddr, destAddr)
 
 	/* Control paragraph write section */
-	intlKludge := fmt.Sprintf("%s %s", destinationAddress, originAddress)
+	intlKludge := fmt.Sprintf("%s %s", destAddr, origAddr)
 	msgBody.AddKludge(packet.Kludge{
 		Name: "INTL",
 		Value: intlKludge,

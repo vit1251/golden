@@ -5,7 +5,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
 )
@@ -18,7 +17,14 @@ func NewNetmailReplyAction() *NetmailReplyAction {
 	return new(NetmailReplyAction)
 }
 
-func (self *NetmailReplyAction) preprocessMessage(origMsg *mapper.NetmailMsg) string {
+func (self *NetmailReplyAction) preprocessSubject(origMsg *mapper.NetmailMsg) string {
+	compactor := msg.NewSubjectCompactor()
+	newSubject := compactor.Compact(origMsg.Subject)
+	return newSubject
+}
+
+func (self *NetmailReplyAction) preprocessBody(origMsg *mapper.NetmailMsg) string {
+
 	cmap := msg.NewMessageAuthorParser()
 	ma, _ := cmap.Parse(origMsg.From)
 
@@ -40,12 +46,13 @@ func (self *NetmailReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 	mapperManager := self.restoreMapperManager()
 	netmailMapper := mapperManager.GetNetmailMapper()
+	draftMapper := mapperManager.GetDraftMapper()
 
+	/* Get message hash */
 	vars := mux.Vars(r)
-
-	/* Recover message */
 	msgHash := vars["msgid"]
 
+	/* Get message */
 	origMsg, err3 := netmailMapper.GetMessageByHash(msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
@@ -58,52 +65,30 @@ func (self *NetmailReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	msgFrom := origMsg.From
-	msgFromAddr := fmt.Sprintf("%s", origMsg.OrigAddr)
-	newBody := self.preprocessMessage(origMsg)
+	/* Create new draft message */
+	newDraft := mapper.NewDraft()
+	newDraft.SetTo(origMsg.GetFrom())
+	newDraft.SetToAddr(origMsg.OrigAddr)
+	newDraft.SetReply(origMsg.MsgID)
 
-	/* Compact header*/
-	sc:= msg.NewSubjectCompactor()
-	newSubject := sc.Compact(origMsg.Subject)
+	/* Prepare subject */
+	newSubject := self.preprocessSubject(origMsg)
+	newDraft.SetSubject(newSubject)
 
-	/* Render */
-	bw := widgets.NewBaseWidget()
+	/* Prepare body */
+	newBody := self.preprocessBody(origMsg)
+	newDraft.SetBody(newBody)
 
-	vBox := widgets.NewVBoxWidget()
-
-	mmw := self.makeMenu()
-	vBox.Add(mmw)
-
-	container := widgets.NewDivWidget().SetClass("container")
-	vBox.Add(container)
-
-	containerVBox := widgets.NewVBoxWidget()
-	container.SetWidget(containerVBox)
-
-	section := widgets.NewSectionWidget().
-		SetTitle("Reply NETMAIL message")
-
-	composeForm := widgets.NewFormWidget().
-		SetAction(fmt.Sprintf("/netmail/%s/reply/complete", msgHash)).
-		SetMethod("POST")
-
-	composeForm.SetWidget(widgets.NewVBoxWidget().
-		Add(widgets.NewFormInputWidget().SetTitle("ToName").SetName("to").SetPlaceholder("Enter FidoNet destination name").SetValue(msgFrom)).
-		Add(widgets.NewFormInputWidget().SetTitle("ToAddr").SetName("to_addr").SetPlaceholder("Enter FidoNet destination address Zone:Net/Node.Point").SetValue(msgFromAddr)).
-		Add(widgets.NewFormInputWidget().SetTitle("Subject").SetName("subject").SetPlaceholder("Enter message body").SetValue(newSubject)).
-		Add(widgets.NewFormTextWidget().SetName("body").SetValue(newBody)).
-		Add(widgets.NewFormButtonWidget().SetType("submit").SetTitle("Send")))
-
-	section.SetWidget(composeForm)
-	containerVBox.Add(section)
-
-	bw.SetWidget(vBox)
-
-	if err := bw.Render(w); err != nil {
-		status := fmt.Sprintf("%+v", err)
-		http.Error(w, status, http.StatusInternalServerError)
+	/* Store draft message */
+	err4 := draftMapper.RegisterNewDraft(*newDraft)
+	if err4 != nil {
+		response := fmt.Sprintf("Fail in RegisterNewDraft on draftMapper: err = %+v", err4)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
 
+	/* Redirect */
+	newLocation := fmt.Sprintf("/draft/%s/edit", newDraft.GetUUID())
+	http.Redirect(w, r, newLocation, 303)
+
 }
-
-

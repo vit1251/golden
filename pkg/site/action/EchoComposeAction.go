@@ -3,8 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/site/widgets"
-	"log"
+	"github.com/vit1251/golden/pkg/mapper"
 	"net/http"
 )
 
@@ -21,60 +20,32 @@ func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+	draftMapper := mapperManager.GetDraftMapper()
 
-	/* Parse URL parameters */
+	/* Get URL params */
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
+	areaName := vars["echoname"]
 
-	/* Search echo area */
-
-	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
+	/* Get area */
+	area, err1 := echoAreaMapper.GetAreaByName(areaName)
 	if err1 != nil {
-		response := fmt.Sprintf("Fail on GetAreaByName")
+		response := fmt.Sprintf("Fail in GetAreaByName on echoAreaMapper: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
-	log.Printf("area = %+v", area)
 
-	bw := widgets.NewBaseWidget()
-
-	vBox := widgets.NewVBoxWidget()
-	bw.SetWidget(vBox)
-
-	mmw := self.makeMenu()
-	vBox.Add(mmw)
-
-
-	container := widgets.NewDivWidget()
-	container.SetClass("container")
-
-	containerVBox := widgets.NewVBoxWidget()
-
-	container.SetWidget(containerVBox)
-
-	vBox.Add(container)
-
-
-	formVBox := widgets.NewVBoxWidget()
-
-	formWidget := widgets.NewFormWidget()
-	formWidget.
-		SetMethod("POST").
-		SetAction(fmt.Sprintf("/echo/%s/message/compose/complete", area.GetName())).
-		SetWidget(formVBox)
-
-	formVBox.Add(widgets.NewFormInputWidget().SetTitle("TO").SetName("to"))
-	formVBox.Add(widgets.NewFormInputWidget().SetTitle("SUBJ").SetName("subject"))
-	formVBox.Add(widgets.NewFormTextWidget().SetClass("echomail-text").SetName("body"))
-	formVBox.Add(widgets.NewFormButtonWidget().SetTitle("Compose").SetType("submit"))
-
-	containerVBox.Add(formWidget)
-
-	if err := bw.Render(w); err != nil {
-		status := fmt.Sprintf("%+v", err)
-		http.Error(w, status, http.StatusInternalServerError)
+	/* Create new draft */
+	newDraft := mapper.NewDraft()
+	newDraft.SetArea(area.GetName())
+	err2 := draftMapper.RegisterNewDraft(*newDraft)
+	if err2 != nil {
+		response := fmt.Sprintf("Fail in RegisterNewDraft on draftMapper: err = %+v", err1)
+		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
+
+	/* Redirect to new draft message */
+	newLocation := fmt.Sprintf("/draft/%s/edit", newDraft.GetUUID())
+	http.Redirect(w, r, newLocation, 303)
 
 }

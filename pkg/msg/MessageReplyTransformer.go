@@ -18,6 +18,12 @@ func NewMessageReplyTransformer() *MessageReplyTransformer {
 func (self *MessageReplyTransformer) Transform(content string) string {
 	var newContent string
 
+	// Привет, Vitold!
+	//
+	// Четверг 05 Ноября 2020 13:02:06, Vitold Sedyshev писал(а) к Jaroslav Bespalov:
+	//
+	// С наилучшими пожеланиями, Jaroslav.
+
 	log.Printf("reply_transform: msg = %+v", content)
 
 	rows := strings.Split(content, "\r")

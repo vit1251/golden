@@ -10,6 +10,7 @@ type MapperManager struct {
 	fileMapper     *FileMapper
 	configMapper   *ConfigMapper
 	twitMapper     *TwitMapper
+	draftMapper    *DraftMapper
 }
 
 func NewMapperManager(r *registry.Container) *MapperManager {
@@ -21,6 +22,7 @@ func NewMapperManager(r *registry.Container) *MapperManager {
 	newMapperManager.fileMapper = NewFileMapper(r)
 	newMapperManager.configMapper = NewConfigMapper(r)
 	newMapperManager.twitMapper = NewTwitMapper(r)
+	newMapperManager.draftMapper = NewDraftMapper(r)
 	return newMapperManager
 }
 
@@ -51,4 +53,8 @@ func (self MapperManager) GetConfigMapper() *ConfigMapper {
 
 func (self MapperManager) GetTwitMapper() *TwitMapper {
 	return self.twitMapper
+}
+
+func (self MapperManager) GetDraftMapper() *DraftMapper {
+	return self.draftMapper
 }

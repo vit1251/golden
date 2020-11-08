@@ -65,6 +65,20 @@ func (self *MainMenuWidget) Init() []*MenuAction {
 	}
 
 	if menuAction := NewMenuAction(); menuAction != nil {
+		menuAction.ID = "mainMenuTwit"
+		menuAction.Link = "/twit"
+		menuAction.Label = "Twit"
+		menus = append(menus, menuAction)
+	}
+
+	if menuAction := NewMenuAction(); menuAction != nil {
+		menuAction.ID = "mainMenuDraft"
+		menuAction.Link = "/draft"
+		menuAction.Label = "Draft"
+		menus = append(menus, menuAction)
+	}
+
+	if menuAction := NewMenuAction(); menuAction != nil {
 		menuAction.ID = "mainMenuSetup"
 		menuAction.Link = "/setup"
 		menuAction.Label = "Setup"

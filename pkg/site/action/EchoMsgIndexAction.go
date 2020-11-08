@@ -6,6 +6,7 @@ import (
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type EchoMsgIndexAction struct {
@@ -102,7 +103,8 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 		var allowView bool = true
 		for _, t := range twitNames {
-			if t.Name == msg.From || t.Name == msg.To {
+			var twitName string = t.GetName()
+			if strings.EqualFold(twitName, msg.From) || strings.EqualFold(twitName, msg.To) {
 				allowView = false
 			}
 		}
@@ -115,6 +117,12 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 					SetContent("View").
 					SetClass("btn").
 					SetLink(fmt.Sprintf("/echo/%s/message/%s/view", msg.Area, msg.Hash)))
+		} else {
+			actions.Add(
+				widgets.NewLinkWidget().
+					SetContent("Remove").
+					SetClass("btn").
+					SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", msg.Area, msg.Hash)))
 		}
 
 		row := widgets.NewTableRowWidget().

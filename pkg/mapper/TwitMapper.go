@@ -35,6 +35,7 @@ func (self TwitMapper) GetTwitNames() ([]Twit, error) {
 		}
 
 		newTwit := NewTwit()
+		newTwit.SetId(twitId)
 		newTwit.SetName(twitName)
 
 		result = append(result, *newTwit)
@@ -59,4 +60,20 @@ func (self TwitMapper) RegisterTwitByName(twitName string) error {
 	})
 
 	return err1
+}
+
+func (self TwitMapper) RemoveById(twitId string) error {
+
+	storageManager := self.restoreStorageManager()
+
+	query1 := "DELETE FROM `twit` WHERE `twitId` = ?"
+	var params []interface{}
+	params = append(params, twitId)
+
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
+		return nil
+	})
+
+	return err1
+
 }

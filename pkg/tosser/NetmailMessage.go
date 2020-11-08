@@ -43,3 +43,15 @@ func (self *NetmailMessage) GetBody() string {
 func (self *NetmailMessage) SetBody(body string) {
 	self.body = body
 }
+
+func (self *NetmailMessage) SetSubject(subject string) {
+	self.Subject = subject
+}
+
+func (self *NetmailMessage) SetTo(to string) {
+	self.To = to
+}
+
+func (self *NetmailMessage) SetToAddr(addr string) {
+	self.ToAddr = addr
+}

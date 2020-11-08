@@ -92,3 +92,7 @@ func (self *NetmailMsg) SetDestAddr(addr string) {
 	self.DestAddr = addr
 }
 
+func (self *NetmailMsg) GetFrom() string {
+	return self.From
+}
+
