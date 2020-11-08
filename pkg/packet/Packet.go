@@ -4,14 +4,6 @@ import (
 	"github.com/vit1251/golden/pkg/fidotime"
 )
 
-type PktVersion int
-
-const (
-	PKTv2      = 0x0200
-	PKTv2plus  = 0x0201
-	PKTv22     = 0x0202
-)
-
 func NewPacketHeader() *PacketHeader {
 	ph := new(PacketHeader)
 	return ph

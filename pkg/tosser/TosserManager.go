@@ -188,6 +188,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 
 	/* Write packet header */
 	pktHeader := packet.NewPacketHeader()
+	pktHeader.SetDate(time.Now())
 	pktHeader.SetOrigAddr(myAddr)
 	pktHeader.SetDestAddr(bossAddr)
 	pktHeader.SetPassword(pktPassword)
@@ -396,6 +397,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
 	/* Write packet header */
 	pktHeader := packet.NewPacketHeader()
+	pktHeader.SetDate(time.Now())
 	pktHeader.SetOrigAddr(From)
 	pktHeader.SetDestAddr(nm.ToAddr)
 	pktHeader.SetPassword(pktPassword)

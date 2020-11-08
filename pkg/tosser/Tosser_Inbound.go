@@ -362,7 +362,8 @@ func (self *Tosser) ProcessPacket(name string) error {
 	if err4 != nil {
 		return err4
 	}
-	log.Printf("pktHeader = %+v", pktHeader)
+	log.Printf("Tosser: ProcessPacket: name = %s date = %+v", name, pktHeader.GetDate())
+	log.Printf("Tosser: pktHeader = %+v", pktHeader)
 
 	/* Validate packet */
 	// TODO - check password and destination address ...

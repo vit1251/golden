@@ -1,5 +1,7 @@
 package packet
 
+import "time"
+
 type PacketHeader struct {
 
 	/* Origination */
@@ -54,4 +56,26 @@ func (self *PacketHeader) SetDestAddr(addr string) {
 	self.DestNode = netAddr.Node
 	self.DestPoint = netAddr.Point
 
+}
+
+func (self *PacketHeader) SetDate(newDate time.Time) {
+	/* Populate date */
+	self.Year = uint16(newDate.Year())
+	self.Month = uint16(newDate.Month() - 1)
+	self.Day = uint16(newDate.Day())
+
+	/* Populate time */
+	self.Hour = uint16(newDate.Hour())
+	self.Minute = uint16(newDate.Minute())
+	self.Second = uint16(newDate.Second())
+}
+
+func (self PacketHeader) GetDate() time.Time {
+	var newYear int = int(self.Year)
+	var newMonth time.Month = time.Month(self.Month + 1)
+	var newDay int = int(self.Day)
+	var newHour int = int(self.Hour)
+	var newMinute int = int(self.Minute)
+	var newSecond int = int(self.Second)
+	return time.Date(newYear, newMonth, newDay, newHour, newMinute, newSecond, 0, nil)
 }
