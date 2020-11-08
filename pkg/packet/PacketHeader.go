@@ -77,5 +77,5 @@ func (self PacketHeader) GetDate() time.Time {
 	var newHour int = int(self.Hour)
 	var newMinute int = int(self.Minute)
 	var newSecond int = int(self.Second)
-	return time.Date(newYear, newMonth, newDay, newHour, newMinute, newSecond, 0, nil)
+	return time.Date(newYear, newMonth, newDay, newHour, newMinute, newSecond, 0, time.Local)
 }
