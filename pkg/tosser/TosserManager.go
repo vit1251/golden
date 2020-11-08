@@ -181,10 +181,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 		return "", err2
 	}
 	log.Printf("area = %+v", area)
-	msgCharset := area.Charset
-	if msgCharset == "" {
-		msgCharset = "CP866"
-	}
+	msgCharset := area.GetCharset()
 
 	/* Write packet header */
 	pktHeader := packet.NewPacketHeader()
