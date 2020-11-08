@@ -253,7 +253,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 		Value: newZone,
 		Raw: []byte(fmt.Sprintf("\x01TZUTC %s", newZone)),
 	})
-	chrsKludge := self.makeChrsKludgeByCharsetName(area.Charset)
+	chrsKludge := self.makeChrsKludgeByCharsetName(area.GetCharset())
 	msgBody.AddKludge(packet.Kludge{
 		Name: "CHRS",
 		Value: chrsKludge,

@@ -44,9 +44,7 @@ func (self *EchoUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.R
 
 	/* Update charset */
 	newCharset := r.PostForm.Get("charset")
-	if newCharset == "CP866" || newCharset == "UTF-8" {
-		area.Charset = newCharset
-	}
+	area.SetCharset(newCharset)
 
 	/* Update area property */
 	err2 := echoAreaMapper.Update(area)

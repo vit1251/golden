@@ -9,79 +9,37 @@ import (
 
 type ConfigMapper struct {
 	Mapper
-	Params         []*ConfigValue
+	cacheConfig *Config
 }
 
 func NewConfigMapper(r *registry.Container) *ConfigMapper {
 	newConfigMapper := new(ConfigMapper)
-
 	newConfigMapper.SetRegistry(r)
-
-	/* Set item i18n */
-	newConfigMapper.Register("main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
-	newConfigMapper.Register("main", "Origin", "Origin was provide BBS station name and network address")
-	newConfigMapper.Register("main", "TearLine", "Tearline provide person sign in all their messages")
-	newConfigMapper.Register("main", "Address", "FidoNet network point address (i.e. POINT address)")
-	newConfigMapper.Register("main", "NetAddr", "FidoNet network BOSS address (example: f24.n5023.z2.binkp.net:24554)")
-	newConfigMapper.Register("main", "Password", "FidoNet point password")
-	newConfigMapper.Register("main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
-	newConfigMapper.Register("main", "Country", "Country where user is seat")
-	newConfigMapper.Register("main", "City", "City where user is seat")
-	newConfigMapper.Register("main", "StationName", "Station name is your nickname")
-	newConfigMapper.Register("mailer", "Interval", "Mailer interval")
-
-	/* Overwrite user parameters */
-	err2 := newConfigMapper.Restore()
-	if err2 != nil {
-		panic(err2)
-	}
-
 	return newConfigMapper
 }
 
-func (self *ConfigMapper) GetParams() []*ConfigValue {
-	return self.Params
+func (self *ConfigMapper) GetConfig() (*Config, error) {
+	newConfig, _ := self.restore()
+	return newConfig, nil
 }
 
 func (self *ConfigMapper) Set(section string, name string, value string) error {
 
-	//var updateCount int = 0
+	newConfig, _ := self.restore()
 
-	for _, param := range self.Params {
-		if param.Section == section && param.Name == name {
-			param.SetValue(value)
-			//updateCount += 1
-		}
-	}
-
-	//if updateCount == 0 {
-	//	log.Printf("config: parameter %s in section %s does not exists", name, section)
-	//} else {
-	//	log.Printf("config: parameter %s in section %s update %d time(s)", name, section, updateCount)
-	//}
+	newConfig.Set(section, name, value)
 
 	return nil
+
 }
 
 func (self ConfigMapper) Get(section string, name string) (string, bool) {
-	for _, param := range self.Params {
-		if param.Section == section && param.Name == name {
-			return param.Value, true
-		}
-	}
-	return "", false
-}
 
-func (self *ConfigMapper) Register(section string, name string, summary string) error {
+	newConfig, _ := self.restore()
 
-	param := new(ConfigValue)
-	param.Section = section
-	param.Name = name
-	param.Summary = summary
+	value, ok := newConfig.Get(section, name)
 
-	self.Params = append(self.Params, param)
-
-	return nil
+	return value, ok
 }
 
 func (self ConfigMapper) restoreStorageManager() *storage.StorageManager {
@@ -93,9 +51,18 @@ func (self ConfigMapper) restoreStorageManager() *storage.StorageManager {
 	}
 }
 
-func (self ConfigMapper) Restore() error {
+func (self ConfigMapper) restore() (*Config, error) {
+	if self.cacheConfig == nil {
+		self.cacheConfig, _ = self.restoreFromDatabase()
+	}
+	return self.cacheConfig, nil
+}
+
+func (self ConfigMapper) restoreFromDatabase() (*Config, error) {
 
 	storageManager := self.restoreStorageManager()
+
+	config := NewConfig()
 
 	query1 := "SELECT `section`, `name`, `value` FROM `settings`"
 	var params []interface{}
@@ -110,12 +77,12 @@ func (self ConfigMapper) Restore() error {
 		if err3 != nil {
 			return err3
 		}
-		self.Set(section, name, value)
+		config.Insert(section, name, value)
 
 		return nil
 	})
 
-	return nil
+	return config, nil
 }
 
 func (self ConfigMapper) UpdateValue(value string, section string, name string) error {
@@ -162,12 +129,22 @@ func (self ConfigMapper) InsertValue(value string, section string, name string) 
 	return err1
 }
 
-func (self ConfigMapper) Store() error {
-	for _, param := range self.Params {
-		err1 := self.UpdateValue(param.Value, param.Section, param.Name)
-		if err1 != nil {
-			return err1
+func (self *ConfigMapper) Store(newConfig *Config) error {
+
+	/* Update parameters in storage */
+	params := newConfig.GetParams()
+	for _, param := range params {
+		if param.IsUpdate() {
+			log.Printf("ConfigMapper: update: section = %s name = %s value = %s", param.Section, param.Name, param.GetValue())
+			err1 := self.UpdateValue(param.GetValue(), param.Section, param.Name)
+			if err1 != nil {
+				return err1
+			}
 		}
 	}
+
+	/* Reset cache */
+	self.cacheConfig = nil
+
 	return nil
 }

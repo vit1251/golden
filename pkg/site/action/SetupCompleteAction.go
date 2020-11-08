@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type SetupCompleteAction struct {
@@ -21,19 +22,28 @@ func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	configMapper := mapperManager.GetConfigMapper()
 
 	/* Setup manager operation */
-	params := configMapper.GetParams()
-	log.Printf("params = %+v", params)
+	config, _ := configMapper.GetConfig()
 
 	/* Update parameters */
 	r.ParseForm()
+
+	params := config.GetParams()
 	for _, param := range params {
-		newValue := r.PostForm.Get(param.Name)
-		log.Printf("param: name = %s value = %s newValue = %s", param.Name, param.Value, newValue)
-		param.SetValue(newValue)
+		newFormName := fmt.Sprintf("%s.%s", param.Section, param.Name)
+		if items, ok := r.PostForm[newFormName]; ok {
+			curValue := param.GetValue()
+			newValue := strings.Join(items, ",")
+
+			if curValue != newValue {
+				log.Printf("SetupCompleteAction: section = %s name = %s value = %s -> %s", param.Section, param.Name, curValue, newValue)
+				param.SetValue(newValue)
+			}
+
+		}
 	}
 
 	/* Store update */
-	err1 := configMapper.Store()
+	err1 := configMapper.Store(config)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -41,4 +51,5 @@ func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	/* Redirect */
 	newLocation := fmt.Sprintf("/setup")
 	http.Redirect(w, r, newLocation, 303)
+
 }

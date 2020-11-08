@@ -27,8 +27,10 @@ func (self *Area) SetName(name string) {
 	self.name = strings.ToUpper(name)
 }
 
-func (self *Area) SetCharset(charset string) {
-	self.charset = charset
+func (self *Area) SetCharset(newCharset string) {
+	if newCharset == "CP866" || newCharset == "UTF-8" {
+		self.charset = newCharset
+	}
 }
 
 func (self Area) GetCharset() string {

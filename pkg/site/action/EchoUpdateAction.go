@@ -84,7 +84,7 @@ func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 	/* Charset */
 	chrsInputWidget := widgets.NewFormInputWidget().
-		SetTitle("Charset").SetName("charset").SetValue(area.Charset)
+		SetTitle("Charset").SetName("charset").SetValue(area.GetCharset())
 	formVBox.Add(chrsInputWidget)
 
 	/* Save button */

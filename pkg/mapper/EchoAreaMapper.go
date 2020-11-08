@@ -59,7 +59,7 @@ func (self *EchoAreaMapper) GetAreas() ([]Area, error) {
 		area := NewArea()
 		area.SetName(areaName)
 		area.Summary = areaSummary
-		area.Charset = areaCharset
+		area.SetCharset(areaCharset)
 
 		result = append(result, *area)
 
@@ -100,7 +100,7 @@ func (self *EchoAreaMapper) GetAreaByName(echoTag string) (*Area, error) {
 		area := NewArea()
 		area.SetName(areaName)
 		area.Summary = areaSummary
-		area.Charset = areaCharset
+		area.SetCharset(areaCharset)
 
 		result = area
 
@@ -120,7 +120,7 @@ func (self *EchoAreaMapper) Update(area *Area) error {
 	query1 := "UPDATE `area` SET `areaSummary` = ?, `areaCharset` = ? WHERE `areaName` = ?"
 	var params []interface{}
 	params = append(params, area.Summary) // 1
-	params = append(params, area.Charset) // 2
+	params = append(params, area.GetCharset()) // 2
 	params = append(params, area.GetName()) // 3
 
 	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {

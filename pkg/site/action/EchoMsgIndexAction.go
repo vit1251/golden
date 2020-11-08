@@ -24,6 +24,10 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()
 	twitMapper := mapperManager.GetTwitMapper()
+	configMapper := mapperManager.GetConfigMapper()
+
+	/* My name */
+	myName, _ := configMapper.Get("main", "RealName")
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
@@ -109,6 +113,7 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 			}
 		}
 
+
 		actions := widgets.NewVBoxWidget()
 
 		if allowView {
@@ -126,17 +131,25 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 		}
 
 		row := widgets.NewTableRowWidget().
+			SetClass("echo-msg-index-item").
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.From))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.To))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Subject))).
 			AddCell(widgets.NewTableCellWidget().SetClass("echo-msg-index-date").SetWidget(widgets.NewTextWidgetWithText(msg.GetAge()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(actions))
 
-		row.SetClass("")
+		var classes []string
+
 		if msg.ViewCount == 0 {
-			row.SetClass("message-item-new")
+			classes = append(classes, "echo-msg-index-item-new")
 		}
-		//
+
+		if strings.EqualFold(msg.From, myName) || strings.EqualFold(msg.To, myName) {
+			classes = append(classes, "echo-msg-index-item-own")
+		}
+
+		row.SetClass(strings.Join(classes, " "))
+
 		indexTable.AddRow(row)
 	}
 
