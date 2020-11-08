@@ -22,6 +22,7 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()
+	twitMapper := mapperManager.GetTwitMapper()
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
@@ -46,6 +47,14 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	log.Printf("msgHeaders = %+v", msgHeaders)
 	for _, msg := range msgHeaders {
 		log.Printf("msg = %+v", msg)
+	}
+
+	/* Get twits */
+	twitNames, err3 := twitMapper.GetTwitNames()
+	if err3 != nil {
+		response := fmt.Sprintf("Fail on GetTwitNames on twitMapper: err = %+v", err3)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
 	}
 
 	// Views
@@ -91,12 +100,22 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	for _, msg := range msgHeaders {
 		log.Printf("msg = %+v", msg)
 
+		var allowView bool = true
+		for _, t := range twitNames {
+			if t.Name == msg.From || t.Name == msg.To {
+				allowView = false
+			}
+		}
+
 		actions := widgets.NewVBoxWidget()
-		actions.Add(
-			widgets.NewLinkWidget().
-				SetContent("View").
-				SetClass("btn").
-				SetLink(fmt.Sprintf("/echo/%s/message/%s/view", msg.Area, msg.Hash)))
+
+		if allowView {
+			actions.Add(
+				widgets.NewLinkWidget().
+					SetContent("View").
+					SetClass("btn").
+					SetLink(fmt.Sprintf("/echo/%s/message/%s/view", msg.Area, msg.Hash)))
+		}
 
 		row := widgets.NewTableRowWidget().
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.From))).
@@ -104,7 +123,7 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.Subject))).
 			AddCell(widgets.NewTableCellWidget().SetClass("echo-msg-index-date").SetWidget(widgets.NewTextWidgetWithText(msg.GetAge()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(actions))
-		//
+
 		row.SetClass("")
 		if msg.ViewCount == 0 {
 			row.SetClass("message-item-new")

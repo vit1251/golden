@@ -2,7 +2,6 @@ package mapper
 
 import (
 	"database/sql"
-	"errors"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
 	"log"
@@ -128,19 +127,22 @@ func (self ConfigMapper) UpdateValue(value string, section string, name string) 
 	params = append(params, value)
 	params = append(params, section)
 	params = append(params, name)
+
 	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
+
 		if err != nil {
 			return err
 		}
+
 		updateRowCount, err2 := result.RowsAffected()
 		if err2 != nil {
 			return err2
 		}
-		if updateRowCount != 1 {
-			return errors.New("no update config parameters")
-		}
+		log.Printf("ConfigMapper: Update: section = %+v name = %+v value = %+v affected = %d", section, name, value, updateRowCount)
+
 		return nil
 	})
+
 	return err1
 }
 

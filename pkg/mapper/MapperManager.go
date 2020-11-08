@@ -9,6 +9,7 @@ type MapperManager struct {
 	netmailMapper  *NetmailMapper
 	fileMapper     *FileMapper
 	configMapper   *ConfigMapper
+	twitMapper     *TwitMapper
 }
 
 func NewMapperManager(r *registry.Container) *MapperManager {
@@ -19,6 +20,7 @@ func NewMapperManager(r *registry.Container) *MapperManager {
 	newMapperManager.netmailMapper = NewNetmailMapper(r)
 	newMapperManager.fileMapper = NewFileMapper(r)
 	newMapperManager.configMapper = NewConfigMapper(r)
+	newMapperManager.twitMapper = NewTwitMapper(r)
 	return newMapperManager
 }
 
@@ -45,4 +47,8 @@ func (self MapperManager) GetFileMapper() *FileMapper {
 
 func (self MapperManager) GetConfigMapper() *ConfigMapper {
 	return self.configMapper
+}
+
+func (self MapperManager) GetTwitMapper() *TwitMapper {
+	return self.twitMapper
 }

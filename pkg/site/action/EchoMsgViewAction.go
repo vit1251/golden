@@ -167,7 +167,6 @@ func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *mapper.Area, origM
 	containerVBox := widgets.NewVBoxWidget()
 	container.SetWidget(containerVBox)
 
-
 	/* Context actions */
 	var actions []*widgets.MenuAction
 	/* Action Reply */
@@ -189,6 +188,13 @@ func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *mapper.Area, origM
 		action.SetLink(fmt.Sprintf("/echo/%s/message/%s/dump", area.GetName(), origMsg.Hash))
 		//action.SetIcon("icofont-remove")
 		action.SetLabel("Dump")
+		actions = append(actions, action)
+	}
+	/* Action Twit */
+	if action := widgets.NewMenuAction(); action != nil {
+		action.SetLink(fmt.Sprintf("/echo/%s/message/%s/twit", area.GetName(), origMsg.Hash))
+		//action.SetIcon("icofont-remove")
+		action.SetLabel("Twit")
 		actions = append(actions, action)
 	}
 
