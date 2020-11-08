@@ -46,11 +46,12 @@ const PKT_VERSION = 2
 
 func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) error {
 
-	/* Write orginator node address */
+	/* Write origin node address */
 	if err1 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigNode); err1 != nil {
 		return err1
 	}
-	/* Write destination node address */
+
+	/* Write dest node address */
 	if err2 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestNode); err2 != nil {
 		return err2
 	}
@@ -85,12 +86,12 @@ func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) error {
 		return err5
 	}
 
-	/* Write origination network (2 byte) */
+	/* Write orig network (2 byte) */
 	if err6 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigNet); err6 != nil {
 		return err6
 	}
 
-	/* Write destination network (2 byte) */
+	/* Write dest network (2 byte) */
 	if err7 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestNet); err7 != nil {
 		return err7
 	}
@@ -112,12 +113,12 @@ func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) error {
 		return err10
 	}
 
-	/* Write packet zone (2 byte) */
+	/* Write orig zone (2 byte) */
 	if err11 := self.binaryStreamWriter.WriteUINT16(pktHeader.OrigZone); err11 != nil {
 		return err11
 	}
 
-	/* Write packet zone (2 byte) */
+	/* Write dest zone (2 byte) */
 	if err12 := self.binaryStreamWriter.WriteUINT16(pktHeader.DestZone); err12 != nil {
 		return err12
 	}
