@@ -261,6 +261,20 @@ func (self *FileMapper) GetFileBoxAbsolutePath(areaName string) string {
 	return path
 }
 
+func (self *FileMapper) RemoveFileByName(fileName string) error {
+	storageManager := self.restoreStorageManager()
+
+	query1 := "DELETE FROM `file` WHERE `fileName` = ?"
+	var params []interface{}
+	params = append(params, fileName)
+
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
+		return err
+	})
+
+	return err1
+}
+
 func (self *FileMapper) RemoveFilesByAreaName(areaName string) error {
 	storageManager := self.restoreStorageManager()
 

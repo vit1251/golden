@@ -8,15 +8,15 @@ import (
 	"os"
 )
 
-type FileAreaRemoveCompleteAction struct {
+type FileEchoRemoveCompleteAction struct {
 	Action
 }
 
-func NewFileAreaRemoveCompleteAction() *FileAreaRemoveCompleteAction {
-	return new(FileAreaRemoveCompleteAction)
+func NewFileEchoRemoveCompleteAction() *FileEchoRemoveCompleteAction {
+	return new(FileEchoRemoveCompleteAction)
 }
 
-func (self FileAreaRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self FileEchoRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	fileMapper := mapperManager.GetFileMapper()

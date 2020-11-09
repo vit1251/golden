@@ -9,16 +9,16 @@ import (
 	"os"
 )
 
-type FileAreaDownloadAction struct {
+type FileEchoAreaDownloadAction struct {
 	Action
 }
 
-func NewFileAreaDownloadAction() *FileAreaDownloadAction {
-	fa := new(FileAreaDownloadAction)
+func NewFileEchoAreaDownloadAction() *FileEchoAreaDownloadAction {
+	fa := new(FileEchoAreaDownloadAction)
 	return fa
 }
 
-func (self *FileAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *FileEchoAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	fileMapper := mapperManager.GetFileMapper()

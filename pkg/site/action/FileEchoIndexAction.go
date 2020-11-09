@@ -7,16 +7,16 @@ import (
 	"net/http"
 )
 
-type FileAreaIndexAction struct {
+type FileEchoIndexAction struct {
 	Action
 }
 
-func NewFileAreaIndexAction() *FileAreaIndexAction {
-	aa := new(FileAreaIndexAction)
+func NewFileEchoIndexAction() *FileEchoIndexAction {
+	aa := new(FileEchoIndexAction)
 	return aa
 }
 
-func (self *FileAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *FileEchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	fileMapper := mapperManager.GetFileMapper()
@@ -58,15 +58,19 @@ func (self *FileAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	for _, area := range areas {
 		log.Printf("area = %+v", area)
 
+		actions := widgets.NewVBoxWidget()
+
+		actions.Add(widgets.NewLinkWidget().
+			SetContent("View").
+			SetClass("btn").
+			SetLink(fmt.Sprintf("/file/%s", area.GetName())))
+
 		indexTable.AddRow(widgets.NewTableRowWidget().
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.GetName()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.Summary))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
 				fmt.Sprintf("%d", area.Count)))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
-				SetContent("View").
-				SetClass("btn").
-				SetLink(fmt.Sprintf("/file/%s", area.GetName())))))
+			AddCell(widgets.NewTableCellWidget().SetWidget(actions)))
 	}
 
 	containerVBox.Add(indexTable)

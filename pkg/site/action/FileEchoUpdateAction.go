@@ -8,15 +8,15 @@ import (
 	"net/http"
 )
 
-type FileAreaUpdateAction struct {
+type FileEchoUpdateAction struct {
 	Action
 }
 
-func NewFileAreaUpdateAction() *FileAreaUpdateAction {
-	return new(FileAreaUpdateAction)
+func NewFileEchoUpdateAction() *FileEchoUpdateAction {
+	return new(FileEchoUpdateAction)
 }
 
-func (self FileAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self FileEchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	fileMapper := mapperManager.GetFileMapper()

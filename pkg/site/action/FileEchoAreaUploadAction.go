@@ -9,15 +9,15 @@ import (
 )
 
 
-type FileAreaUploadAction struct {
+type FileEchoAreaUploadAction struct {
 	Action
 }
 
-func NewFileAreaUploadAction() *FileAreaUploadAction {
-	return new(FileAreaUploadAction)
+func NewFileEchoAreaUploadAction() *FileEchoAreaUploadAction {
+	return new(FileEchoAreaUploadAction)
 }
 
-func (self FileAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self FileEchoAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	fileMapper := mapperManager.GetFileMapper()

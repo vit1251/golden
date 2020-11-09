@@ -9,17 +9,17 @@ import (
 	"net/http"
 )
 
-type FileAreaViewAction struct {
+type FileEchoAreaIndexAction struct {
 	Action
 }
 
-func NewFileAreaViewAction() *FileAreaViewAction {
-	fa := new(FileAreaViewAction)
+func NewFileEchoAreaIndexAction() *FileEchoAreaIndexAction {
+	fa := new(FileEchoAreaIndexAction)
 	return fa
 }
 
 
-func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	fileMapper := mapperManager.GetFileMapper()
@@ -94,15 +94,24 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 		newDate := commonfunc.MakeHumanTime(f.GetTime())
 
+		actions := widgets.NewVBoxWidget()
+
+		actions.Add(widgets.NewLinkWidget().
+			SetContent("View").
+			SetClass("btn").
+			SetLink(fmt.Sprintf("/file/%s/tic/%s/view", f.GetArea(), f.GetFile())))
+
+		actions.Add(widgets.NewLinkWidget().
+			SetContent("Remove").
+			SetClass("btn").
+			SetLink(fmt.Sprintf("/file/%s/tic/%s/remove", f.GetArea(), f.GetFile())))
+
 		log.Printf("file = %+v", f)
 		indexTable.AddRow(widgets.NewTableRowWidget().
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.GetFile()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.GetDesc()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(newDate))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
-				SetContent("View").
-				SetClass("btn").
-				SetLink(fmt.Sprintf("/file/%s/tic/%s/view", f.GetArea(), f.GetFile())))))
+			AddCell(widgets.NewTableCellWidget().SetWidget(actions)))
 	}
 
 	containerVBox.Add(indexTable)

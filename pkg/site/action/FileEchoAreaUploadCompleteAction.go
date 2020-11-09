@@ -15,15 +15,15 @@ import (
 	"time"
 )
 
-type FileAreaUploadCompleteAction struct {
+type FileEchoAreaUploadCompleteAction struct {
 	Action
 }
 
-func NewFileAreaUploadCompleteAction() *FileAreaUploadCompleteAction {
-	return new(FileAreaUploadCompleteAction)
+func NewFileEchoAreaUploadCompleteAction() *FileEchoAreaUploadCompleteAction {
+	return new(FileEchoAreaUploadCompleteAction)
 }
 
-func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	fileMapper := mapperManager.GetFileMapper()
@@ -46,12 +46,16 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 
 	/* ... */
 	var maxMemory int64 = 128 * 1024 * 1024
-	r.ParseMultipartForm(maxMemory)
 
-	// in your case file would be fileupload
-	stream, header, err2 := r.FormFile("file")
+	err2 := r.ParseMultipartForm(maxMemory)
 	if err2 != nil {
 		panic(err2)
+	}
+
+	// in your case file would be fileupload
+	stream, header, err3 := r.FormFile("file")
+	if err3 != nil {
+		panic(err3)
 	}
 	defer stream.Close()
 
@@ -61,7 +65,7 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	ldesc := r.PostForm.Get("ldesc")
 
 	//
-	log.Printf("FileAreaUploadCompleteAction: filename = %+v", header.Filename)
+	log.Printf("FileEchoAreaUploadCompleteAction: filename = %+v", header.Filename)
 
 	// Copy the file data to my buffer
 	outboundDirectory := cmn.GetOutboundDirectory()
