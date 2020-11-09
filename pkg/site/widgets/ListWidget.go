@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type ListWidget struct {
@@ -25,7 +25,7 @@ func (self *ListWidget) AddItem(item IWidget) *ListWidget {
 	return self
 }
 
-func (self ListWidget) Render(w http.ResponseWriter) error {
+func (self ListWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<ul class=\"%s\">", self.Class)
 	for _, i := range self.Items {
 		fmt.Fprintf(w, "\t<li>\n")

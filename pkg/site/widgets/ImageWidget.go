@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type ImageWidget struct {
@@ -21,7 +21,7 @@ func NewImageWidget() *ImageWidget {
 	return iw
 }
 
-func (self *ImageWidget) Render(w http.ResponseWriter) error {
+func (self *ImageWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<img src=\"%s\" alt=\"%s\" class=\"%s\" />\n", self.source, self.alt, self.class)
 	return nil
 }

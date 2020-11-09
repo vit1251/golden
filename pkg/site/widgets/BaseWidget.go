@@ -2,79 +2,70 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
-
-type style struct {
-	Path string
-}
-
-type JSScipt struct {
-	Path string
-}
 
 type BaseWidget struct {
 	mainWidget IWidget
-	styles     []*style
-	scripts    []*JSScipt
+	styles     []Style
+	scripts    []Script
 }
 
 func NewBaseWidget() *BaseWidget {
 	bw := new(BaseWidget)
 	bw.AddStyle("/static/custom.css")
-	bw.AddScript("/static/custom.js")
+	bw.AddScript("/static/custom.js", true)
 	bw.AddStyle("/assets/css/main.css")
 	return bw
 }
 
 func (self *BaseWidget) AddStyle(path string) *BaseWidget {
-	s := new(style)
-	s.Path = path
-	self.styles = append(self.styles, s)
+	s := NewStyle()
+	s.SetHref(path)
+	self.styles = append(self.styles, *s)
 	return self
 }
 
-func (self *BaseWidget) Render(w http.ResponseWriter) error {
+func (self *BaseWidget) Render(w io.Writer) error {
 
-	w.Write([]byte("<!DOCTYPE html>\n"))
-	w.Write([]byte("<html>\n"))
+	builder := NewByteBuilder()
 
-	/* Headers */
-	w.Write([]byte("<head>\n"))
-	w.Write([]byte("\t<meta charset=\"utf-8\">\n"))
-	w.Write([]byte("\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"))
-
-	w.Write([]byte("\t<title>Golden Point</title>\n"))
-
+	builder.AppendString("<!DOCTYPE html>\n")
+	builder.AppendString("<html>\n")
+	builder.AppendString("<head>\n")
+	builder.AppendString("\t<meta charset=\"utf-8\">\n")
+	builder.AppendString("\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n")
+	builder.AppendString("\t<title>Golden Point</title>\n")
 	for _, s := range self.styles {
-		msg := fmt.Sprintf("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\">\n", s.Path)
-		w.Write([]byte(msg))
+		builder.AppendString(fmt.Sprintf("\t%s\n", s.String()))
 	}
-
 	for _, script := range self.scripts {
-		msg := fmt.Sprintf("\t<script src=\"%s\"></script>\n", script.Path)
-		w.Write([]byte(msg))
+		builder.AppendString(fmt.Sprintf("\t%s\n", script.String()))
 	}
+	builder.AppendString("</head>\n")
+	builder.AppendString("<body class=\"dark\">\n")
 
-	w.Write([]byte("</head>\n"))
+	self.mainWidget.Render(builder)
 
-	/* Body */
-	w.Write([]byte("<body class=\"dark\">\n"))
-	self.mainWidget.Render(w)
-	w.Write([]byte("</body>\n"))
+	builder.AppendString("</body>\n")
+	builder.AppendString("</html>\n")
 
-	w.Write([]byte("</html>\n"))
+	content := builder.Byte()
+	_, err1 := w.Write(content)
 
-	return nil
+	return err1
 }
 
 func (self *BaseWidget) SetWidget(widget IWidget) {
 	self.mainWidget = widget
 }
 
-func (self *BaseWidget) AddScript(s string) *BaseWidget {
-	script := new(JSScipt)
-	script.Path = s
-	self.scripts = append(self.scripts, script)
+func (self *BaseWidget) AddScript(src string, defered bool) *BaseWidget {
+
+	script := NewScript()
+	script.Src = src
+	script.Defer = defered
+	self.scripts = append(self.scripts, *script)
+
 	return self
 }

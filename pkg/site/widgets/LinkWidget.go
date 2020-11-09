@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type LinkWidget struct {
@@ -27,7 +27,7 @@ func (self *LinkWidget) SetLink(link string) *LinkWidget {
 	return self
 }
 
-func (self *LinkWidget) Render(w http.ResponseWriter) error {
+func (self *LinkWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<a href=\"%s\" class=\"%s\">", self.Link, self.class)
 	if self.Widget != nil {
 		self.Widget.Render(w)

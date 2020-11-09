@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type TextWidget struct {
@@ -26,7 +26,7 @@ func (self *TextWidget) SetClass(class string) *TextWidget {
 	return self
 }
 
-func (self *TextWidget) Render(w http.ResponseWriter) error {
+func (self *TextWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<span class=\"%s\">%s</span>", self.class, self.content)
 	return nil
 }

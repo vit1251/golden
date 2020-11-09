@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type FormWidget struct {
@@ -33,7 +33,7 @@ func NewFormWidget() *FormWidget {
 	return fw
 }
 
-func (self *FormWidget) Render(w http.ResponseWriter) error {
+func (self *FormWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<form action=\"%s\" method=\"%s\" enctype=\"%s\">\n", self.Action, self.Method, self.enctype)
 	if self.Widget != nil {
 		self.Widget.Render(w)

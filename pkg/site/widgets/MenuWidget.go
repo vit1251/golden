@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type MenuWidget struct {
@@ -22,7 +22,7 @@ func NewMenuWidget() *MenuWidget {
 	return mw
 }
 
-func (self *MenuWidget) Render(w http.ResponseWriter) error {
+func (self *MenuWidget) Render(w io.Writer) error {
 
 	fmt.Fprintf(w, "<div class=\"panel\">\n")
 

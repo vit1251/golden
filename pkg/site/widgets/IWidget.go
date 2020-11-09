@@ -1,7 +1,9 @@
 package widgets
 
-import "net/http"
+import (
+	"io"
+)
 
 type IWidget interface {
-	Render(w http.ResponseWriter) error
+	Render(w io.Writer) error
 }

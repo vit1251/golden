@@ -1,7 +1,7 @@
 package widgets
 
 import (
-	"net/http"
+	"io"
 )
 
 type MainMenuWidget struct {
@@ -88,7 +88,7 @@ func (self *MainMenuWidget) Init() []*MenuAction {
 	return menus
 }
 
-func (self *MainMenuWidget) Render(w http.ResponseWriter) error {
+func (self *MainMenuWidget) Render(w io.Writer) error {
 	self.mw.Render(w)
 	return nil
 }

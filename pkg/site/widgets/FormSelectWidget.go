@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type FormSelectWidget struct {
@@ -48,7 +48,7 @@ func (self *FormSelectWidget) AddOption(name string, value string) *FormSelectWi
 	return self
 }
 
-func (self *FormSelectWidget) Render(w http.ResponseWriter) error {
+func (self *FormSelectWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<select name=\"%s\">\n", self.name)
 	for _, o := range self.options {
 		fmt.Fprintf(w, "\t<option value=\"%s\">%s</option>\n", o.value, o.name)

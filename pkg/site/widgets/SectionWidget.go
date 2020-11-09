@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type SectionWidget struct {
@@ -25,7 +25,7 @@ func NewSectionWidget() *SectionWidget {
 	return sw
 }
 
-func (self *SectionWidget) Render(w http.ResponseWriter) error {
+func (self *SectionWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<section>")
 	fmt.Fprintf(w, "<h1>%s</h1>", self.Title)
 	self.Widget.Render(w)

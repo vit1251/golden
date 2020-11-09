@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type ActionMenuWidget struct {
@@ -19,7 +19,7 @@ func NewActionMenuWidget() *ActionMenuWidget {
 	return amw
 }
 
-func (self *ActionMenuWidget) Render(w http.ResponseWriter) error {
+func (self *ActionMenuWidget) Render(w io.Writer) error {
 
 	fmt.Fprintf(w, "<div class=\"actions\">\n")
 

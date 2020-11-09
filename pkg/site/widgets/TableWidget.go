@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type TableHeaderWidget struct {
@@ -60,7 +60,7 @@ func NewTableRowWidget() *TableRowWidget {
 	return row
 }
 
-func (self *TableWidget) Render(w http.ResponseWriter) error {
+func (self *TableWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<table class=\"%s\">\n", self.class)
 	for _, row := range self.rows {
 		fmt.Fprintf(w, "<tr class=\"%s\">\n", row.class)

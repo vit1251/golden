@@ -1,6 +1,8 @@
 package widgets
 
-import "net/http"
+import (
+	"io"
+)
 
 type VBoxWidget struct {
 	Items []IWidget
@@ -11,7 +13,7 @@ func NewVBoxWidget() *VBoxWidget {
 	return vBox
 }
 
-func (self *VBoxWidget) Render(w http.ResponseWriter) error {
+func (self *VBoxWidget) Render(w io.Writer) error {
 	for _, item := range self.Items {
 		item.Render(w)
 	}

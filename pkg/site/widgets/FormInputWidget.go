@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type FormInputWidget struct {
@@ -18,7 +18,7 @@ func NewFormInputWidget() *FormInputWidget {
 	return fi
 }
 
-func (self *FormInputWidget) Render(w http.ResponseWriter) error {
+func (self *FormInputWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<div>\n")
 	fmt.Fprintf(w, "\t<div>%s</div>\n", self.Title)
 	fmt.Fprintf(w, "\t<div><input class=\"%s\" type=\"text\" value=\"%s\" name=\"%s\" placeholder=\"%s\" />\n", self.class, self.Value, self.Name, self.Placeholder)

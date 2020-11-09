@@ -2,8 +2,8 @@ package widgets
 
 import (
 	"fmt"
+	"io"
 	"log"
-	"net/http"
 )
 
 type FormTextWidget struct {
@@ -27,7 +27,7 @@ func (self *FormTextWidget) SetClass(class string) *FormTextWidget {
 	return self
 }
 
-func (self *FormTextWidget) Render(w http.ResponseWriter) error {
+func (self *FormTextWidget) Render(w io.Writer) error {
 
 	log.Printf("class = %+v", self.class)
 

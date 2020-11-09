@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type DivWidget struct {
@@ -31,7 +31,7 @@ func NewDivWidget() *DivWidget {
 	return iw
 }
 
-func (self *DivWidget) Render(w http.ResponseWriter) error {
+func (self *DivWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<div class=\"%s\">", self.Class)
 	if self.Widget != nil {
 		self.Widget.Render(w)

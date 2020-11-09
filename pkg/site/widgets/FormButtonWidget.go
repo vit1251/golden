@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type FormButtonWidget struct {
@@ -29,7 +29,7 @@ func (self *FormButtonWidget) SetTitle(s string) *FormButtonWidget {
 	return self
 }
 
-func (self *FormButtonWidget) Render(w http.ResponseWriter) error {
+func (self *FormButtonWidget) Render(w io.Writer) error {
 	//fmt.Fprintf(w, "<div>\n")
 	fmt.Fprintf(w, "\t<button name=\"%s\" value=\"%s\" class=\"%s\" type=\"%s\">%s</button>",
 		self.name,

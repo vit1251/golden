@@ -2,7 +2,7 @@ package widgets
 
 import (
 	"fmt"
-	"net/http"
+	"io"
 )
 
 type HeaderWidget struct {
@@ -21,7 +21,7 @@ func (self *HeaderWidget) SetTitle(title string) *HeaderWidget {
 	return self
 }
 
-func (self *HeaderWidget) Render(w http.ResponseWriter) error {
+func (self *HeaderWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<h%d>%s</h%d>\n", self.level, self.title, self.level)
 	return nil
 }
