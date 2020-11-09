@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"time"
 )
 
 type FileAreaUploadCompleteAction struct {
@@ -29,7 +30,7 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	configMapper := mapperManager.GetConfigMapper()
 
 	passwd, _ := configMapper.Get("main", "Password")
-	from, _ := configMapper.Get("main", "Address")
+	myAddr, _ := configMapper.Get("main", "Address")
 
 	//
 	vars := mux.Vars(r)
@@ -56,6 +57,8 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 
 	/* Description */
 	desc := r.PostForm.Get("desc")
+	to := r.PostForm.Get("desc")
+	ldesc := r.PostForm.Get("ldesc")
 
 	//
 	log.Printf("FileAreaUploadCompleteAction: filename = %+v", header.Filename)
@@ -90,13 +93,24 @@ func (self FileAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	ticBuilder := tracker.NewTicBuilder()
 
 	ticBuilder.SetArea(area.GetName())
-	ticBuilder.SetOrigin(from)
-	ticBuilder.SetFrom(from)
+	ticBuilder.SetOrigin(myAddr)
+	ticBuilder.SetFrom(myAddr)
 	ticBuilder.SetFile(header.Filename)
 	ticBuilder.SetDesc(desc)
+	ticBuilder.SetLDesc(ldesc)
 	ticBuilder.SetSize(size)
 	ticBuilder.SetPw(passwd)
 	ticBuilder.SetCrc(crcValue)
+	ticBuilder.SetTo(to)
+	ticBuilder.SetDate(time.Now())
+	ticBuilder.AddSeenby(myAddr)
+
+	newTicPath := fmt.Sprintf("%s %d %s %s/%s %s (%s)",
+		myAddr,
+		time.Now().Unix(), time.Now().Format("Mon Nov 09 09:03:02 2020 UTC"),
+		"GoldenPoint", cmn.GetPlatform(), cmn.GetVersion(), cmn.GetReleaseDate())
+	ticBuilder.AddPath(newTicPath)
+
 
 	/* Save TIC on disk */
 	newName := cmn.MakeTickName()

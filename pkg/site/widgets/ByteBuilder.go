@@ -3,12 +3,12 @@ package widgets
 import (
 	"bytes"
 	"io"
-	"log"
 )
 
 type ByteBuilder struct {
 	io.Writer
 	chunks [][]byte
+	size int
 }
 
 func NewByteBuilder() *ByteBuilder {
@@ -18,10 +18,11 @@ func NewByteBuilder() *ByteBuilder {
 }
 
 func (self *ByteBuilder) Append(chunk []byte) {
-	log.Printf("ByteBuilder: Append: chunk = %s", chunk)
+	//log.Printf("ByteBuilder: Append: chunk = %s", chunk)
 	newChunk := make([]byte, len(chunk))
-	copy(newChunk, chunk)
+	size := copy(newChunk, chunk)
 	self.chunks = append(self.chunks, newChunk)
+	self.size += size
 }
 
 func (self ByteBuilder) Byte() []byte {

@@ -21,8 +21,12 @@ func (self FileAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	mapperManager := self.restoreMapperManager()
 	fileMapper := mapperManager.GetFileMapper()
+	configMapper := mapperManager.GetConfigMapper()
 
-	//
+	/* Get BOSS address */
+	nodeAddr, _ := configMapper.Get("main", "Link")
+
+	/* Get params */
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
@@ -63,8 +67,14 @@ func (self FileAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	/* File AP200830.ZIP */
 	newForm.Add(widgets.NewFormFileInputWidget().SetTitle("File").SetName("file"))
 
-	/* Desc NASA Astronomy Picture of the Day (plus published report) */
+	/* To */
+	newForm.Add(widgets.NewFormInputWidget().SetTitle("To").SetName("to").SetValue(nodeAddr))
+
+	/* Description */
 	newForm.Add(widgets.NewFormInputWidget().SetTitle("Desc").SetName("desc"))
+
+	/* Long description */
+	newForm.Add(widgets.NewFormTextWidget().SetName("ldesc"))
 
 	/* Complete */
 	newForm.Add(widgets.NewFormButtonWidget().SetType("submit").SetTitle("Send"))
