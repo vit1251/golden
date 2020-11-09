@@ -120,34 +120,17 @@ func (self SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		SetAction("/setup/complete")
 
 	sections := widgets.NewVBoxWidget()
-	setupForm.SetWidget(sections)
 
-	containerVBox.Add(setupForm)
-
-	/* Draw sections */
-	for _, s := range setupSections {
-
-		sectionVBox := widgets.NewVBoxWidget()
-
-		sectionHeader := widgets.NewHeaderWidget()
-		sectionHeader.SetTitle(s.Name)
-
-		sectionVBox.Add(sectionHeader)
-
-		setupFormBox := widgets.NewVBoxWidget()
-
-		for _, param := range s.Params {
-			self.createInputField(setupFormBox, param)
-		}
-
-		sectionVBox.Add(setupFormBox)
-
-		sections.Add(sectionVBox)
-
-	}
+	/* Make sections with settings */
+	sectionsWithSettings := self.makeSectionsWithSettings(setupSections)
+	sections.Add(sectionsWithSettings)
 
 	/* Add save action */
 	sections.Add(widgets.NewFormButtonWidget().SetTitle("Save").SetType("submit"))
+
+	setupForm.SetWidget(sections)
+
+	containerVBox.Add(setupForm)
 
 	/* Render */
 	if err := bw.Render(w); err != nil {
@@ -181,5 +164,37 @@ func (self *SetupAction) createInputField(box *widgets.VBoxWidget, param setupPa
 	mainDivBox.Add(mainInput)
 
 	box.Add(mainDiv)
+
+}
+
+func (self SetupAction) makeSectionWithSettings(s setupSection) widgets.IWidget {
+
+	newSection := widgets.NewSectionWidget()
+
+	newSection.SetTitle(s.Name)
+
+	sectionVBox := widgets.NewVBoxWidget()
+
+	for _, param := range s.Params {
+		self.createInputField(sectionVBox, param)
+	}
+
+	newSection.SetWidget(sectionVBox)
+
+	return newSection
+
+}
+
+func (self SetupAction) makeSectionsWithSettings(setupSections []setupSection) widgets.IWidget {
+
+	newSections := widgets.NewVBoxWidget()
+
+	/* Draw sections */
+	for _, s := range setupSections {
+		newSection := self.makeSectionWithSettings(s)
+		newSections.Add(newSection)
+	}
+
+	return newSections
 
 }
