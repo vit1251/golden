@@ -48,10 +48,10 @@ func (self DraftIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Add custom param field */
 	twitTable := widgets.NewTableWidget().
-			SetClass("")
+			SetClass("draft-index-table")
 
 	twitTable.AddRow(widgets.NewTableRowWidget().
-		SetClass("").
+		SetClass("draft-index-header").
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
 

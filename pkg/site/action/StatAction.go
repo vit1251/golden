@@ -17,9 +17,9 @@ func NewStatAction() *StatAction {
 
 func (self *StatAction) createMetric(tw *widgets.TableWidget, name string, rx string, tx  string) {
 	tw.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetClass("table-cell").SetWidget(widgets.NewTextWidgetWithText(name))).
-		AddCell(widgets.NewTableCellWidget().SetClass("table-cell").SetWidget(widgets.NewTextWidgetWithText(rx))).
-		AddCell(widgets.NewTableCellWidget().SetClass("table-cell").SetWidget(widgets.NewTextWidgetWithText(tx))))
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(name))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(rx))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(tx))))
 }
 
 func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +56,7 @@ func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vBox.Add(container)
 
 	statWidget := widgets.NewTableWidget().
-		SetClass("stat-index-items")
+		SetClass("stat-index-table")
 
 	statWidget.AddRow(widgets.NewTableRowWidget().
 		SetClass("stat-index-header").

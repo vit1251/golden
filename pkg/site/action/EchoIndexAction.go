@@ -56,7 +56,7 @@ func (self *EchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	containerVBox.Add(amw)
 
 	indexTable := widgets.NewTableWidget().
-		SetClass("echo-index-items")
+		SetClass("echo-index-table")
 
 	indexTable.
 		AddRow(widgets.NewTableRowWidget().

@@ -7,16 +7,16 @@ import (
 	"net/http"
 )
 
-type NetmailAction struct {
+type NetmailIndexAction struct {
 	Action
 }
 
-func NewNetmailAction() *NetmailAction {
-	nm := new(NetmailAction)
+func NewNetmailIndexAction() *NetmailIndexAction {
+	nm := new(NetmailIndexAction)
 	return nm
 }
 
-func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self NetmailIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	netmailMapper := mapperManager.GetNetmailMapper()
@@ -54,11 +54,11 @@ func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vBox.Add(container)
 
 	indexTable := widgets.NewTableWidget().
-		SetClass("direct-index-items")
+		SetClass("netmail-index-table")
 
 	indexTable.
 		AddRow(widgets.NewTableRowWidget().
-			SetClass("direct-index-header").
+			SetClass("netmail-index-header").
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("From"))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("To"))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Subject"))).
@@ -71,7 +71,7 @@ func (self *NetmailAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		row := widgets.NewTableRowWidget()
 
 		if msg.ViewCount == 0 {
-			row.SetClass("message-item-new")
+			row.SetClass("netmail-index-item-new")
 		}
 
 		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msg.From)))

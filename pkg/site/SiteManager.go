@@ -90,7 +90,7 @@ func (self *SiteManager) registerFrontend() {
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/view", action.NewFileAreaDownloadAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload", action.NewFileAreaUploadAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload/complete", action.NewFileAreaUploadCompleteAction())
-	self.Register("/netmail", action.NewNetmailAction())
+	self.Register("/netmail", action.NewNetmailIndexAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/view", action.NewNetmailViewAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/reply", action.NewNetmailReplyAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/remove", action.NewNetmailRemoveAction())

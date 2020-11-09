@@ -47,10 +47,10 @@ func (self TwitIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Add custom param field */
 	twitTable := widgets.NewTableWidget().
-			SetClass("")
+			SetClass("twit-index-table")
 
 	twitTable.AddRow(widgets.NewTableRowWidget().
-		SetClass("").
+		SetClass("twit-index-header").
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
 

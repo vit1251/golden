@@ -46,11 +46,11 @@ func (self *FileAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	vBox.Add(container)
 
 	indexTable := widgets.NewTableWidget().
-		SetClass("file-index-items")
+		SetClass("file-index-table")
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
 		SetClass("file-index-header").
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("GetName"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Count"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))

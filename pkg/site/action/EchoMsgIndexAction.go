@@ -93,9 +93,10 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	containerVBox.Add(amw)
 
 	indexTable := widgets.NewTableWidget().
-		SetClass("table")
+		SetClass("echo-msg-index-table")
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
+		SetClass("echo-msg-index-header").
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("From"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("To"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Subject"))).

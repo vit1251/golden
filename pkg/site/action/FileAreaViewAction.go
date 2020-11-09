@@ -81,12 +81,13 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	containerVBox.Add(amw)
 
 	indexTable := widgets.NewTableWidget().
-		SetClass("table")
+		SetClass("file-area-index-table")
 
 	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("GetName"))).
+		SetClass("file-area-index-header").
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("GetAge"))).
+		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Date"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
 
 	for _, f := range files {
@@ -99,7 +100,8 @@ func (self *FileAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.GetDesc()))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(newDate))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
-				SetContent("Download"). // /file/BOOK-DOP/tic/KORSAV01.RAR/view
+				SetContent("View").
+				SetClass("btn").
 				SetLink(fmt.Sprintf("/file/%s/tic/%s/view", f.GetArea(), f.GetFile())))))
 	}
 

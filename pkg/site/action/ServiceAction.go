@@ -36,10 +36,11 @@ func (self ServiceAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vBox.Add(container)
 
 	serviceTable := widgets.NewTableWidget().
-		SetClass("table")
+		SetClass("service-index-table")
 
 	/* Show header */
 	serviceTable.AddRow(widgets.NewTableRowWidget().
+		SetClass("service-index-header").
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Service"))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
 
