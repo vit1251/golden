@@ -22,6 +22,7 @@ func NewFileEchoAreaIndexAction() *FileEchoAreaIndexAction {
 func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
+	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	fileMapper := mapperManager.GetFileMapper()
 
 	/* Parse URL parameters */
@@ -30,7 +31,7 @@ func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 	log.Printf("echoTag = %v", echoTag)
 
 	/* Get message area */
-	area, err1 := fileMapper.GetAreaByName(echoTag)
+	area, err1 := fileAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreaByName on fileMapper")
 		http.Error(w, response, http.StatusInternalServerError)

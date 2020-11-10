@@ -27,7 +27,8 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 
 	charsetManager := self.restoreCharsetManager()
 	mapperManager := self.restoreMapperManager()
-	fileMapper := mapperManager.GetFileMapper()
+	fileAreaMapper := mapperManager.GetFileAreaMapper()
+	//fileMapper := mapperManager.GetFileMapper()
 	configMapper := mapperManager.GetConfigMapper()
 
 	passwd, _ := configMapper.Get("main", "Password")
@@ -39,7 +40,7 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 	log.Printf("echoTag = %v", echoTag)
 
 	/* Get file area */
-	area, err1 := fileMapper.GetAreaByName(echoTag)
+	area, err1 := fileAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}

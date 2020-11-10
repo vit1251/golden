@@ -19,12 +19,19 @@ func NewFileEchoIndexAction() *FileEchoIndexAction {
 func (self *FileEchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
-	fileMapper := mapperManager.GetFileMapper()
+	//fileMapper := mapperManager.GetFileMapper()
+	fileAreaMapper := mapperManager.GetFileAreaMapper()
 
 	/* Get message area */
-	areas, err1 := fileMapper.GetAreasWithFileCount()
+	simpleAreas, err1 := fileAreaMapper.GetAreas()
 	if err1 != nil {
-		response := fmt.Sprintf("Fail on GetAreas: err = %+v", err1)
+		response := fmt.Sprintf("Fail in GetAreas on fileAreaMapper: err = %+v", err1)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+	areas, err2 := fileAreaMapper.UpdateFileAreasWithFileCount(simpleAreas)
+	if err2 != nil {
+		response := fmt.Sprintf("Fail in UpdateFileAreasWithFileCount on fileAreaMapper: err = %+v", err2)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}

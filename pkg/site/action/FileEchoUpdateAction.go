@@ -19,7 +19,8 @@ func NewFileEchoUpdateAction() *FileEchoUpdateAction {
 func (self FileEchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
-	fileMapper := mapperManager.GetFileMapper()
+	//fileMapper := mapperManager.GetFileMapper()
+	fileAreaMapper := mapperManager.GetFileAreaMapper()
 
 	//
 	vars := mux.Vars(r)
@@ -27,7 +28,7 @@ func (self FileEchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	area, err1 := fileMapper.GetAreaByName(echoTag)
+	area, err1 := fileAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}

@@ -20,7 +20,8 @@ func NewFileEchoAreaUploadAction() *FileEchoAreaUploadAction {
 func (self FileEchoAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
-	fileMapper := mapperManager.GetFileMapper()
+	fileAreaMapper := mapperManager.GetFileAreaMapper()
+	//fileMapper := mapperManager.GetFileMapper()
 	configMapper := mapperManager.GetConfigMapper()
 
 	/* Get BOSS address */
@@ -32,7 +33,7 @@ func (self FileEchoAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 	log.Printf("echoTag = %v", echoTag)
 
 	//
-	area, err1 := fileMapper.GetAreaByName(echoTag)
+	area, err1 := fileAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}

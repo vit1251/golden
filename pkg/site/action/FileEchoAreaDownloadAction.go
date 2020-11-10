@@ -21,6 +21,7 @@ func NewFileEchoAreaDownloadAction() *FileEchoAreaDownloadAction {
 func (self *FileEchoAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
+	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	fileMapper := mapperManager.GetFileMapper()
 
 	/* Parse URL parameters */
@@ -31,7 +32,7 @@ func (self *FileEchoAreaDownloadAction) ServeHTTP(w http.ResponseWriter, r *http
 	log.Printf("file = %v", newFile)
 
 	/* Get message area */
-	area, err1 := fileMapper.GetAreaByName(echoTag)
+	area, err1 := fileAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreaByName on fileMapper")
 		http.Error(w, response, http.StatusInternalServerError)

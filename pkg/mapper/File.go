@@ -43,7 +43,7 @@ func (self File) GetFile() string {
 }
 
 func (self File) GetDesc() string {
-	return self.file
+	return self.desc
 }
 
 func (self File) GetUnixTime() int64 {

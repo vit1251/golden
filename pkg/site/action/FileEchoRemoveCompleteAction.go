@@ -19,6 +19,7 @@ func NewFileEchoRemoveCompleteAction() *FileEchoRemoveCompleteAction {
 func (self FileEchoRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
+	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	fileMapper := mapperManager.GetFileMapper()
 
 	/* Restore area name */
@@ -27,7 +28,7 @@ func (self FileEchoRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 	log.Printf("echoTag = %v", echoTag)
 
 	/* Restore area by name */
-	area, err1 := fileMapper.GetAreaByName(echoTag)
+	area, err1 := fileAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
 		panic(err1)
 	}

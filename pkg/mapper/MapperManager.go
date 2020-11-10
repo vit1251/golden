@@ -8,6 +8,7 @@ type MapperManager struct {
 	statMapper     *StatMapper
 	netmailMapper  *NetmailMapper
 	fileMapper     *FileMapper
+	fileAreaMapper *FileAreaMapper
 	configMapper   *ConfigMapper
 	twitMapper     *TwitMapper
 	draftMapper    *DraftMapper
@@ -20,6 +21,7 @@ func NewMapperManager(r *registry.Container) *MapperManager {
 	newMapperManager.statMapper = NewStatMapper(r)
 	newMapperManager.netmailMapper = NewNetmailMapper(r)
 	newMapperManager.fileMapper = NewFileMapper(r)
+	newMapperManager.fileAreaMapper = NewFileAreaMapper(r)
 	newMapperManager.configMapper = NewConfigMapper(r)
 	newMapperManager.twitMapper = NewTwitMapper(r)
 	newMapperManager.draftMapper = NewDraftMapper(r)
@@ -41,6 +43,10 @@ func (self MapperManager) GetStatMapper() *StatMapper {
 
 func (self MapperManager) GetNetmailMapper() *NetmailMapper {
 	return self.netmailMapper
+}
+
+func (self MapperManager) GetFileAreaMapper() *FileAreaMapper {
+	return self.fileAreaMapper
 }
 
 func (self MapperManager) GetFileMapper() *FileMapper {

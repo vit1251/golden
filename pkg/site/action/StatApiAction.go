@@ -19,7 +19,8 @@ func (self *StatApiAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	mapperManager := self.restoreMapperManager()
 	echoMapper := mapperManager.GetEchoMapper()
 	netmailMapper := mapperManager.GetNetmailMapper()
-	fileMapper := mapperManager.GetFileMapper()
+	fileAreaMapper := mapperManager.GetFileAreaMapper()
+	//fileMapper := mapperManager.GetFileMapper()
 
 	/* Calculate summary */
 	var newDirectMsgCount int
@@ -28,7 +29,7 @@ func (self *StatApiAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	newEchoMsgCount, _ = echoMapper.GetMessageNewCount()
 	newDirectMsgCount, _ = netmailMapper.GetMessageNewCount()
-	newFileCount, _ = fileMapper.GetMessageNewCount()
+	newFileCount, _ = fileAreaMapper.GetMessageNewCount()
 
 	p := make(map[string]interface{})
 	p["code"] = 0

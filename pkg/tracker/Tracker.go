@@ -76,6 +76,7 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 
 	mapperManager := self.restoreMapperManager()
 	fileMapper := mapperManager.GetFileMapper()
+	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	statMapper := mapperManager.GetStatMapper()
 
 	/* Parse */
@@ -89,7 +90,7 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	areaName := tic.GetArea()
 
 	/* Search area */
-	fa, err1 := fileMapper.GetAreaByName(areaName)
+	fa, err1 := fileAreaMapper.GetAreaByName(areaName)
 	if err1 != nil {
 		return err1
 	}
@@ -99,7 +100,10 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	inboundDirectory := cmn.GetInboundDirectory()
 
 	areaLocation := path.Join(boxDirectory, areaName)
-	os.MkdirAll(areaLocation, 0755)
+	err2 := os.MkdirAll(areaLocation, 0755)
+	if err2 != nil {
+		log.Printf("Fail on MkdirAll: err = %+v", err2)
+	}
 
 	/* Create area */
 	if fa == nil {
@@ -108,7 +112,7 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 		newFa.SetName(areaName)
 		newFa.Path = areaLocation
 		/* Create area */
-		if err := fileMapper.CreateFileArea(newFa); err != nil {
+		if err := fileAreaMapper.CreateFileArea(newFa); err != nil {
 			log.Printf("Fail CreateFileArea on fileMapper: area = %s err = %+v", areaName, err)
 			return err
 		}
