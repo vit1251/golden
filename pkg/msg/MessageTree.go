@@ -34,7 +34,7 @@ func (self MessageTree) GetRoot() *MessageNode {
 	root := NewMessageNode(nil)
 	for _, node := range self.order {
 		if node.value.Reply == "" || node.orphan {
-			root.AddNode(*node)
+			root.AddNode(node)
 		}
 	}
 	return root
@@ -52,8 +52,8 @@ func (self *MessageNode) AddMessage(m Message) {
 	self.Items = append(self.Items, node)
 }
 
-func (self *MessageNode) AddNode(node MessageNode) {
-	self.Items = append(self.Items, &node)
+func (self *MessageNode) AddNode(node *MessageNode) {
+	self.Items = append(self.Items, node)
 }
 
 func (self *MessageTree) RegisterMessage(m Message) {
@@ -79,7 +79,7 @@ func (self *MessageTree) Compact() {
 			//
 			if parent, ok := self.index[reply]; ok {
 				log.Printf("Attach %+v -> %+v", k, reply)
-				parent.AddNode(*node)
+				parent.AddNode(node)
 				node.orphan = false
 			}
 		}
