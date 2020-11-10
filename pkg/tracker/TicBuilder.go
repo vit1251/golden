@@ -1,7 +1,6 @@
 package tracker
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 	"time"
@@ -64,22 +63,22 @@ func (self *TicBuilder) SetTo(to string) {
 	self.addLine(fmt.Sprintf("To %s", to))
 }
 
-func (self *TicBuilder) SetDesc(desc []byte) {
+func (self *TicBuilder) SetDesc(desc string) {
 	/* Desc Golden Point - Night - 2020-04-23 */
 	self.addLine(fmt.Sprintf("Desc %s", desc))
 }
 
 /// SetLDesc add long description
-func (self *TicBuilder) SetLDesc(ldesc []byte) {
-	var CR byte = '\x0D'
-	var LF byte = '\x0A'
-	var rows [][]byte
-	if bytes.Contains(ldesc, []byte{CR, LF}) {
+func (self *TicBuilder) SetLDesc(ldesc string) {
+	var CR string = "\x0D"
+	var LF string = "\x0A"
+	var rows []string
+	if strings.Contains(ldesc, CR + LF) {
 		/*  MS-DOS, OS/2, Microsoft Windows, Symbian OS and etc. */
-		rows = bytes.Split(ldesc, []byte{CR, LF})
-	} else if bytes.Contains(ldesc, []byte{LF}) {
+		rows = strings.Split(ldesc, CR + LF)
+	} else if strings.Contains(ldesc, LF) {
 		/* GNU/Linux, AIX, Xenix, Mac OS X, FreeBSD and etc. */
-		rows = bytes.Split(ldesc, []byte{LF})
+		rows = strings.Split(ldesc, LF)
 	} else {
 		/* Single */
 		rows = append(rows, ldesc)

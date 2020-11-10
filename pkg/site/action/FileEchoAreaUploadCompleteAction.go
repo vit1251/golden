@@ -45,6 +45,7 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 		panic(err1)
 	}
 	log.Printf("area = %+v", area)
+	var areaCharset string = area.GetCharset()
 
 	/* ... */
 	var maxMemory int64 = 128 * 1024 * 1024
@@ -65,16 +66,6 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 	desc := r.PostForm.Get("desc")
 	to := r.PostForm.Get("to")
 	ldesc := r.PostForm.Get("ldesc")
-
-	/* Chagge charset */
-	newDesc, err4 := charsetManager.EncodeMessageBody([]rune(desc), "CP866")
-	if err4 != nil {
-		panic(err4)
-	}
-	newLDesc, err5 := charsetManager.EncodeMessageBody([]rune(ldesc), "CP866")
-	if err5 != nil {
-		panic(err5)
-	}
 
 	//
 	log.Printf("FileEchoAreaUploadCompleteAction: filename = %+v", header.Filename)
@@ -112,8 +103,8 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 	ticBuilder.SetOrigin(myAddr)
 	ticBuilder.SetFrom(myAddr)
 	ticBuilder.SetFile(header.Filename)
-	ticBuilder.SetDesc(newDesc)
-	ticBuilder.SetLDesc(newLDesc)
+	ticBuilder.SetDesc(desc)
+	ticBuilder.SetLDesc(ldesc)
 	ticBuilder.SetSize(size)
 	ticBuilder.SetPw(passwd)
 	ticBuilder.SetCrc(crcValue)
@@ -132,7 +123,14 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 	newName := cmn.MakeTickName()
 	newPath := path.Join(outboundDirectory, newName)
 
-	newContent := ticBuilder.Build()
+	content := ticBuilder.Build()
+
+	/* Change charset */
+	newContent, err4 := charsetManager.EncodeMessageBody([]rune(content), areaCharset)
+	if err4 != nil {
+		panic(err4)
+	}
+
 	writer, err5 := os.Create(newPath)
 	if err5 != nil {
 		panic(err5)
@@ -142,7 +140,7 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 		cacheWriter2.Flush()
 		writer.Close()
 	}()
-	cacheWriter2.WriteString(newContent)
+	cacheWriter2.Write(newContent)
 
 	/* Redirect */
 	newLocation := fmt.Sprintf("/file/%s", area.GetName())
