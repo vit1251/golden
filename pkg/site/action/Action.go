@@ -1,6 +1,7 @@
 package action
 
 import (
+	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
@@ -72,5 +73,14 @@ func (self Action) restoreMapperManager() *mapper.MapperManager {
 		return manager
 	} else {
 		panic("no mapper manager")
+	}
+}
+
+func (self Action) restoreCharsetManager() *charset.CharsetManager {
+	managerPtr := self.registry.Get("CharsetManager")
+	if manager, ok := managerPtr.(*charset.CharsetManager); ok {
+		return manager
+	} else {
+		panic("no charset manager")
 	}
 }

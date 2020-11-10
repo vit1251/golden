@@ -25,6 +25,7 @@ func NewFileEchoAreaUploadCompleteAction() *FileEchoAreaUploadCompleteAction {
 
 func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	charsetManager := self.restoreCharsetManager()
 	mapperManager := self.restoreMapperManager()
 	fileMapper := mapperManager.GetFileMapper()
 	configMapper := mapperManager.GetConfigMapper()
@@ -61,8 +62,18 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 
 	/* Description */
 	desc := r.PostForm.Get("desc")
-	to := r.PostForm.Get("desc")
+	to := r.PostForm.Get("to")
 	ldesc := r.PostForm.Get("ldesc")
+
+	/* Chagge charset */
+	newDesc, err4 := charsetManager.EncodeMessageBody([]rune(desc), "CP866")
+	if err4 != nil {
+		panic(err4)
+	}
+	newLDesc, err5 := charsetManager.EncodeMessageBody([]rune(ldesc), "CP866")
+	if err5 != nil {
+		panic(err5)
+	}
 
 	//
 	log.Printf("FileEchoAreaUploadCompleteAction: filename = %+v", header.Filename)
@@ -70,9 +81,9 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 	// Copy the file data to my buffer
 	outboundDirectory := cmn.GetOutboundDirectory()
 	tmpFile := path.Join(outboundDirectory, header.Filename)
-	writeStream, err3 := os.Create(tmpFile)
-	if err3 != nil {
-		panic(err3)
+	writeStream, err6 := os.Create(tmpFile)
+	if err6 != nil {
+		panic(err6)
 	}
 	cacheWriter := bufio.NewWriter(writeStream)
 	defer func () {
@@ -100,8 +111,8 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 	ticBuilder.SetOrigin(myAddr)
 	ticBuilder.SetFrom(myAddr)
 	ticBuilder.SetFile(header.Filename)
-	ticBuilder.SetDesc(desc)
-	ticBuilder.SetLDesc(ldesc)
+	ticBuilder.SetDesc(newDesc)
+	ticBuilder.SetLDesc(newLDesc)
 	ticBuilder.SetSize(size)
 	ticBuilder.SetPw(passwd)
 	ticBuilder.SetCrc(crcValue)
