@@ -4,7 +4,7 @@ import "log"
 
 type MessageNode struct {
 	value  *Message
-	Items  []MessageNode
+	Items  []*MessageNode
 	orphan bool
 }
 
@@ -49,11 +49,11 @@ func (self *MessageNode) SearchById(msgid string) *MessageNode {
 
 func (self *MessageNode) AddMessage(m Message) {
 	node := NewMessageNode(&m)
-	self.Items = append(self.Items, *node)
+	self.Items = append(self.Items, node)
 }
 
 func (self *MessageNode) AddNode(node MessageNode) {
-	self.Items = append(self.Items, node)
+	self.Items = append(self.Items, &node)
 }
 
 func (self *MessageTree) RegisterMessage(m Message) {

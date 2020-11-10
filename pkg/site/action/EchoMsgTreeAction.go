@@ -104,7 +104,7 @@ func (self EchoMsgTreeAction) renderTree(root msg.MessageNode) widgets.IWidget {
 			vbox := widgets.NewVBoxWidget()
 
 			vbox.Add(newLink)
-			vbox.Add(self.renderTree(node))
+			vbox.Add(self.renderTree(*node))
 
 			list.AddItem(vbox)
 
