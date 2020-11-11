@@ -1,7 +1,7 @@
 package packet
 
 import (
-//	"log"
+	//	"log"
 	"bytes"
 	"fmt"
 )
@@ -10,6 +10,7 @@ type MessageBody struct {
 	area    string
 	kludges []Kludge
 	lines   [][]byte
+	origin  []byte
 }
 
 func NewMessageBody() *MessageBody {
@@ -50,6 +51,14 @@ func (self *MessageBody) SetContent(content []byte) {
 	for _, row := range rows {
 		self.AddLine(row)
 	}
+}
+
+func (self *MessageBody) SetOrigin(origin []byte) {
+	self.origin = origin
+}
+
+func (self MessageBody) GetOrigin() []byte {
+	return self.origin
 }
 
 func (self MessageBody) Bytes() []byte {

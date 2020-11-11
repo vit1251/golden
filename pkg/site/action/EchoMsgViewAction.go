@@ -118,10 +118,16 @@ func (self EchoMsgViewAction) makeMessageHeaderSection(origMsg msg.Message) widg
 	)
 
 	/* Make "From" section */
+	var newFrom string
+	if origMsg.FromAddr != "" {
+		newFrom = fmt.Sprintf("%s ( %s )", origMsg.From, origMsg.FromAddr)
+	} else {
+		newFrom = origMsg.From
+	}
 	self.makeMessageHeaderRowSection(
 		headerTable,
 		widgets.NewTextWidgetWithText("From:"),
-		widgets.NewTextWidgetWithText(origMsg.From),
+		widgets.NewTextWidgetWithText(newFrom),
 	)
 
 	/* Make "To" section */

@@ -2,7 +2,6 @@ package tosser
 
 import (
 	"bufio"
-	"fmt"
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/mailer/cache"
@@ -304,9 +303,9 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 	}
 
 	/* Check duplicate message */
-	exists, err9 := echoMapper.IsMessageExistsByHash(areaName, msgHash)
-	if err9 != nil {
-		return err9
+	exists, err5 := echoMapper.IsMessageExistsByHash(areaName, msgHash)
+	if err5 != nil {
+		return err5
 	}
 	if exists {
 		log.Printf("Message %s already exists", msgHash)
@@ -314,11 +313,17 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 		return nil
 	}
 
+	newOrig := msgBody.GetOrigin()
+
+	/* Parse origin */
+	originParser := NewOriginParser()
+	originAddr := originParser.Parse(newOrig)
+	newOriginAddr := string(originAddr)
+	log.Printf("Origin: addr = %s", originAddr)
+
 
 	/* Debug message */
-	newFromAddr := fmt.Sprintf("\"%s\" <%s>", newFrom, msgHeader.OrigAddr)
-	newToAddr := fmt.Sprintf("\"%s\" <%s>", newTo, msgHeader.DestAddr)
-	log.Printf("Process ECHOMAIL message:\n\tFrom: %s\n\tTo: %s", newFromAddr, newToAddr)
+	log.Printf("Process ECHOMAIL message:\n\tFrom: %s\n\tTo: %s", newFrom, newTo)
 
 	/* Create Message */
 	newMsg := msg.NewMessage()
@@ -332,10 +337,12 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 	newMsg.SetContent(newBody)
 	newMsg.SetPacket(msgBody.GetPacket())
 	newMsg.SetReply(reply)
+	newMsg.SetFromAddr(newOriginAddr)
 
 	/* Save message in storage */
-	if err := echoMapper.Write(*newMsg); err != nil {
-		log.Printf("Fail on Write in echoMapper: err = %+v", err)
+	err6 := echoMapper.Write(*newMsg)
+	if err6 != nil {
+		log.Printf("Fail on Write in echoMapper: err = %+v", err6)
 	}
 
 	/* Update counter */

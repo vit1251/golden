@@ -19,8 +19,8 @@ const (
 
 func (self MessageContentParser) Parse(content []byte) (*MessageContent, error) {
 
-	mc := NewMessageContent()
-	mc.SetPacket(content)
+	messageContent := NewMessageContent()
+	messageContent.SetPacket(content)
 
 	/* Remove "soft" linefeed */
 	parts := bytes.Split(content, []byte(LF))
@@ -38,7 +38,7 @@ func (self MessageContentParser) Parse(content []byte) (*MessageContent, error) 
 
 			/* Set AREA value */
 			areaName := string(row[5:])
-			mc.SetArea(areaName)
+			messageContent.SetArea(areaName)
 
 			/* Remove AREA */
 			rows = rows[1:]
@@ -50,18 +50,19 @@ func (self MessageContentParser) Parse(content []byte) (*MessageContent, error) 
 	var msgBody bool = true
 	for _, row := range rows {
 		if msgBody && !bytes.HasPrefix(row, []byte{'\x01'}) {
-			mc.AddLine(row)
+			messageContent.AddLine(row)
 		}
 		if bytes.HasPrefix(row, []byte{'\x01'}) {
 			k := packet.NewKludge()
 			k.Set(row)
-			mc.AddKludge(*k)
+			messageContent.AddKludge(*k)
 		}
 		if bytes.HasPrefix(row, []byte{' ', '*', ' ', 'O', 'r', 'i', 'g', 'i', 'n', ':'}) {
+			messageContent.SetOrigin(row[10:])
 			msgBody = false
 		}
 	}
 
-	return mc, nil
+	return messageContent, nil
 
 }

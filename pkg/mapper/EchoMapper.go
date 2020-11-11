@@ -160,7 +160,7 @@ func (self *EchoMapper) GetMessageByHash(echoTag string, msgHash string) (*msg.M
 
 	var result *msg.Message
 
-	query1 := "SELECT `msgId`, `msgReply`, `msgArea`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgTo`, `msgContent`, `msgDate`, `msgPacket` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
+	query1 := "SELECT `msgId`, `msgReply`, `msgArea`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgOrigAddr`, `msgTo`, `msgContent`, `msgDate`, `msgPacket` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
 	var params []interface{}
 	params = append(params, echoTag)
 	params = append(params, msgHash)
@@ -173,13 +173,14 @@ func (self *EchoMapper) GetMessageByHash(echoTag string, msgHash string) (*msg.M
 		var msgArea string
 		var msgHash *string
 		var subject string
-		var from string
+		var msgFrom string
+		var msgOrigAddr string
 		var to string
 		var content string
 		var packet []byte
 		var written int64
 
-		err1 := rows.Scan(&ID, &reply, &msgArea, &msgMsgId, &msgHash, &subject, &from, &to, &content, &written, &packet)
+		err1 := rows.Scan(&ID, &reply, &msgArea, &msgMsgId, &msgHash, &subject, &msgFrom, &msgOrigAddr, &to, &content, &written, &packet)
 		if err1 != nil{
 			return err1
 		}
@@ -196,7 +197,8 @@ func (self *EchoMapper) GetMessageByHash(echoTag string, msgHash string) (*msg.M
 		if msgHash != nil {
 			newMsg.SetMsgHash(*msgHash)
 		}
-		newMsg.SetFrom(from)
+		newMsg.SetFrom(msgFrom)
+		newMsg.SetFromAddr(msgOrigAddr)
 		newMsg.SetTo(to)
 		newMsg.SetContent(content)
 		newMsg.SetPacket(packet)
@@ -276,10 +278,9 @@ func (self *EchoMapper) Write(msg msg.Message) error {
 	storageManager := self.restoreStorageManager()
 
 	/* Step 3. Make prepare SQL insert query */
-	query1 := "INSERT INTO message " +
-		"(msgMsgId, msgReply, msgHash, msgArea, msgFrom, msgTo, msgSubject, msgContent, msgDate, msgPacket) " +
-		"VALUES " +
-		"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	query1 := "INSERT INTO `message` " +
+		"(`msgMsgId`, `msgReply`, `msgHash`, `msgArea`, `msgFrom`, `msgTo`, `msgSubject`, `msgContent`, `msgDate`, `msgPacket`, `msgOrigAddr`) " +
+		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 	var params []interface{}
 	params = append(params, msg.MsgID) // 1
@@ -292,9 +293,12 @@ func (self *EchoMapper) Write(msg msg.Message) error {
 	params = append(params, msg.Content)
 	params = append(params, msg.UnixTime)
 	params = append(params, msg.Packet)
+	params = append(params, msg.FromAddr)
 
 	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-		log.Printf("Insert complete with: err = %+v", err)
+		if err != nil {
+			log.Printf("Insert complete with: err = %+v", err)
+		}
 		return nil
 	})
 

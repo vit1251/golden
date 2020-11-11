@@ -11,6 +11,7 @@ type MessageContent struct {
 	area    string
 	raw     []byte
 	packet  []byte
+	origin  []byte
 }
 
 func NewMessageContent() *MessageContent {
@@ -57,4 +58,12 @@ func (self *MessageContent) SetPacket(content []byte) {
 
 func (self MessageContent) GetPacket() []byte {
 	return self.packet
+}
+
+func (self *MessageContent) SetOrigin(origin []byte) {
+	self.origin = origin
+}
+
+func (self MessageContent) GetOrigin() []byte {
+	return self.origin
 }

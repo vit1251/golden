@@ -20,6 +20,7 @@ type Message struct {
 	ViewCount   int
 	Packet      []byte
 	Reply       string
+	FromAddr    string
 }
 
 func NewMessage() *Message {
@@ -96,4 +97,12 @@ func (self Message) GetFrom() string {
 
 func (self Message) GetMsgID() string {
 	return self.MsgID
+}
+
+func (self *Message) SetFromAddr(addr string) {
+	self.FromAddr = addr
+}
+
+func (self Message) GetFromAddr() string {
+	return self.FromAddr
 }
