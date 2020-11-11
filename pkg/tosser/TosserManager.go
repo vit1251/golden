@@ -227,19 +227,15 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	}
 
 	/* Prepare packet message */
-	msgHeader := packet.NewPackedMessage()
-	msgHeader.OrigAddr.SetAddr(myAddr)
-	msgHeader.DestAddr.SetAddr(bossAddr)
-	msgHeader.SetToUserName(newTo)
-	msgHeader.SetFromUserName(newFrom)
-	msgHeader.SetSubject(newSubject)
+	packedMessage := packet.NewPackedMessage()
+	packedMessage.OrigAddr.SetAddr(myAddr)
+	packedMessage.DestAddr.SetAddr(bossAddr)
+	packedMessage.SetToUserName(newTo)
+	packedMessage.SetFromUserName(newFrom)
+	packedMessage.SetSubject(newSubject)
 	var now *fidotime.FidoDate = fidotime.NewFidoDate()
 	now.SetNow()
-	msgHeader.SetTime(now)
-
-	if err := pw.WriteMessageHeader(msgHeader); err != nil {
-		return "", err
-	}
+	packedMessage.SetTime(now)
 
 	newZone := self.makeTimeZone()
 
@@ -285,15 +281,20 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 		})
 	}
 
-	msgBody.SetRaw(newBody)
+	msgBody.SetContent(newBody)
 
-	if err5 := pw.WriteMessage(msgBody); err5 != nil {
+	packedMessage.SetText(msgBody.Bytes())
+
+	/* Write packed message */
+	err5 := pw.WritePackedMessage(packedMessage)
+	if err5 != nil {
 		return "", err5
 	}
 
-	/* Write complete bytes */
-	if err := pw.WritePacketEnd(); err != nil {
-		return "", err
+	/* Write packed end */
+	err6 := pw.WritePacketEnd()
+	if err6 != nil {
+		return "", err6
 	}
 
 	return packetName, nil
@@ -433,29 +434,25 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	}
 
 	/* Prepare packet message */
-	msgHeader := packet.NewPackedMessage()
-	msgHeader.OrigAddr.SetAddr(From)
-	msgHeader.DestAddr.SetAddr(nm.ToAddr)
-	msgHeader.SetToUserName(newTo)
-	msgHeader.SetFromUserName(newFrom)
-	msgHeader.SetSubject(newSubject)
-	msgHeader.SetAttribute(packet.MsgAttrPrivate)
+	packedMessage := packet.NewPackedMessage()
+	packedMessage.OrigAddr.SetAddr(From)
+	packedMessage.DestAddr.SetAddr(nm.ToAddr)
+	packedMessage.SetToUserName(newTo)
+	packedMessage.SetFromUserName(newFrom)
+	packedMessage.SetSubject(newSubject)
+	packedMessage.SetAttribute(packet.MsgAttrPrivate)
 
 	msgTime := fidotime.NewFidoDate()
 	msgTime.SetNow()
 
-	msgHeader.SetTime(msgTime)
-
-	if err := pw.WriteMessageHeader(msgHeader); err != nil {
-		return err
-	}
+	packedMessage.SetTime(msgTime)
 
 	/* Write message body */
 	msgBody := packet.NewMessageBody()
 
 	/* Cross network NETMAIL */
-	origAddr := fmt.Sprintf("%d:%d/%d", msgHeader.OrigAddr.Zone, msgHeader.OrigAddr.Net,  msgHeader.OrigAddr.Node)
-	destAddr := fmt.Sprintf("%d:%d/%d", msgHeader.DestAddr.Zone, msgHeader.DestAddr.Net, msgHeader.DestAddr.Node)
+	origAddr := fmt.Sprintf("%d:%d/%d", packedMessage.OrigAddr.Zone, packedMessage.OrigAddr.Net,  packedMessage.OrigAddr.Node)
+	destAddr := fmt.Sprintf("%d:%d/%d", packedMessage.DestAddr.Zone, packedMessage.DestAddr.Net, packedMessage.DestAddr.Node)
 
 	log.Printf("Direct message: %+v -> %+v", origAddr, destAddr)
 
@@ -466,13 +463,13 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 		Value: intlKludge,
 		Raw: []byte(fmt.Sprintf("\x01INTL %s", intlKludge)),
 	})
-	fmptKludge := fmt.Sprintf("%d", msgHeader.OrigAddr.Point)
+	fmptKludge := fmt.Sprintf("%d", packedMessage.OrigAddr.Point)
 	msgBody.AddKludge(packet.Kludge{
 		Name: "FMPT",
 		Value: fmptKludge,
 		Raw: []byte(fmt.Sprintf("\x01FMPT %s", fmptKludge)),
 	})
-	toptKludge := fmt.Sprintf("%d", msgHeader.DestAddr.Point)
+	toptKludge := fmt.Sprintf("%d", packedMessage.DestAddr.Point)
 	msgBody.AddKludge(packet.Kludge{
 		Name: "TOPT",
 		Value: toptKludge,
@@ -503,16 +500,20 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	})
 
 	/* Set message body */
-	msgBody.SetRaw(newBody)
+	msgBody.SetContent(newBody)
+
+	packedMessage.SetText(msgBody.Bytes())
 
 	/* Write message in packet */
-	if err := pw.WriteMessage(msgBody); err != nil {
-		return err
+	err5 := pw.WritePackedMessage(packedMessage)
+	if err5 != nil {
+		return err5
 	}
 
 	/* Write complete bytes */
-	if err := pw.WritePacketEnd(); err != nil {
-		return err
+	err6 := pw.WritePacketEnd()
+	if err6 != nil {
+		return err6
 	}
 
 	return nil

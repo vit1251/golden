@@ -41,3 +41,7 @@ func (self *PackedMessage) SetTime(t *fidotime.FidoDate) error {
 	self.Time = t
 	return nil
 }
+
+func (self *PackedMessage) SetText(Text []byte) {
+	self.Text = Text
+}

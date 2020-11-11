@@ -3,6 +3,7 @@ package packet
 import (
 //	"log"
 	"bytes"
+	"fmt"
 )
 
 type MessageBody struct {
@@ -40,13 +41,38 @@ func (self *MessageBody) AddLine(line []byte) {
 	self.lines = append(self.lines, line)
 }
 
-func (self *MessageBody) GetRaw() []byte {
+func (self MessageBody) GetContent() []byte {
 	return bytes.Join(self.lines, []byte(CR))
 }
 
-func (self *MessageBody) SetRaw(rawBody []byte) {
-	rows := bytes.Split(rawBody, []byte(CR))
+func (self *MessageBody) SetContent(content []byte) {
+	rows := bytes.Split(content, []byte(CR))
 	for _, row := range rows {
 		self.AddLine(row)
 	}
+}
+
+func (self MessageBody) Bytes() []byte {
+
+	mem := new(bytes.Buffer)
+
+	/* Write AREA section */
+	var areaName string = self.GetArea()
+	if areaName != "" {
+		mem.WriteString(fmt.Sprintf("AREA:%s", areaName))
+		mem.WriteString(CR)
+	}
+
+	/* Write kludges */
+	for _, k := range self.kludges {
+		mem.WriteString(fmt.Sprintf("%s", k.Raw))
+		mem.WriteString(CR)
+	}
+
+	/* Write message body */
+
+	msgBodyRaw := self.GetContent()
+	mem.Write(msgBodyRaw)
+
+	return mem.Bytes()
 }

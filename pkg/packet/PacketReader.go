@@ -117,13 +117,13 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 	}
 	pktHeader.DestNet = DstNet
 
-	/* FTS-0001: PrdCodL: Byte: FTSC Product Code */
+	/* FTS-0001: PrdCodL: Bytes: FTSC Product Code */
 	_, err13 := reader.ReadUINT8()
 	if err13 != nil {
 		return nil, err13
 	}
 
-	/* FTS-0001: PVMajor: Byte: FTSC Product Rev */
+	/* FTS-0001: PVMajor: Bytes: FTSC Product Rev */
 	_, err14 := reader.ReadUINT8()
 	if err14 != nil {
 		return nil, err14
@@ -148,25 +148,25 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 		return nil, err17
 	}
 
-	/* FTS-0001: Filler: 2*Byte: Spare Change */
+	/* FTS-0001: Filler: 2*Bytes: Spare Change */
 	_, err18 := reader.ReadBytes(2)
 	if err18 != nil {
 		return nil, err18
 	}
 
-	/* FSC-0039: CapValid: CW Byte-Swapped Valid Copy */
+	/* FSC-0039: CapValid: CW Bytes-Swapped Valid Copy */
 	CapValid, err19 := reader.ReadUINT16()
 	if err19 != nil {
 		return nil, err19
 	}
 
-	/* FSC-0039: PrdCodH: Byte: FTSC Product Code */
+	/* FSC-0039: PrdCodH: Bytes: FTSC Product Code */
 	_, err20 := reader.ReadUINT8()
 	if err20 != nil {
 		return nil, err20
 	}
 
-	/* FSC-0039: PVMinor: Byte: FTSC Product Rev */
+	/* FSC-0039: PVMinor: Bytes: FTSC Product Rev */
 	_, err21 := reader.ReadUINT8()
 	if err21 != nil {
 		return nil, err21
@@ -293,7 +293,7 @@ func (self *PacketReader) ReadPackedMessage() (*PackedMessage, error) {
 		return nil, err7
 	}
 
-	/* FTS-0001: DateTime: 20*Byte: Message body was last edited */
+	/* FTS-0001: DateTime: 20*Bytes: Message body was last edited */
 	DateTime, err8 := self.binaryStreamReader.ReadBytes(20)
 	if err8 != nil {
 		return nil, err8
@@ -308,21 +308,21 @@ func (self *PacketReader) ReadPackedMessage() (*PackedMessage, error) {
 		packedMessage.Time = newDateTime
 	}
 
-	/* FTS-0001: ToUserName: 36*Byte:  */
+	/* FTS-0001: ToUserName: 36*Bytes:  */
 	ToUserName, err9 := self.binaryStreamReader.ReadZString()
 	if err9 != nil {
 		return nil, err9
 	}
 	packedMessage.ToUserName = ToUserName
 
-	/* FTS-0001: FromUserName: 36*Byte: */
+	/* FTS-0001: FromUserName: 36*Bytes: */
 	FromUserName, err10 := self.binaryStreamReader.ReadZString()
 	if err10 != nil {
 		return nil, err10
 	}
 	packedMessage.FromUserName = FromUserName
 
-	/* FTS-0001: Subject: 72*Byte */
+	/* FTS-0001: Subject: 72*Bytes */
 	Subject, err11 := self.binaryStreamReader.ReadZString()
 	if err11 != nil {
 		return nil, err11
