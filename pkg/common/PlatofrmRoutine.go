@@ -1,13 +1,17 @@
 package commonfunc
 
-import "runtime"
+import (
+	"runtime"
+	"strings"
+)
 
 func GetPlatform() string {
-	if runtime.GOOS == "windows" {
-		return "Windows"
-	} else if runtime.GOOS == "linux" {
-		return "Linux"
-	}
-	return "Unknown"
+	var GoOS string = runtime.GOOS
+	result := strings.ToUpper(GoOS[0:1]) + strings.ToLower(GoOS[1:])
+	return result
 }
 
+func GetArch() string {
+	var result string = runtime.GOARCH
+	return result
+}
