@@ -227,7 +227,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	}
 
 	/* Prepare packet message */
-	msgHeader := packet.NewPacketMessageHeader()
+	msgHeader := packet.NewPackedMessage()
 	msgHeader.OrigAddr.SetAddr(myAddr)
 	msgHeader.DestAddr.SetAddr(bossAddr)
 	msgHeader.SetToUserName(newTo)
@@ -433,7 +433,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	}
 
 	/* Prepare packet message */
-	msgHeader := packet.NewPacketMessageHeader()
+	msgHeader := packet.NewPackedMessage()
 	msgHeader.OrigAddr.SetAddr(From)
 	msgHeader.DestAddr.SetAddr(nm.ToAddr)
 	msgHeader.SetToUserName(newTo)

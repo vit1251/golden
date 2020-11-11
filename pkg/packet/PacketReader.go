@@ -2,7 +2,6 @@ package packet
 
 import (
 	"errors"
-	"fmt"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"io"
 	"log"
@@ -33,64 +32,69 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 	/* Create packet header */
 	pktHeader := new(PacketHeader)
 
-	/* Read orig node address (2 byte) */
-	fromnode, err1 := reader.ReadUINT16()
+	/* FTS-0001: OrgNode: Word: Origination node address */
+	OrgNode, err1 := reader.ReadUINT16()
 	if err1 != nil {
 		return nil, err1
 	}
-	pktHeader.OrigNode = fromnode
+	pktHeader.OrigNode = OrgNode
 
-	/* Read dest node address (2 byte) */
-	tonode, err2 := reader.ReadUINT16()
+	/* FTS-0001: DstNode: Word: Destination node address */
+	DstNode, err2 := reader.ReadUINT16()
 	if err2 != nil {
 		return nil, err2
 	}
-	pktHeader.DestNode = tonode
+	pktHeader.DestNode = DstNode
 
-	/* */
-	year, err3 := reader.ReadUINT16()
+	/* FTS-0001: Year: Int: Year packet generated */
+	Year, err3 := reader.ReadUINT16()
 	if err3 != nil {
 		return nil, err3
 	}
-	pktHeader.Year = year
+	pktHeader.Year = Year
 
-	month, err4 := reader.ReadUINT16()
+	/* FTS-0001: Month: Int: --//-- */
+	Month, err4 := reader.ReadUINT16()
 	if err4 != nil {
 		return nil, err4
 	}
-	pktHeader.Month = month + 1
+	pktHeader.Month = Month + 1
 
-	day, err5 := reader.ReadUINT16()
+	/* FTS-0001: Day: Int: --//-- */
+	Day, err5 := reader.ReadUINT16()
 	if err5 != nil {
 		return nil, err5
 	}
-	pktHeader.Day = day
+	pktHeader.Day = Day
 
-	hour, err6 := reader.ReadUINT16()
+	/* FTS-0001: Hour: Int: --//-- */
+	Hour, err6 := reader.ReadUINT16()
 	if err6 != nil {
 		return nil, err6
 	}
-	pktHeader.Hour = hour
+	pktHeader.Hour = Hour
 
-	minute, err7 := reader.ReadUINT16()
+	/* FTS-0001: Min: Int: --//-- */
+	Min, err7 := reader.ReadUINT16()
 	if err7 != nil {
 		return nil, err7
 	}
-	pktHeader.Minute = minute
+	pktHeader.Minute = Min
 
-	second, err8 := reader.ReadUINT16()
+	/* FTS-0001: Sec: Int: --//-- */
+	Sec, err8 := reader.ReadUINT16()
 	if err8 != nil {
 		return nil, err8
 	}
-	pktHeader.Second = second
+	pktHeader.Second = Sec
 
-	/* Read packet baud */
+	/* FTS-0001: Baud: Int: Baud Rate (not in use) */
 	_, err9 := reader.ReadUINT16()
 	if err9 != nil {
 		return nil, err9
 	}
 
-	/* Read packet version (2 byte) */
+	/* FTS-0001: PktVer: Int: Packet Version (Always 2) */
 	pktVersion, err10 := reader.ReadUINT16()
 	if err10 != nil {
 		return nil, err10
@@ -99,242 +103,238 @@ func (self *PacketReader) ReadPacketHeader() (*PacketHeader, error) {
 		return nil, errors.New("invalid packet version")
 	}
 
-	/* Origination network (2 byte) */
-	fromnet, err11 := reader.ReadUINT16()
+	/* FTS-0001: OrgNet: Word: Origination net address */
+	OrgNet, err11 := reader.ReadUINT16()
 	if err11 != nil {
 		return nil, err11
 	}
-	pktHeader.OrigNet = fromnet
+	pktHeader.OrigNet = OrgNet
 
-	/* Destination network (2 byte) */
-	tonet, err12 := reader.ReadUINT16()
+	/* FTS-0001: DstNet: Word: Destination net address */
+	DstNet, err12 := reader.ReadUINT16()
 	if err12 != nil {
 		return nil, err12
 	}
-	pktHeader.DestNet = tonet
+	pktHeader.DestNet = DstNet
 
-	/* Read product version (2 byte)*/
+	/* FTS-0001: PrdCodL: Byte: FTSC Product Code */
 	_, err13 := reader.ReadUINT8()
 	if err13 != nil {
 		return nil, err13
 	}
 
+	/* FTS-0001: PVMajor: Byte: FTSC Product Rev */
 	_, err14 := reader.ReadUINT8()
 	if err14 != nil {
 		return nil, err14
 	}
 
-	/* Read packet password (8 byte) */
-	password, err15 := reader.ReadBytes(8)
+	/* FTS-0001: Password: Packet password (8 byte) */
+	Password, err15 := reader.ReadBytes(8)
 	if err15 != nil {
 		return nil, err15
 	}
-	pktHeader.PktPassword = password
+	pktHeader.PktPassword = Password
 
-	/* Read packet zone (2 byte) */
-	fromzone, err16 := reader.ReadUINT16()
+	/* FSC-0039: QOrgZone: Int: Orig Zone */
+	QOrgZone, err16 := reader.ReadINT16()
 	if err16 != nil {
 		return nil, err11
 	}
-	pktHeader.OrigZone = fromzone
 
-	/* Read packet zone (2 byte) */
-	tozone, err17 := reader.ReadUINT16()
+	/* FSC-0039: QDstZone: Int: Dest Zone */
+	QDstZone, err17 := reader.ReadINT16()
 	if err17 != nil {
 		return nil, err17
 	}
-	pktHeader.DestZone = tozone
 
-	/* FSC-0048 - AuxNet - 2 Byte */
-	auxNet, err18 := reader.ReadUINT16()
+	/* FTS-0001: Filler: 2*Byte: Spare Change */
+	_, err18 := reader.ReadBytes(2)
 	if err18 != nil {
 		return nil, err18
 	}
 
-	/* FSC-0048 - CWvalidationCopy - 2 Byte */
-	CWvalidationCopy, err19 := reader.ReadUINT16()
+	/* FSC-0039: CapValid: CW Byte-Swapped Valid Copy */
+	CapValid, err19 := reader.ReadUINT16()
 	if err19 != nil {
 		return nil, err19
 	}
 
-	/* FSC-0048 - ProductCode - 1 Byte */
+	/* FSC-0039: PrdCodH: Byte: FTSC Product Code */
 	_, err20 := reader.ReadUINT8()
 	if err20 != nil {
 		return nil, err20
 	}
 
-	/* FSC-0048 - Revision - 1 Byte */
+	/* FSC-0039: PVMinor: Byte: FTSC Product Rev */
 	_, err21 := reader.ReadUINT8()
 	if err21 != nil {
 		return nil, err21
 	}
 
-	/* FSC-0048 - CapabilWord - 2 Byte */
-	capabilWord, err22 := reader.ReadUINT16()
+	/* FSC-0039: CapWord: Word: Capability Word */
+	CapWord, err22 := reader.ReadUINT16()
 	if err22 != nil {
 		return nil, err22
 	}
 
-	/* FSC-0048 - OrigZone - 2 Byte */
-	origZone, err23 := reader.ReadUINT16()
+	/* FSC-0039: OrigZone: Int: Origination Zone */
+	OrigZone, err23 := reader.ReadINT16()
 	if err23 != nil {
 		return nil, err23
 	}
 
-	/* FSC-0048 - DestZone - 2 Byte */
-	destZone, err24 := reader.ReadUINT16()
+	/* FSC-0039: DestZone: Int: Destination Zone */
+	DestZone, err24 := reader.ReadINT16()
 	if err24 != nil {
 		return nil, err24
 	}
 
-	/* FSC-0048 - OrigPoint - 2 Byte */
-	origPoint, err25 := reader.ReadUINT16()
+	/* FSC-0039: OrigPoint: Int: Origination Point */
+	OrigPoint, err25 := reader.ReadINT16()
 	if err25 != nil {
 		return nil, err25
 	}
 
-	/* FSC-0048 - DestPoint - 2 Byte */
-	destPoint, err26 := reader.ReadUINT16()
+	/* FSC-0039: DestPoint: Int: Destination point */
+	DestPoint, err26 := reader.ReadINT16()
 	if err26 != nil {
 		return nil, err26
 	}
 
-	/* FSC-0048 - Product Specific Data - 4 Bytes */
-	_, err27 := reader.ReadUINT32()
+	/* FSC-0039: ProdData: Long: Product-specific data */
+	_, err27 := reader.ReadINT32()
 	if err27 != nil {
 		return nil, err27
 	}
 
-	/* Checks */
+	/* FSC-0039: Check capability */
 
-	var newCapabilWord uint16 = ((CWvalidationCopy >> 8) + (CWvalidationCopy << 8)) & 0xFFFF
-	if (capabilWord != 0) && (capabilWord == newCapabilWord) {
-		log.Printf("PacketReaderExtension: Packet process as FSC-0048 packet")
+	var swapCapValid uint16 = ((CapValid >> 8) + (CapValid << 8)) & 0xFFFF
+	if (CapWord != 0) && (CapWord == swapCapValid) {
+		log.Printf("Packet process in FSC-0039 capability mode")
 	} else {
-		return nil, fmt.Errorf("error in FSC-0048 capatibility word value")
+		log.Printf("Packet process in FSC-0001 capability mode")
+		return pktHeader, nil
 	}
 
+	log.Printf("QOrgZone = %d QDstZone = %d OrigZone = %d DestZone = %d", QOrgZone, QDstZone, OrigZone, DestZone)
+
+	pktHeader.OrigZone = uint16(QOrgZone)
 	if pktHeader.OrigZone == 0 {
-		pktHeader.OrigZone = origZone
+		pktHeader.OrigZone = uint16(OrigZone)
 	}
+
+	pktHeader.DestZone = uint16(QDstZone)
 	if pktHeader.DestZone == 0 {
-		pktHeader.DestZone = destZone
+		pktHeader.DestZone = uint16(DestZone)
 	}
-	pktHeader.OrigPoint = origPoint
-	pktHeader.DestPoint = destPoint
-	if pktHeader.OrigNet == 65535 {
-		pktHeader.OrigNet = auxNet
-	}
+
+	pktHeader.OrigPoint = uint16(OrigPoint)
+	pktHeader.DestPoint = uint16(DestPoint)
 
 	return pktHeader, nil
 }
 
-func (self *PacketReader) ReadMessageHeader() (*PacketMessageHeader, error) {
+func (self *PacketReader) ReadPackedMessage() (*PackedMessage, error) {
 
-	msgHeader := new(PacketMessageHeader)
+	packedMessage := new(PackedMessage)
 
-	/* Read packet message version (2 byte) */
-	if value, err1 := self.binaryStreamReader.ReadUINT16(); err1 != nil {
-		return nil, err1
-	} else {
-		if value == 0 {
-			return nil, io.EOF
-		} else if value == 2 {
-			/* Valid */
-		} else {
-			return nil, errors.New("invalid packet message version")
-		}
-	}
-
-	/* Read origination node (2 byte) */
-	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
-		return nil, err
-	} else {
-		msgHeader.OrigAddr.Node = value
-	}
-	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
-		return nil, err
-	} else {
-		msgHeader.DestAddr.Node = value
-	}
-	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
-		return nil, err
-	} else {
-		msgHeader.OrigAddr.Net = value
-	}
-	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
-		return nil, err
-	} else {
-		msgHeader.DestAddr.Net = value
-	}
-
-	if value, err := self.binaryStreamReader.ReadUINT16(); err != nil {
-		return nil, err
-	} else {
-		msgHeader.Attributes = value
-	}
-
-	/* Read unused cost fields (2bytes) */
-	if _, err := self.binaryStreamReader.ReadUINT8(); err != nil {
-		return nil, err
-	} else {
-	}
-	if _, err := self.binaryStreamReader.ReadUINT8(); err != nil {
-		return nil, err
-	} else {
-	}
-
-	/* Read datetime */
-	if value, err := self.binaryStreamReader.ReadBytes(20); err != nil {
-		return nil, err
-	} else {
-
-		log.Printf("datetime = %s", value)
-
-		/* Create new one parser */
-		parser := fidotime.NewDateParser()
-		if stamp, err1 := parser.Parse(value); err1 != nil {
-			return nil, err1
-		} else {
-			msgHeader.Time = stamp
-		}
-
-	}
-	/* Read "To" (var bytes) */
-	if value, err := self.binaryStreamReader.ReadZString(); err != nil {
-		return nil, err
-	} else {
-		msgHeader.ToUserName = value
-	}
-
-	/* Read "From" (var bytes) */
-	if value, err := self.binaryStreamReader.ReadZString(); err != nil {
-		return nil, err
-	} else {
-		msgHeader.FromUserName = value
-	}
-
-	/* Read "Subject" */
-	if value, err := self.binaryStreamReader.ReadZString(); err != nil {
-		return nil, err
-	} else {
-		msgHeader.Subject = value
-	}
-
-	return msgHeader, nil
-}
-
-func (self *PacketReader) ReadMessage() ([]byte, error) {
-
-	/* Read message body (var bytes) */
-	body, err1 := self.binaryStreamReader.ReadZString()
+	/* FTS-0001: MsgType: Word: Message Type, old type-1 obsolete */
+	MsgType, err1 := self.binaryStreamReader.ReadUINT16()
 	if err1 != nil {
 		return nil, err1
 	}
+	if MsgType == 0 {
+		return nil, io.EOF
+	}
+	if MsgType != 2 {
+		return nil, errors.New("invalid packet message version")
+	}
 
-	/* Done */
-	return body, nil
-}
+	/* FTS-0001: OrigNode: Word: Origination node */
+	OrigNode, err2 := self.binaryStreamReader.ReadUINT16()
+	if err2 != nil {
+		return nil, err2
+	}
+	packedMessage.OrigAddr.Node = OrigNode
 
-func (self *PacketReader) Close() {
+	/* FTS-0001: DestNode: Word: Destination node */
+	DestNode, err3 := self.binaryStreamReader.ReadUINT16()
+	if err3 != nil {
+		return nil, err3
+	}
+	packedMessage.DestAddr.Node = DestNode
+
+	/* FTS-0001: OrigNet: Word: Origination net address */
+	OrigNet, err4 := self.binaryStreamReader.ReadUINT16()
+	if err4 != nil {
+		return nil, err4
+	}
+	packedMessage.OrigAddr.Net = OrigNet
+
+	/* FTS-0001: DestNet: Word: Destination net address */
+	DestNet, err5 := self.binaryStreamReader.ReadUINT16()
+	if err5 != nil {
+		return nil, err5
+	}
+	packedMessage.DestAddr.Net = DestNet
+
+	/* FTS-0001: AttributeWord: Word: Attribute */
+	AttributeWord, err6 := self.binaryStreamReader.ReadUINT16()
+	if err6 != nil {
+		return nil, err6
+	}
+	packedMessage.Attributes = AttributeWord
+
+	/* FTS-0001: Cost: Word: ... */
+	_, err7 := self.binaryStreamReader.ReadUINT16()
+	if err7 != nil {
+		return nil, err7
+	}
+
+	/* FTS-0001: DateTime: 20*Byte: Message body was last edited */
+	DateTime, err8 := self.binaryStreamReader.ReadBytes(20)
+	if err8 != nil {
+		return nil, err8
+	}
+	log.Printf("PakdMessage: DateTime = %s", DateTime)
+
+	/* Create new one parser */
+	parser := fidotime.NewDateParser()
+	if newDateTime, err := parser.Parse(DateTime); err != nil {
+		return nil, err
+	} else {
+		packedMessage.Time = newDateTime
+	}
+
+	/* FTS-0001: ToUserName: 36*Byte:  */
+	ToUserName, err9 := self.binaryStreamReader.ReadZString()
+	if err9 != nil {
+		return nil, err9
+	}
+	packedMessage.ToUserName = ToUserName
+
+	/* FTS-0001: FromUserName: 36*Byte: */
+	FromUserName, err10 := self.binaryStreamReader.ReadZString()
+	if err10 != nil {
+		return nil, err10
+	}
+	packedMessage.FromUserName = FromUserName
+
+	/* FTS-0001: Subject: 72*Byte */
+	Subject, err11 := self.binaryStreamReader.ReadZString()
+	if err11 != nil {
+		return nil, err11
+	}
+	packedMessage.Subject = Subject
+
+	/* FTS-0001: Text: ... */
+	Text, err1 := self.binaryStreamReader.ReadZString()
+	if err1 != nil {
+		return nil, err1
+	}
+	packedMessage.Text = Text
+
+	return packedMessage, nil
 }

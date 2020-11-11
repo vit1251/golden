@@ -32,3 +32,11 @@ func (self Script) String() string {
 	result = fmt.Sprintf("<script %s></script>", strings.Join(attrs, " "))
 	return result
 }
+
+func (self Script) SetSrc(s string) {
+	self.Src = s
+}
+
+func (self Script) SetDefer(b bool) {
+	self.Defer = b
+}

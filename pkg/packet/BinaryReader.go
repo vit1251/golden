@@ -29,10 +29,24 @@ func (self *BinaryReader) ReadUINT8() (uint8, error) {
 	return i, err
 }
 
+func (self *BinaryReader) ReadINT16() (int16, error) {
+	var i int16
+	err := binary.Read(self.reader, binary.LittleEndian, &i)
+	self.offset += 2
+	return i, err
+}
+
 func (self *BinaryReader) ReadUINT16() (uint16, error) {
 	var i uint16
 	err := binary.Read(self.reader, binary.LittleEndian, &i)
 	self.offset += 2
+	return i, err
+}
+
+func (self *BinaryReader) ReadINT32() (int32, error) {
+	var i int32
+	err := binary.Read(self.reader, binary.LittleEndian, &i)
+	self.offset += 4
 	return i, err
 }
 
@@ -77,4 +91,3 @@ func (self *BinaryReader) ReadUntil(ch byte) ([]byte, error) {
 	}
 	return cache, nil
 }
-

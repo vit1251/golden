@@ -30,7 +30,7 @@ func TestPacketReaderReadPacketHeader(t *testing.T) {
 
 	t.Logf("pktHeader = %+v", pktHeader)
 
-	msgHeader, _ := pktReader.ReadMessageHeader()
+	msgHeader, _ := pktReader.ReadPackedMessage()
 
 	t.Logf("msgHeader = %+v", msgHeader)
 

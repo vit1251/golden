@@ -13,16 +13,29 @@ type BaseWidget struct {
 
 func NewBaseWidget() *BaseWidget {
 	bw := new(BaseWidget)
-	bw.AddStyle("/static/custom.css")
-	bw.AddScript("/static/custom.js", true)
-	bw.AddStyle("/assets/css/main.css")
+
+	/* Set scripts */
+	mainScript := NewScript()
+	mainScript.SetSrc("/static/custom.js")
+	mainScript.SetDefer(true)
+	bw.AddScript(*mainScript)
+
+	/* Set main style */
+	mainStyle := NewStyle()
+	mainStyle.SetHref("/static/custom.css")
+	bw.AddStyle(*mainStyle)
+
+	/* Set print style */
+	printStyle := NewStyle()
+	printStyle.SetHref("/static/print.css")
+	printStyle.SetMedia("print")
+	bw.AddStyle(*printStyle)
+
 	return bw
 }
 
-func (self *BaseWidget) AddStyle(path string) *BaseWidget {
-	s := NewStyle()
-	s.SetHref(path)
-	self.styles = append(self.styles, *s)
+func (self *BaseWidget) AddStyle(s Style) *BaseWidget {
+	self.styles = append(self.styles, s)
 	return self
 }
 
@@ -60,12 +73,7 @@ func (self *BaseWidget) SetWidget(widget IWidget) {
 	self.mainWidget = widget
 }
 
-func (self *BaseWidget) AddScript(src string, defered bool) *BaseWidget {
-
-	script := NewScript()
-	script.Src = src
-	script.Defer = defered
-	self.scripts = append(self.scripts, *script)
-
+func (self *BaseWidget) AddScript(script Script) *BaseWidget {
+	self.scripts = append(self.scripts, script)
 	return self
 }

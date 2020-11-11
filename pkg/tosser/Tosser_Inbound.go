@@ -19,26 +19,29 @@ import (
 	"time"
 )
 
-func (self *Tosser) processNewMessage(pktMessage *TosserPacketMessage) error {
+func (self *Tosser) processNewMessage(packet *TosserPacket) error {
+
+	//packetHeader := packet.GetHeader()
+	packedMessage := packet.GetMessage()
 
 	msgContentParser := msg.NewMessageContentParser()
-	msgBody, err1 := msgContentParser.Parse(pktMessage.Body)
+	msgBody, err1 := msgContentParser.Parse(packedMessage.Text)
 	if err1 != nil {
 		return err1
 	}
 
 	/* Process message */
 	if msgBody.IsArea() {
-		return self.processNewEchoMessage(pktMessage.Header, msgBody)
+		return self.processNewEchoMessage(packedMessage, msgBody)
 	} else {
-		return self.processNewDirectMessage(pktMessage.Header, msgBody)
+		return self.processNewDirectMessage(packedMessage, msgBody)
 	}
 
 	return nil
 
 }
 
-func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeader, msgBody *msg.MessageContent) error {
+func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msgBody *msg.MessageContent) error {
 
 	charsetManager := self.restoreCharsetManager()
 	mapperManager := self.restoreMapperManager()
@@ -187,7 +190,7 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PacketMessageHeade
 
 }
 
-func (self *Tosser) processNewEchoMessage(msgHeader *packet.PacketMessageHeader, msgBody *msg.MessageContent) error {
+func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBody *msg.MessageContent) error {
 
 	mapperManager := self.restoreMapperManager()
 	echoMapper := mapperManager.GetEchoMapper()
@@ -372,25 +375,19 @@ func (self *Tosser) ProcessPacket(name string) error {
 	for {
 
 		/* Read message header */
-		msgHeader, err5 := pr.ReadMessageHeader()
+		packedMessage, err5 := pr.ReadPackedMessage()
 		if err5 == io.EOF {
 			break
 		}
 		if err5 != nil {
 			return err5
 		}
-		log.Printf("msgHeader = %+v", msgHeader)
-
-		/* Read message body */
-		rawBody, err6 := pr.ReadMessage()
-		if err6 != nil {
-			return err6
-		}
+		log.Printf("packetMessage = %+v", packedMessage)
 
 		/* Create message */
-		msgTosser := NewTosserPacketMessage()
-		msgTosser.Header = msgHeader
-		msgTosser.Body = rawBody
+		msgTosser := NewTosserPacket()
+		msgTosser.SetHeader(pktHeader)
+		msgTosser.SetMessage(packedMessage)
 
 		/* Process message */
 		err7 := self.processNewMessage(msgTosser)

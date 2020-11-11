@@ -204,7 +204,7 @@ func (self *PacketWriter) WritePacketHeader(pktHeader *PacketHeader) error {
 
 const PACKET_MESSAGE_MAGIC = 2
 
-func (self *PacketWriter) WriteMessageHeader(msgHeader *PacketMessageHeader) error {
+func (self *PacketWriter) WriteMessageHeader(msgHeader *PackedMessage) error {
 
 	/* Write packet message version (2 byte) */
 	if err1 := self.binaryStreamWriter.WriteUINT16(PACKET_MESSAGE_MAGIC); err1 != nil {
@@ -233,11 +233,8 @@ func (self *PacketWriter) WriteMessageHeader(msgHeader *PacketMessageHeader) err
 	}
 
 	/* Read unused cost fields (2 bytes) */
-	if err7 := self.binaryStreamWriter.WriteUINT8(0); err7 != nil {
+	if err7 := self.binaryStreamWriter.WriteUINT16(0); err7 != nil {
 		return err7
-	}
-	if err8 := self.binaryStreamWriter.WriteUINT8(0); err8 != nil {
-		return err8
 	}
 
 	/* Read datetime */

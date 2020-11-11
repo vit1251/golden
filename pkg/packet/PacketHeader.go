@@ -30,6 +30,11 @@ type PacketHeader struct {
 
 }
 
+func NewPacketHeader() *PacketHeader {
+	ph := new(PacketHeader)
+	return ph
+}
+
 func (self *PacketHeader) SetOrigAddr(addr string) {
 
 	/* Parse address */
@@ -78,4 +83,10 @@ func (self PacketHeader) GetDate() time.Time {
 	var newMinute int = int(self.Minute)
 	var newSecond int = int(self.Second)
 	return time.Date(newYear, newMonth, newDay, newHour, newMinute, newSecond, 0, time.Local)
+}
+
+func (self *PacketHeader) SetPassword(password string) {
+	newPassword := make([]byte, 8)
+	copy(newPassword, password)
+	self.PktPassword = newPassword
 }
