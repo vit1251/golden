@@ -61,7 +61,7 @@ func (self *EchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	indexTable.
 		AddRow(widgets.NewTableRowWidget().
 			SetClass("echo-index-header").
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("GetName"))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Count"))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
