@@ -6,15 +6,15 @@ import (
 	"net/http"
 )
 
-type EchoCreateAction struct {
+type EchoAreaCreateAction struct {
 	Action
 }
 
-func NewEchoCreateAction() *EchoCreateAction {
-	return new(EchoCreateAction)
+func NewEchoAreaCreateAction() *EchoAreaCreateAction {
+	return new(EchoAreaCreateAction)
 }
 
-func (self *EchoCreateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoAreaCreateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 
 	/* Render */
@@ -57,7 +57,7 @@ func (self *EchoCreateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 }
 
-func (self *EchoCreateAction) createInputField(box *widgets.VBoxWidget, name string, summary string, value string) {
+func (self *EchoAreaCreateAction) createInputField(box *widgets.VBoxWidget, name string, summary string, value string) {
 
 	mainDiv := widgets.NewDivWidget().
 		SetClass("form-group row")

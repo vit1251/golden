@@ -7,16 +7,16 @@ import (
 	"net/http"
 )
 
-type EchoPurgeCompleteAction struct {
+type EchoAreaPurgeCompleteAction struct {
 	Action
 }
 
-func NewEchoPurgeCompleteAction() *EchoPurgeCompleteAction {
-	rca := new(EchoPurgeCompleteAction)
+func NewEchoAreaPurgeCompleteAction() *EchoAreaPurgeCompleteAction {
+	rca := new(EchoAreaPurgeCompleteAction)
 	return rca
 }
 
-func (self *EchoPurgeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoAreaPurgeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	echoMapper := mapperManager.GetEchoMapper()

@@ -7,16 +7,16 @@ import (
 	"net/http"
 )
 
-type EchoRemoveCompleteAction struct {
+type EchoAreaRemoveCompleteAction struct {
 	Action
 }
 
-func NewEchoRemoveCompleteAction() *EchoRemoveCompleteAction {
-	rca := new(EchoRemoveCompleteAction)
+func NewEchoRemoveCompleteAction() *EchoAreaRemoveCompleteAction {
+	rca := new(EchoAreaRemoveCompleteAction)
 	return rca
 }
 
-func (self *EchoRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoAreaRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()

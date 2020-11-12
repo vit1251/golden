@@ -6,15 +6,15 @@ import (
 	"net/http"
 )
 
-type EchoCreateComplete struct {
+type EchoAreaCreateComplete struct {
 	Action
 }
 
-func NewEchoCreateCompleteAction() *EchoCreateComplete {
-	return new(EchoCreateComplete)
+func NewEchoAreaCreateCompleteAction() *EchoAreaCreateComplete {
+	return new(EchoAreaCreateComplete)
 }
 
-func (self *EchoCreateComplete) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoAreaCreateComplete) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()

@@ -64,22 +64,22 @@ func (self *SiteManager) Register(pattern string, a IAction) {
 
 func (self *SiteManager) registerFrontend() {
 	self.Register("/", action.NewWelcomeAction())
-	self.Register("/echo", action.NewEchoIndexAction())
-	self.Register("/echo/create", action.NewEchoCreateAction())
-	self.Register("/echo/create/complete", action.NewEchoCreateCompleteAction())
+	self.Register("/echo", action.NewEchoAreaIndexAction())
+	self.Register("/echo/create", action.NewEchoAreaCreateAction())
+	self.Register("/echo/create/complete", action.NewEchoAreaCreateCompleteAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}", action.NewEchoMsgIndexAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tree", action.NewEchoMsgTreeAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", action.NewEchoRemoveAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", action.NewEchoAreaRemoveAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove/complete", action.NewEchoRemoveCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge", action.NewEchoPurgeAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge/complete", action.NewEchoPurgeCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", action.NewEchoUpdateAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update/complete", action.NewEchoUpdateCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", action.NewEchoComposeAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge", action.NewEchoAreaPurgeAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge/complete", action.NewEchoAreaPurgeCompleteAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", action.NewEchoAreaUpdateAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update/complete", action.NewEchoAreaUpdateCompleteAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", action.NewEchoMsgComposeAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/view", action.NewEchoMsgViewAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/dump", action.NewEchoMsgDumpAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/twit", action.NewEchoMsgTwitAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply", action.NewEchoReplyAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply", action.NewEchoMsgReplyAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove", action.NewEchoMsgRemoveAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", action.NewEchoMsgRemoveCompleteAction())
 	self.Register("/file", action.NewFileEchoIndexAction())
@@ -112,7 +112,6 @@ func (self *SiteManager) registerFrontend() {
 
 func (self *SiteManager) registerBackend() {
 	self.Register("/api/stat", action.NewStatApiAction())
-	self.Register("/api/echo/create", action.NewEchoCreateApiAction())
 	self.Register("/api/netmail/remove", action.NewNetmailRemoveApiAction())
 }
 

@@ -8,16 +8,16 @@ import (
 	"net/http"
 )
 
-type EchoPurgeAction struct {
+type EchoAreaPurgeAction struct {
 	Action
 }
 
-func NewEchoPurgeAction() *EchoPurgeAction {
-	ra := new(EchoPurgeAction)
+func NewEchoAreaPurgeAction() *EchoAreaPurgeAction {
+	ra := new(EchoAreaPurgeAction)
 	return ra
 }
 
-func (self *EchoPurgeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoAreaPurgeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()

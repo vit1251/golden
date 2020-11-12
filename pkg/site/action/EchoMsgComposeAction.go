@@ -7,16 +7,16 @@ import (
 	"net/http"
 )
 
-type EchoComposeAction struct {
+type EchoMsgComposeAction struct {
 	Action
 }
 
-func NewEchoComposeAction() *EchoComposeAction {
-	ca := new(EchoComposeAction)
+func NewEchoMsgComposeAction() *EchoMsgComposeAction {
+	ca := new(EchoMsgComposeAction)
 	return ca
 }
 
-func (self *EchoComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoMsgComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()

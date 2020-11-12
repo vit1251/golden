@@ -8,16 +8,15 @@ import (
 	"net/http"
 )
 
-type EchoRemoveAction struct {
+type EchoAreaRemoveAction struct {
 	Action
 }
 
-func NewEchoRemoveAction() *EchoRemoveAction {
-	ra := new(EchoRemoveAction)
-	return ra
+func NewEchoAreaRemoveAction() *EchoAreaRemoveAction {
+	return new(EchoAreaRemoveAction)
 }
 
-func (self *EchoRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoAreaRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()

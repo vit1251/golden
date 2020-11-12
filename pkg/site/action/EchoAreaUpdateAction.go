@@ -8,16 +8,16 @@ import (
 	"net/http"
 )
 
-type EchoUpdateAction struct {
+type EchoAreaUpdateAction struct {
 	Action
 }
 
-func NewEchoUpdateAction() *EchoUpdateAction {
-	ea := new(EchoUpdateAction)
+func NewEchoAreaUpdateAction() *EchoAreaUpdateAction {
+	ea := new(EchoAreaUpdateAction)
 	return ea
 }
 
-func (self *EchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()

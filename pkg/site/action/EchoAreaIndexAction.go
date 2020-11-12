@@ -7,16 +7,16 @@ import (
 	"net/http"
 )
 
-type EchoIndexAction struct {
+type EchoAreaIndexAction struct {
 	Action
 }
 
-func NewEchoIndexAction() *EchoIndexAction {
-	aa := new(EchoIndexAction)
+func NewEchoAreaIndexAction() *EchoAreaIndexAction {
+	aa := new(EchoAreaIndexAction)
 	return aa
 }
 
-func (self *EchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()

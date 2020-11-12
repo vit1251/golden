@@ -9,22 +9,22 @@ import (
 	"net/http"
 )
 
-type EchoReplyAction struct {
+type EchoMsgReplyAction struct {
 	Action
 }
 
-func NewEchoReplyAction() *EchoReplyAction {
-	ra := new(EchoReplyAction)
+func NewEchoMsgReplyAction() *EchoMsgReplyAction {
+	ra := new(EchoMsgReplyAction)
 	return ra
 }
 
-func (self *EchoReplyAction) preprocessSubject(origMsg msg.Message) string {
+func (self *EchoMsgReplyAction) preprocessSubject(origMsg msg.Message) string {
 	compactor := msg.NewSubjectCompactor()
 	newSubject := compactor.Compact(origMsg.Subject)
 	return newSubject
 }
 
-func (self EchoReplyAction) preprocessBody(origMsg msg.Message) string {
+func (self EchoMsgReplyAction) preprocessBody(origMsg msg.Message) string {
 
 	cmap := msg.NewMessageAuthorParser()
 	ma, _ := cmap.Parse(origMsg.From)
@@ -43,7 +43,7 @@ func (self EchoReplyAction) preprocessBody(origMsg msg.Message) string {
 	return newContent2
 }
 
-func (self *EchoReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *EchoMsgReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
