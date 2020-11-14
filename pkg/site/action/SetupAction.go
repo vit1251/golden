@@ -43,44 +43,81 @@ func (self *setupSection) Register(c *mapper.Config, section string, name string
 
 }
 
-func (self SetupAction) makeSections(c *mapper.Config) []setupSection {
+func (self SetupAction) makeNetworkingSection(c *mapper.Config) setupSection {
 
-	var setupSections []setupSection
-
-	/* Networking */
+	/* Section header */
 	netSetupSession := new(setupSection)
 	netSetupSession.Name = "Networking"
 
-	/* Set parameters */
+	/* Section options */
 	netSetupSession.Register(c,"main", "Address", "FidoNet network point address (i.e. POINT address)")
 	netSetupSession.Register(c,"main", "NetAddr", "FidoNet network BOSS address (example: f24.n5023.z2.binkp.net:24554)")
 	netSetupSession.Register(c,"main", "Password", "FidoNet point password")
 	netSetupSession.Register(c,"main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
 
-	setupSections = append(setupSections, *netSetupSession)
+	return *netSetupSession
+}
 
-	/* Users */
+func (self SetupAction) makeUserSection(c *mapper.Config) setupSection {
+
+	/* Section header */
 	userSetupSession := new(setupSection)
 	userSetupSession.Name = "User options"
 
-	/* Set parameters */
+	/* Section options */
 	userSetupSession.Register(c,"main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
 	userSetupSession.Register(c,"main", "Country", "Country where user is seat")
 	userSetupSession.Register(c,"main", "City", "City where user is seat")
 	userSetupSession.Register(c,"main", "Origin", "Origin was provide BBS station name and network address")
 	userSetupSession.Register(c,"main", "TearLine", "Tearline provide person sign in all their messages")
 
-	setupSections = append(setupSections, *userSetupSession)
+	return *userSetupSession
+}
 
-	/* Other */
+func (self SetupAction) makeOtherSection(c *mapper.Config) setupSection {
+
+	/* Section header */
 	otherSetupSession := new(setupSection)
 	otherSetupSession.Name = "Other"
 
-	/* Set parameters */
+	/* Section options */
 	otherSetupSession.Register(c,"main", "StationName", "Station name is your nickname")
 	otherSetupSession.Register(c,"mailer", "Interval", "Polling interval in minutes")
 
-	setupSections = append(setupSections, *otherSetupSession)
+	return *otherSetupSession
+}
+
+func (self SetupAction) makeDirectMessageSection(c *mapper.Config) setupSection {
+
+	/* Section header */
+	directMessageSetupSection := new(setupSection)
+	directMessageSetupSection.Name = "Netmail options"
+
+	/* Section options */
+	directMessageSetupSection.Register(c,"netmail", "Charset", "Netmail charset")
+
+	return *directMessageSetupSection
+}
+
+func (self SetupAction) makeSections(c *mapper.Config) []setupSection {
+
+	var setupSections []setupSection
+
+	/* Networking section */
+	networkingSection := self.makeNetworkingSection(c)
+	setupSections = append(setupSections, networkingSection)
+
+	/* User section */
+	userSection := self.makeUserSection(c)
+	setupSections = append(setupSections, userSection)
+
+	/* Direct message section */
+	directMessageSection := self.makeDirectMessageSection(c)
+	setupSections = append(setupSections, directMessageSection)
+
+	/* Other section */
+	otherSection := self.makeOtherSection(c)
+	setupSections = append(setupSections, otherSection)
 
 	return setupSections
 

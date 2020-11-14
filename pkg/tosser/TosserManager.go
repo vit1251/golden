@@ -368,6 +368,8 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	origin1 := self.prepareOrigin(origin)
 	Origin = origin1
 
+	charset, _ := configMapper.Get("netmail", "Charset")
+
 	/* Create packet name */
 	pktName := cmn.MakePacketName()
 	outboundDirectory := cmn.GetOutboundDirectory()
@@ -415,7 +417,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	nm.body += fmt.Sprintf(" * Origin: %s (%s)", newOrigin, From) + packet.CR
 
 	/* Encode message */
-	msgCharset := "CP866"
+	var msgCharset string = charset // TODO - check valid charset here ...
 	newSubject, err1 := charsetManager.EncodeMessageBody([]rune(nm.Subject), msgCharset)
 	if err1 != nil {
 		return err1
