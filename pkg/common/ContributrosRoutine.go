@@ -6,6 +6,7 @@ func GetContributors() []string {
 
 	contributors = append(contributors, "Sergey Anohin")
 	contributors = append(contributors, "Jaroslav Bespalov")
+	contributors = append(contributors, "Richard Menedetter")
 
 	return contributors
 }

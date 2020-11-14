@@ -78,7 +78,7 @@ func (self SetupAction) makeSections(c *mapper.Config) []setupSection {
 
 	/* Set parameters */
 	otherSetupSession.Register(c,"main", "StationName", "Station name is your nickname")
-	otherSetupSession.Register(c,"mailer", "Interval", "Mailer interval")
+	otherSetupSession.Register(c,"mailer", "Interval", "Polling interval in minutes")
 
 	setupSections = append(setupSections, *otherSetupSession)
 

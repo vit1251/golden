@@ -266,7 +266,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 			if err11 != nil {
 				return err11
 			}
-			msgTime = *msgTimePtr // TODO - I check this is legal ... buy require clarification ...
+			msgTime = *msgTimePtr // NOTE - I check this is legal variant copy date struct ...
 			log.Printf("fidoTime = %+v timezone = %+v msgTime = %+v", msgHeader.Time, msgZone, msgTime)
 
 		} else {

@@ -247,7 +247,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	msgBody.AddKludge(packet.Kludge{
 		Name: "TZUTC",
 		Value: newZone,
-		Raw: []byte(fmt.Sprintf("\x01TZUTC %s", newZone)),
+		Raw: []byte(fmt.Sprintf("\x01TZUTC: %s", newZone)),
 	})
 	chrsKludge := self.makeChrsKludgeByCharsetName(area.GetCharset())
 	msgBody.AddKludge(packet.Kludge{
@@ -456,7 +456,14 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
 	log.Printf("Direct message: %+v -> %+v", origAddr, destAddr)
 
+	newZone := self.makeTimeZone()
+
 	/* Control paragraph write section */
+	msgBody.AddKludge(packet.Kludge{
+		Name: "TZUTC",
+		Value: newZone,
+		Raw: []byte(fmt.Sprintf("\x01TZUTC: %s", newZone)),
+	})
 	intlKludge := fmt.Sprintf("%s %s", destAddr, origAddr)
 	msgBody.AddKludge(packet.Kludge{
 		Name: "INTL",

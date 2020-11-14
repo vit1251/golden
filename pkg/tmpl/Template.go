@@ -17,7 +17,7 @@ func NewTemplate() *Template {
 	r.Set("GOLDEN_ARCH", cmn.GetArch())
 	r.Set("GOLDEN_VERSION", cmn.GetVersion())
 	r.Set("GOLDEN_RELEASE_DATE", cmn.GetReleaseDate())
-	r.Set("GOLDEN_RELEASE_HASH", "master")
+	r.Set("GOLDEN_RELEASE_HASH", cmn.GetReleaseBranch())
 
 	return r
 }
