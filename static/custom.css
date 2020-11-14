@@ -388,6 +388,8 @@ span.hidden {
 }
 
 .welcome-header {
+    color: #883;
+    text-decoration: underline;
     text-align: center;
     font-size: 26pt;
 }
@@ -397,13 +399,25 @@ span.hidden {
 }
 
 .welcome-contributor-header {
+    color: #388;
+    text-decoration: underline;
     text-align: center;
     font-size: 23pt;
 }
 
 .welcome-contributor-list {
-    text-underline-color: #838;
-    text-underline-style: single;
+    text-align: center;
+}
+
+.welcome-source {
+    color: #838;
+    text-decoration: underline;
+    text-align: center;
+    font-size: 23pt;
+}
+
+.welcome-source-link {
+    display: block;
     text-align: center;
 }
 

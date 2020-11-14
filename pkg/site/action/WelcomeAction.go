@@ -40,20 +40,24 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	vBox.Add(container)
 
+	/* Fido mascot */
 	imageWidget := widgets.NewImageWidget()
 	imageWidget.SetSource("/static/fido.svg").SetClass("welcome-img")
 	containerVBox.Add(imageWidget)
 
+	/* Application name */
 	nameWidget := widgets.NewDivWidget().
 		SetClass("welcome-header").
 		SetContent("Golden point")
 	containerVBox.Add(nameWidget)
 
+	/* Application version */
 	versionWidget := widgets.NewDivWidget()
 	versionWidget.SetClass("welcome-version")
 	versionWidget.SetContent(fmt.Sprintf("Version %s", version))
 	containerVBox.Add(versionWidget)
 
+	/* Application contributors */
 	contributorHeader := widgets.NewDivWidget().
 		SetClass("welcome-contributor-header").
 		SetContent("Contributers")
@@ -72,6 +76,19 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	containerVBox.Add(contributorList)
 
+	/* Application source code */
+	sourceCodeHeader := widgets.NewDivWidget().
+		SetClass("welcome-source").
+		SetContent("Source code and support")
+	containerVBox.Add(sourceCodeHeader)
+
+	sourceLink := widgets.NewLinkWidget().
+		SetLink("https://github.com/vit1251/golden").
+		SetContent("https://github.com/vit1251/golden").
+		SetClass("welcome-source-link")
+	containerVBox.Add(sourceLink)
+
+	/* Render */
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)
 		http.Error(w, status, http.StatusInternalServerError)
