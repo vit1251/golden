@@ -23,39 +23,38 @@ func (self *NetmailMapper) GetMessageHeaders() ([]*NetmailMsg, error) {
 
 	var result []*NetmailMsg
 
-	query1 := "SELECT `nmId`, `nmHash`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmOrigAddr`, `nmDestAddr`, `nmDate` FROM `netmail` ORDER BY `nmDate` ASC, `nmId` ASC"
+	query1 := "SELECT `nmId`, `nmMsgId`, `nmHash`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmOrigAddr`, `nmDestAddr`, `nmDate` FROM `netmail` ORDER BY `nmDate` ASC, `nmId` ASC"
 	var params []interface{}
 
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
-		var ID string
-		var msgHash *string
-		var subject string
-		var from string
-		var to string
-		var origAddr string
-		var destAddr string
-		var msgDate int64
-		var viewCount int
+		var nmId string
+		var nmMsgId string
+		var nmHash string
+		var nmSubject string
+		var nmFrom string
+		var nmTo string
+		var nmOrigAddr string
+		var nmDestAddr string
+		var nmDate int64
+		var nmViewCount int
 
-		err2 := rows.Scan(&ID, &msgHash, &subject, &viewCount, &from, &to, &origAddr, &destAddr, &msgDate)
+		err2 := rows.Scan(&nmId, &nmMsgId, &nmHash, &nmSubject, &nmViewCount, &nmFrom, &nmTo, &nmOrigAddr, &nmDestAddr, &nmDate)
 		if err2 != nil{
 			return err2
 		}
 
 		msg := NewNetmailMsg()
-		if msgHash != nil {
-			msg.SetMsgID(*msgHash)
-			msg.SetHash(*msgHash)
-		}
-		msg.SetSubject(subject)
-		msg.SetID(ID)
-		msg.SetFrom(from)
-		msg.SetTo(to)
-		msg.SetUnixTime(msgDate)
-		msg.SetViewCount(viewCount)
-		msg.SetOrigAddr(origAddr)
-		msg.SetDestAddr(destAddr)
+		msg.SetHash(nmHash)
+		msg.SetMsgID(nmMsgId)
+		msg.SetSubject(nmSubject)
+		msg.SetID(nmId)
+		msg.SetFrom(nmFrom)
+		msg.SetTo(nmTo)
+		msg.SetUnixTime(nmDate)
+		msg.SetViewCount(nmViewCount)
+		msg.SetOrigAddr(nmOrigAddr)
+		msg.SetDestAddr(nmDestAddr)
 
 		result = append(result, msg)
 
@@ -70,9 +69,9 @@ func (self *NetmailMapper) Write(msg *NetmailMsg) error {
 	storageManager := self.restoreStorageManager()
 
 	query1 := "INSERT INTO `netmail` " +
-		"(nmMsgId, nmHash, nmFrom, nmTo, nmSubject, nmBody, nmDate, nmOrigAddr, nmDestAddr) " +
+		"(nmMsgId, nmHash, nmFrom, nmTo, nmSubject, nmBody, nmDate, nmOrigAddr, nmDestAddr, nmPacket) " +
 		"VALUES " +
-		"(?, ?, ?, ?, ?, ?, ?, ?, ?)"
+		"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 	var params []interface{}
 	params = append(params, msg.MsgID)
 	params = append(params, msg.Hash)
@@ -83,6 +82,7 @@ func (self *NetmailMapper) Write(msg *NetmailMsg) error {
 	params = append(params, msg.UnixTime)
 	params = append(params, msg.OrigAddr)
 	params = append(params, msg.DestAddr)
+	params = append(params, msg.GetPacket())
 
 	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		return nil
@@ -97,7 +97,7 @@ func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error)
 
 	var result *NetmailMsg
 
-	query1 := "SELECT `nmId`, `nmMsgId`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmDate`, `nmBody`, `nmOrigAddr`, `nmDestAddr` FROM `netmail` WHERE `nmHash` = ?"
+	query1 := "SELECT `nmId`, `nmMsgId`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmDate`, `nmBody`, `nmOrigAddr`, `nmDestAddr`, `nmPacket` FROM `netmail` WHERE `nmHash` = ?"
 	var params []interface{}
 	params = append(params, msgHash)
 
@@ -113,8 +113,9 @@ func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error)
 		var nmBody string
 		var nmOrigAddr string
 		var nmDestAddr string
+		var nmPacket []byte
 
-		err2 := rows.Scan(&nmId, &nmMsgId, &nmSubject, &nmViewCount, &nmFrom, &nmTo, &nmDate, &nmBody, &nmOrigAddr, &nmDestAddr)
+		err2 := rows.Scan(&nmId, &nmMsgId, &nmSubject, &nmViewCount, &nmFrom, &nmTo, &nmDate, &nmBody, &nmOrigAddr, &nmDestAddr, &nmPacket)
 		if err2 != nil{
 			return err2
 		}
@@ -131,6 +132,7 @@ func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error)
 		newMsg.SetContent(nmBody)
 		newMsg.SetOrigAddr(nmOrigAddr)
 		newMsg.SetDestAddr(nmDestAddr)
+		newMsg.SetPacket(nmPacket)
 
 		result = newMsg
 

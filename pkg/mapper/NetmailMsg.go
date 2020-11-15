@@ -18,7 +18,7 @@ type NetmailMsg struct {
 	UnixTime    int64
 	ViewCount   int
 	DateWritten time.Time
-	Packet      []byte
+	packet      []byte
 }
 
 func NewNetmailMsg() *NetmailMsg {
@@ -81,7 +81,7 @@ func (self NetmailMsg) GetAge() string {
 }
 
 func (self *NetmailMsg) SetPacket(packet []byte) {
-	self.Packet = packet
+	self.packet = packet
 }
 
 func (self *NetmailMsg) SetOrigAddr(addr string) {
@@ -94,5 +94,9 @@ func (self *NetmailMsg) SetDestAddr(addr string) {
 
 func (self *NetmailMsg) GetFrom() string {
 	return self.From
+}
+
+func (self *NetmailMsg) GetPacket() []byte {
+	return self.packet
 }
 

@@ -95,6 +95,7 @@ func (self *SiteManager) registerFrontend() {
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/view", action.NewNetmailViewAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/reply", action.NewNetmailReplyAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/remove", action.NewNetmailRemoveAction())
+	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/attach/{attid:[0-9]+}/view", action.NewNetmailAttachViewAction())
 	self.Register("/netmail/compose", action.NewNetmailComposeAction())
 	self.Register("/stat", action.NewStatAction())
 	self.Register("/setup", action.NewSetupAction())

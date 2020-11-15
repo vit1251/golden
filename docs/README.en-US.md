@@ -19,8 +19,3 @@ See BUILD.Windows.en-US.md, BUILD.Linux.en-US.md èëè BUILD.MacOS.en-US.md
 ## Installation
 
 See INSTALL.Windows.en-US.md, INSTALL.Linux.en-US.md èëè INSTALL.MacOS.en-US.md
-
-## Contributors
-
- * Vitold Sedyshev
- * Sergey Anohin
