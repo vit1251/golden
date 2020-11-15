@@ -93,6 +93,7 @@ func (self MessageBodyParser) Parse(content []byte) (*MessageBody, error) {
 				}
 
 			} else if bytes.HasPrefix(row, []byte{' ', '*', ' ', 'O', 'r', 'i', 'g', 'i', 'n', ':'}) {
+				messageBody.AddLine(row)
 				messageBody.SetOrigin(row[10:])
 				msgBody = false
 				msgUUE = false
