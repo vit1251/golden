@@ -18,13 +18,13 @@ import (
 	"time"
 )
 
-func (self *Tosser) processNewMessage(packet *TosserPacket) error {
+func (self *Tosser) processNewMessage(pkt *TosserPacket) error {
 
 	//packetHeader := packet.GetHeader()
-	packedMessage := packet.GetMessage()
+	packedMessage := pkt.GetMessage()
 
-	msgContentParser := msg.NewMessageContentParser()
-	msgBody, err1 := msgContentParser.Parse(packedMessage.Text)
+	msgBodyParser := packet.NewMessageBodyParser()
+	msgBody, err1 := msgBodyParser.Parse(packedMessage.Text)
 	if err1 != nil {
 		return err1
 	}
@@ -40,7 +40,7 @@ func (self *Tosser) processNewMessage(packet *TosserPacket) error {
 
 }
 
-func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msgBody *msg.MessageContent) error {
+func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msgBody *packet.MessageBody) error {
 
 	charsetManager := self.restoreCharsetManager()
 	mapperManager := self.restoreMapperManager()
@@ -189,7 +189,7 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msg
 
 }
 
-func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBody *msg.MessageContent) error {
+func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBody *packet.MessageBody) error {
 
 	mapperManager := self.restoreMapperManager()
 	echoMapper := mapperManager.GetEchoMapper()

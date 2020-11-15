@@ -10,7 +10,6 @@ import (
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/mapper"
-	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/tmpl"
@@ -204,9 +203,9 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
 
 	/* Append */
-	em.body += msg.CR
-	em.body += fmt.Sprintf("--- %s", newTearLine) + msg.CR
-	em.body += fmt.Sprintf(" * Origin: %s (%s)", newOrigin, myAddr) + msg.CR
+	em.body += packet.CR
+	em.body += fmt.Sprintf("--- %s", newTearLine) + packet.CR
+	em.body += fmt.Sprintf(" * Origin: %s (%s)", newOrigin, myAddr) + packet.CR
 
 	/* Encode message headers */
 	newSubject, err1 := charsetManager.EncodeMessageBody([]rune(em.Subject), msgCharset)

@@ -7,10 +7,12 @@ import (
 )
 
 type MessageBody struct {
-	area    string
-	kludges []Kludge
-	lines   [][]byte
-	origin  []byte
+	area        string
+	kludges     []Kludge
+	packet      []byte
+	lines       [][]byte
+	origin      []byte
+	attachments []MessageBodyAttach
 }
 
 func NewMessageBody() *MessageBody {
@@ -84,4 +86,20 @@ func (self MessageBody) Bytes() []byte {
 	mem.Write(msgBodyRaw)
 
 	return mem.Bytes()
+}
+
+func (self *MessageBody) AddAttach(attach MessageBodyAttach) {
+	self.attachments = append(self.attachments, attach)
+}
+
+func (self MessageBody) GetAttachments() []MessageBodyAttach {
+	return self.attachments
+}
+
+func (self *MessageBody) SetPacket(packet []byte) {
+	self.packet = packet
+}
+
+func (self MessageBody) GetPacket() []byte {
+	return self.packet
 }
