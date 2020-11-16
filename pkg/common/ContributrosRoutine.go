@@ -1,13 +1,28 @@
 package commonfunc
 
-func GetContributors() []string {
+type Contributor struct {
+	Name string
+}
 
-	var contributors []string
+func GetContributors() []Contributor {
 
-	contributors = append(contributors, "Sergey Anohin")
-	contributors = append(contributors, "Jaroslav Bespalov")
-	contributors = append(contributors, "Richard Menedetter")
-	contributors = append(contributors, "Tommi Koivula")
+	var contributors []Contributor
+
+	contributors = append(contributors, Contributor{
+		Name: "Sergey Anohin",
+	})
+	contributors = append(contributors, Contributor{
+		Name: "Andrey Mundirov",
+	})
+	contributors = append(contributors, Contributor{
+		Name: "Jaroslav Bespalov",
+	})
+	contributors = append(contributors, Contributor{
+		Name: "Richard Menedetter",
+	})
+	contributors = append(contributors, Contributor{
+		Name: "Tommi Koivula",
+	})
 
 	return contributors
 }

@@ -66,7 +66,7 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	contributors := cmn.GetContributors()
 	var newContributros []string
 	for _, c := range contributors {
-		newContributros = append(newContributros, c)
+		newContributros = append(newContributros, c.Name)
 	}
 	newContrib := strings.Join(newContributros, ", ")
 
