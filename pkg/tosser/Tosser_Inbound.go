@@ -45,10 +45,13 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msg
 	charsetManager := self.restoreCharsetManager()
 	mapperManager := self.restoreMapperManager()
 	netmailMapper := mapperManager.GetNetmailMapper()
+	configMapper := mapperManager.GetConfigMapper()
+
+	charset, _ := configMapper.Get("netmail", "Charset")
 
 	var msgID string
 	var msgHash string
-	var msgCharset string = "CP866"
+	var msgCharset string = charset
 	var msgTime time.Time = time.Now()
 
 	/* FST-40001 - Parse NETMAIL source address */
@@ -171,6 +174,7 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msg
 	newMsg.SetHash(msgHash)
 	newMsg.SetOrigAddr(msgHeader.OrigAddr.String())
 	newMsg.SetDestAddr(msgHeader.DestAddr.String())
+	newMsg.SetPacket(msgBody.GetPacket())
 
 	/* Decode message body */
 	msgContent := msgBody.GetContent()
@@ -196,6 +200,12 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	statMapper := mapperManager.GetStatMapper()
 	charsetManager := self.restoreCharsetManager()
+	configMapper := mapperManager.GetConfigMapper()
+
+	charset, _ := configMapper.Get("echomail", "Charset")
+	if charset == "" {
+		charset = "CP866"
+	}
 
 	log.Printf("Process ECHOMAIL message: %q -> %q", msgHeader.OrigAddr, msgHeader.DestAddr)
 
@@ -214,7 +224,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 	var newSubject string = string(msgHeader.Subject)
 	var newFrom string = string(msgHeader.FromUserName)
 	var newTo string = string(msgHeader.ToUserName)
-	var msgCharset string = "CP866"
+	var msgCharset string = charset
 	var noTimeZone bool = true
 
 	/* Process message kludges */

@@ -1,8 +1,12 @@
 package action
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/gorilla/mux"
+	commonfunc "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/packet"
+	"io"
 	"net/http"
 )
 
@@ -23,6 +27,10 @@ func (self NetmailAttachViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	//
 	vars := mux.Vars(r)
 
+	/* Attach index */
+	attIdxParam := vars["attidx"]
+	attIdx, _ := commonfunc.ParseSize([]byte(attIdxParam))
+
 	//
 	msgHash := vars["msgid"]
 	origMsg, err3 := netmailMapper.GetMessageByHash(msgHash)
@@ -38,7 +46,29 @@ func (self NetmailAttachViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	}
 	packedMessage := origMsg.GetPacket()
 
+	magBodyParser := packet.NewMessageBodyParser()
+	msgBody, _ := magBodyParser.Parse(packedMessage)
 
-	fmt.Printf("packedMessage = %+v", packedMessage)
+	attachments := msgBody.GetAttachments()
+
+	var attach *packet.MessageBodyAttach
+	for aIndex, a := range attachments {
+		if aIndex == attIdx {
+			attach = packet.NewMessageBodyAttach()
+			*attach = a
+		}
+	}
+
+	if attach != nil {
+
+		content := attach.GetData()
+		aReader := bytes.NewReader(content.Bytes())
+		io.Copy(w, aReader)
+
+	} else {
+		response := fmt.Sprintf("No attach")
+		http.Error(w, response, http.StatusNotFound)
+		return
+	}
 
 }

@@ -2,7 +2,7 @@
 
 Эта инструкция рассматривает наиболее популярные варианты использования Golden Point.
 
-## Первичная настройка Goldnt Point
+## Первичная настройка Golden Point
 
 1. Убедитесь, что Golden Point запущен
 2. Откройте в Web-браузере ссылку http://127.0.0.1:8080/setup
@@ -13,7 +13,7 @@
 
 #### RealName
 
-Поле *RealName* содежит настоящее имя пользователя используемое в переписке..
+Поле *RealName* содержит настоящее имя пользователя используемое в переписке..
 
 Пример: "Ivan Petrov"
 
@@ -33,36 +33,6 @@
 Tearline provide person sign in all their messages
 
 Пример: "Golden/{GOLDEN_PLATFORM}-{GOLDEN_ARCH} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})"
-
-#### Inbound
-
-Directory where store incoming packets
-
-Пример: C:\Users\IvanP\Fido\Inbound
-
-#### TempInbound
-
-Directory where should be process incoming packets
-
-Пример: C:\Users\IvanP\Fido\TempInbound
-
-#### TempOutbound
-
-Directory where process outbound packet
-
-Пример: C:\Users\IvanP\Fido\TempOutbound
-
-#### Temp
-
-Temp directory where process packet
-
-Пример: C:\Users\vit12\Fido\Temp
-
-#### Outbound
-
-Directory where store outbound packet
-
-Пример: C:\Users\IvanP\Fido\Outbound
 
 #### Address
 
@@ -84,33 +54,18 @@ FidoNet point password
 
 #### Link
 
-Сеетвой FTN адрес уза FidoNet uplink provide (i.e. BOSS address)
+Сетевой FTN адрес уза FidoNet uplink provide (i.e. BOSS address)
 
 Пример: 2:5030/1081
 
 #### Country
 
-Страна месторасполжения Поинта
+Страна поинта
 
 Пример: Russia
 
 #### City
 
-Город расположения Понита
+Город понита
 
 Пример: Moscow
-
-#### FileBox
-
-Директория для расположения файловых эхоконференций полученных
-
-Пример: "C:\Users\IvanP\Fido\Files
-
-#### StationName
-
-Ник нейм Поинта
-
-Пример: ivanp1994
-
-
-

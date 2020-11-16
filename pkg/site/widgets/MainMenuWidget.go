@@ -45,7 +45,7 @@ func (self *MainMenuWidget) Init() []*MenuAction {
 	if menuAction := NewMenuAction(); menuAction != nil {
 		menuAction.ID = "mainMenuFile"
 		menuAction.Link = "/file"
-		menuAction.Label = "Filebox"
+		menuAction.Label = "Files"
 		menuAction.Metric = -1
 		menus = append(menus, menuAction)
 	}
