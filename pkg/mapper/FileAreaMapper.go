@@ -23,23 +23,27 @@ func (self *FileAreaMapper) GetAreas() ([]FileArea, error) {
 	var areas []FileArea
 
 	/* Restore parameters */
-	sqlStmt := "SELECT `areaName`, `areaSummary` FROM `filearea` ORDER BY `areaId` ASC"
+	sqlStmt := "SELECT `areaName`, `areaMode`, `areaSummary`, `areaCharset` FROM `filearea` ORDER BY `areaId` ASC"
 
 	var params []interface{}
 
 	err1 := storageManager.Query(sqlStmt, params, func(rows *sql.Rows) error {
 
 		var areaName string
+		var areaMode string
 		var areaSummary string
+		var areaCharset string
 
-		err3 := rows.Scan(&areaName, &areaSummary)
+		err3 := rows.Scan(&areaName, &areaMode, &areaSummary, &areaCharset)
 		if err3 != nil {
 			return err3
 		}
 
 		area := NewFileArea()
 		area.SetName(areaName)
+		area.SetMode(areaMode)
 		area.SetSummary(areaSummary)
+		area.SetCharset(areaCharset)
 
 		areas = append(areas, *area)
 
@@ -93,10 +97,11 @@ func (self *FileAreaMapper) CreateFileArea(a *FileArea) error {
 
 	storageManager := self.restoreStorageManager()
 
-	query := "INSERT INTO `filearea` (`areaName`, `areaSummary`, `areaCharset`) VALUES (?, ?, ?)"
+	query := "INSERT INTO `filearea` (`areaName`, `areaMode`, `areaSummary`, `areaCharset`) VALUES (?, ?, ?, ?)"
 
 	var params []interface{}
 	params = append(params, a.GetName())
+	params = append(params, a.GetMode())
 	params = append(params, a.GetSummary())
 	params = append(params, a.GetCharset())
 
@@ -121,26 +126,28 @@ func (self *FileAreaMapper) GetAreaByName(areaName string) (*FileArea, error) {
 
 	var result *FileArea
 
-	query1 := "SELECT `areaName`, `areaSummary`, `areaCharset` FROM `filearea` WHERE `areaName` = ?"
+	query1 := "SELECT `areaName`, `areaMode`, `areaSummary`, `areaCharset` FROM `filearea` WHERE `areaName` = ?"
 
 	var params []interface{}
 	params = append(params, areaName)
 
 	err1 := storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
-		var areaName1 string
-		var areaSummary1 string
-		var areaCharset1 string
+		var areaName string
+		var areaMode string
+		var areaSummary string
+		var areaCharset string
 
-		err3 := rows.Scan(&areaName1, &areaSummary1, &areaCharset1)
+		err3 := rows.Scan(&areaName, &areaMode, &areaSummary, &areaCharset)
 		if err3 != nil {
 			return err3
 		}
 
 		area := NewFileArea()
-		area.SetName(areaName1)
-		area.SetSummary(areaSummary1)
-		area.SetCharset(areaCharset1)
+		area.SetName(areaName)
+		area.SetMode(areaMode)
+		area.SetSummary(areaSummary)
+		area.SetCharset(areaCharset)
 
 		result = area
 

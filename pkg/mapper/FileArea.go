@@ -4,6 +4,7 @@ type FileArea struct {
 	name    string
 	Path    string
 	Summary string
+	mode    string
 	charset string
 	Count   int
 }
@@ -38,4 +39,12 @@ func (self FileArea) GetCharset() string {
 
 func (self *FileArea) SetCharset(charset string) {
 	self.charset = charset
+}
+
+func (self *FileArea) SetMode(mode string) {
+	self.mode = mode
+}
+
+func (self FileArea) GetMode() string {
+	return self.mode
 }
