@@ -7,6 +7,7 @@ type FileArea struct {
 	mode    string
 	charset string
 	Count   int
+	order   int
 }
 
 func NewFileArea() *FileArea {
@@ -47,4 +48,8 @@ func (self *FileArea) SetMode(mode string) {
 
 func (self FileArea) GetMode() string {
 	return self.mode
+}
+
+func (self *FileArea) GetOrder() int {
+	return self.order
 }

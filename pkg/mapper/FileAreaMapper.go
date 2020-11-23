@@ -23,7 +23,7 @@ func (self *FileAreaMapper) GetAreas() ([]FileArea, error) {
 	var areas []FileArea
 
 	/* Restore parameters */
-	sqlStmt := "SELECT `areaName`, `areaMode`, `areaSummary`, `areaCharset` FROM `filearea` ORDER BY `areaId` ASC"
+	sqlStmt := "SELECT `areaName`, `areaMode`, `areaSummary`, `areaCharset` FROM `filearea` ORDER BY `areaOrder` ASC, `areaId` ASC"
 
 	var params []interface{}
 
@@ -97,13 +97,14 @@ func (self *FileAreaMapper) CreateFileArea(a *FileArea) error {
 
 	storageManager := self.restoreStorageManager()
 
-	query := "INSERT INTO `filearea` (`areaName`, `areaMode`, `areaSummary`, `areaCharset`) VALUES (?, ?, ?, ?)"
+	query := "INSERT INTO `filearea` (`areaName`, `areaMode`, `areaSummary`, `areaCharset`, `areaOrder`) VALUES (?, ?, ?, ?, ?)"
 
 	var params []interface{}
 	params = append(params, a.GetName())
 	params = append(params, a.GetMode())
 	params = append(params, a.GetSummary())
 	params = append(params, a.GetCharset())
+	params = append(params, a.GetOrder())
 
 	/* Create area */
 	err1 := storageManager.Exec(query, params, func (e sql.Result, err error) error {
