@@ -2,6 +2,7 @@ package commonfunc
 
 type Contributor struct {
 	Name string
+	Addr string
 }
 
 func GetContributors() []Contributor {
@@ -16,6 +17,7 @@ func GetContributors() []Contributor {
 	})
 	contributors = append(contributors, Contributor{
 		Name: "Jaroslav Bespalov",
+		Addr: "2:5031/78.17",
 	})
 	contributors = append(contributors, Contributor{
 		Name: "Richard Menedetter",
