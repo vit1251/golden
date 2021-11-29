@@ -11,13 +11,13 @@ import (
 	"github.com/vit1251/golden/pkg/registry"
 	"log"
 	"os"
+	"strings"
 	"sync"
 	"time"
 )
 
 type Mailer struct {
-
-	registry     *registry.Container
+	registry *registry.Container
 
 	activeState IMailerState /* Mailer state                */
 
@@ -31,9 +31,9 @@ type Mailer struct {
 
 	wait sync.WaitGroup /* Add wait */
 
-	addr       string /* Network address             */
-	secret     string /* Secret password             */
-	ServerAddr string /*  */
+	addr       string /* Network address              */
+	secret     string /* Secret password              */
+	ServerAddr string /* Server IPv4 or FQDN address  */
 
 	inboundDirectory  string /*   */
 	outboundDirectory string /*   */
@@ -76,8 +76,6 @@ type Mailer struct {
 
 	pendingFiles util.Directory
 	chunk        []byte
-
-
 }
 
 func NewMailer(r *registry.Container) *Mailer {
@@ -109,9 +107,6 @@ func (self *Mailer) SetSecret(secret string) {
 
 func (self *Mailer) Start() {
 
-	/* Start state */
-	self.activeState = NewMailerStateStart()
-
 	/* Add wait */
 	self.wait.Add(1)
 
@@ -130,7 +125,13 @@ func (self *Mailer) IsReceiving() bool {
 
 func (self *Mailer) run() {
 
+	/* Reset active state */
+	self.activeState = NewMailerStateStart()
+
+	/* Register mailer start */
 	mailerStart := time.Now()
+
+	/* Start processing */
 	log.Printf("Start mailer routine")
 	for {
 		log.Printf("mailer: process state %s", self.activeState)
@@ -139,11 +140,13 @@ func (self *Mailer) run() {
 		self.activeState = newState
 		/* Stop processing when done */
 		if newState == nil {
-			log.Printf("mailer: No more processing")
+			log.Printf("mailer: Reach Exit state")
 			break
 		}
 	}
 	log.Printf("Stop mailer routine")
+
+	/* Calculate mailer routine duration */
 	elapsed := time.Since(mailerStart)
 	log.Printf("Mailer session: %+v", elapsed)
 
@@ -157,6 +160,12 @@ func (self *Mailer) Wait() {
 }
 
 func (self *Mailer) SetServerAddr(addr string) {
+
+	if !strings.Contains(addr, ":") {
+		defaultPort := 24554
+		addr = fmt.Sprintf("%s:%d", addr, defaultPort)
+	}
+
 	self.ServerAddr = addr
 }
 
@@ -212,7 +221,7 @@ func (self *Mailer) AddOutbound(path cache.FileEntry) {
 	self.outboundQueue = append(self.outboundQueue, path)
 }
 
-func (self *Mailer) createAuthorization(chData []byte) (string) {
+func (self *Mailer) createAuthorization(chData []byte) string {
 	a := auth.NewAuthorizer()
 	a.SetChallengeData(string(chData))
 	a.SetSecret(self.secret)
@@ -224,7 +233,7 @@ func (self *Mailer) createAuthorization(chData []byte) (string) {
 	return password
 }
 
-func (self *Mailer) processNulOptFrame(rawOptions []byte)  {
+func (self *Mailer) processNulOptFrame(rawOptions []byte) {
 
 	log.Printf("Remote server option: %s", rawOptions)
 

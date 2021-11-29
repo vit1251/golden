@@ -147,7 +147,14 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msg
 		}
 	}
 
-	log.Printf("NETMAIL message %q -> %q", msgHeader.OrigAddr, msgHeader.DestAddr)
+	/* Debug message */
+	log.Printf("--- NETMAIL message ---\n"+
+		"\tAddr: %q -> %q\n"+
+		"\tMsgId: %q\n"+
+		"\tMsgHash: %q",
+		msgHeader.OrigAddr, msgHeader.DestAddr,
+		msgID,
+		msgHash)
 
 	/* Decode headers */
 	newSubject, err1 := charsetManager.DecodeMessageBody(msgHeader.Subject, msgCharset)
@@ -161,6 +168,13 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msg
 	newTo, err3 := charsetManager.DecodeMessageBody(msgHeader.ToUserName, msgCharset)
 	if err3 != nil {
 		return err3
+	}
+
+	/* Fix empty msgHash */
+	if msgHash == "" {
+		log.Printf("WARNING: No 'MSGID' kludge or use wrong herder.")
+		rawPacket := msgBody.GetPacket()
+		msgHash = makeCRC32(rawPacket)
 	}
 
 	/* Populate message */
@@ -304,7 +318,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 		return err2
 	}
 	newFrom, err3 := charsetManager.DecodeMessageBody(msgHeader.FromUserName, msgCharset)
-	if err3 != nil{
+	if err3 != nil {
 		return err3
 	}
 	newTo, err4 := charsetManager.DecodeMessageBody(msgHeader.ToUserName, msgCharset)
@@ -330,7 +344,6 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 	originAddr := originParser.Parse(newOrig)
 	newOriginAddr := string(originAddr)
 	log.Printf("Origin: addr = %s", originAddr)
-
 
 	/* Debug message */
 	log.Printf("Process ECHOMAIL message:\n\tFrom: %s\n\tTo: %s", newFrom, newTo)
@@ -441,7 +454,7 @@ func (self *Tosser) processNetmail(item cache.FileEntry) error {
 
 	/* Move in area */
 	log.Printf("Move %s -> %s", item.AbsolutePath, newArcPath)
-	if err2 := os.Rename(item.AbsolutePath, newArcPath);err2 != nil {
+	if err2 := os.Rename(item.AbsolutePath, newArcPath); err2 != nil {
 		log.Printf("Fail on Rename: err = %+v", err2)
 	}
 

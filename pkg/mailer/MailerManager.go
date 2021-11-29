@@ -127,12 +127,13 @@ func GetFunctionName(i interface{}) string {
 
 func (self *MailerManager) processMailer() error {
 
+	log.Printf("MailerManager: processMailer")
+
 	mapperManager := self.restoreMapperManager()
 	configMapper := mapperManager.GetConfigMapper()
 	statMapper := mapperManager.GetStatMapper()
-	eventBus := self.restoreEventBus()
 
-	log.Printf("MailerManager: processMailer")
+	eventBus := self.restoreEventBus()
 
 	/* Directory */
 	inb := cmn.GetInboundDirectory()
@@ -216,5 +217,3 @@ func (self MailerManager) restoreMapperManager() *mapper.MapperManager {
 		panic("no mapper manager")
 	}
 }
-
-
