@@ -18,6 +18,8 @@ func NewSetupCompleteAction() *SetupCompleteAction {
 
 func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	log.Printf("Store new settings")
+
 	mapperManager := self.restoreMapperManager()
 	configMapper := mapperManager.GetConfigMapper()
 
@@ -39,6 +41,8 @@ func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 				param.SetValue(newValue)
 			}
 
+		} else {
+			log.Printf("Problem with value: name = %s", newFormName)
 		}
 	}
 
