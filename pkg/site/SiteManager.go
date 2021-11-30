@@ -73,6 +73,8 @@ func (self *SiteManager) registerFrontend() {
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove/complete", action.NewEchoRemoveCompleteAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge", action.NewEchoAreaPurgeAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge/complete", action.NewEchoAreaPurgeCompleteAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/mark", action.NewEchoAreaMarkAction())
+	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/mark/complete", action.NewEchoAreaMarkCompleteAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", action.NewEchoAreaUpdateAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update/complete", action.NewEchoAreaUpdateCompleteAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", action.NewEchoMsgComposeAction())

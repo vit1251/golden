@@ -81,7 +81,7 @@ func (self *EchoMapper) getAreaListNewCount() ([]*Area, error) {
 		var count int
 
 		err2 := rows.Scan(&name, &count)
-		if err2 != nil{
+		if err2 != nil {
 			return err2
 		}
 		a := NewArea()
@@ -128,7 +128,7 @@ func (self *EchoMapper) GetMessageHeaders(echoTag string) ([]msg.Message, error)
 		var viewCount int
 
 		err2 := rows.Scan(&ID, &msgId, &reply, &area, &msgHash, &subject, &viewCount, &from, &to, &msgDate)
-		if err2 != nil{
+		if err2 != nil {
 			return err2
 		}
 
@@ -181,7 +181,7 @@ func (self *EchoMapper) GetMessageByHash(echoTag string, msgHash string) (*msg.M
 		var written int64
 
 		err1 := rows.Scan(&ID, &reply, &msgArea, &msgMsgId, &msgHash, &subject, &msgFrom, &msgOrigAddr, &to, &content, &written, &packet)
-		if err1 != nil{
+		if err1 != nil {
 			return err1
 		}
 		log.Printf("subject = %q", subject)
@@ -395,3 +395,19 @@ func (self *EchoMapper) UpdateAreaMessageCounters(areas []Area) ([]Area, error) 
 	return newAreas, nil
 }
 
+func (self *EchoMapper) MarkAllReadByAreaName(echoTag string) error {
+
+	storageManager := self.restoreStorageManager()
+
+	query1 := "UPDATE `message` SET `msgViewCount` = `msgViewCount` + 1 WHERE `msgArea` = $1"
+	var params []interface{}
+	params = append(params, echoTag)
+
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
+		log.Printf("Error: Update problme: %+v", err)
+		return err
+	})
+
+	return err1
+
+}

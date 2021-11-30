@@ -86,6 +86,10 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 			SetIcon("icofont-edit").
 			SetLabel("Compose")).
 		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s/mark", newArea.GetName())).
+			SetIcon("icofont-mark-as-read").
+			SetLabel("Mark as read")).
+		Add(widgets.NewMenuAction().
 			SetLink(fmt.Sprintf("/echo/%s/update", newArea.GetName())).
 			SetIcon("icofont-update").
 			SetLabel("Settings"))
@@ -113,7 +117,6 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 				allowView = false
 			}
 		}
-
 
 		actions := widgets.NewVBoxWidget()
 
