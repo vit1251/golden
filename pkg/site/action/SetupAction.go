@@ -19,14 +19,14 @@ func NewSetupAction() *SetupAction {
 /* Setup sections */
 type setupParam struct {
 	section string
-	name string
-	value string
+	name    string
+	value   string
 	summary string
 }
 
 type setupSection struct {
-	Name     string
-	Params   []setupParam
+	Name   string
+	Params []setupParam
 }
 
 func (self *setupSection) Register(c *mapper.Config, section string, name string, summary string) {
@@ -50,10 +50,10 @@ func (self SetupAction) makeNetworkingSection(c *mapper.Config) setupSection {
 	netSetupSession.Name = "Networking"
 
 	/* Section options */
-	netSetupSession.Register(c,"main", "Address", "FidoNet network point address (i.e. POINT address)")
-	netSetupSession.Register(c,"main", "NetAddr", "FidoNet network BOSS address (example: f24.n5023.z2.binkp.net:24554)")
-	netSetupSession.Register(c,"main", "Password", "FidoNet point password")
-	netSetupSession.Register(c,"main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
+	netSetupSession.Register(c, "main", "Address", "FidoNet network point address (i.e. POINT address)")
+	netSetupSession.Register(c, "main", "NetAddr", "FidoNet network BOSS address (example: f24.n5023.z2.binkp.net:24554)")
+	netSetupSession.Register(c, "main", "Password", "FidoNet point password")
+	netSetupSession.Register(c, "main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
 
 	return *netSetupSession
 }
@@ -65,11 +65,11 @@ func (self SetupAction) makeUserSection(c *mapper.Config) setupSection {
 	userSetupSession.Name = "User options"
 
 	/* Section options */
-	userSetupSession.Register(c,"main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
-	userSetupSession.Register(c,"main", "Country", "Country where user is seat")
-	userSetupSession.Register(c,"main", "City", "City where user is seat")
-	userSetupSession.Register(c,"main", "Origin", "Origin was provide BBS station name and network address")
-	userSetupSession.Register(c,"main", "TearLine", "Tearline provide person sign in all their messages")
+	userSetupSession.Register(c, "main", "RealName", "Realname is you English version your real name (example: Dmitri Kamenski)")
+	userSetupSession.Register(c, "main", "Country", "Country where user is seat")
+	userSetupSession.Register(c, "main", "City", "City where user is seat")
+	userSetupSession.Register(c, "main", "Origin", "Origin was provide BBS station name and network address")
+	userSetupSession.Register(c, "main", "TearLine", "Tearline provide person sign in all their messages")
 
 	return *userSetupSession
 }
@@ -81,8 +81,8 @@ func (self SetupAction) makeOtherSection(c *mapper.Config) setupSection {
 	otherSetupSession.Name = "Other"
 
 	/* Section options */
-	otherSetupSession.Register(c,"main", "StationName", "Station name is your nickname")
-	otherSetupSession.Register(c,"mailer", "Interval", "Polling interval in minutes")
+	otherSetupSession.Register(c, "main", "StationName", "Station name is your nickname")
+	otherSetupSession.Register(c, "mailer", "Interval", "Polling interval in minutes")
 
 	return *otherSetupSession
 }
@@ -94,9 +94,21 @@ func (self SetupAction) makeDirectMessageSection(c *mapper.Config) setupSection 
 	directMessageSetupSection.Name = "Netmail options"
 
 	/* Section options */
-	directMessageSetupSection.Register(c,"netmail", "Charset", "Netmail charset")
+	directMessageSetupSection.Register(c, "netmail", "Charset", "Netmail default charset")
 
 	return *directMessageSetupSection
+}
+
+func (self SetupAction) makeEchomailMessageSection(c *mapper.Config) setupSection {
+
+	/* Section header */
+	echoSetupSection := new(setupSection)
+	echoSetupSection.Name = "Echomail options"
+
+	/* Section options */
+	echoSetupSection.Register(c, "echomail", "Charset", "Echomail default charset")
+
+	return *echoSetupSection
 }
 
 func (self SetupAction) makeSections(c *mapper.Config) []setupSection {
@@ -114,6 +126,10 @@ func (self SetupAction) makeSections(c *mapper.Config) []setupSection {
 	/* Direct message section */
 	directMessageSection := self.makeDirectMessageSection(c)
 	setupSections = append(setupSections, directMessageSection)
+
+	/* Echomail message section */
+	echoSection := self.makeEchomailMessageSection(c)
+	setupSections = append(setupSections, echoSection)
 
 	/* Other section */
 	otherSection := self.makeOtherSection(c)

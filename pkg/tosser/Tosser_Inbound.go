@@ -207,28 +207,56 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msg
 
 }
 
+func (self *Tosser) acquireAreaByName(areaName string) *mapper.Area {
+
+	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+	configMapper := mapperManager.GetConfigMapper()
+
+	areaCharset, _ := configMapper.Get("echomail", "Charset")
+
+	/* Search area */
+	area, err1 := echoAreaMapper.GetAreaByName(areaName)
+	if err1 != nil {
+		log.Printf("Error: Problem with get area by name %s", areaName)
+	}
+	if area != nil {
+		return area
+	}
+
+	/* Debug message */
+	log.Printf("Create new area: name = %s charset = %s", areaName, areaCharset)
+
+	/* Create new area */
+	a := mapper.NewArea()
+	a.SetName(areaName)
+	a.SetCharset(areaCharset)
+	err2 := echoAreaMapper.Register(a)
+	if err2 != nil {
+		log.Printf("Error: Problem with create area by name %s", areaName)
+	}
+
+	return a
+}
+
 func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBody *packet.MessageBody) error {
 
 	mapperManager := self.restoreMapperManager()
 	echoMapper := mapperManager.GetEchoMapper()
-	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+
 	statMapper := mapperManager.GetStatMapper()
 	charsetManager := self.restoreCharsetManager()
-	configMapper := mapperManager.GetConfigMapper()
-
-	charset, _ := configMapper.Get("echomail", "Charset")
-	if charset == "" {
-		charset = "CP866"
-	}
-
-	log.Printf("Process ECHOMAIL message: %q -> %q", msgHeader.OrigAddr, msgHeader.DestAddr)
 
 	areaName := msgBody.GetArea()
 
-	/* Auto create area */
-	a := mapper.NewArea()
-	a.SetName(areaName)
-	echoAreaMapper.Register(a)
+	log.Printf("--- Start processing incoming ECHOMAIL message ---\n"+
+		"\tRoute: %s -> %s\n"+
+		"\tArea: %s",
+		msgHeader.OrigAddr, msgHeader.DestAddr,
+		areaName,
+	)
+
+	a := self.acquireAreaByName(areaName)
 
 	/* No message encoding */
 	var msgID string
@@ -238,7 +266,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 	var newSubject string = string(msgHeader.Subject)
 	var newFrom string = string(msgHeader.FromUserName)
 	var newTo string = string(msgHeader.ToUserName)
-	var msgCharset string = charset
+	var msgCharset string = a.GetCharset()
 	var noTimeZone bool = true
 
 	/* Process message kludges */
@@ -339,14 +367,10 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 
 	newOrig := msgBody.GetOrigin()
 
-	/* Parse origin */
+	/* Get source FTN address based on origin */
 	originParser := NewOriginParser()
 	originAddr := originParser.Parse(newOrig)
 	newOriginAddr := string(originAddr)
-	log.Printf("Origin: addr = %s", originAddr)
-
-	/* Debug message */
-	log.Printf("Process ECHOMAIL message:\n\tFrom: %s\n\tTo: %s", newFrom, newTo)
 
 	/* Create Message */
 	newMsg := msg.NewMessage()
@@ -362,16 +386,36 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 	newMsg.SetReply(reply)
 	newMsg.SetFromAddr(newOriginAddr)
 
+	/* Debug echomail message */
+	self.debugEchomail(newMsg)
+
 	/* Save message in storage */
 	err6 := echoMapper.Write(*newMsg)
 	if err6 != nil {
-		log.Printf("Fail on Write in echoMapper: err = %+v", err6)
+		log.Printf("Error: Prolem in Write at echoMapper: err = %+v", err6)
 	}
 
 	/* Update counter */
 	statMapper.RegisterInMessage()
 
 	return nil
+}
+
+/// TODO - move to `msg` packet later ...
+func (self *Tosser) debugEchomail(newMsg *msg.Message) {
+
+	log.Printf("--- Process ECHOMAIL message complete ---\n"+
+		"   From: %s\n"+
+		"     To: %s\n"+
+		"   Area: %s\n"+
+		"   Date: %+v\n"+
+		"  MsgID: %s",
+		newMsg.From, newMsg.To,
+		newMsg.Area,
+		newMsg.DateWritten,
+		newMsg.Hash,
+	)
+
 }
 
 func (self *Tosser) ProcessPacket(name string) error {

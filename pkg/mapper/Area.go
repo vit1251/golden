@@ -6,11 +6,11 @@ import (
 )
 
 type Area struct {
-	name            string     /* Echo name              */
-	Summary         string     /* Echo summary           */
-	charset         string     /* Echo charset           */
-	MessageCount    int        /* Echo message count     */
-	NewMessageCount int        /* Echo new message count */
+	name            string /* Echo name              */
+	Summary         string /* Echo summary           */
+	charset         string /* Echo charset           */
+	MessageCount    int    /* Echo message count     */
+	NewMessageCount int    /* Echo new message count */
 }
 
 func NewArea() *Area {
@@ -35,7 +35,7 @@ func (self *Area) SetCharset(newCharset string) {
 
 func (self Area) GetCharset() string {
 	if self.charset == "" {
-		log.Printf("Area: Warning no charset pre-define use CP866.")
+		log.Printf("Warning: no charset for %s. Set 'CP866' as default.", self.name)
 		self.charset = "CP866"
 	}
 	return self.charset

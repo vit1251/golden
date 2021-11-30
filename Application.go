@@ -14,6 +14,7 @@ import (
 	"github.com/vit1251/golden/pkg/storage"
 	"github.com/vit1251/golden/pkg/tosser"
 	"github.com/vit1251/golden/pkg/tracker"
+	"io"
 	"log"
 	"os"
 	"os/signal"
@@ -23,7 +24,8 @@ import (
 )
 
 type Application struct {
-	registry *registry.Container
+	registry *registry.Container /* Component registry    */
+	stream   io.WriteCloser      /* Logging writer        */
 }
 
 func NewApplication() *Application {
@@ -46,22 +48,42 @@ func (self *Application) makeLogPath() string {
 
 }
 
+func (self *Application) startLogging(debug bool) {
+
+	log.SetFlags(log.Ltime | log.Ldate | log.Lmicroseconds)
+	log.SetOutput(io.Discard)
+
+	if debug {
+		logPath := self.makeLogPath()
+		stream, err1 := os.OpenFile(logPath, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+		if err1 != nil {
+			log.Printf("Error while open debug.log: err = %+v", err1)
+		}
+		self.stream = stream
+		log.SetOutput(self.stream)
+	}
+
+}
+
+func (self *Application) stopLogging() {
+	if self.stream != nil {
+		self.stream.Close()
+		self.stream = nil
+	}
+}
+
 func (self *Application) Run() {
 
-	/* Setup logging system */
-	logPath := self.makeLogPath()
-	stream, err1 := os.OpenFile(logPath, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
-	if err1 != nil {
-		log.Printf("Error while open debug.log: err = %+v", err1)
-	}
-	defer stream.Close()
-	log.SetOutput(stream)
-	log.SetFlags(log.Ltime | log.Ldate)
-
 	/* Parse parameters */
-	var servicePort int
+	var servicePort int = 8080
+	var debugMode bool = false
 	flag.IntVar(&servicePort, "P", 8080, "Set HTTP service port")
+	flag.BoolVar(&debugMode, "debug", false, "Enable debugging mode")
 	flag.Parse()
+
+	/* Start debugging */
+	self.startLogging(debugMode)
+	defer self.stopLogging()
 
 	/* Start storage service */
 	self.registry.Register("EventBus", eventbus.NewEventBus(self.registry))
