@@ -28,10 +28,10 @@ type WebSite struct {
 
 type SiteManager struct {
 	registry *registry.Container
-	port      int
-	WebSite   *WebSite /* Web site common type   */
-	rtr       *mux.Router
-	addr      string
+	port     int
+	WebSite  *WebSite /* Web site common type   */
+	rtr      *mux.Router
+	addr     string
 }
 
 func NewSiteManager(registry *registry.Container) *SiteManager {
@@ -93,6 +93,7 @@ func (self *SiteManager) registerFrontend() {
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload/complete", action.NewFileEchoAreaUploadCompleteAction())
 	self.Register("/netmail", action.NewNetmailIndexAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/view", action.NewNetmailViewAction())
+	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/dump", action.NewNetmailDumpAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/reply", action.NewNetmailReplyAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/remove", action.NewNetmailRemoveAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/attach/{attidx:[0-9]+}/view", action.NewNetmailAttachViewAction())

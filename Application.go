@@ -34,13 +34,22 @@ func NewApplication() *Application {
 
 }
 
+func (self *Application) makeLogName() string {
+	cur := time.Now()
+	return fmt.Sprintf("debug_%d%02d%02d_%02d%02d.log", cur.Year(), cur.Month(), cur.Day(), cur.Hour(), cur.Minute())
+}
+
+func (self *Application) makeLogPath() string {
+	logBaseDirectory := cmn.GetLogDirectory()
+	debugName := self.makeLogName()
+	return path2.Join(logBaseDirectory, debugName)
+
+}
+
 func (self *Application) Run() {
 
-	cur := time.Now()
-
-	logBaseDirectory := cmn.GetLogDirectory()
-	debugName := fmt.Sprintf("debug_%d%02d%02d_%02d%02d.log", cur.Year(), cur.Month(), cur.Day(), cur.Hour(), cur.Minute())
-	logPath := path2.Join(logBaseDirectory, debugName)
+	/* Setup logging system */
+	logPath := self.makeLogPath()
 	stream, err1 := os.OpenFile(logPath, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err1 != nil {
 		log.Printf("Error while open debug.log: err = %+v", err1)
@@ -69,19 +78,24 @@ func (self *Application) Run() {
 
 	self.registry.Register("SiteManager", site.NewSiteManager(self.registry))
 
+	/* Debug message */
+	cur := time.Now()
+	zone, offset := cur.Zone()
+	log.Printf("Time zone: %+v (%+v)", zone, offset)
+
 	/* Initialize database (apply new migration) */
 	migrationManager := self.restoreMigrationManager()
 	migrationManager.Check()
 
-	/* Start tosser */
+	/* Start mail processor */
 	tosserManager := self.restoreTosserManager()
 	tosserManager.Start()
 
-	/* Start tracker */
+	/* Start file processor */
 	trackerManager := self.restoreTrackerManager()
 	trackerManager.Start()
 
-	/* Start site */
+	/* Start UI site */
 	siteManager := self.restoreSiteManager()
 	siteManager.SetPort(servicePort)
 	siteManager.Start()

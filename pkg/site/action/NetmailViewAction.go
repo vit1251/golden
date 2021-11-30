@@ -84,13 +84,18 @@ func (self NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 			SetIcon("icofont-edit").
 			SetLabel("Reply")).
 		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/netmail/%s/dump", origMsg.Hash)).
+			SetClass("netmail-dump-action").
+			SetIcon("icofont-dump").
+			SetLabel("Info")).
+		Add(widgets.NewMenuAction().
 			SetLink(fmt.Sprintf("/netmail/%s/remove", origMsg.Hash)).
 			SetClass("netmail-remove-action").
 			SetIcon("icofont-remove").
 			SetLabel("Delete"))
 	containerVBox.Add(amw)
 
-	msgHeader  := self.makeMessageHeaderSection(origMsg)
+	msgHeader := self.makeMessageHeaderSection(origMsg)
 	msgHeaderWrapper := widgets.NewDivWidget().SetClass("netmail-msg-view-header-wrapper").SetWidget(msgHeader)
 	containerVBox.Add(msgHeaderWrapper)
 
