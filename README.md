@@ -1,8 +1,10 @@
 # Golden Point 1.x
 
-Golden Point is Fido point package
+Golden Point is Fido point package on Golang provide mailer, tosser and etc.
 
 For work with GoldenPoint after starting you will open browser on address http://127.0.0.1:8080
+
+Project status at https://github.com/vit1251/golden/projects/6
 
 ## Features
 
