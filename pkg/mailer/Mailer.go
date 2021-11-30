@@ -17,50 +17,50 @@ import (
 )
 
 type Mailer struct {
-	registry *registry.Container
+	registry *registry.Container /* ???                         */
 
 	activeState IMailerState /* Mailer state                */
 
-	rxState RxState /*                             */
-	txState TxState /*                             */
+	rxState RxState /* RX FSM                      */
+	txState TxState /* TX FSM                      */
 
-	stream *stream2.MailerStream
+	stream *stream2.MailerStream /* ???                         */
 
-	reader *bufio.Reader /* Network address             */
-	writer *bufio.Writer /* Network address             */
+	reader *bufio.Reader /* RX network stream           */
+	writer *bufio.Writer /* TX network stream           */
 
-	wait sync.WaitGroup /* Add wait */
+	connectionCount int            /* Active session count        */
+	wait            sync.WaitGroup /* Sync                        */
 
-	addr       string /* Network address              */
-	secret     string /* Secret password              */
-	ServerAddr string /* Server IPv4 or FQDN address  */
+	addr       string /* Network address             */
+	secret     string /* Secret password             */
+	ServerAddr string /* Server IPv4 or FQDN address */
 
-	inboundDirectory  string /*   */
-	outboundDirectory string /*   */
+	inboundDirectory  string /* ???                         */
+	outboundDirectory string /* ???                         */
 
-	respAuthorization string /*   */
+	respAuthorization string /* ???                         */
 
 	recvStream *os.File /* Stream using in Rx routines */
 	sendStream *os.File /* Stream using in Tx routines */
 
-	readSize  int64 /* Size incoming download */
-	writeSize int64 /* Size outgoing upload   */
+	readSize  int64 /* Size incoming download      */
+	writeSize int64 /* Size outgoing upload        */
 
-	connComplete chan int /*  */
-	recvUnix     int      /*  */
+	connComplete chan int /* ???                         */
+	recvUnix     int      /* ???                         */
 
-	sendName *cache.FileEntry /* Upload entry     */
-	recvName *cache.FileEntry /* Download entry   */
+	sendName *cache.FileEntry /* Upload entry                */
+	recvName *cache.FileEntry /* Download entry              */
 
-	workInbound  string /*  */
-	workOutbound string /*  */
+	workInbound  string /* ???                         */
+	workOutbound string /* ???                         */
 
-	work string
+	work string /* ???                         */
 
 	InFileCount  int
 	OutFileCount int
 
-	//
 	workPath   string
 	systemName string
 	userName   string
@@ -84,6 +84,7 @@ func NewMailer(r *registry.Container) *Mailer {
 	m.connComplete = make(chan int)
 	m.registry = r
 	m.queue = util.NewTheQueue()
+	m.connectionCount = 0
 
 	return m
 }
@@ -105,7 +106,11 @@ func (self *Mailer) SetSecret(secret string) {
 	self.secret = secret
 }
 
-func (self *Mailer) Start() {
+func (self *Mailer) Start() error {
+
+	if self.connectionCount > 0 {
+		return fmt.Errorf("fido session alredy in progress")
+	}
 
 	/* Add wait */
 	self.wait.Add(1)
@@ -113,6 +118,7 @@ func (self *Mailer) Start() {
 	/* Play! */
 	go self.run()
 
+	return nil
 }
 
 func (self *Mailer) IsTransmitting() bool {
@@ -152,6 +158,9 @@ func (self *Mailer) run() {
 
 	/* Close connection */
 	self.wait.Done()
+
+	/* Remove counter */
+	self.connectionCount = self.connectionCount - 1
 
 }
 

@@ -182,18 +182,22 @@ func (self *MailerManager) processMailer() error {
 
 	/* Start mailer */
 	log.Printf("--- Mailer start ---")
-	m.Start()
+	err3 := m.Start()
+	if err3 != nil {
+		log.Printf("--- Mailer error: msg = %q ---", err3)
+		return err3
+	}
 
 	/* Wait mailer complete */
 	m.Wait()
 	log.Printf("--- Mailer complete ---")
 
-	/* Complete start tosser */
+	/* Register mailer session */
 	if err := statMapper.RegisterOutSession(); err != nil {
 		log.Printf("Fail on mailer routine: err = %+v", err)
 	}
 
-	/* Start tossing */
+	/* Start processing message */
 	eventBus.Event("Tosser")
 	eventBus.Event("Tracker")
 

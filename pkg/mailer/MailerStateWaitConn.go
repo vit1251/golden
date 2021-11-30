@@ -41,6 +41,9 @@ func (self *MailerStateWaitConn) processWelcome(mailer *Mailer) {
 	if username := mailer.GetUserName(); username != "" {
 		mailer.stream.WriteInfo("ZYZ", username)
 	}
+	if stationName := mailer.GetSystemName(); stationName != "" {
+		mailer.stream.WriteInfo("SYS", stationName)
+	}
 	if location := mailer.GetLocation(); location != "" {
 		mailer.stream.WriteInfo("LOC", location)
 	}
@@ -65,5 +68,3 @@ func (self *MailerStateWaitConn) Process(mailer *Mailer) IMailerState {
 	}
 
 }
-
-
