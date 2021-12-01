@@ -2,6 +2,7 @@ package mailer
 
 import (
 	"github.com/vit1251/golden/pkg/mailer/stream"
+	"log"
 )
 
 type MailerStateAdditionalStep struct {
@@ -27,6 +28,10 @@ func (self *MailerStateAdditionalStep) processCommandFrame(mailer *Mailer, nextF
 
 	/* Use unsecure password authorization */
 	if streamCommandId == stream.M_ADR {
+
+		log.Printf("Mailer: Remote address is %+v", nextFrame.CommandFrame.Body)
+		mailer.report.SetRemoteIdent(string(nextFrame.CommandFrame.Body))
+
 		if mailer.respAuthorization != "" {
 			return NewMailerStateSecureAuthRemoteAction()
 		} else {

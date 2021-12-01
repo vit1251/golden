@@ -1,6 +1,9 @@
 package mailer
 
-import "github.com/vit1251/golden/pkg/mailer/stream"
+import (
+	"fmt"
+	"github.com/vit1251/golden/pkg/mailer/stream"
+)
 
 type MailerStateConnInit struct {
 	MailerState
@@ -17,10 +20,15 @@ func (self *MailerStateConnInit) String() string {
 
 func (self *MailerStateConnInit) Process(mailer *Mailer) IMailerState {
 	s := stream.NewMailerStream()
-	if err1 := s.OpenSession(mailer.ServerAddr); err1 == nil {
-		mailer.stream = s
-		return NewMailerWaitConn()
-	} else {
+
+	err1 := s.OpenSession(mailer.ServerAddr)
+	if err1 != nil {
+		mailer.report.SetStatus(fmt.Sprintf("Unable to open session: err = %+v", err1))
 		return NewMailerStateEnd()
 	}
+
+	mailer.stream = s
+
+	return NewMailerWaitConn()
+
 }

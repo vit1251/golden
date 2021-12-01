@@ -8,7 +8,7 @@ import (
 func ReceiveRoutineRxEOB(mailer *Mailer) ReceiveRoutineResult {
 
 	/* Get a frame from Input Buffer */
-	nextFrame := <- mailer.stream.InFrame
+	nextFrame := <-mailer.stream.InFrame
 
 	/* Pending Files list is empty */
 	if mailer.pendingFiles.IsEmpty() {
@@ -25,7 +25,7 @@ func ReceiveRoutineRxEOB(mailer *Mailer) ReceiveRoutineResult {
 	/* Got M_ERR */
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandID == stream.M_ERR {
-			/* Report Rrror */
+			/* Report error */
 			log.Printf("Receive - RxEOB - Got M_ERR")
 			mailer.rxState = RxDone
 			return RxFailure

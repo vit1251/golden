@@ -30,6 +30,7 @@ func (self *MailerStateWaitAddr) processFrame(mailer *Mailer, nextFrame stream.F
 	/* M_BSY frame received */
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandFrame.CommandID == stream.M_BSY {
+			mailer.report.SetStatus("Remote system is BUSY")
 			log.Printf("Remote system is BUSY")
 			return NewMailerStateEnd()
 		}

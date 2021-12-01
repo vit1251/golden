@@ -5,7 +5,6 @@ import (
 )
 
 type MailerStateSwitch struct {
-
 }
 
 func NewMailerStateSwitch() *MailerStateSwitch {
@@ -22,7 +21,7 @@ func (self *MailerStateSwitch) processBoth(mailer *Mailer) IMailerState {
 	select {
 
 	/* Data available in Input Buffer */
-	case _, ok := <- mailer.stream.InFrameReady:
+	case _, ok := <-mailer.stream.InFrameReady:
 		log.Printf("Data available in Input Buffer")
 		if ok {
 			mailer.rxRoutineResult = ReceiveRoutine(mailer)
@@ -62,6 +61,7 @@ func (self *MailerStateSwitch) Process(mailer *Mailer) IMailerState {
 
 	/* RxState is RxDone and TxState is TxDone */
 	if mailer.rxState == RxDone && mailer.txState == TxDone {
+		mailer.report.SetStatus("Session RX/TX complete.")
 		return NewMailerStateEnd()
 	}
 

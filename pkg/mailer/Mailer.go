@@ -76,6 +76,7 @@ type Mailer struct {
 
 	pendingFiles util.Directory
 	chunk        []byte
+	report       *MailerReport /* Mailer report             */
 }
 
 func NewMailer(r *registry.Container) *Mailer {
@@ -112,6 +113,9 @@ func (self *Mailer) Start() error {
 		return fmt.Errorf("fido session alredy in progress")
 	}
 
+	/* Initialize new report */
+	self.report = NewMailerReport()
+
 	/* Add wait */
 	self.wait.Add(1)
 
@@ -131,11 +135,10 @@ func (self *Mailer) IsReceiving() bool {
 
 func (self *Mailer) run() {
 
+	self.report.SetStartSession(time.Now())
+
 	/* Reset active state */
 	self.activeState = NewMailerStateStart()
-
-	/* Register mailer start */
-	mailerStart := time.Now()
 
 	/* Start processing */
 	log.Printf("Start mailer routine")
@@ -152,9 +155,8 @@ func (self *Mailer) run() {
 	}
 	log.Printf("Stop mailer routine")
 
-	/* Calculate mailer routine duration */
-	elapsed := time.Since(mailerStart)
-	log.Printf("Mailer session: %+v", elapsed)
+	/* Update report */
+	self.report.SetStopSession(time.Now())
 
 	/* Close connection */
 	self.wait.Done()
@@ -164,8 +166,15 @@ func (self *Mailer) run() {
 
 }
 
-func (self *Mailer) Wait() {
+func (self *Mailer) Wait() *MailerReport {
+
+	/* Wait session complete */
 	self.wait.Wait()
+
+	/* Dump report */
+	self.report.Dump()
+
+	return self.report
 }
 
 func (self *Mailer) SetServerAddr(addr string) {
@@ -244,7 +253,7 @@ func (self *Mailer) createAuthorization(chData []byte) string {
 
 func (self *Mailer) processNulOptFrame(rawOptions []byte) {
 
-	log.Printf("Remote server option: %s", rawOptions)
+	log.Printf("Mailer: Remote server option: %s", rawOptions)
 
 	/* Split options */
 	options := bytes.Fields(rawOptions)
@@ -269,19 +278,19 @@ func (self *Mailer) processNulFrame(nextFrame stream2.Frame) {
 	packet := nextFrame.CommandFrame.Body
 	values := bytes.SplitN(packet, []byte(" "), 2)
 
-	log.Printf("Remote side M_NUL with values: values = %+v", values)
-
 	if len(values) == 2 {
 
 		key := values[0]
 		value := values[1]
+
+		log.Printf("Mailer: Remote side M_NUL packet: name = %s value = %s", key, value)
 
 		if bytes.Equal(key, []byte("OPT")) {
 			self.processNulOptFrame(value)
 		}
 
 	} else {
-		log.Printf("Remote side M_NUL parse error")
+		log.Printf("Mailer: Remote side M_NUL parse error: packet = %s", packet)
 	}
 
 }
