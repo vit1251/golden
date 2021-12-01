@@ -17,6 +17,7 @@ type TableCelWidget struct {
 type TableRowWidget struct {
 	class string
 	Cells []*TableCelWidget
+	title string
 }
 
 func NewTableCellWidget() *TableCelWidget {
@@ -44,6 +45,11 @@ func (self *TableRowWidget) SetClass(s string) *TableRowWidget {
 	return self
 }
 
+func (self *TableRowWidget) SetTitle(title string) *TableRowWidget {
+	self.title = title
+	return self
+}
+
 type TableWidget struct {
 	headers TableHeaderWidget
 	rows    []*TableRowWidget
@@ -63,7 +69,7 @@ func NewTableRowWidget() *TableRowWidget {
 func (self *TableWidget) Render(w io.Writer) error {
 	fmt.Fprintf(w, "<table class=\"%s\">\n", self.class)
 	for _, row := range self.rows {
-		fmt.Fprintf(w, "<tr class=\"%s\">\n", row.class)
+		fmt.Fprintf(w, "<tr class=\"%s\" title=\"%s\">\n", row.class, row.title) // TODO - maybe escape title ...
 		for _, cel := range row.Cells {
 			fmt.Fprintf(w, "<td class=\"%s\">\n", cel.class)
 			if cel.Widget != nil {

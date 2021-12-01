@@ -87,6 +87,11 @@ func (self *EchoAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 		SetTitle("Charset").SetName("charset").SetValue(area.GetCharset())
 	formVBox.Add(chrsInputWidget)
 
+	/* Charset */
+	orderInputWidget := widgets.NewFormInputWidget().
+		SetTitle("Sort order").SetName("order").SetValue(fmt.Sprintf("%d", area.GetOrder()))
+	formVBox.Add(orderInputWidget)
+
 	/* Save button */
 	btnWidget := widgets.NewFormButtonWidget().
 		SetTitle("Save")

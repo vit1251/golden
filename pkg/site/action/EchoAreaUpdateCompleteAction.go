@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type EchoAreaUpdateCompleteAction struct {
@@ -46,10 +47,18 @@ func (self *EchoAreaUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 	newCharset := r.PostForm.Get("charset")
 	area.SetCharset(newCharset)
 
-	/* Update area property */
-	err2 := echoAreaMapper.Update(area)
+	/* Update order */
+	newOrder := r.PostForm.Get("order")
+	order, err2 := strconv.ParseInt(newOrder, 10, 64)
 	if err2 != nil {
-		panic(err2)
+		log.Printf("Error parsing: %s as int64", newOrder)
+	}
+	area.SetOrder(order)
+
+	/* Update area property */
+	err3 := echoAreaMapper.Update(area)
+	if err3 != nil {
+		panic(err3)
 	}
 
 	/* Render */

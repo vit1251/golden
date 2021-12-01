@@ -97,17 +97,23 @@ func (self *FileAreaMapper) CreateFileArea(a *FileArea) error {
 
 	storageManager := self.restoreStorageManager()
 
+	var areaName string = a.GetName()
+	var areaMode string = a.GetMode()
+	var areaSummary string = a.GetSummary()
+	var areaCharset string = a.GetCharset()
+	var areaOrder int = a.GetOrder()
+
 	query := "INSERT INTO `filearea` (`areaName`, `areaMode`, `areaSummary`, `areaCharset`, `areaOrder`) VALUES (?, ?, ?, ?, ?)"
 
 	var params []interface{}
-	params = append(params, a.GetName())
-	params = append(params, a.GetMode())
-	params = append(params, a.GetSummary())
-	params = append(params, a.GetCharset())
-	params = append(params, a.GetOrder())
+	params = append(params, areaName)
+	params = append(params, areaMode)
+	params = append(params, areaSummary)
+	params = append(params, areaCharset)
+	params = append(params, areaOrder)
 
 	/* Create area */
-	err1 := storageManager.Exec(query, params, func (e sql.Result, err error) error {
+	err1 := storageManager.Exec(query, params, func(e sql.Result, err error) error {
 
 		if err != nil {
 			log.Printf("Fail on CreateFileArea with error: err = %+v", err)

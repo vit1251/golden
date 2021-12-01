@@ -68,7 +68,10 @@ func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	for _, area := range areas {
 		log.Printf("area = %+v", area)
-		row := widgets.NewTableRowWidget()
+		row := widgets.NewTableRowWidget().
+			SetTitle(fmt.Sprintf("[%d] %s - %s (%s)",
+				area.GetOrder(), area.GetName(), area.GetSummary(), area.GetCharset(),
+			))
 
 		if area.NewMessageCount > 0 {
 			row.SetClass("echo-index-item-new")
@@ -77,7 +80,7 @@ func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		}
 
 		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.GetName())))
-		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.Summary)))
+		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.GetSummary())))
 
 		if area.NewMessageCount > 0 {
 
@@ -85,7 +88,7 @@ func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 			newMsgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.NewMessageCount))
 			separator := widgets.NewTextWidgetWithText(" / ")
-			msgCount :=	widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.MessageCount))
+			msgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.MessageCount))
 
 			newMsgCount.SetClass("echo-index-item-count-new")
 
@@ -127,6 +130,5 @@ func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
-
 
 }

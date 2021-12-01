@@ -227,10 +227,13 @@ func (self *Tosser) acquireAreaByName(areaName string) *mapper.Area {
 	/* Debug message */
 	log.Printf("Create new area: name = %s charset = %s", areaName, areaCharset)
 
+	var areaOrder int64 = time.Now().Unix()
+
 	/* Create new area */
 	a := mapper.NewArea()
 	a.SetName(areaName)
 	a.SetCharset(areaCharset)
+	a.SetOrder(areaOrder)
 	err2 := echoAreaMapper.Register(a)
 	if err2 != nil {
 		log.Printf("Error: Problem with create area by name %s", areaName)

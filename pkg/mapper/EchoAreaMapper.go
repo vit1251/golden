@@ -21,10 +21,19 @@ func (self *EchoAreaMapper) Register(a *Area) error {
 	storageManager := self.restoreStorageManager()
 
 	var areaName string = a.GetName()
+	var areaType string = ""
+	var areaPath string = ""
+	var areaSummary string = a.GetSummary()
+	var areaOrder int64 = a.GetOrder()
 
-	query1 := "INSERT INTO `area` ( `areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder` ) VALUES ( ?, '', '', '', 0 )"
+	//                                   1          2           3            4             5
+	query1 := "INSERT INTO `area` ( `areaName`, `areaType`, `areaPath`, `areaSummary`, `areaOrder` ) VALUES ( ?, ?, ?, ?, ? )"
 	var params []interface{}
-	params = append(params, areaName)
+	params = append(params, areaName)    // 1
+	params = append(params, areaType)    // 2
+	params = append(params, areaPath)    // 3
+	params = append(params, areaSummary) // 4
+	params = append(params, areaOrder)   // 5
 
 	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
@@ -42,7 +51,7 @@ func (self *EchoAreaMapper) GetAreas() ([]Area, error) {
 
 	var result []Area
 
-	query1 := "SELECT `areaName`, `areaSummary`, `areaCharset` FROM `area` ORDER BY `areaName` ASC"
+	query1 := "SELECT `areaName`, `areaSummary`, `areaCharset`, `areaOrder` FROM `area` ORDER BY `areaOrder` ASC, `areaName` ASC"
 	var params []interface{}
 
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
@@ -50,16 +59,18 @@ func (self *EchoAreaMapper) GetAreas() ([]Area, error) {
 		var areaName string
 		var areaSummary string
 		var areaCharset string
+		var areaOrder int64
 
-		err3 := rows.Scan(&areaName, &areaSummary, &areaCharset)
+		err3 := rows.Scan(&areaName, &areaSummary, &areaCharset, &areaOrder)
 		if err3 != nil {
 			return err3
 		}
 
 		area := NewArea()
 		area.SetName(areaName)
-		area.Summary = areaSummary
+		area.SetSummary(areaSummary)
 		area.SetCharset(areaCharset)
+		area.SetOrder(areaOrder)
 
 		result = append(result, *area)
 
@@ -80,26 +91,28 @@ func (self *EchoAreaMapper) GetAreaByName(echoTag string) (*Area, error) {
 
 	var result *Area
 
-	/* Restore parameters */
-	query1 := "SELECT `areaName`, `areaSummary`, `areaCharset` FROM `area` WHERE `areaName` = ?"
+	//                                                                                        1
+	query1 := "SELECT `areaName`, `areaSummary`, `areaCharset`, `areaOrder` FROM `area` WHERE `areaName` = ?"
 	var params []interface{}
-	params = append(params, echoTag)
+	params = append(params, echoTag) // 1
 
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
 
 		var areaName string
 		var areaSummary string
 		var areaCharset string
+		var areaOrder int64
 
-		err3 := rows.Scan(&areaName, &areaSummary, &areaCharset)
+		err3 := rows.Scan(&areaName, &areaSummary, &areaCharset, &areaOrder)
 		if err3 != nil {
 			return err3
 		}
 
 		area := NewArea()
 		area.SetName(areaName)
-		area.Summary = areaSummary
+		area.SetSummary(areaSummary)
 		area.SetCharset(areaCharset)
+		area.SetOrder(areaOrder)
 
 		result = area
 
@@ -116,11 +129,18 @@ func (self *EchoAreaMapper) Update(area *Area) error {
 
 	storageManager := self.restoreStorageManager()
 
-	query1 := "UPDATE `area` SET `areaSummary` = ?, `areaCharset` = ? WHERE `areaName` = ?"
+	var areaSummary string = area.GetSummary()
+	var areaCharset string = area.GetCharset()
+	var areaOrder int64 = area.GetOrder()
+	var areaName string = area.GetName()
+
+	//                                           1                  2                3                    4
+	query1 := "UPDATE `area` SET `areaSummary` = ?, `areaCharset` = ?, `areaOrder` = ? WHERE `areaName` = ?"
 	var params []interface{}
-	params = append(params, area.Summary)      // 1
-	params = append(params, area.GetCharset()) // 2
-	params = append(params, area.GetName())    // 3
+	params = append(params, areaSummary) // 1
+	params = append(params, areaCharset) // 2
+	params = append(params, areaOrder)   // 3
+	params = append(params, areaName)    // 4
 
 	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
@@ -134,9 +154,10 @@ func (self *EchoAreaMapper) RemoveAreaByName(echoName string) error {
 
 	storageManager := self.restoreStorageManager()
 
+	//                                               1
 	query1 := "DELETE FROM `area` WHERE `areaName` = ?"
 	var params []interface{}
-	params = append(params, echoName)
+	params = append(params, echoName) // 1
 
 	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)

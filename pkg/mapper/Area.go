@@ -11,6 +11,7 @@ type Area struct {
 	charset         string /* Echo charset           */
 	MessageCount    int    /* Echo message count     */
 	NewMessageCount int    /* Echo new message count */
+	order           int64  /* Area sort order        */
 }
 
 func NewArea() *Area {
@@ -39,4 +40,20 @@ func (self Area) GetCharset() string {
 		self.charset = "CP866"
 	}
 	return self.charset
+}
+
+func (self *Area) GetOrder() int64 {
+	return self.order
+}
+
+func (self *Area) SetOrder(order int64) {
+	self.order = order
+}
+
+func (self *Area) GetSummary() string {
+	return self.Summary
+}
+
+func (self *Area) SetSummary(summary string) {
+	self.Summary = summary
 }
