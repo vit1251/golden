@@ -47,7 +47,7 @@ func (self *EchoAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	vBox.Add(container)
 

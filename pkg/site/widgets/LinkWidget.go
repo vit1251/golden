@@ -6,10 +6,9 @@ import (
 )
 
 type LinkWidget struct {
-	Link    string
-	Content string
-	Widget  IWidget
-	class   string
+	Link       string
+	classNames string
+	widgets    []IWidget
 }
 
 func NewLinkWidget() *LinkWidget {
@@ -18,8 +17,7 @@ func NewLinkWidget() *LinkWidget {
 }
 
 func (self *LinkWidget) SetContent(content string) *LinkWidget {
-	self.Content = content
-	return self
+	return self.AddWidget(NewTextWidgetWithText(content))
 }
 
 func (self *LinkWidget) SetLink(link string) *LinkWidget {
@@ -28,17 +26,20 @@ func (self *LinkWidget) SetLink(link string) *LinkWidget {
 }
 
 func (self *LinkWidget) Render(w io.Writer) error {
-	fmt.Fprintf(w, "<a href=\"%s\" class=\"%s\">", self.Link, self.class)
-	if self.Widget != nil {
-		self.Widget.Render(w)
-	} else {
-		fmt.Fprintf(w, "%s", self.Content)
+	fmt.Fprintf(w, "<a href=\"%s\" class=\"%s\">", self.Link, self.classNames)
+	for _, widget := range self.widgets {
+		widget.Render(w)
 	}
 	fmt.Fprintf(w, "</a>")
 	return nil
 }
 
-func (self *LinkWidget) SetClass(s string) *LinkWidget {
-	self.class = s
+func (self *LinkWidget) SetClass(classNames string) *LinkWidget {
+	self.classNames = classNames
+	return self
+}
+
+func (self *LinkWidget) AddWidget(widget IWidget) *LinkWidget {
+	self.widgets = append(self.widgets, widget)
 	return self
 }

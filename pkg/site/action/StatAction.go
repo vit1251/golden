@@ -15,7 +15,7 @@ func NewStatAction() *StatAction {
 	return sa
 }
 
-func (self *StatAction) createMetric(tw *widgets.TableWidget, name string, rx string, tx  string) {
+func (self *StatAction) createMetric(tw *widgets.TableWidget, name string, rx string, tx string) {
 	tw.AddRow(widgets.NewTableRowWidget().
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(name))).
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(rx))).
@@ -51,7 +51,7 @@ func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	vBox.Add(container)
 
@@ -65,9 +65,9 @@ func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Sent"))))
 
 	self.createMetric(statWidget,
-			"Total TIC",
-			fmt.Sprintf("%d", stat.TicReceived),
-			fmt.Sprintf("%d", stat.TicSent))
+		"Total TIC",
+		fmt.Sprintf("%d", stat.TicReceived),
+		fmt.Sprintf("%d", stat.TicSent))
 
 	//self.createMetric(statWidget,
 	//		"Total Echomail",
@@ -80,19 +80,19 @@ func (self *StatAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	//	fmt.Sprintf("%d", stat.NetmailSent))
 
 	self.createMetric(statWidget,
-			"Total Packet",
-			fmt.Sprintf("%d", stat.PacketReceived),
-			fmt.Sprintf("%d", stat.PacketSent))
+		"Total Packet",
+		fmt.Sprintf("%d", stat.PacketReceived),
+		fmt.Sprintf("%d", stat.PacketSent))
 
 	self.createMetric(statWidget,
-			"Total Message",
+		"Total Message",
 		fmt.Sprintf("%d", stat.MessageReceived),
-			fmt.Sprintf("%d", stat.MessageSent))
+		fmt.Sprintf("%d", stat.MessageSent))
 
 	self.createMetric(statWidget,
-			"Total session count",
-			fmt.Sprintf("%d", stat.SessionIn),
-			fmt.Sprintf("%d", stat.SessionOut))
+		"Total session count",
+		fmt.Sprintf("%d", stat.SessionIn),
+		fmt.Sprintf("%d", stat.SessionOut))
 
 	containerVBox.Add(statWidget)
 

@@ -85,7 +85,6 @@ func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 }
 
-
 func (self EchoMsgViewAction) makeMessageHeaderRowSection(headerTable *widgets.TableWidget, name widgets.IWidget, value widgets.IWidget) {
 
 	headerFromName := widgets.NewTableCellWidget()
@@ -171,7 +170,7 @@ func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *mapper.Area, origM
 	vBox.Add(container)
 
 	containerVBox := widgets.NewVBoxWidget()
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	/* Context actions */
 	var actions []*widgets.MenuAction
@@ -214,7 +213,7 @@ func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *mapper.Area, origM
 
 	/* Message header section */
 	msgHeader := self.makeMessageHeaderSection(*origMsg)
-	msgHeaderWrapper := widgets.NewDivWidget().SetClass("echo-msg-view-header-wrapper").SetWidget(msgHeader)
+	msgHeaderWrapper := widgets.NewDivWidget().SetClass("echo-msg-view-header-wrapper").AddWidget(msgHeader)
 	containerVBox.Add(msgHeaderWrapper)
 
 	/* Message body */

@@ -47,7 +47,7 @@ func (self *EchoAreaMarkAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	vBox.Add(container)
 
 	containerVBox := widgets.NewVBoxWidget()
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	//<h1>Delete message?</h1>
 	headerWidget := widgets.NewHeaderWidget().

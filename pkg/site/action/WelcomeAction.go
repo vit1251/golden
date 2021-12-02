@@ -36,7 +36,7 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	vBox.Add(container)
 

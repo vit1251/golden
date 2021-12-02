@@ -59,7 +59,7 @@ func (self EchoMsgTreeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	vBox.Add(container)
 
 	containerVBox := widgets.NewVBoxWidget()
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	/* Create node tree */
 	tree := msg.NewMessageTree()

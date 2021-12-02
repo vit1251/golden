@@ -25,6 +25,11 @@ func NewBaseWidget() *BaseWidget {
 	mainStyle.SetHref("/static/custom.css")
 	bw.AddStyle(*mainStyle)
 
+	/* Set main style */
+	modernStyle := NewStyle()
+	modernStyle.SetHref("/static/modern.css")
+	bw.AddStyle(*modernStyle)
+
 	/* Set print style */
 	printStyle := NewStyle()
 	printStyle.SetHref("/static/print.css")

@@ -8,7 +8,6 @@ import (
 	"net/http"
 )
 
-
 type FileEchoAreaUploadAction struct {
 	Action
 }
@@ -53,7 +52,7 @@ func (self FileEchoAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	vBox.Add(container)
 

@@ -42,7 +42,7 @@ func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	vBox.Add(container)
 

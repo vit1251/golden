@@ -78,8 +78,7 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	vBox.Add(container)
 
 	containerVBox := widgets.NewVBoxWidget()
-	container.SetWidget(containerVBox)
-
+	container.AddWidget(containerVBox)
 
 	/* Context actions */
 	amw := widgets.NewActionMenuWidget().

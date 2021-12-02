@@ -74,7 +74,7 @@ func (self NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	/* Context actions */
 	amw := widgets.NewActionMenuWidget().
@@ -96,7 +96,7 @@ func (self NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	containerVBox.Add(amw)
 
 	msgHeader := self.makeMessageHeaderSection(origMsg)
-	msgHeaderWrapper := widgets.NewDivWidget().SetClass("netmail-msg-view-header-wrapper").SetWidget(msgHeader)
+	msgHeaderWrapper := widgets.NewDivWidget().SetClass("netmail-msg-view-header-wrapper").AddWidget(msgHeader)
 	containerVBox.Add(msgHeaderWrapper)
 
 	previewWidget := widgets.NewDivWidget().

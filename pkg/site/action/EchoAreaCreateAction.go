@@ -16,7 +16,6 @@ func NewEchoAreaCreateAction() *EchoAreaCreateAction {
 
 func (self *EchoAreaCreateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-
 	/* Render */
 	bw := widgets.NewBaseWidget()
 
@@ -31,7 +30,7 @@ func (self *EchoAreaCreateAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	vBox.Add(container)
 
@@ -63,7 +62,7 @@ func (self *EchoAreaCreateAction) createInputField(box *widgets.VBoxWidget, name
 		SetClass("form-group row")
 
 	mainDivBox := widgets.NewVBoxWidget()
-	mainDiv.SetWidget(mainDivBox)
+	mainDiv.AddWidget(mainDivBox)
 
 	mainTitle := widgets.NewDivWidget().
 		SetClass("col-sm-2 col-form-label").

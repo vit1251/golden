@@ -47,7 +47,7 @@ func (self FileEchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	vBox.Add(container)
 
@@ -55,13 +55,13 @@ func (self FileEchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	amw := widgets.NewActionMenuWidget()
 	amw.Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/file/%s/remove", area.GetName())).
-			SetIcon("icofont-remove").
-			SetLabel("Remove echo"))
-//		amw.Add(widgets.NewMenuAction().
-//			SetLink(fmt.Sprintf("/file/%s/purge", area.GetName())).
-//			SetIcon("icofont-purge").
-//			SetLabel("Purge echo"))
+		SetLink(fmt.Sprintf("/file/%s/remove", area.GetName())).
+		SetIcon("icofont-remove").
+		SetLabel("Remove echo"))
+	//		amw.Add(widgets.NewMenuAction().
+	//			SetLink(fmt.Sprintf("/file/%s/purge", area.GetName())).
+	//			SetIcon("icofont-purge").
+	//			SetLabel("Purge echo"))
 
 	containerVBox.Add(amw)
 
@@ -70,13 +70,11 @@ func (self FileEchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	containerVBox.Add(headerWidget)
 
-
 	/* Render */
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
-
 
 }

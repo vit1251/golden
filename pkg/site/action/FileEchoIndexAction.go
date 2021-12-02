@@ -49,7 +49,7 @@ func (self *FileEchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	container.SetClass("container")
 
 	containerVBox := widgets.NewVBoxWidget()
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 	vBox.Add(container)
 
 	indexTable := widgets.NewTableWidget().

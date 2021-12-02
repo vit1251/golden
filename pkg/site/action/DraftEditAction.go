@@ -51,7 +51,7 @@ func (self DraftEditAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vBox.Add(container)
 
 	containerVBox := widgets.NewVBoxWidget()
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	var section *widgets.SectionWidget
 	if newDraft.IsEchoMail() {

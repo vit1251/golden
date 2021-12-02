@@ -13,7 +13,7 @@ type EchoMsgRemoveAction struct {
 }
 
 func NewEchoMsgRemoveAction() *EchoMsgRemoveAction {
-	ra:=new(EchoMsgRemoveAction)
+	ra := new(EchoMsgRemoveAction)
 	return ra
 }
 
@@ -57,7 +57,7 @@ func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	vBox.Add(container)
 
 	containerVBox := widgets.NewVBoxWidget()
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	//<h1>Delete message?</h1>
 	headerWidget := widgets.NewHeaderWidget().

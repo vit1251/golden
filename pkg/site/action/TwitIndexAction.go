@@ -41,13 +41,13 @@ func (self TwitIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	vBox.Add(container)
 
 	/* Add custom param field */
 	twitTable := widgets.NewTableWidget().
-			SetClass("twit-index-table")
+		SetClass("twit-index-table")
 
 	twitTable.AddRow(widgets.NewTableRowWidget().
 		SetClass("twit-index-header").

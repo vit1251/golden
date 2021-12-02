@@ -18,7 +18,6 @@ func NewFileEchoAreaIndexAction() *FileEchoAreaIndexAction {
 	return fa
 }
 
-
 func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
@@ -52,7 +51,6 @@ func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 	}
 	log.Printf("files = %+v", files)
 
-
 	bw := widgets.NewBaseWidget()
 
 	vBox := widgets.NewVBoxWidget()
@@ -65,7 +63,7 @@ func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 	container.SetClass("container")
 
 	containerVBox := widgets.NewVBoxWidget()
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 	vBox.Add(container)
 
 	/* Context actions */

@@ -460,7 +460,7 @@ span.hidden {
 }
 
 .echo-msg-index-item-own {
-    color: #e0a800;
+    font-weight: 600;
 }
 
 /* Echo message view */

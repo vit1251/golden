@@ -164,7 +164,7 @@ func (self SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	container.SetWidget(containerVBox)
+	container.AddWidget(containerVBox)
 
 	vBox.Add(container)
 
@@ -200,7 +200,7 @@ func (self *SetupAction) createInputField(box *widgets.VBoxWidget, param setupPa
 		SetClass("form-group row")
 
 	mainDivBox := widgets.NewVBoxWidget()
-	mainDiv.SetWidget(mainDivBox)
+	mainDiv.AddWidget(mainDivBox)
 
 	mainTitle := widgets.NewDivWidget().
 		SetClass("").
