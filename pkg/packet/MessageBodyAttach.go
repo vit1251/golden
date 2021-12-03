@@ -3,9 +3,9 @@ package packet
 import "bytes"
 
 type MessageBodyAttach struct {
-	name string
+	name       string
 	permission string
-	buffer bytes.Buffer
+	buffer     bytes.Buffer
 }
 
 func NewMessageBodyAttach() *MessageBodyAttach {
@@ -56,4 +56,8 @@ func (self *MessageBodyAttach) GetData() bytes.Buffer {
 		//
 	}
 	return newOut
+}
+
+func (self *MessageBodyAttach) GetName() string {
+	return self.name
 }

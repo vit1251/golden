@@ -21,6 +21,30 @@ func NewEchoMsgIndexAction() *EchoMsgIndexAction {
 	return ea
 }
 
+func (self *EchoMsgIndexAction) renderActions(newArea *mapper.Area) widgets.IWidget {
+
+	actionBar := widgets.NewActionMenuWidget().
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s/message/compose", newArea.GetName())).
+			SetIcon("icofont-edit").
+			SetLabel("Compose")).
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s/tree", newArea.GetName())).
+			SetIcon("icon-tree").
+			SetLabel("Tree")).
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s/mark", newArea.GetName())).
+			SetIcon("icofont-mark-as-read").
+			SetLabel("Mark as read")).
+		Add(widgets.NewMenuAction().
+			SetLink(fmt.Sprintf("/echo/%s/update", newArea.GetName())).
+			SetIcon("icofont-update").
+			SetLabel("Settings"))
+
+	return actionBar
+
+}
+
 func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
@@ -84,21 +108,8 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	container.AddWidget(containerVBox)
 
 	/* Context actions */
-	amw := widgets.NewActionMenuWidget().
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/message/compose", newArea.GetName())).
-			SetIcon("icofont-edit").
-			SetLabel("Compose")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/mark", newArea.GetName())).
-			SetIcon("icofont-mark-as-read").
-			SetLabel("Mark as read")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/update", newArea.GetName())).
-			SetIcon("icofont-update").
-			SetLabel("Settings"))
-
-	containerVBox.Add(amw)
+	actionsBar := self.renderActions(newArea)
+	containerVBox.Add(actionsBar)
 
 	indexTable := widgets.NewDivWidget().
 		SetClass("echo-msg-index-table").

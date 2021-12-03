@@ -3,10 +3,10 @@ package mapper
 type FileArea struct {
 	name    string
 	Path    string
-	Summary string
+	summary string
 	mode    string
 	charset string
-	Count   int
+	count   int
 	order   int
 }
 
@@ -24,11 +24,11 @@ func (self FileArea) GetName() string {
 }
 
 func (self *FileArea) SetSummary(summary string) {
-	self.Summary = summary
+	self.summary = summary
 }
 
 func (self FileArea) GetSummary() string {
-	return self.Summary
+	return self.summary
 }
 
 func (self FileArea) GetCharset() string {
@@ -52,4 +52,12 @@ func (self FileArea) GetMode() string {
 
 func (self *FileArea) GetOrder() int {
 	return self.order
+}
+
+func (self *FileArea) SetCount(count int) {
+	self.count = count
+}
+
+func (self *FileArea) GetCount() int {
+	return self.count
 }

@@ -2,9 +2,10 @@ package action
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
-	"log"
 	"net/http"
+	"strings"
 )
 
 type FileEchoIndexAction struct {
@@ -52,32 +53,14 @@ func (self *FileEchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	container.AddWidget(containerVBox)
 	vBox.Add(container)
 
-	indexTable := widgets.NewTableWidget().
+	indexTable := widgets.NewDivWidget().
 		SetClass("file-index-table")
 
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		SetClass("file-index-header").
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Count"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
-
 	for _, area := range areas {
-		log.Printf("area = %+v", area)
 
-		actions := widgets.NewVBoxWidget()
+		areaRow := self.renderRow(&area)
+		indexTable.AddWidget(areaRow)
 
-		actions.Add(widgets.NewLinkWidget().
-			SetContent("View").
-			SetClass("btn").
-			SetLink(fmt.Sprintf("/file/%s", area.GetName())))
-
-		indexTable.AddRow(widgets.NewTableRowWidget().
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.GetName()))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.Summary))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
-				fmt.Sprintf("%d", area.Count)))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(actions)))
 	}
 
 	containerVBox.Add(indexTable)
@@ -88,4 +71,76 @@ func (self *FileEchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+}
+
+func (self *FileEchoIndexAction) renderRow(area *mapper.FileArea) widgets.IWidget {
+
+	rowTitle := fmt.Sprintf("[%d] %s - %s (%s)",
+		area.GetOrder(), area.GetName(), area.GetSummary(), area.GetCharset(),
+	)
+
+	/* Make message row container */
+	rowWidget := widgets.NewDivWidget().
+		SetStyle("display: flex").
+		SetStyle("direction: column").
+		SetStyle("align-items: center").
+		SetTitle(rowTitle)
+
+	var classNames []string
+	classNames = append(classNames, "echo-index-item")
+	//if area.NewMessageCount > 0 {
+	//	classNames = append(classNames, "echo-index-item-new")
+	//}
+	rowWidget.SetClass(strings.Join(classNames, " "))
+
+	/* Render area name */
+	nameWidget := widgets.NewDivWidget().
+		SetWidth("190px").
+		SetHeight("38px").
+		SetStyle("flex-shrink: 0").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
+		//SetStyle("border: 1px solid green").
+		SetContent(area.GetName())
+	rowWidget.AddWidget(nameWidget)
+
+	/* Render summary */
+	summaryWidget := widgets.NewDivWidget().
+		SetStyle("min-width: 350px").
+		SetHeight("38px").
+		SetStyle("flex-grow: 1").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
+		//SetStyle("border: 1px solid red").
+		SetContent(area.GetSummary())
+	rowWidget.AddWidget(summaryWidget)
+
+	/* Render counter widget */
+	counterWidgetContent := self.renderMessageCounter(area)
+	counterWidget := widgets.NewDivWidget().
+		SetHeight("38px").
+		SetWidth("160px").
+		SetStyle("flex-shrink: 0").
+		//SetStyle("border: 1px solid blue").
+		AddWidget(counterWidgetContent)
+	rowWidget.AddWidget(counterWidget)
+
+	/* Link container */
+	navigateAddress := fmt.Sprintf("/file/%s", area.GetName())
+
+	navigateItem := widgets.NewLinkWidget().
+		SetLink(navigateAddress).
+		AddWidget(rowWidget)
+
+	return navigateItem
+
+}
+
+func (self *FileEchoIndexAction) renderMessageCounter(area *mapper.FileArea) widgets.IWidget {
+	counterWidget := widgets.NewDivWidget()
+	msgCount := fmt.Sprintf("%d", area.GetCount())
+	counterWidget.SetContent(msgCount)
+	return counterWidget
 }

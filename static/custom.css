@@ -573,8 +573,26 @@ span.hidden {
     width: 100%;
 }
 
-.file-area-index-header {
-    background-color: #666666;
+.file-area-index-item {
+    color: #666666;
+}
+
+.file-area-index-item-new {
+    color: #ffc445;
+}
+
+.file-area-index-item-missing {
+    color: #f05a67;
+}
+
+/* File area view */
+
+.file-area-view-item-new {
+    color: #666666;
+}
+
+.file-area-view-item-new {
+    color: #ffc445;
 }
 
 /* Service index */

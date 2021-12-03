@@ -1,7 +1,6 @@
 package mapper
 
 import (
-	commonfunc "github.com/vit1251/golden/pkg/common"
 	"time"
 )
 
@@ -75,11 +74,6 @@ func (self *NetmailMsg) SetTime(ptm time.Time) {
 	self.UnixTime = ptm.Unix()
 }
 
-func (self NetmailMsg) GetAge() string {
-	result := commonfunc.MakeHumanTime(self.DateWritten)
-	return result
-}
-
 func (self *NetmailMsg) SetPacket(packet []byte) {
 	self.packet = packet
 }
@@ -99,4 +93,3 @@ func (self *NetmailMsg) GetFrom() string {
 func (self *NetmailMsg) GetPacket() []byte {
 	return self.packet
 }
-

@@ -10,6 +10,7 @@ type DivWidget struct {
 	className string
 	styles    []string
 	widgets   []IWidget
+	title     string
 }
 
 func (self *DivWidget) SetClass(s string) *DivWidget {
@@ -55,5 +56,10 @@ func (self *DivWidget) SetWidth(width string) *DivWidget {
 
 func (self *DivWidget) SetStyle(row string) *DivWidget {
 	self.styles = append(self.styles, row)
+	return self
+}
+
+func (self *DivWidget) SetTitle(title string) *DivWidget {
+	self.title = title
 	return self
 }

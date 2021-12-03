@@ -1,7 +1,6 @@
 package msg
 
 import (
-	"github.com/vit1251/golden/pkg/common"
 	"strings"
 	"time"
 )
@@ -76,11 +75,6 @@ func (self *Message) SetViewCount(count int) {
 
 func (self *Message) SetMsgHash(hash string) {
 	self.Hash = hash
-}
-
-func (self Message) GetAge() string {
-	result := commonfunc.MakeHumanTime(self.DateWritten)
-	return result
 }
 
 func (self *Message) SetPacket(packet []byte) {

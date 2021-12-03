@@ -1,12 +1,16 @@
 package action
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gorilla/mux"
-	commonfunc "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/site/utils"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 )
 
 type FileEchoAreaIndexAction struct {
@@ -79,38 +83,14 @@ func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 
 	containerVBox.Add(amw)
 
-	indexTable := widgets.NewTableWidget().
+	indexTable := widgets.NewDivWidget().
 		SetClass("file-area-index-table")
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		SetClass("file-area-index-header").
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Date"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
 
 	for _, f := range files {
 
-		newDate := commonfunc.MakeHumanTime(f.GetTime())
+		itemRow := self.renderRow(area, &f)
+		indexTable.AddWidget(itemRow)
 
-		actions := widgets.NewVBoxWidget()
-
-		actions.Add(widgets.NewLinkWidget().
-			SetContent("View").
-			SetClass("btn").
-			SetLink(fmt.Sprintf("/file/%s/tic/%s/view", f.GetArea(), f.GetFile())))
-
-		actions.Add(widgets.NewLinkWidget().
-			SetContent("Remove").
-			SetClass("btn").
-			SetLink(fmt.Sprintf("/file/%s/tic/%s/remove", f.GetArea(), f.GetFile())))
-
-		log.Printf("file = %+v", f)
-		indexTable.AddRow(widgets.NewTableRowWidget().
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.GetFile()))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(f.GetDesc()))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(newDate))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(actions)))
 	}
 
 	containerVBox.Add(indexTable)
@@ -120,5 +100,88 @@ func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
+
+}
+
+func (self *FileEchoAreaIndexAction) renderRow(area *mapper.FileArea, file *mapper.File) widgets.IWidget {
+
+	mapperManager := self.restoreMapperManager()
+	fileMapper := mapperManager.GetFileMapper()
+
+	/* Make message row container */
+	rowWidget := widgets.NewDivWidget().
+		SetStyle("display: flex").
+		SetStyle("direction: column").
+		SetStyle("align-items: center")
+
+	var classNames []string
+	classNames = append(classNames, "file-area-index-item")
+
+	/* Check exists */
+	var areaName string = area.GetName()
+	var fileName string = file.GetFile()
+	path := fileMapper.GetFileAbsolutePath(areaName, fileName)
+	log.Printf("Check %s", path)
+
+	if !self.checkExists(path) {
+		classNames = append(classNames, "file-area-index-item-missing")
+	}
+	rowWidget.SetClass(strings.Join(classNames, " "))
+
+	/* Render area name */
+	nameWidget := widgets.NewDivWidget().
+		SetWidth("190px").
+		SetHeight("38px").
+		SetStyle("flex-shrink: 0").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
+		//SetStyle("border: 1px solid green").
+		SetContent(file.GetFile())
+	rowWidget.AddWidget(nameWidget)
+
+	/* Render summary */
+	summaryWidget := widgets.NewDivWidget().
+		SetStyle("min-width: 350px").
+		SetHeight("38px").
+		SetStyle("flex-grow: 1").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
+		//SetStyle("border: 1px solid red").
+		SetContent(file.GetDesc())
+	rowWidget.AddWidget(summaryWidget)
+
+	/* Render counter widget */
+	dateText := utils.DateHelper_renderDate(file.GetTime())
+
+	counterWidget := widgets.NewDivWidget().
+		SetHeight("38px").
+		SetWidth("160px").
+		SetStyle("flex-shrink: 0").
+		//SetStyle("border: 1px solid blue").
+		SetContent(dateText)
+	rowWidget.AddWidget(counterWidget)
+
+	/* Link container */
+	navigateAddress := fmt.Sprintf("/file/%s/tic/%s/view", file.GetArea(), file.GetFile())
+
+	navigateItem := widgets.NewLinkWidget().
+		SetLink(navigateAddress).
+		AddWidget(rowWidget)
+
+	return navigateItem
+
+}
+
+func (self *FileEchoAreaIndexAction) checkExists(path string) bool {
+
+	if _, err := os.Stat(path); err == nil {
+		return true
+	} else if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+
+	return false
 
 }

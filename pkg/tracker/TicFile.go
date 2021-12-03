@@ -1,7 +1,6 @@
 package tracker
 
 import (
-	commonfunc "github.com/vit1251/golden/pkg/common"
 	"strings"
 	"time"
 )
@@ -22,11 +21,6 @@ func NewTicFile() *TicFile {
 	newTicFile := new(TicFile)
 	newTicFile.dateWritten = time.Now()
 	return newTicFile
-}
-
-func (self *TicFile) GetAge() string {
-	result := commonfunc.MakeHumanTime(self.dateWritten)
-	return result
 }
 
 func (self *TicFile) SetArea(area string) {

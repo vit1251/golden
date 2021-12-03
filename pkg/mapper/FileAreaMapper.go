@@ -86,7 +86,7 @@ func (self *FileAreaMapper) UpdateFileAreasWithFileCount(fileAreas []FileArea) (
 		if count, ok := metrics[areaName]; ok {
 			areaCount = count
 		}
-		a.Count = areaCount
+		a.SetCount(areaCount)
 		result = append(result, a)
 	}
 

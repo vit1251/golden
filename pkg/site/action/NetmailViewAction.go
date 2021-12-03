@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
+	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"net/http"
 )
@@ -41,7 +42,14 @@ func (self NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 	content := origMsg.GetContent()
 
-	//
+	/* Preprocess message body (attachments) */
+	rawPacket := origMsg.GetPacket()
+	bodyParser := packet.NewMessageBodyParser()
+	msgBody, _ := bodyParser.Parse(rawPacket)
+	// TODO - use message parsing ... rawContent := msgBody.GetContent()
+	// TODO - use message parsing ... content := string(rawContent)
+
+	/* Processing message body */
 	mtp := msg.NewMessageTextProcessor()
 	err4 := mtp.Prepare(content)
 	if err4 != nil {
@@ -95,7 +103,7 @@ func (self NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 			SetLabel("Delete"))
 	containerVBox.Add(amw)
 
-	msgHeader := self.makeMessageHeaderSection(origMsg)
+	msgHeader := self.makeMessageHeaderSection(origMsg, msgBody)
 	msgHeaderWrapper := widgets.NewDivWidget().SetClass("netmail-msg-view-header-wrapper").AddWidget(msgHeader)
 	containerVBox.Add(msgHeaderWrapper)
 
@@ -130,7 +138,7 @@ func (self NetmailViewAction) makeMessageHeaderRowSection(headerTable *widgets.T
 
 }
 
-func (self NetmailViewAction) makeMessageHeaderSection(origMsg *mapper.NetmailMsg) widgets.IWidget {
+func (self NetmailViewAction) makeMessageHeaderSection(origMsg *mapper.NetmailMsg, msgBody *packet.MessageBody) widgets.IWidget {
 
 	/* Make main header widget */
 	headerTable := widgets.NewTableWidget().
@@ -176,6 +184,33 @@ func (self NetmailViewAction) makeMessageHeaderSection(origMsg *mapper.NetmailMs
 		widgets.NewTextWidgetWithText("Date:"),
 		widgets.NewTextWidgetWithText(newDate),
 	)
+
+	attachments := msgBody.GetAttachments()
+	attachmentCount := len(attachments)
+	if attachmentCount > 0 {
+
+		attWidget := widgets.NewDivWidget()
+		for idx, att := range attachments {
+
+			attWidget.SetContent("📎")
+
+			navigateAddr := fmt.Sprintf("/netmail/%s/attach/%d/view", origMsg.Hash, idx)
+
+			navigateTitle := fmt.Sprintf("%s (%d kB)", att.GetName(), att.Len()/1024)
+			navigateRow := widgets.NewLinkWidget().
+				SetLink(navigateAddr).
+				SetContent(navigateTitle)
+
+			attWidget.AddWidget(navigateRow)
+
+		}
+
+		self.makeMessageHeaderRowSection(
+			headerTable,
+			widgets.NewTextWidgetWithText("Attachments:"),
+			attWidget,
+		)
+	}
 
 	return headerTable
 

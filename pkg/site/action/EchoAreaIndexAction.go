@@ -2,9 +2,10 @@ package action
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
-	"log"
 	"net/http"
+	"strings"
 )
 
 type EchoAreaIndexAction struct {
@@ -55,72 +56,14 @@ func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	containerVBox.Add(amw)
 
-	indexTable := widgets.NewTableWidget().
+	indexTable := widgets.NewDivWidget().
 		SetClass("echo-index-table")
 
-	indexTable.
-		AddRow(widgets.NewTableRowWidget().
-			SetClass("echo-index-header").
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Name"))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Summary"))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Count"))).
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("Action"))))
-
 	for _, area := range areas {
-		log.Printf("area = %+v", area)
-		row := widgets.NewTableRowWidget().
-			SetTitle(fmt.Sprintf("[%d] %s - %s (%s)",
-				area.GetOrder(), area.GetName(), area.GetSummary(), area.GetCharset(),
-			))
 
-		if area.NewMessageCount > 0 {
-			row.SetClass("echo-index-item-new")
-		} else {
-			row.SetClass("echo-index-item")
-		}
+		areaRow := self.renderRow(&area)
+		indexTable.AddWidget(areaRow)
 
-		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.GetName())))
-		row.AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(area.GetSummary())))
-
-		if area.NewMessageCount > 0 {
-
-			hBox := widgets.NewVBoxWidget()
-
-			newMsgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.NewMessageCount))
-			separator := widgets.NewTextWidgetWithText(" / ")
-			msgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.MessageCount))
-
-			newMsgCount.SetClass("echo-index-item-count-new")
-
-			hBox.Add(newMsgCount)
-			hBox.Add(separator)
-			hBox.Add(msgCount)
-
-			cell := widgets.NewTableCellWidget().SetWidget(hBox)
-			cell.SetClass("echo-index-item-count")
-			row.AddCell(cell)
-
-		} else {
-			cell := widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.MessageCount)))
-			cell.SetClass("echo-index-item-count")
-			row.AddCell(cell)
-		}
-
-		actions := widgets.NewVBoxWidget()
-		actions.Add(
-			widgets.NewLinkWidget().
-				SetContent("View").
-				SetClass("btn").
-				SetLink(fmt.Sprintf("/echo/%s", area.GetName())))
-		actions.Add(
-			widgets.NewLinkWidget().
-				SetContent("Tree").
-				SetClass("btn").
-				SetLink(fmt.Sprintf("/echo/%s/tree", area.GetName())))
-
-		row.AddCell(widgets.NewTableCellWidget().SetWidget(actions))
-
-		indexTable.AddRow(row)
 	}
 
 	containerVBox.Add(indexTable)
@@ -130,5 +73,102 @@ func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		http.Error(w, status, http.StatusInternalServerError)
 		return
 	}
+
+}
+
+func (self *EchoAreaIndexAction) renderMessageCounter(area *mapper.Area) widgets.IWidget {
+
+	counterWidget := widgets.NewDivWidget()
+
+	if area.NewMessageCount > 0 {
+
+		newMsgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.NewMessageCount))
+		separator := widgets.NewTextWidgetWithText(" / ")
+		msgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.MessageCount))
+
+		newMsgCount.SetClass("echo-index-item-count-new")
+
+		counterWidget.AddWidget(newMsgCount)
+		counterWidget.AddWidget(separator)
+		counterWidget.AddWidget(msgCount)
+
+		counterWidget.SetClass("echo-index-item-count")
+
+	} else {
+
+		msgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.MessageCount))
+
+		counterWidget.AddWidget(msgCount)
+
+		counterWidget.SetClass("echo-index-item-count")
+
+	}
+
+	return counterWidget
+
+}
+
+func (self *EchoAreaIndexAction) renderRow(area *mapper.Area) widgets.IWidget {
+
+	rowTitle := fmt.Sprintf("[%d] %s - %s (%s)",
+		area.GetOrder(), area.GetName(), area.GetSummary(), area.GetCharset(),
+	)
+
+	/* Make message row container */
+	rowWidget := widgets.NewDivWidget().
+		SetStyle("display: flex").
+		SetStyle("direction: column").
+		SetStyle("align-items: center").
+		SetTitle(rowTitle)
+
+	var classNames []string
+	classNames = append(classNames, "echo-index-item")
+	if area.NewMessageCount > 0 {
+		classNames = append(classNames, "echo-index-item-new")
+	}
+	rowWidget.SetClass(strings.Join(classNames, " "))
+
+	/* Render area name */
+	nameWidget := widgets.NewDivWidget().
+		SetWidth("190px").
+		SetHeight("38px").
+		SetStyle("flex-shrink: 0").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
+		//SetStyle("border: 1px solid green").
+		SetContent(area.GetName())
+	rowWidget.AddWidget(nameWidget)
+
+	/* Render summary */
+	summaryWidget := widgets.NewDivWidget().
+		SetStyle("min-width: 350px").
+		SetHeight("38px").
+		SetStyle("flex-grow: 1").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
+		//SetStyle("border: 1px solid red").
+		SetContent(area.GetSummary())
+	rowWidget.AddWidget(summaryWidget)
+
+	/* Render counter widget */
+	counterWidgetContent := self.renderMessageCounter(area)
+	counterWidget := widgets.NewDivWidget().
+		SetHeight("38px").
+		SetWidth("160px").
+		SetStyle("flex-shrink: 0").
+		//SetStyle("border: 1px solid blue").
+		AddWidget(counterWidgetContent)
+	rowWidget.AddWidget(counterWidget)
+
+	/* Link container */
+	navigateAddress := fmt.Sprintf("/echo/%s", area.GetName())
+
+	navigateItem := widgets.NewLinkWidget().
+		SetLink(navigateAddress).
+		AddWidget(rowWidget)
+
+	return navigateItem
 
 }
