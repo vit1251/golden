@@ -11,7 +11,7 @@ import (
 
 func checkAllowExt(ext string) bool {
 	var result = false
-	var suffixs []string = []string{".svg", ".css", ".js"}
+	var suffixs []string = []string{".svg", ".css", ".js", ".png", ".jpg"}
 	for _, suffix := range suffixs {
 		if strings.HasSuffix(ext, suffix) {
 			result = true

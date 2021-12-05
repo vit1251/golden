@@ -19,8 +19,7 @@ func NewWelcomeAction() *WelcomeAction {
 
 func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	/* Get dependency injection manager */
-	version := cmn.GetVersion()
+
 
 	/* Render */
 	bw := widgets.NewBaseWidget()
@@ -31,37 +30,95 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	mmw := self.makeMenu()
 	vBox.Add(mmw)
 
-	container := widgets.NewDivWidget()
-	container.SetClass("container")
+	mainWidget := widgets.NewDivWidget().
+		SetClass("container")
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	container.AddWidget(containerVBox)
+	mainWidget.AddWidget(containerVBox)
 
-	vBox.Add(container)
+	vBox.Add(mainWidget)
 
-	/* Fido mascot */
-	imageWidget := widgets.NewImageWidget()
-	imageWidget.SetSource("/static/fido.svg").SetClass("welcome-img")
+	/* Golden Point mascot image */
+
+	imageWidget := self.renderVerpic()
 	containerVBox.Add(imageWidget)
 
-	/* Application name */
+	/* Golden Point version */
+	productWidget := self.renderProductVersion()
+	containerVBox.Add(productWidget)
+
+	/* Contributors */
+	contributorWidget := self.renderContributors()
+	containerVBox.Add(contributorWidget)
+
+	/* Source code */
+	sourceWidget := self.renderSourceCode()
+	containerVBox.Add(sourceWidget)
+
+
+	/* Render */
+	if err := bw.Render(w); err != nil {
+		status := fmt.Sprintf("%+v", err)
+		http.Error(w, status, http.StatusInternalServerError)
+		return
+	}
+
+}
+
+func (self *WelcomeAction) renderVerpic() widgets.IWidget {
+
+	var version string = "1_2_16"
+
+	imageName := fmt.Sprintf("Dog_%s.png", version)
+	imagePath := fmt.Sprintf("/static/%s", imageName)
+
+	imageWidget := widgets.NewImageWidget()
+	imageWidget.SetSource(imagePath).
+		SetClass("welcome-img")
+
+	return imageWidget
+
+}
+
+func (self *WelcomeAction) renderProductVersion() widgets.IWidget {
+
+	/* Get dependency injection manager */
+	version := cmn.GetVersion()
+
+	productWidget := widgets.NewDivWidget().
+		SetStyle("padding-bottom: 32px")
+
+	/* Product name */
 	nameWidget := widgets.NewDivWidget().
 		SetClass("welcome-header").
-		SetContent("Golden point")
-	containerVBox.Add(nameWidget)
+		SetContent("Golden point").
+		SetStyle("padding-bottom: 8px")
 
-	/* Application version */
-	versionWidget := widgets.NewDivWidget()
-	versionWidget.SetClass("welcome-version")
-	versionWidget.SetContent(fmt.Sprintf("Version %s", version))
-	containerVBox.Add(versionWidget)
+	productWidget.AddWidget(nameWidget)
 
-	/* Application contributors */
+	/* Product version */
+	versionWidget := widgets.NewDivWidget().
+		SetStyle("text-align: center").
+		SetContent(fmt.Sprintf("Version %s", version))
+
+	productWidget.AddWidget(versionWidget)
+
+	return productWidget
+
+}
+
+func (self *WelcomeAction) renderContributors() widgets.IWidget {
+
+	contributorWidget := widgets.NewDivWidget().
+		SetStyle("padding-bottom: 32px")
+
 	contributorHeader := widgets.NewDivWidget().
 		SetClass("welcome-contributor-header").
-		SetContent("Contributers")
-	containerVBox.Add(contributorHeader)
+		SetContent("Contributors").
+		SetStyle("padding-bottom: 8px")
+
+	contributorWidget.AddWidget(contributorHeader)
 
 	contributors := cmn.GetContributors()
 	var newContributros []string
@@ -72,27 +129,32 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	contributorList := widgets.NewDivWidget().
 		SetClass("welcome-contributor-list").
+		SetStyle("text-align: center").
 		SetContent(newContrib)
 
-	containerVBox.Add(contributorList)
+	contributorWidget.AddWidget(contributorList)
 
-	/* Application source code */
-	sourceCodeHeader := widgets.NewDivWidget().
+	return contributorWidget
+
+}
+
+func (self *WelcomeAction) renderSourceCode() widgets.IWidget {
+
+	sourceWidget := widgets.NewDivWidget().
+		SetStyle("padding-bottom: 32px")
+
+	sourceHeaderWidget := widgets.NewDivWidget().
 		SetClass("welcome-source").
-		SetContent("Source code and support")
-	containerVBox.Add(sourceCodeHeader)
+		SetContent("Source code and support").
+		SetStyle("padding-bottom: 8px")
+	sourceWidget.AddWidget(sourceHeaderWidget)
 
 	sourceLink := widgets.NewLinkWidget().
 		SetLink("https://github.com/vit1251/golden").
 		SetContent("https://github.com/vit1251/golden").
 		SetClass("welcome-source-link")
-	containerVBox.Add(sourceLink)
+	sourceWidget.AddWidget(sourceLink)
 
-	/* Render */
-	if err := bw.Render(w); err != nil {
-		status := fmt.Sprintf("%+v", err)
-		http.Error(w, status, http.StatusInternalServerError)
-		return
-	}
+	return sourceWidget
 
 }
