@@ -1,84 +1,35 @@
 package packet
 
 import (
+	"github.com/vit1251/golden/pkg/uue"
 	"bytes"
-	"log"
+	"fmt"
 )
 
 type MessageBodyAttach struct {
-	permission	string            /* Permission    */
-	name		string            /* Name          */
-	uue		[]string          /* UUE rows      */
-	buffer		bytes.Buffer      /* raw result    */
+	permission	string            /* Permission          */
+	name		string            /* Name                */
+	uue		[]string          /* UUE rows            */
+	data		bytes.Buffer      /* Attachment data     */
+	decoder		*uue.Decoder      /* UUE decoder         */
+	encoder		*uue.Encoder      /* UUE encoder         */
 }
 
 func NewMessageBodyAttach() *MessageBodyAttach {
-	return new(MessageBodyAttach)
+	msgBody := new(MessageBodyAttach)
+	msgBody.decoder = uue.NewDecoder(&msgBody.data)
+	msgBody.encoder = uue.NewEncoder(&msgBody.data)
+	return msgBody
 }
 
-func (self *MessageBodyAttach) Write(buf []byte) error {
-	self.buffer.Write(buf)
+func (self *MessageBodyAttach) Write(row []byte) error {
+	self.decoder.Decode(row)
 	return nil
 }
 
-func decodeByte(b byte) byte {
-	r := byte(b) - 32
-	r = r & 077
-	return r
-}
-
-func extractBlockCount(row []byte) byte {
-	rowSize := len(row)
-	if rowSize > 0 {
-		return decodeByte(row[0])
-	}
-	return 0
-}
-
-func (self *MessageBodyAttach) WriteLine(row []byte) error {
-
-	/* Save UUE source */
-	line := string(row)
-	self.uue = append(self.uue, line)
-
-	/* Extract UUE section count */
-	n := extractBlockCount(row)
-	log.Printf("UUE: blockCount = %d", n)
-
-	var rawData []byte
-//	var rowSize int = len(row)
-	var p int = 1
-
-	for n > 0 {
-
-		rawData = row[p:]
-		log.Printf("rawData = %s", rawData)
-
-		if n >= 3 {
-			b1 := decodeByte(rawData[0]) << 2 | decodeByte(rawData[1]) >> 4
-			self.buffer.WriteByte(b1)
-			b2 := decodeByte(rawData[1]) << 4 | decodeByte(rawData[2]) >> 2
-			self.buffer.WriteByte(b2)
-			b3 := decodeByte(rawData[2]) << 6 | decodeByte(rawData[3])
-			self.buffer.WriteByte(b3)
-		} else {
-			if n >= 1 {
-				b1 := decodeByte(rawData[0]) << 2 | decodeByte(rawData[1]) >> 4
-				self.buffer.WriteByte(b1)
-			}
-			if n >= 2 {
-				b2 := decodeByte(rawData[1]) << 4 | decodeByte(rawData[2]) >> 2
-				self.buffer.WriteByte(b2)
-			}
-		}
-
-		n = n - 3
-		p = p + 4
-
-	}
-
-	return nil
-
+func (self *MessageBodyAttach) Read() ([]byte, error) {
+	// TODO - encode not yet implement ...
+	return nil, fmt.Errorf("not yet implemented")
 }
 
 func (self *MessageBodyAttach) SetPermission(permission string) {
@@ -90,11 +41,16 @@ func (self *MessageBodyAttach) SetName(name string) {
 }
 
 func (self *MessageBodyAttach) Len() int {
-	return self.buffer.Len()
+	return self.data.Len()
 }
 
-func (self *MessageBodyAttach) GetData() bytes.Buffer {
-	return self.buffer
+func (self *MessageBodyAttach) SetData(data []byte) {
+	self.data.Reset()
+	self.data.Write(data)
+}
+
+func (self *MessageBodyAttach) GetData() []byte {
+	return self.data.Bytes()
 }
 
 func (self *MessageBodyAttach) GetName() string {

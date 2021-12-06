@@ -46,8 +46,10 @@ func (self NetmailAttachViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	}
 	packedMessage := origMsg.GetPacket()
 
-	magBodyParser := packet.NewMessageBodyParser()
-	msgBody, _ := magBodyParser.Parse(packedMessage)
+	bodyParser := packet.NewMessageBodyParser()
+	bodyParser.SetDecodeAttachment(true)
+
+	msgBody, _ := bodyParser.Parse(packedMessage)
 
 	attachments := msgBody.GetAttachments()
 
@@ -62,8 +64,8 @@ func (self NetmailAttachViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	if attach != nil {
 
 		content := attach.GetData()
-		aReader := bytes.NewReader(content.Bytes())
-		io.Copy(w, aReader)
+		attachReader := bytes.NewReader(content)
+		io.Copy(w, attachReader)
 
 	} else {
 		response := fmt.Sprintf("No attach")

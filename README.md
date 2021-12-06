@@ -8,6 +8,8 @@ Project status at https://github.com/vit1251/golden/projects/6
 
 ## Features
 
+Golden Point provide next parts:
+
  - [x] Mailer
    - [x] [FTS-1026] Binkp/1.0 minimum protocol realization
      - [x] password protected sessions
@@ -29,11 +31,6 @@ Project status at https://github.com/vit1251/golden/projects/6
  - [x] Tracker
    - [x] [FTS-5006] TIC parser
    - [x] [FTS-5006] TIC builder
- - [x] User interface
-   - [x] Create Direct mail message (NETMAIL)
-   - [x] Create Conference mail message (ECHOMAIL)
-   - [x] Create File (TIC)
-   - [x] Setup parameters
 
 ## Documentation
 

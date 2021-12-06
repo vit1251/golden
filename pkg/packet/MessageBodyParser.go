@@ -7,10 +7,18 @@ import (
 )
 
 type MessageBodyParser struct {
+	decodeAttachments	bool	/* Process attachment */
 }
 
 func NewMessageBodyParser() *MessageBodyParser {
-	return new(MessageBodyParser)
+	msgBody := &MessageBodyParser{
+		decodeAttachments: false,
+	}
+	return msgBody
+}
+
+func (self *MessageBodyParser) SetDecodeAttachment(yesno bool) {
+	self.decodeAttachments = yesno
 }
 
 const (
@@ -22,7 +30,7 @@ const (
 	AREA_KLUDGE = "AREA:"
 )
 
-func (self MessageBodyParser) parseArea(messageBody *MessageBody, rows [][]byte) {
+func (self MessageBodyParser) parseArea(rows [][]byte) string {
 	rowCount := len(rows)
 	if rowCount > 0 {
 		startLine := rows[0]
@@ -31,9 +39,10 @@ func (self MessageBodyParser) parseArea(messageBody *MessageBody, rows [][]byte)
 			areaStartIndex := len(AREA_KLUDGE)
 			areaName := startLine[areaStartIndex:]
 			newAreaName := string(areaName)
-			messageBody.SetArea(newAreaName)
+			return newAreaName
 		}
 	}
+	return ""
 }
 
 const (
@@ -71,7 +80,13 @@ func (self MessageBodyParser) Parse(content []byte) (*MessageBody, error) {
 	rows := bytes.Split(newContent, []byte(CR))
 
 	/* Parse AREA name */
-	self.parseArea(messageBody, rows)
+	areaName := self.parseArea(rows)
+	if areaName != "" {
+		/* Set message area value */
+		messageBody.SetArea(areaName)
+		/* Skip AREA row */
+		rows = rows[1:]
+	}
 
 	/* Process message body */
 	var attach *MessageBodyAttach
@@ -86,7 +101,7 @@ func (self MessageBodyParser) Parse(content []byte) (*MessageBody, error) {
 				k := NewKludge()
 				k.Set(row)
 				messageBody.AddKludge(*k)
-			} else if bytes.HasPrefix(row, []byte("begin")) {
+			} else if self.decodeAttachments && bytes.HasPrefix(row, []byte("begin")) {
 				parts := bytes.Split(row, []byte{' '})
 				partCount := len(parts)
 				if partCount == 3 && checkNumber(parts[1]) {
@@ -108,14 +123,15 @@ func (self MessageBodyParser) Parse(content []byte) (*MessageBody, error) {
 			}
 
 		} else if parserMode == MSG_BODY_PARSE_UUE {
-			if  bytes.HasPrefix(row, []byte("end")) {
+			if bytes.HasPrefix(row, []byte("end")) {
 				size := attach.Len()
 				messageBody.AddAttach(*attach)
 				attach = nil
 				messageBody.AddLine([]byte(fmt.Sprintf(" --- UUE ( size = %d ) --- ", size)))
 				parserMode = MSG_BODY_PARSE_BODY
 			} else {
-				attach.WriteLine(row)
+				err1 := attach.Write(row)
+				log.Printf("MessageBodeParser: UUE: attach.Write: err = %+v", err1)
 			}
 		} else {
 			log.Printf("MessageBodyParser: Parse: wrong state: row = %s", row)

@@ -45,6 +45,7 @@ func (self NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	/* Preprocess message body (attachments) */
 	rawPacket := origMsg.GetPacket()
 	bodyParser := packet.NewMessageBodyParser()
+	bodyParser.SetDecodeAttachment(true)
 	msgBody, _ := bodyParser.Parse(rawPacket)
 	// TODO - use message parsing ... rawContent := msgBody.GetContent()
 	// TODO - use message parsing ... content := string(rawContent)
