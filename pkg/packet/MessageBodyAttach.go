@@ -18,7 +18,7 @@ func (self *MessageBodyAttach) Write(buf []byte) error {
 }
 
 func (self *MessageBodyAttach) WriteLine(row []byte) {
-	self.Write(row[1:])
+	self.Write(row)
 }
 
 func (self *MessageBodyAttach) SetPermission(permission string) {
