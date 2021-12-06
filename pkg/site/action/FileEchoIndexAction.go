@@ -121,7 +121,10 @@ func (self *FileEchoIndexAction) renderRow(area *mapper.FileArea) widgets.IWidge
 	counterWidgetContent := self.renderMessageCounter(area)
 	counterWidget := widgets.NewDivWidget().
 		SetHeight("38px").
-		SetWidth("160px").
+		SetWidth("180px").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
 		SetStyle("flex-shrink: 0").
 		//SetStyle("border: 1px solid blue").
 		AddWidget(counterWidgetContent)

@@ -25,6 +25,10 @@ golden-windows-386.exe
 golden-windows-amd64.exe
 golden-darwin-amd64
 
+# Developer version binary output
+golden
+golden.exe
+
 # Fido storage
 *.tic
 *.zip

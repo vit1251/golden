@@ -48,8 +48,14 @@ You may download binary builds
 
 ## Building from source code
 
-In most cases, there is no need to build from the source. The exceptions are when these build produce
-by node owners to add additional or specific attribute to their Points.
+In most cases, there is no need to build from the source. But you may reading about your platform compile
+scenario in "docs" directory instructions. Common scripst is:
+
+    # go generate
+    # go build
+    # ./golden --debug
+
+That's all.
 
 ## Contributors
 

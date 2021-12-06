@@ -213,6 +213,10 @@ func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets
 		SetWidth("30px").
 		SetHeight("30px").
 		SetStyle("flex-shrink: 0").
+		SetStyle("margin-right: 8px").
+		SetStyle("display: flex").
+		SetStyle("align-items: center").
+		SetStyle("justify-content: center").
 		//SetStyle("border: 1px solid yellow").
 		SetStyle(fmt.Sprintf("background-color: %s", nameColor)).
 		SetStyle("border-radius: 50%").
@@ -247,8 +251,11 @@ func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets
 	msgDate := utils.DateHelper_renderDate(m.DateWritten)
 	dateWidget := widgets.NewDivWidget().
 		SetHeight("38px").
-		SetWidth("160px").
+		SetWidth("180px").
 		SetStyle("flex-shrink: 0").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
 		//SetStyle("border: 1px solid blue").
 		SetContent(msgDate)
 	rowWidget.AddWidget(dateWidget)

@@ -56,6 +56,9 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	sourceWidget := self.renderSourceCode()
 	containerVBox.Add(sourceWidget)
 
+	/* Donation*/
+	donateWidget := self.renderDonation()
+	containerVBox.Add(donateWidget)
 
 	/* Render */
 	if err := bw.Render(w); err != nil {
@@ -68,7 +71,8 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (self *WelcomeAction) renderVerpic() widgets.IWidget {
 
-	var version string = "1_2_16"
+//	var version string = "1_2_16"
+	var version string = "1_2_17"
 
 	imageName := fmt.Sprintf("Dog_%s.png", version)
 	imagePath := fmt.Sprintf("/static/%s", imageName)
@@ -156,5 +160,31 @@ func (self *WelcomeAction) renderSourceCode() widgets.IWidget {
 	sourceWidget.AddWidget(sourceLink)
 
 	return sourceWidget
+
+}
+
+func (self *WelcomeAction) renderDonation() widgets.IWidget {
+
+	donationWidget := widgets.NewDivWidget().
+		SetStyle("padding-bottom: 32px")
+
+	donationHeaderWidget := widgets.NewDivWidget().
+		SetClass("welcome-donate").
+		SetContent("Donation").
+		SetStyle("padding-bottom: 8px")
+	donationWidget.AddWidget(donationHeaderWidget)
+
+	patreonLink := widgets.NewLinkWidget().
+		SetLink("https://www.patreon.com/vit1251").
+		SetContent("Patreon")
+
+	serviceList := widgets.NewDivWidget().
+		SetClass("welcome-donate-list").
+		SetStyle("text-align: center").
+		AddWidget(patreonLink)
+
+	donationWidget.AddWidget(serviceList)
+
+	return donationWidget
 
 }
