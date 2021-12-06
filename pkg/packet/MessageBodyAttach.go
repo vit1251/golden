@@ -1,11 +1,15 @@
 package packet
 
-import "bytes"
+import (
+	"bytes"
+	"log"
+)
 
 type MessageBodyAttach struct {
-	name       string
-	permission string
-	buffer     bytes.Buffer
+	permission	string            /* Permission    */
+	name		string            /* Name          */
+	uue		[]string          /* UUE rows      */
+	buffer		bytes.Buffer      /* raw result    */
 }
 
 func NewMessageBodyAttach() *MessageBodyAttach {
@@ -17,8 +21,64 @@ func (self *MessageBodyAttach) Write(buf []byte) error {
 	return nil
 }
 
-func (self *MessageBodyAttach) WriteLine(row []byte) {
-	self.Write(row)
+func decodeByte(b byte) byte {
+	r := byte(b) - 32
+	r = r & 077
+	return r
+}
+
+func extractBlockCount(row []byte) byte {
+	rowSize := len(row)
+	if rowSize > 0 {
+		return decodeByte(row[0])
+	}
+	return 0
+}
+
+func (self *MessageBodyAttach) WriteLine(row []byte) error {
+
+	/* Save UUE source */
+	line := string(row)
+	self.uue = append(self.uue, line)
+
+	/* Extract UUE section count */
+	n := extractBlockCount(row)
+	log.Printf("UUE: blockCount = %d", n)
+
+	var rawData []byte
+//	var rowSize int = len(row)
+	var p int = 1
+
+	for n > 0 {
+
+		rawData = row[p:]
+		log.Printf("rawData = %s", rawData)
+
+		if n >= 3 {
+			b1 := decodeByte(rawData[0]) << 2 | decodeByte(rawData[1]) >> 4
+			self.buffer.WriteByte(b1)
+			b2 := decodeByte(rawData[1]) << 4 | decodeByte(rawData[2]) >> 2
+			self.buffer.WriteByte(b2)
+			b3 := decodeByte(rawData[2]) << 6 | decodeByte(rawData[3])
+			self.buffer.WriteByte(b3)
+		} else {
+			if n >= 1 {
+				b1 := decodeByte(rawData[0]) << 2 | decodeByte(rawData[1]) >> 4
+				self.buffer.WriteByte(b1)
+			}
+			if n >= 2 {
+				b2 := decodeByte(rawData[1]) << 4 | decodeByte(rawData[2]) >> 2
+				self.buffer.WriteByte(b2)
+			}
+		}
+
+		n = n - 3
+		p = p + 4
+
+	}
+
+	return nil
+
 }
 
 func (self *MessageBodyAttach) SetPermission(permission string) {
@@ -34,28 +94,7 @@ func (self *MessageBodyAttach) Len() int {
 }
 
 func (self *MessageBodyAttach) GetData() bytes.Buffer {
-	var newOut bytes.Buffer
-	newSize := self.buffer.Len()
-	for i := 0; i < newSize; i += 4 {
-		//
-		in0, _ := self.buffer.ReadByte() // [i+0]
-		in1, _ := self.buffer.ReadByte() // [i+1]
-		in2, _ := self.buffer.ReadByte() // [i+2]
-		in3, _ := self.buffer.ReadByte() // [i+3]
-		//
-		in0 = in0 - 32
-		in1 = in1 - 32
-		in2 = in2 - 32
-		in3 = in3 - 32
-		//
-		out0 := (in0 << 2) | ((0x30 & in1) >> 4)
-		out1 := (in1 << 4) | ((0x3c & in2) >> 2)
-		out2 := (in2 << 6) | (0x3f & in3)
-		//
-		newOut.Write([]byte{out0, out1, out2})
-		//
-	}
-	return newOut
+	return self.buffer
 }
 
 func (self *MessageBodyAttach) GetName() string {
