@@ -5,9 +5,9 @@ func GetVersion() string {
 }
 
 func GetReleaseDate() string {
-	return "2020-11-15 01:46 MSK" // TODO - make GIT commit date time ...
+	return "2021-12-29 21:07 MSK"
 }
 
 func GetReleaseBranch() string {
-	return "master" // TODO - make GIT commit date time ...
+	return "master"
 }

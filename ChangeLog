@@ -1,0 +1,147 @@
+2021-12-29 21:04 +0300 - Golden Point 1.2.17
+
+ - Mascote version update (enhancement)
+ - UUE message body parsing error (bug)
+ - Error 404 reading netmail (bug)
+ - Touchscreen support design (enhancement)
+ - FileArea check item exists (enhancement)
+ - Mark all as read in conference (enhancement)
+ - Debug mode disable by default (enhancement)
+ - Default echo area charset settings (enhancement)
+ - Echo areas custom sort order (enhancement)
+ - FileEcho error during process new item (bug)
+ - Netmail packet dump (enhancement)
+ - station name was no saved (bug)
+ - New message without ":" in TZUTC (bug)
+ - Implement NETMAIL settings (enhancement)
+
+2020-11-13 14:46 +0300 - Golden Point 1.2.16
+
+ - Fix in template with platform and arch variable (bug)
+ - Revert source code back on FTS-0039 (enhancement)
+ - Remove files in FileBox (enhancement)
+ - Fix NETMAIL address parse (bug)
+ - Remove BSS over SSH server support (enhancement)
+ - Highlight own message (enhancement)
+ - Setup view improve (enhancement)
+ - Portable version (enhancement)
+ - Using local timezone for message without TZUTC (bug)
+ - Remove file area (enhancement)
+ - Upload file with TIC annotation (enhancement)
+ - Mailer performance improve in txWLA switch state (enhancement)
+ - Implement Draft section (enhancement)
+ - Setup mailer interval (enhancement)
+ - Message index view improve (enhancement)
+ - Echomail message hierarchy mode preview (enhancement)
+ - Service manual start (enhancement)
+ - Twit system (enhancement)
+ - Update file area settings (enhancement)
+ - Parse Origin address (enhancement)
+
+2020-11-03 04:26 +0300 - Golden Point 1.2.15
+
+ - Add NETMAIL address in storage (enhancement)
+ - Setup area charset encoding in settings (enhancement)
+ - Subject compactor (enhancement)
+ - Mailer state machine review (enhancement)
+ - Russian and english documentation improve (documentation)
+ - DateTime diaplay compaction (enhancement)
+ - Remove UBER container manager (enhancement)
+ - Improve echo message view in site manger (enhancement)
+ - Netmail kludge parsing problem (bug)
+ - SubMailer routine start (bug)
+ - Message packet parse extensions FSC-00039 (bug)
+ - Origin length no more than 79 chars (bug)
+ - Random Origin in external file (enhancement)
+ - Close connection withoud EOB packet (bug)
+ - Hide SEEN-BY lines (enhancement)
+ - Add INTL kludge in NETMAIL message (bug)
+ - Welcome console message (enhancement)
+ - Autocreate storage directory (enhancement)
+ - Reply Netmail message (enhancement)
+
+####-##-## ##:## +#### - Golden Point 1.2.14
+
+ - Improve message body parser (enhancement)
+ - Remove JQuery dependency (enhancement)
+ - No store new config parameters (bug)
+ - No TZUTC kludge with timezone (bug)
+ - Unsafe kludge parsing TZUTC (bug)
+ - Missing EOB packet in mailer component (bug)
+ - Show message source (enhancement)
+ - Store original packet on storage (enhancement)
+
+####-##-## ##:## +#### - Golden Point 1.2.13
+
+ - Initial implementation terminal user interface
+ - Netmail view counter
+ - UI style improvements
+ - Provide echomail/nemtail/file area counter on UI side
+ - Process my own message (echomail message)
+ - Remove Netmail message
+ - Manual create echomail area in UI
+ - Purge echomail area
+ - Remove echomail area
+ - Download file with original filename
+ - Change audio in mailer
+
+####-##-## ##:## +#### - Golden Point 1.2.12
+
+ - Create TearLine and Origin variable template (enhancement)
+ - Fix cross compilation scenario (bug)
+ - Update audio events (enhancement)
+ - Automatic mailer delivery (enhancement)
+ - Statistics improvements (enhancement)
+ - Store logging message in debug.log (enhancement)
+ - Outbound package name too long (bug)
+ - Binkp TCP connection not closed (bug)
+ - Netmail receive as Echomail (bug)
+ - Outgoing packets are not password signed (bug)
+ - Wrong message kludge parser (bug)
+
+####-##-## ##:## +#### - Golden Point 1.2.11
+
+ - Customize HTTP service port enhancement
+ - Implement basic audio event enhancement
+ - Widget base views enhancement
+ - Make storage schema migration subsystem enhancement
+ - Make 386 and amd64 building under Windows platform enhancement
+ - Default path does not exists on Windows platform bug
+ - Installation instruction for newcomers documentation enhancement help wanted
+ - Reply message auto quote bug enhancement
+ - Wrong message kludge parser bug
+
+####-##-## ##:## +#### - Golden Point 1.2.10
+
+ - Fix charset error in message header: To, From, Subject
+ - Add "@REPLY" kludge in reply action
+ - Chart with RX/TX message statistics
+ - UI redesign based on widget
+ - Service manual start
+ - Common style fix: user action button, message compose, setup input
+ - Area index counter metric performance improve
+
+####-##-## ##:## +#### - Golden Point 1.2.9
+
+ - Исправлена ошибка возникающая при открытия конференций с символом "_" в названии.
+
+####-##-## ##:## +#### - Golden Point 1.2.8
+
+ - Добавлена отправка сообщений в эхоконференции
+ - Добавлена отправка сообщений нетмейлом
+ - Улушения производительности
+
+####-##-## ##:## +#### - Golden Point 1.2.3
+
+ - Добавлена страница списка эхоконференций
+ - Добавлена страница настройки
+ - Добавлена навигация по компонентам
+
+####-##-## ##:## +#### - Golden Point 1.2.2
+
+ - Добавлены действия для написание ответов (ReplyAction) и удаление сообщений (RemoveAction)
+ - Добавлен файл ChangeLog с списком внесенных изменений
+ - Добавлена начальная поддержка инраструктуры (SettingsManager) необходимая для хранения настроек программы
+ - Изменен вид страницы эхоконференции на полноэкранный вариант
+ - Изменен вид страницы просмотра сообщения на полноэкранный вариант
+ - Изменена реализация HTTP роутинга с "julienschmidt" на "gorilla"
