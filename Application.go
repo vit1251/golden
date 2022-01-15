@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/installer"
 	"github.com/vit1251/golden/pkg/mailer"
@@ -85,10 +86,14 @@ func (self *Application) Run() {
 	self.startLogging(debugMode)
 	defer self.stopLogging()
 
+	/* Database chane path: 1.2.17 -> 1.2.18 */
+	self.checkDatabaseLocation()
+
 	/* Start storage service */
 	self.registry.Register("EventBus", eventbus.NewEventBus(self.registry))
 	self.registry.Register("StorageManager", storage.NewStorageManager(self.registry))
 	self.registry.Register("MapperManager", mapper.NewMapperManager(self.registry))
+	self.registry.Register("ConfigManager", config.NewConfigManager())
 
 	self.registry.Register("MigrationManager", installer.NewMigrationManager(self.registry))
 
@@ -108,6 +113,9 @@ func (self *Application) Run() {
 	/* Initialize database (apply new migration) */
 	migrationManager := self.restoreMigrationManager()
 	migrationManager.Check()
+
+	/* Settings update routine: 1.2.17 -> 1.2.18 */
+	self.checkMigrateConfig()
 
 	/* Start mail processor */
 	tosserManager := self.restoreTosserManager()
@@ -217,5 +225,73 @@ func (self *Application) restoreTrackerManager() *tracker.TrackerManager {
 		return manager
 	} else {
 		panic("no tracker manager")
+	}
+}
+
+func (self *Application) restoreConfigManager() *config.ConfigManager {
+	managerPtr := self.registry.Get("ConfigManager")
+	if manager, ok := managerPtr.(*config.ConfigManager); ok {
+		return manager
+	} else {
+		panic("no config manager")
+	}
+}
+
+func (self *Application) restoreMapperManager() *mapper.MapperManager {
+	managerPtr := self.registry.Get("MapperManager")
+	if manager, ok := managerPtr.(*mapper.MapperManager); ok {
+		return manager
+	} else {
+		panic("no config manager")
+	}
+}
+
+func (self *Application) updateConfig(c *config.Config) {
+	mapperManager := self.restoreMapperManager()
+	configMapper := mapperManager.GetConfigMapper()
+	outdateConfig, _ := configMapper.GetConfigFromDatabase()
+	/*** Populate new settings struct ***/
+	/* Main */
+	c.Main.Address, _ = outdateConfig.Get("main", "Address")
+	c.Main.Password, _ = outdateConfig.Get("main", "Password")
+	c.Main.Origin, _ = outdateConfig.Get("main", "Origin")
+	c.Main.TearLine, _ = outdateConfig.Get("main", "TearLine")
+	c.Main.Link, _ = outdateConfig.Get("main", "Link")
+	c.Main.StationName, _ = outdateConfig.Get("main", "StationName")
+	c.Main.RealName, _ = outdateConfig.Get("main", "RealName")
+	c.Main.NetAddr, _ = outdateConfig.Get("main", "NetAddr")
+	c.Main.City, _ = outdateConfig.Get("main", "City")
+	c.Main.Country, _ = outdateConfig.Get("main", "Country")
+	/* Mailer */
+	c.Mailer.Interval, _ = outdateConfig.Get("mailer", "Interval")
+	/* Netmail */
+	c.Netmail.Charset, _ = outdateConfig.Get("netmail", "Charset")
+	/* Echomail */
+	c.Echomail.Charset, _ = outdateConfig.Get("echomail", "Charset")
+	/* Debug */
+	log.Printf("updateConfig: cofnig = %#v", c)
+}
+
+func (self *Application) checkMigrateConfig() {
+	configManager := self.restoreConfigManager()
+	if configManager.IsNotExists() {
+		log.Printf("[1.2.17 -> 1.2.18] Migrate Golden Point settings routine")
+		newConfig := configManager.GetConfig()
+		self.updateConfig(newConfig)
+		err1 := configManager.Store(newConfig)
+		if err1 != nil {
+			log.Printf("Unable to save config: err = %#v", err1)
+		}
+	}
+	configManager.Reset()
+}
+
+func (self *Application) checkDatabaseLocation() {
+	prevStorageFile := cmn.GetPrevStorageFile()
+	// TODO - check exists ...
+	modernStorageFile := cmn.GetModernStorageFile()
+	err2 := os.Rename(prevStorageFile, modernStorageFile)
+	if err2 != nil {
+		log.Printf("Move storage is error: err  = %#v", err2)
 	}
 }

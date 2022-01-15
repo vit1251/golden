@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/user"
 	"path"
+	"path/filepath"
 )
 
 func GetHomeDirectory() (string, error) {
@@ -28,12 +29,12 @@ func checkDirectory(dir string) {
 }
 
 const (
-	InboundName string = "Inbound"
-	OutboundName string = "Outbound"
-	TempInboundName string = "TempInbound"
+	InboundName      string = "Inbound"
+	OutboundName     string = "Outbound"
+	TempInboundName  string = "TempInbound"
 	TempOutboundName string = "TempOutbound"
-	TempName string = "Temp"
-	FileBoxName string = "Files"
+	TempName         string = "Temp"
+	FileBoxName      string = "Files"
 )
 
 func checkDirectoryStructure(baseDirectory string) {
@@ -59,7 +60,7 @@ func GetFidoDirectory() string {
 	/* Check portable version execute */
 	if currentDirectory, err1 := os.Getwd(); err1 == nil {
 		newRoot := path.Join(currentDirectory, FidoName)
-		if _ , err2 := os.Stat(newRoot); err2 == nil {
+		if _, err2 := os.Stat(newRoot); err2 == nil {
 			checkDirectoryStructure(newRoot)
 			return newRoot
 		}
@@ -68,10 +69,10 @@ func GetFidoDirectory() string {
 	/* Check classic version execute */
 	if homeDirectory, err1 := GetHomeDirectory(); err1 == nil {
 		newRoot := path.Join(homeDirectory, FidoName)
-//		if _ , err2 := os.Stat(newRoot); err2 == nil {
+		//		if _ , err2 := os.Stat(newRoot); err2 == nil {
 		checkDirectoryStructure(newRoot)
 		return newRoot
-//		}
+		//		}
 	}
 
 	return "Fido"
@@ -102,7 +103,17 @@ func GetTempInboundDirectory() string {
 	return path.Join(fidoDirectory, TempInboundName)
 }
 
-func GetTempDirectory() string{
+func GetTempDirectory() string {
 	fidoDirectory := GetFidoDirectory()
 	return path.Join(fidoDirectory, TempName)
+}
+
+func GetPrevStorageFile() string {
+	fidoDirectory := GetFidoDirectory()
+	return filepath.Join(fidoDirectory, "..", "golden.sqlite3")
+}
+
+func GetModernStorageFile() string {
+	fidoDirectory := GetFidoDirectory()
+	return filepath.Join(fidoDirectory, "golden.sqlite3")
 }

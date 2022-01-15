@@ -2,6 +2,7 @@ package tosser
 
 import (
 	"github.com/vit1251/golden/pkg/charset"
+	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
@@ -10,13 +11,13 @@ import (
 )
 
 type Tosser struct {
-	registry       *registry.Container
+	registry *registry.Container
 }
 
 func NewTosser(registry *registry.Container) *Tosser {
 	tosser := new(Tosser)
 	tosser.registry = registry
-    return tosser
+	return tosser
 }
 
 func (self *Tosser) Toss() {
@@ -65,3 +66,11 @@ func (self Tosser) restoreMapperManager() *mapper.MapperManager {
 	}
 }
 
+func (self *Tosser) restoreConfigManager() *config.ConfigManager {
+	managerPtr := self.registry.Get("ConfigManager")
+	if manager, ok := managerPtr.(*config.ConfigManager); ok {
+		return manager
+	} else {
+		panic("no config manager")
+	}
+}

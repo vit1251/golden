@@ -18,13 +18,12 @@ func NewFileEchoAreaUploadAction() *FileEchoAreaUploadAction {
 
 func (self FileEchoAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	configManager := self.restoreConfigManager()
 	mapperManager := self.restoreMapperManager()
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
-	//fileMapper := mapperManager.GetFileMapper()
-	configMapper := mapperManager.GetConfigMapper()
 
 	/* Get BOSS address */
-	nodeAddr, _ := configMapper.Get("main", "Link")
+	newConfig := configManager.GetConfig()
 
 	/* Get params */
 	vars := mux.Vars(r)
@@ -68,7 +67,7 @@ func (self FileEchoAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 	newForm.Add(widgets.NewFormFileInputWidget().SetTitle("File").SetName("file"))
 
 	/* To */
-	newForm.Add(widgets.NewFormInputWidget().SetTitle("To").SetName("to").SetValue(nodeAddr))
+	newForm.Add(widgets.NewFormInputWidget().SetTitle("To").SetName("to").SetValue(newConfig.Main.Link))
 
 	/* Description */
 	newForm.Add(widgets.NewFormInputWidget().SetTitle("Desc").SetName("desc"))

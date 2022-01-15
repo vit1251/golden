@@ -47,15 +47,13 @@ func (self *EchoMsgIndexAction) renderActions(newArea *mapper.Area) widgets.IWid
 
 func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	configManager := self.restoreConfigManager()
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()
 	twitMapper := mapperManager.GetTwitMapper()
-	configMapper := mapperManager.GetConfigMapper()
 
-	/* My name */
-	myName, _ := configMapper.Get("main", "RealName")
-	log.Printf("My name is %s", myName)
+	newConfig := configManager.GetConfig()
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
@@ -127,7 +125,7 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 		}
 
 		/* Render message row */
-		msgRow := self.renderRow(&msg, myName)
+		msgRow := self.renderRow(&msg, newConfig.Main.RealName)
 		indexTable.AddWidget(msgRow)
 
 	}

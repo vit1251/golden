@@ -2,8 +2,10 @@ package action
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/config"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -20,40 +22,43 @@ func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	log.Printf("Store new settings")
 
-	mapperManager := self.restoreMapperManager()
-	configMapper := mapperManager.GetConfigMapper()
+	configManager := self.restoreConfigManager()
 
-	/* Setup manager operation */
-	config, _ := configMapper.GetConfig()
+	newConfig := configManager.GetConfig()
 
 	/* Update parameters */
-	r.ParseForm()
-
-	params := config.GetParams()
-	for _, param := range params {
-		newFormName := fmt.Sprintf("%s.%s", param.Section, param.Name)
-		if items, ok := r.PostForm[newFormName]; ok {
-			curValue := param.GetValue()
-			newValue := strings.Join(items, ",")
-
-			if curValue != newValue {
-				log.Printf("SetupCompleteAction: section = %s name = %s value = %s -> %s", param.Section, param.Name, curValue, newValue)
-				param.SetValue(newValue)
-			}
-
-		} else {
-			log.Printf("Problem with value: name = %s", newFormName)
-		}
+	err1 := r.ParseForm()
+	if err1 != nil {
+		log.Printf("Parse form error: err = %#v", err1)
 	}
+
+	/* Main */
+	params := config.GetParams()
+	for _, p := range params {
+		self.updateParam(newConfig, r.PostForm, p.Section, p.Name)
+	}
+
+	/* Dump config */
+	log.Printf("Dump config %#v", newConfig)
 
 	/* Store update */
-	err1 := configMapper.Store(config)
-	if err1 != nil {
-		panic(err1)
+	err2 := configManager.Store(newConfig)
+	if err2 != nil {
+		log.Printf("Update config error: err = %#v", err2)
 	}
+	configManager.Reset()
 
 	/* Redirect */
 	newLocation := fmt.Sprintf("/setup")
 	http.Redirect(w, r, newLocation, 303)
 
+}
+
+func (self *SetupCompleteAction) updateParam(c *config.Config, input url.Values, section string, name string) {
+	newName := fmt.Sprintf("%s.%s", section, name)
+	if values, ok := input[newName]; ok {
+		newValue := strings.Join(values, ",")
+		log.Printf("Update: section = %s name = %s value = %#v", section, name, newValue)
+		config.SetByPath(c, section, name, newValue)
+	}
 }

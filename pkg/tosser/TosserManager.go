@@ -7,6 +7,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/mapper"
@@ -25,8 +26,8 @@ import (
 )
 
 type TosserManager struct {
-	event          chan bool
-	registry      *registry.Container
+	event    chan bool
+	registry *registry.Container
 }
 
 func NewTosserManager(registry *registry.Container) *TosserManager {
@@ -42,7 +43,7 @@ func NewTosserManager(registry *registry.Container) *TosserManager {
 	return tm
 }
 
-func (self *TosserManager) HandleEvent(event string ) {
+func (self *TosserManager) HandleEvent(event string) {
 	log.Printf("Tosser event receive")
 	if event == "Tosser" {
 		if self.event != nil {
@@ -89,7 +90,7 @@ func (self *TosserManager) makeTimeZone() string {
 		offset = -offset
 		sign = "-"
 	}
-	ZHour, Zmin := offset / 3600, offset % 3600
+	ZHour, Zmin := offset/3600, offset%3600
 	var newZone string
 	if sign == "+" {
 		newZone = fmt.Sprintf("%02d%02d", ZHour, Zmin)
@@ -131,18 +132,17 @@ func (self *TosserManager) prepareOrigin(Origin string) string {
 		result = string(originRunes[:79])
 	}
 
-	return  result
+	return result
 }
 
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
 
+	configManager := self.restoreConfigManager()
 	mapperManager := self.restoreMapperManager()
-	configMapper := mapperManager.GetConfigMapper()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	charsetManager := self.restoreCharsetManager()
 
-	/* Create packet name */
-	pktPassword, _ := configMapper.Get("main", "Password")
+	newConfig := configManager.GetConfig()
 
 	//
 	tempOutbound := cmn.GetTempOutboundDirectory()
@@ -167,13 +167,6 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 		stream.Close()
 	}()
 
-	/* Ask source address */
-	myAddr, _ := configMapper.Get("main", "Address")
-	bossAddr, _ := configMapper.Get("main", "Link")
-	realName, _ := configMapper.Get("main", "RealName")
-	TearLine, _ := configMapper.Get("main", "TearLine")
-	Origin, _ := configMapper.Get("main", "Origin")
-
 	/* Restore area */
 	area, err2 := echoAreaMapper.GetAreaByName(em.AreaName)
 	if err2 != nil {
@@ -185,27 +178,27 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	/* Write packet header */
 	pktHeader := packet.NewPacketHeader()
 	pktHeader.SetDate(time.Now())
-	pktHeader.SetOrigAddr(myAddr)
-	pktHeader.SetDestAddr(bossAddr)
-	pktHeader.SetPassword(pktPassword)
+	pktHeader.SetOrigAddr(newConfig.Main.Address)
+	pktHeader.SetDestAddr(newConfig.Main.Link)
+	pktHeader.SetPassword(newConfig.Main.Password)
 
 	if err := pw.WritePacketHeader(pktHeader); err != nil {
 		return "", err
 	}
 
 	/* Prepare origin */
-	Origin = self.prepareOrigin(Origin)
+	clearOrigin := self.prepareOrigin(newConfig.Main.Origin)
 
 	/* Prepare new message */
 	t := tmpl.NewTemplate()
-	newTearLine, _ := t.Render(TearLine)
-	newOrigin, _ := t.Render(Origin)
+	newTearLine, _ := t.Render(newConfig.Main.TearLine)
+	newOrigin, _ := t.Render(clearOrigin)
 	newTID, _ := t.Render("Golden/{GOLDEN_PLATFORM} {GOLDEN_VERSION} {GOLDEN_RELEASE_DATE} ({GOLDEN_RELEASE_HASH})")
 
 	/* Append */
 	em.body += packet.CR
 	em.body += fmt.Sprintf("--- %s", newTearLine) + packet.CR
-	em.body += fmt.Sprintf(" * Origin: %s (%s)", newOrigin, myAddr) + packet.CR
+	em.body += fmt.Sprintf(" * Origin: %s (%s)", newOrigin, newConfig.Main.Address) + packet.CR
 
 	/* Encode message headers */
 	newSubject, err1 := charsetManager.EncodeMessageBody([]rune(em.Subject), msgCharset)
@@ -216,7 +209,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	if err2 != nil {
 		return "", err2
 	}
-	newFrom, err3 := charsetManager.EncodeMessageBody([]rune(realName), msgCharset)
+	newFrom, err3 := charsetManager.EncodeMessageBody([]rune(newConfig.Main.RealName), msgCharset)
 	if err3 != nil {
 		return "", err3
 	}
@@ -227,8 +220,8 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 
 	/* Prepare packet message */
 	packedMessage := packet.NewPackedMessage()
-	packedMessage.OrigAddr.SetAddr(myAddr)
-	packedMessage.DestAddr.SetAddr(bossAddr)
+	packedMessage.OrigAddr.SetAddr(newConfig.Main.Address)
+	packedMessage.DestAddr.SetAddr(newConfig.Main.Link)
 	packedMessage.SetToUserName(newTo)
 	packedMessage.SetFromUserName(newFrom)
 	packedMessage.SetSubject(newSubject)
@@ -244,39 +237,39 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	msgBody.SetArea(em.AreaName)
 	//
 	msgBody.AddKludge(packet.Kludge{
-		Name: "TZUTC",
+		Name:  "TZUTC",
 		Value: newZone,
-		Raw: []byte(fmt.Sprintf("\x01TZUTC: %s", newZone)),
+		Raw:   []byte(fmt.Sprintf("\x01TZUTC: %s", newZone)),
 	})
 	chrsKludge := self.makeChrsKludgeByCharsetName(area.GetCharset())
 	msgBody.AddKludge(packet.Kludge{
-		Name: "CHRS",
+		Name:  "CHRS",
 		Value: chrsKludge,
-		Raw: []byte(fmt.Sprintf("\x01CHRS: %s", chrsKludge)),
+		Raw:   []byte(fmt.Sprintf("\x01CHRS: %s", chrsKludge)),
 	})
-	msgIdValue := fmt.Sprintf("%s %s", myAddr, makeCRC32(newBody))
+	msgIdValue := fmt.Sprintf("%s %s", newConfig.Main.Address, makeCRC32(newBody))
 	msgBody.AddKludge(packet.Kludge{
-		Name: "MSGID",
+		Name:  "MSGID",
 		Value: msgIdValue,
-		Raw: []byte(fmt.Sprintf("\x01MSGID: %s", msgIdValue)),
+		Raw:   []byte(fmt.Sprintf("\x01MSGID: %s", msgIdValue)),
 	})
 	uuidValue := fmt.Sprintf("%s", makeUUID())
 	msgBody.AddKludge(packet.Kludge{
-		Name: "UUID",
+		Name:  "UUID",
 		Value: uuidValue,
-		Raw: []byte(fmt.Sprintf("\x01UUID: %s", uuidValue)),
+		Raw:   []byte(fmt.Sprintf("\x01UUID: %s", uuidValue)),
 	})
 	msgBody.AddKludge(packet.Kludge{
-		Name: "TID",
+		Name:  "TID",
 		Value: newTID,
-		Raw: []byte(fmt.Sprintf("\x01TID: %s", newTID)),
+		Raw:   []byte(fmt.Sprintf("\x01TID: %s", newTID)),
 	})
 
 	if em.Reply != "" {
 		msgBody.AddKludge(packet.Kludge{
-			Name: "REPLY",
+			Name:  "REPLY",
 			Value: em.Reply,
-			Raw: []byte(fmt.Sprintf("\x01REPLY: %s", em.Reply)),
+			Raw:   []byte(fmt.Sprintf("\x01REPLY: %s", em.Reply)),
 		})
 	}
 
@@ -348,26 +341,21 @@ func (self *TosserManager) PushPacket(src string, dst string) error {
 
 func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
-	mapperManager := self.restoreMapperManager()
-	configMapper := mapperManager.GetConfigMapper()
+	configManager := self.restoreConfigManager()
 	charsetManager := self.restoreCharsetManager()
 
-	var From string
-	var FromName string
-	var TearLine string
-	var Origin string
+	newConfig := configManager.GetConfig()
 
-	/* Create packet name */
-	From, _ = configMapper.Get("main", "Address")
-	FromName, _ = configMapper.Get("main", "RealName")
-	pktPassword, _ := configMapper.Get("main", "Password")
-	TearLine, _ = configMapper.Get("main", "TearLine")
+	From := newConfig.Main.Address
+	FromName := newConfig.Main.RealName
+	TearLine := newConfig.Main.TearLine
+	Origin := newConfig.Main.Origin
+	pktPassword := newConfig.Main.Password
+	origin := newConfig.Main.Origin
+	charset := newConfig.Netmail.Charset
 
-	origin, _ := configMapper.Get("main", "Origin")
-	origin1 := self.prepareOrigin(origin)
-	Origin = origin1
-
-	charset, _ := configMapper.Get("netmail", "Charset")
+	cleanOrigin := self.prepareOrigin(origin)
+	Origin = cleanOrigin
 
 	/* Create packet name */
 	pktName := cmn.MakePacketName()
@@ -452,7 +440,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	msgBody := packet.NewMessageBody()
 
 	/* Cross network NETMAIL */
-	origAddr := fmt.Sprintf("%d:%d/%d", packedMessage.OrigAddr.Zone, packedMessage.OrigAddr.Net,  packedMessage.OrigAddr.Node)
+	origAddr := fmt.Sprintf("%d:%d/%d", packedMessage.OrigAddr.Zone, packedMessage.OrigAddr.Net, packedMessage.OrigAddr.Node)
 	destAddr := fmt.Sprintf("%d:%d/%d", packedMessage.DestAddr.Zone, packedMessage.DestAddr.Net, packedMessage.DestAddr.Node)
 
 	log.Printf("Direct message: %+v -> %+v", origAddr, destAddr)
@@ -461,50 +449,50 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
 	/* Control paragraph write section */
 	msgBody.AddKludge(packet.Kludge{
-		Name: "TZUTC",
+		Name:  "TZUTC",
 		Value: newZone,
-		Raw: []byte(fmt.Sprintf("\x01TZUTC: %s", newZone)),
+		Raw:   []byte(fmt.Sprintf("\x01TZUTC: %s", newZone)),
 	})
 	intlKludge := fmt.Sprintf("%s %s", destAddr, origAddr)
 	msgBody.AddKludge(packet.Kludge{
-		Name: "INTL",
+		Name:  "INTL",
 		Value: intlKludge,
-		Raw: []byte(fmt.Sprintf("\x01INTL %s", intlKludge)),
+		Raw:   []byte(fmt.Sprintf("\x01INTL %s", intlKludge)),
 	})
 	fmptKludge := fmt.Sprintf("%d", packedMessage.OrigAddr.Point)
 	msgBody.AddKludge(packet.Kludge{
-		Name: "FMPT",
+		Name:  "FMPT",
 		Value: fmptKludge,
-		Raw: []byte(fmt.Sprintf("\x01FMPT %s", fmptKludge)),
+		Raw:   []byte(fmt.Sprintf("\x01FMPT %s", fmptKludge)),
 	})
 	toptKludge := fmt.Sprintf("%d", packedMessage.DestAddr.Point)
 	msgBody.AddKludge(packet.Kludge{
-		Name: "TOPT",
+		Name:  "TOPT",
 		Value: toptKludge,
-		Raw: []byte(fmt.Sprintf("\x01TOPT %s", toptKludge)),
+		Raw:   []byte(fmt.Sprintf("\x01TOPT %s", toptKludge)),
 	})
 	chrsKludge := self.makeChrsKludgeByCharsetName(msgCharset)
 	msgBody.AddKludge(packet.Kludge{
-		Name: "CHRS",
+		Name:  "CHRS",
 		Value: chrsKludge,
-		Raw: []byte(fmt.Sprintf("\x01CHRS: %s", chrsKludge)),
+		Raw:   []byte(fmt.Sprintf("\x01CHRS: %s", chrsKludge)),
 	})
 	msgIdKludge := fmt.Sprintf("%s %s", From, makeCRC32(newBody))
 	msgBody.AddKludge(packet.Kludge{
-		Name: "MSGID",
+		Name:  "MSGID",
 		Value: msgIdKludge,
-		Raw: []byte(fmt.Sprintf("\x01MSGID: %s", msgIdKludge)),
+		Raw:   []byte(fmt.Sprintf("\x01MSGID: %s", msgIdKludge)),
 	})
 	uuidKludge := fmt.Sprintf("%s", makeUUID())
 	msgBody.AddKludge(packet.Kludge{
-		Name: "UUID",
+		Name:  "UUID",
 		Value: uuidKludge,
-		Raw: []byte(fmt.Sprintf("\x01UUID: %s", uuidKludge)),
+		Raw:   []byte(fmt.Sprintf("\x01UUID: %s", uuidKludge)),
 	})
 	msgBody.AddKludge(packet.Kludge{
-		Name: "TID",
+		Name:  "TID",
 		Value: newTID,
-		Raw: []byte(fmt.Sprintf("\x01TID: %s", newTID)),
+		Raw:   []byte(fmt.Sprintf("\x01TID: %s", newTID)),
 	})
 
 	/* Set message body */
@@ -552,6 +540,15 @@ func (self TosserManager) restoreMapperManager() *mapper.MapperManager {
 		return manager
 	} else {
 		panic("no mapper manager")
+	}
+}
+
+func (self *TosserManager) restoreConfigManager() *config.ConfigManager {
+	managerPtr := self.registry.Get("ConfigManager")
+	if manager, ok := managerPtr.(*config.ConfigManager); ok {
+		return manager
+	} else {
+		panic("no config manager")
 	}
 }
 

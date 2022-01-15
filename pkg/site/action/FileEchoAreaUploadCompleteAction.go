@@ -25,14 +25,16 @@ func NewFileEchoAreaUploadCompleteAction() *FileEchoAreaUploadCompleteAction {
 
 func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	configManager := self.restoreConfigManager()
 	charsetManager := self.restoreCharsetManager()
 	mapperManager := self.restoreMapperManager()
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	//fileMapper := mapperManager.GetFileMapper()
-	configMapper := mapperManager.GetConfigMapper()
 
-	passwd, _ := configMapper.Get("main", "Password")
-	myAddr, _ := configMapper.Get("main", "Address")
+	newConfig := configManager.GetConfig()
+
+	passwd := newConfig.Main.Password
+	myAddr := newConfig.Main.Address
 
 	//
 	vars := mux.Vars(r)
@@ -78,7 +80,7 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 		panic(err6)
 	}
 	cacheWriter := bufio.NewWriter(writeStream)
-	defer func () {
+	defer func() {
 		cacheWriter.Flush()
 		writeStream.Close()
 	}()
@@ -117,7 +119,6 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 		time.Now().Unix(), time.Now().Format("Mon Nov 09 09:03:02 2020 UTC"),
 		"GoldenPoint", cmn.GetPlatform(), cmn.GetVersion(), cmn.GetReleaseDate())
 	ticBuilder.AddPath(newTicPath)
-
 
 	/* Save TIC on disk */
 	newName := cmn.MakeTickName()

@@ -3,6 +3,7 @@ package mailer
 import (
 	"fmt"
 	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/mailer/cache"
 	"github.com/vit1251/golden/pkg/mapper"
@@ -48,12 +49,11 @@ func (self *MailerManager) Start() {
 
 func (self *MailerManager) GetMailerInterval() int {
 
-	mapperManager := self.restoreMapperManager()
-	configMapper := mapperManager.GetConfigMapper()
+	configManager := self.restoreConfigManager()
 
-	mailerIntParam, _ := configMapper.Get("mailer", "Interval")
+	newConfig := configManager.GetConfig()
 
-	mailerInt, _ := strconv.ParseInt(mailerIntParam, 10, 32)
+	mailerInt, _ := strconv.ParseInt(newConfig.Mailer.Interval, 10, 32)
 
 	/* Minimum 5 minute */
 	if mailerInt > 0 {
@@ -129,8 +129,8 @@ func (self *MailerManager) processMailer() error {
 
 	log.Printf("MailerManager: processMailer")
 
+	configManager := self.restoreConfigManager()
 	mapperManager := self.restoreMapperManager()
-	configMapper := mapperManager.GetConfigMapper()
 	statMapper := mapperManager.GetStatMapper()
 
 	eventBus := self.restoreEventBus()
@@ -143,31 +143,22 @@ func (self *MailerManager) processMailer() error {
 	Temp := cmn.GetTempDirectory()
 
 	/* Construct node address */
-	netAddr, _ := configMapper.Get("main", "NetAddr")
-	password, _ := configMapper.Get("main", "Password")
-	address, _ := configMapper.Get("main", "Address")
-	Country, _ := configMapper.Get("main", "Country")
-	City, _ := configMapper.Get("main", "City")
-	realName, _ := configMapper.Get("main", "RealName")
-	stationName, _ := configMapper.Get("main", "StationName")
-
-	/* */
-	newAddress := fmt.Sprintf("%s@fidonet", address)
+	newConfig := configManager.GetConfig()
 
 	/* Get parameters */
 	m := NewMailer(self.registry)
 	m.SetTempOutbound(TempOutbound)
 	m.SetTempInbound(TempInbound)
 	m.SetTemp(Temp)
-	m.SetServerAddr(netAddr)
+	m.SetServerAddr(newConfig.Main.NetAddr)
 	m.SetInboundDirectory(inb)
 	m.SetOutboundDirectory(outb)
-	m.SetAddr(newAddress)
-	m.SetSecret(password)
-	m.SetUserName(realName)
-	m.SetStationName(stationName)
-	if City != "" && Country != "" {
-		m.SetLocation(fmt.Sprintf("%s, %s", City, Country))
+	m.SetAddr(fmt.Sprintf("%s@fidonet", newConfig.Main.Address))
+	m.SetSecret(newConfig.Main.Password)
+	m.SetUserName(newConfig.Main.RealName)
+	m.SetStationName(newConfig.Main.StationName)
+	if newConfig.Main.City != "" && newConfig.Main.Country != "" {
+		m.SetLocation(fmt.Sprintf("%s, %s", newConfig.Main.City, newConfig.Main.Country))
 	}
 
 	/* Populate outbound queue */
@@ -219,5 +210,14 @@ func (self MailerManager) restoreMapperManager() *mapper.MapperManager {
 		return manager
 	} else {
 		panic("no mapper manager")
+	}
+}
+
+func (self *MailerManager) restoreConfigManager() *config.ConfigManager {
+	managerPtr := self.registry.Get("ConfigManager")
+	if manager, ok := managerPtr.(*config.ConfigManager); ok {
+		return manager
+	} else {
+		panic("no config manager")
 	}
 }

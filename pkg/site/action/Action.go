@@ -2,6 +2,7 @@ package action
 
 import (
 	"github.com/vit1251/golden/pkg/charset"
+	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
@@ -82,5 +83,14 @@ func (self Action) restoreCharsetManager() *charset.CharsetManager {
 		return manager
 	} else {
 		panic("no charset manager")
+	}
+}
+
+func (self *Action) restoreConfigManager() *config.ConfigManager {
+	managerPtr := self.registry.Get("ConfigManager")
+	if manager, ok := managerPtr.(*config.ConfigManager); ok {
+		return manager
+	} else {
+		panic("no config manager")
 	}
 }

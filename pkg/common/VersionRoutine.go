@@ -1,11 +1,11 @@
 package commonfunc
 
 func GetVersion() string {
-	return "1.2.17"
+	return "1.2.18"
 }
 
 func GetReleaseDate() string {
-	return "2021-12-29 21:07 MSK"
+	return "2022-01-15 02:13 MSK"
 }
 
 func GetReleaseBranch() string {

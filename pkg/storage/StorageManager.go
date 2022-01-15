@@ -7,12 +7,11 @@ import (
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/registry"
 	"log"
-	"path/filepath"
 	"time"
 )
 
 type StorageManager struct {
-	conn           *sql.DB
+	conn *sql.DB
 }
 
 func (self *StorageManager) GetConnection() *sql.DB {
@@ -28,8 +27,7 @@ func NewStorageManager(r *registry.Container) *StorageManager {
 
 func (self *StorageManager) Open() error {
 
-	fidoDirectory := cmn.GetFidoDirectory()
-	storageFile := filepath.Join(fidoDirectory, "..", "golden.sqlite3") // TODO - move in Fido directory later ...
+	storageFile := cmn.GetModernStorageFile()
 
 	log.Printf("StorageManager: Open storage: path = %s", storageFile)
 

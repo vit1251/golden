@@ -2,7 +2,7 @@ package action
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"net/http"
 )
@@ -29,9 +29,9 @@ type setupSection struct {
 	Params []setupParam
 }
 
-func (self *setupSection) Register(c *mapper.Config, section string, name string, summary string) {
+func (self *setupSection) Register(c *config.Config, section string, name string, summary string) {
 
-	paramValue, _ := c.Get(section, name)
+	paramValue := config.GetByPath(c, section, name)
 
 	newSetupParam := new(setupParam)
 	newSetupParam.section = section
@@ -43,7 +43,7 @@ func (self *setupSection) Register(c *mapper.Config, section string, name string
 
 }
 
-func (self SetupAction) makeNetworkingSection(c *mapper.Config) setupSection {
+func (self SetupAction) makeNetworkingSection(c *config.Config) setupSection {
 
 	/* Section header */
 	netSetupSession := new(setupSection)
@@ -58,7 +58,7 @@ func (self SetupAction) makeNetworkingSection(c *mapper.Config) setupSection {
 	return *netSetupSession
 }
 
-func (self SetupAction) makeUserSection(c *mapper.Config) setupSection {
+func (self SetupAction) makeUserSection(c *config.Config) setupSection {
 
 	/* Section header */
 	userSetupSession := new(setupSection)
@@ -74,7 +74,7 @@ func (self SetupAction) makeUserSection(c *mapper.Config) setupSection {
 	return *userSetupSession
 }
 
-func (self SetupAction) makeOtherSection(c *mapper.Config) setupSection {
+func (self SetupAction) makeOtherSection(c *config.Config) setupSection {
 
 	/* Section header */
 	otherSetupSession := new(setupSection)
@@ -87,7 +87,7 @@ func (self SetupAction) makeOtherSection(c *mapper.Config) setupSection {
 	return *otherSetupSession
 }
 
-func (self SetupAction) makeDirectMessageSection(c *mapper.Config) setupSection {
+func (self SetupAction) makeDirectMessageSection(c *config.Config) setupSection {
 
 	/* Section header */
 	directMessageSetupSection := new(setupSection)
@@ -99,7 +99,7 @@ func (self SetupAction) makeDirectMessageSection(c *mapper.Config) setupSection 
 	return *directMessageSetupSection
 }
 
-func (self SetupAction) makeEchomailMessageSection(c *mapper.Config) setupSection {
+func (self SetupAction) makeEchomailMessageSection(c *config.Config) setupSection {
 
 	/* Section header */
 	echoSetupSection := new(setupSection)
@@ -111,7 +111,7 @@ func (self SetupAction) makeEchomailMessageSection(c *mapper.Config) setupSectio
 	return *echoSetupSection
 }
 
-func (self SetupAction) makeSections(c *mapper.Config) []setupSection {
+func (self SetupAction) makeSections(c *config.Config) []setupSection {
 
 	var setupSections []setupSection
 
@@ -141,14 +141,13 @@ func (self SetupAction) makeSections(c *mapper.Config) []setupSection {
 
 func (self SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
-	configMapper := mapperManager.GetConfigMapper()
+	configManager := self.restoreConfigManager()
 
 	/* Get params */
-	config, _ := configMapper.GetConfig()
+	newConfig := configManager.GetConfig()
 
 	/* Make sections */
-	setupSections := self.makeSections(config)
+	setupSections := self.makeSections(newConfig)
 
 	/* Render */
 	bw := widgets.NewBaseWidget()

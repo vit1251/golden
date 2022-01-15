@@ -42,16 +42,16 @@ func (self *Tosser) processNewMessage(pkt *TosserPacket) error {
 
 func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msgBody *packet.MessageBody) error {
 
+	configManager := self.restoreConfigManager()
 	charsetManager := self.restoreCharsetManager()
 	mapperManager := self.restoreMapperManager()
 	netmailMapper := mapperManager.GetNetmailMapper()
-	configMapper := mapperManager.GetConfigMapper()
 
-	charset, _ := configMapper.Get("netmail", "Charset")
+	newConfig := configManager.GetConfig()
 
 	var msgID string
 	var msgHash string
-	var msgCharset string = charset
+	var msgCharset string = newConfig.Netmail.Charset
 	var msgTime time.Time = time.Now()
 
 	/* FST-40001 - Parse NETMAIL source address */
@@ -209,11 +209,11 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msg
 
 func (self *Tosser) acquireAreaByName(areaName string) *mapper.Area {
 
+	configManager := self.restoreConfigManager()
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
-	configMapper := mapperManager.GetConfigMapper()
 
-	areaCharset, _ := configMapper.Get("echomail", "Charset")
+	newConfig := configManager.GetConfig()
 
 	/* Search area */
 	area, err1 := echoAreaMapper.GetAreaByName(areaName)
@@ -225,14 +225,14 @@ func (self *Tosser) acquireAreaByName(areaName string) *mapper.Area {
 	}
 
 	/* Debug message */
-	log.Printf("Create new area: name = %s charset = %s", areaName, areaCharset)
+	log.Printf("Create new area: name = %s charset = %s", areaName, newConfig.Echomail.Charset)
 
 	var areaOrder int64 = time.Now().Unix()
 
 	/* Create new area */
 	a := mapper.NewArea()
 	a.SetName(areaName)
-	a.SetCharset(areaCharset)
+	a.SetCharset(newConfig.Echomail.Charset)
 	a.SetOrder(areaOrder)
 	err2 := echoAreaMapper.Register(a)
 	if err2 != nil {
