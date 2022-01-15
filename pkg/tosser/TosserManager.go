@@ -459,18 +459,22 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 		Value: intlKludge,
 		Raw:   []byte(fmt.Sprintf("\x01INTL %s", intlKludge)),
 	})
-	fmptKludge := fmt.Sprintf("%d", packedMessage.OrigAddr.Point)
-	msgBody.AddKludge(packet.Kludge{
-		Name:  "FMPT",
-		Value: fmptKludge,
-		Raw:   []byte(fmt.Sprintf("\x01FMPT %s", fmptKludge)),
-	})
-	toptKludge := fmt.Sprintf("%d", packedMessage.DestAddr.Point)
-	msgBody.AddKludge(packet.Kludge{
-		Name:  "TOPT",
-		Value: toptKludge,
-		Raw:   []byte(fmt.Sprintf("\x01TOPT %s", toptKludge)),
-	})
+	if packedMessage.OrigAddr.Point != 0 {
+		fmptKludge := fmt.Sprintf("%d", packedMessage.OrigAddr.Point)
+		msgBody.AddKludge(packet.Kludge{
+			Name:  "FMPT",
+			Value: fmptKludge,
+			Raw:   []byte(fmt.Sprintf("\x01FMPT %s", fmptKludge)),
+		})
+	}
+	if packedMessage.DestAddr.Point != 0 {
+		toptKludge := fmt.Sprintf("%d", packedMessage.DestAddr.Point)
+		msgBody.AddKludge(packet.Kludge{
+			Name:  "TOPT",
+			Value: toptKludge,
+			Raw:   []byte(fmt.Sprintf("\x01TOPT %s", toptKludge)),
+		})
+	}
 	chrsKludge := self.makeChrsKludgeByCharsetName(msgCharset)
 	msgBody.AddKludge(packet.Kludge{
 		Name:  "CHRS",
