@@ -172,7 +172,7 @@ span.hidden {
     color: #AAAAAA;
 }
 .echo-index-item-new {
-    color: #f1e743;
+    font-weight: bold;
 }
 .echo-index-item:hover {
     background-color: #0000AA;
@@ -188,7 +188,6 @@ span.hidden {
 }
 .echo-index-item-count-new {
     text-align: right;
-    font-weight: bold;
 }
 .echomail-text {
     background-color: #000000;
@@ -281,7 +280,7 @@ span.hidden {
 }
 
 .echo-msg-index-item-new {
-    background-color: #3c3c17;
+    font-weight: bold;
 }
 
 .echo-msg-index-item-own {

@@ -6,11 +6,11 @@ import (
 )
 
 type FormButtonWidget struct {
-	buttonType  string
-	title       string
-	value       string
-	name        string
-	class       string
+	buttonType string
+	title      string
+	value      string
+	name       string
+	class      string
 }
 
 func NewFormButtonWidget() *FormButtonWidget {
@@ -31,7 +31,7 @@ func (self *FormButtonWidget) SetTitle(s string) *FormButtonWidget {
 
 func (self *FormButtonWidget) Render(w io.Writer) error {
 	//fmt.Fprintf(w, "<div>\n")
-	fmt.Fprintf(w, "\t<button name=\"%s\" value=\"%s\" class=\"%s\" type=\"%s\">%s</button>",
+	fmt.Fprintf(w, "\t<button name=\"%s\" value=\"%s\" class=\"%s\" type=\"%s\">%s</button>\n",
 		self.name,
 		self.value,
 		self.class,
@@ -50,4 +50,3 @@ func (self *FormButtonWidget) SetValue(value string) *FormButtonWidget {
 	self.value = value
 	return self
 }
-

@@ -83,23 +83,9 @@ func (self *EchoAreaIndexAction) renderMessageCounter(area *mapper.Area) widgets
 	if area.NewMessageCount > 0 {
 
 		newMsgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.NewMessageCount))
-		separator := widgets.NewTextWidgetWithText(" / ")
-		msgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.MessageCount))
-
 		newMsgCount.SetClass("echo-index-item-count-new")
 
 		counterWidget.AddWidget(newMsgCount)
-		counterWidget.AddWidget(separator)
-		counterWidget.AddWidget(msgCount)
-
-		counterWidget.SetClass("echo-index-item-count")
-
-	} else {
-
-		msgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.MessageCount))
-
-		counterWidget.AddWidget(msgCount)
-
 		counterWidget.SetClass("echo-index-item-count")
 
 	}

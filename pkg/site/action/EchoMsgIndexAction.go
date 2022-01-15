@@ -234,6 +234,24 @@ func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets
 	rowWidget.AddWidget(sourceWidget)
 	// TODO - add `m.To` under m.From ....
 
+	/* Render NEW point */
+	var newPointContent string = ""
+	if m.ViewCount == 0 {
+		newPointContent = "•"
+	}
+	newPointWidget := widgets.NewDivWidget().
+		SetWidth("20px").
+		SetHeight("38px").
+		SetStyle("flex-shrink: 0").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
+		//SetStyle("border: 1px solid green").
+		SetStyle("color: yellow").
+		SetContent(newPointContent)
+	rowWidget.AddWidget(newPointWidget)
+
+	/* Render subject */
 	subjectWidget := widgets.NewDivWidget().
 		SetStyle("min-width: 350px").
 		SetHeight("38px").
