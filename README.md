@@ -1,24 +1,24 @@
 # Golden Point 1.x
 
-Golden Point is Fido point package on Golang provide mailer, tosser and etc.
+Golden Point is a FidoNet (FTN) point package written with in Golang to provide a mailer, tosser and other related utilities.
 
-For work with GoldenPoint after starting you will open browser on address http://127.0.0.1:8080
+To work with GoldenPoint after starting you will need to open your browser on address http://127.0.0.1:8080
 
-Project status at https://github.com/vit1251/golden/projects/6
+Project status can be found at https://github.com/vit1251/golden/projects/6
 
 ## Features
 
-Golden Point provide next parts:
+Golden Point provides:
 
  - [x] Mailer
    - [x] [FTS-1026] Binkp/1.0 minimum protocol realization
      - [x] password protected sessions
-     - [x] 5D addressing for Fidonet and technology compatibele networks
+     - [x] 5D addressing for Fidonet and FTN technology compatible networks
      - [x] exchange of netmail packets and archmail bundles in both
            directions, including poll and mail pickup, as well as transfer
            of any binary or ASCII files
      - [x] ensuring integrity of transmitted mail and files
-     - [x] simultaneus bi-directional transmission
+     - [x] simultaneous bi-directional transmission
      - [x] maximizing performance over packet switched data networks
    - [x] [FTS-1027] Binkp/1.0 optional protocol extension CRAM
  - [x] Tosser
@@ -45,8 +45,8 @@ You may download binary builds
 
 ## Building from source code
 
-In most cases, there is no need to build from the source. But you may reading about your platform compile
-scenario in "docs" directory instructions. Common scripst is:
+In most cases, there is no need to build from the source. But you may read about your platform compile
+scenario in the "docs" directory instructions. Common scripts are:
 
     # go generate
     # go build
