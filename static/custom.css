@@ -283,10 +283,6 @@ span.hidden {
     font-weight: bold;
 }
 
-.echo-msg-index-item-own {
-    font-weight: 600;
-}
-
 /* Echo message view */
 
 .echo-msg-view-header-wrapper {
@@ -330,18 +326,22 @@ span.hidden {
     white-space: pre;
 }
 
-/* Netmail index (Netmail) */
+/* Netmail message index (Netmail) */
 
 .netmail-index-table {
     width: 100%;
 }
 
-.netmail-index-header {
-    background-color: #666666;
+.netmail-index-item {
+    color: #808080;
+}
+
+.netmail-index-item:hover {
+    background-color: #0000AA;
 }
 
 .netmail-index-item-new {
-    background-color: #3c3c17;
+    font-weight: bold;
 }
 
 /* Netmail message view */

@@ -199,9 +199,6 @@ func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets
 	if m.ViewCount == 0 {
 		classNames = append(classNames, "echo-msg-index-item-new")
 	}
-	if strings.EqualFold(m.From, myName) || strings.EqualFold(m.To, myName) {
-		classNames = append(classNames, "echo-msg-index-item-own")
-	}
 	rowWidget.SetClass(strings.Join(classNames, " "))
 
 	/* Render user pic */

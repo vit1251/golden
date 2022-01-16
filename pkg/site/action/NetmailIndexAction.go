@@ -57,7 +57,7 @@ func (self NetmailIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	vBox.Add(container)
 
 	indexTable := widgets.NewDivWidget().
-		SetClass("echo-msg-index-table").
+		SetClass("netmail-index-table").
 		SetStyle("width: 100%")
 
 	for _, msg := range msgHeaders {
@@ -86,13 +86,10 @@ func (self *NetmailIndexAction) renderRow(m *mapper.NetmailMsg) widgets.IWidget 
 		SetStyle("align-items: center")
 
 	var classNames []string
-	classNames = append(classNames, "echo-msg-index-item")
+	classNames = append(classNames, "netmail-index-item")
 	if m.ViewCount == 0 {
-		classNames = append(classNames, "echo-msg-index-item-new")
+		classNames = append(classNames, "netmail-index-item-new")
 	}
-	//if strings.EqualFold(m.From, myName) || strings.EqualFold(m.To, myName) {
-	classNames = append(classNames, "echo-msg-index-item-own")
-	//}
 	rowWidget.SetClass(strings.Join(classNames, " "))
 
 	/* Render user pic */
@@ -125,6 +122,24 @@ func (self *NetmailIndexAction) renderRow(m *mapper.NetmailMsg) widgets.IWidget 
 	rowWidget.AddWidget(sourceWidget)
 	// TODO - add `m.To` under m.From ....
 
+	/* Render NEW point */
+	var newPointContent string = ""
+	if m.ViewCount == 0 {
+		newPointContent = "•"
+	}
+	newPointWidget := widgets.NewDivWidget().
+		SetWidth("20px").
+		SetHeight("38px").
+		SetStyle("flex-shrink: 0").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
+		//SetStyle("border: 1px solid green").
+		SetStyle("color: yellow").
+		SetContent(newPointContent)
+	rowWidget.AddWidget(newPointWidget)
+
+	/* Render subject */
 	subjectWidget := widgets.NewDivWidget().
 		SetStyle("min-width: 350px").
 		SetHeight("38px").
