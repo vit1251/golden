@@ -63,7 +63,11 @@ func (self *SiteManager) Register(pattern string, a IAction) {
 }
 
 func (self *SiteManager) registerFrontend() {
+
+	/* Welcome section */
 	self.Register("/", action.NewWelcomeAction())
+
+	/* Echo section */
 	self.Register("/echo", action.NewEchoAreaIndexAction())
 	self.Register("/echo/create", action.NewEchoAreaCreateAction())
 	self.Register("/echo/create/complete", action.NewEchoAreaCreateCompleteAction())
@@ -84,6 +88,8 @@ func (self *SiteManager) registerFrontend() {
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply", action.NewEchoMsgReplyAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove", action.NewEchoMsgRemoveAction())
 	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", action.NewEchoMsgRemoveCompleteAction())
+
+	/* File section */
 	self.Register("/file", action.NewFileEchoIndexAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}", action.NewFileEchoAreaIndexAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", action.NewFileEchoUpdateAction())
@@ -93,6 +99,8 @@ func (self *SiteManager) registerFrontend() {
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/remove", action.NewFileEchoAreaRemoveAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload", action.NewFileEchoAreaUploadAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload/complete", action.NewFileEchoAreaUploadCompleteAction())
+
+	/* Netmail section */
 	self.Register("/netmail", action.NewNetmailIndexAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/view", action.NewNetmailViewAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/dump", action.NewNetmailDumpAction())
@@ -100,22 +108,36 @@ func (self *SiteManager) registerFrontend() {
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/remove", action.NewNetmailRemoveAction())
 	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/attach/{attidx:[0-9]+}/view", action.NewNetmailAttachViewAction())
 	self.Register("/netmail/compose", action.NewNetmailComposeAction())
-	self.Register("/stat", action.NewStatAction())
+
+	/* Setup section */
 	self.Register("/setup", action.NewSetupAction())
 	self.Register("/setup/complete", action.NewSetupCompleteAction())
-	self.Register("/assets/css/main.css", action.NewStyleAction())
+
+	/* Service section */
 	self.Register("/service", action.NewServiceAction())
-	self.Register("/service/{name:[A-Za-z0-9\\.\\_\\-]+}/event", action.NewServiceEventAction())
-	self.Register("/static/{name:[A-Za-z0-9\\.\\_\\-]+}", action.NewStaticAction())
+	self.Register("/service/mailer/stat", action.NewServiceMailerAction())
+	self.Register("/service/mailer/event", action.NewServiceMailerEventAction())
+	self.Register("/service/toss/stat", action.NewServiceTossAction())
+	self.Register("/service/toss/event", action.NewServiceTossEventAction())
+	self.Register("/service/tracker/stat", action.NewServiceTrackerAction())
+	self.Register("/service/tracker/event", action.NewServiceTrackerEventAction())
+
+	/* Twit -> AddressBook */
 	self.Register("/twit", action.NewTwitIndexAction())
 	self.Register("/twit/{twitid:[A-Za-z0-9+]+}/remove", action.NewTwitRemoveCompleteAction())
+
+	/* Draft section */
 	self.Register("/draft", action.NewDraftIndexAction())
 	self.Register("/draft/{draftid:[A-Za-z0-9\\-+]+}/edit", action.NewDraftEditAction())
 	self.Register("/draft/{draftid:[A-Za-z0-9\\-+]+}/edit/complete", action.NewDraftEditCompleteAction())
+
+	/* Static section */
+	self.Register("/assets/css/main.css", action.NewStyleAction())
+	self.Register("/static/{name:[A-Za-z0-9\\.\\_\\-]+}", action.NewStaticAction())
+
 }
 
 func (self *SiteManager) registerBackend() {
-	self.Register("/api/stat", action.NewStatApiAction())
 	self.Register("/api/netmail/remove", action.NewNetmailRemoveApiAction())
 }
 

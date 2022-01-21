@@ -13,16 +13,26 @@ type EventBus struct {
 	handlers []IEventBusAction
 }
 
+type Event struct {
+	name string
+}
+
 func NewEventBus(registry *registry.Container) *EventBus {
 	bus := new(EventBus)
 	return bus
 }
 
-func (self *EventBus) Event(event string) {
-	log.Printf("EventBus: event = %s", event)
+func (self *EventBus) CreateEvent(eventName string) Event {
+	return Event{
+		name: eventName,
+	}
+}
+
+func (self *EventBus) FireEvent(evt Event) {
+	log.Printf("EventBus: event = %#v", evt)
 	for _, action := range self.handlers {
-		log.Printf("EventBus: event = %s action = %q", event, action)
-		action.HandleEvent(event)
+		log.Printf("EventBus: evt = %#v action = %q", evt, action)
+		action.HandleEvent(evt.name)
 	}
 }
 

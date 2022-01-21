@@ -3,22 +3,22 @@ package mapper
 import "github.com/vit1251/golden/pkg/registry"
 
 type MapperManager struct {
-	echoMapper     *EchoMapper
-	echoAreaMapper *EchoAreaMapper
-	statMapper     *StatMapper
-	netmailMapper  *NetmailMapper
-	fileMapper     *FileMapper
-	fileAreaMapper *FileAreaMapper
-	configMapper   *ConfigMapper
-	twitMapper     *TwitMapper
-	draftMapper    *DraftMapper
+	echoMapper       *EchoMapper
+	echoAreaMapper   *EchoAreaMapper
+	netmailMapper    *NetmailMapper
+	fileMapper       *FileMapper
+	fileAreaMapper   *FileAreaMapper
+	configMapper     *ConfigMapper
+	twitMapper       *TwitMapper
+	draftMapper      *DraftMapper
+	statMailerMapper *StatMailerMapper
 }
 
 func NewMapperManager(r *registry.Container) *MapperManager {
 	newMapperManager := new(MapperManager)
 	newMapperManager.echoMapper = NewEchoMapper(r)
 	newMapperManager.echoAreaMapper = NewEchoAreaMapper(r)
-	newMapperManager.statMapper = NewStatMapper(r)
+	newMapperManager.statMailerMapper = NewStatMailerMapper(r)
 	newMapperManager.netmailMapper = NewNetmailMapper(r)
 	newMapperManager.fileMapper = NewFileMapper(r)
 	newMapperManager.fileAreaMapper = NewFileAreaMapper(r)
@@ -37,8 +37,8 @@ func (self MapperManager) GetEchoAreaMapper() *EchoAreaMapper {
 	return self.echoAreaMapper
 }
 
-func (self MapperManager) GetStatMapper() *StatMapper {
-	return self.statMapper
+func (self MapperManager) GetStatMailerMapper() *StatMailerMapper {
+	return self.statMailerMapper
 }
 
 func (self MapperManager) GetNetmailMapper() *NetmailMapper {

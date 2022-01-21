@@ -9,8 +9,6 @@ import (
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
 	"log"
-	"reflect"
-	"runtime"
 	"strconv"
 	"time"
 )
@@ -121,17 +119,15 @@ func (self *MailerManager) Stop() {
 	close(self.event)
 }
 
-func GetFunctionName(i interface{}) string {
-	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
-}
-
 func (self *MailerManager) processMailer() error {
+
+	var stat mapper.StatMailer
 
 	log.Printf("MailerManager: processMailer")
 
 	configManager := self.restoreConfigManager()
 	mapperManager := self.restoreMapperManager()
-	statMapper := mapperManager.GetStatMapper()
+	statMailerMapper := mapperManager.GetStatMailerMapper()
 
 	eventBus := self.restoreEventBus()
 
@@ -172,26 +168,46 @@ func (self *MailerManager) processMailer() error {
 	}
 
 	/* Start mailer */
+	var mailerReport *MailerReport
 	log.Printf("--- Mailer start ---")
-	err3 := m.Start()
+	err3, mailerReport := m.Start()
 	if err3 != nil {
 		log.Printf("--- Mailer error: msg = %q ---", err3)
 		return err3
 	}
 
-	/* Wait mailer complete */
-	m.Wait()
-	log.Printf("--- Mailer complete ---")
-
-	/* Register mailer session */
-	if err := statMapper.RegisterOutSession(); err != nil {
+	/* Update mailer report */
+	convertMailerReportToStatMailer(&stat, mailerReport)
+	if err := statMailerMapper.UpdateSession(&stat); err != nil {
 		log.Printf("Fail on mailer routine: err = %+v", err)
 	}
 
-	/* Start processing message */
-	eventBus.Event("Tosser")
-	eventBus.Event("Tracker")
+	/* Wait mailer complete */
+	mailerReport = m.Wait()
+	log.Printf("Mailer: report = %#v", mailerReport)
+	log.Printf("--- Mailer complete ---")
 
+	/* Update mailer report */
+	convertMailerReportToStatMailer(&stat, mailerReport)
+	if err := statMailerMapper.UpdateSession(&stat); err != nil {
+		log.Printf("Fail on mailer routine: err = %+v", err)
+	}
+
+	/* Toss new message */
+	newTosserEvent := eventBus.CreateEvent("Tosser")
+	eventBus.FireEvent(newTosserEvent)
+
+	/* Tracker new items */
+	newTrackerEvent := eventBus.CreateEvent("Tracker")
+	eventBus.FireEvent(newTrackerEvent)
+
+	return nil
+}
+
+func convertMailerReportToStatMailer(result *mapper.StatMailer, report *MailerReport) error {
+	result.Status = report.GetStatus()
+	result.SessionStart = report.GetSessionStart().UnixMilli()
+	result.SessionStop = report.GetSessionStop().UnixMilli()
 	return nil
 }
 

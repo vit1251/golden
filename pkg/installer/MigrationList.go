@@ -1,6 +1,11 @@
 package installer
 
-import "database/sql"
+import (
+	"database/sql"
+	"github.com/vit1251/golden/pkg/site/utils"
+	"log"
+	"time"
+)
 
 type MigrationList struct {
 	Migrations []Migration
@@ -10,9 +15,16 @@ func NewMigrationList() *MigrationList {
 	return new(MigrationList)
 }
 
-func (self *MigrationList) Set(migrationName string, down func(*sql.DB) error, up func(*sql.DB) error) {
+func (self *MigrationList) Register(migrationTime time.Time, down func(*sql.DB) error, up func(*sql.DB) error) {
+	log.Printf("migration: register: migrationTime = %#v", migrationTime)
+	migrationName := utils.DateHelper_renderDateWithSecond(migrationTime)
+	self.Set(migrationName, down, up)
+}
+
+// Deprecated: Set is deprecated.
+func (self *MigrationList) Set(migrationTime string, down func(*sql.DB) error, up func(*sql.DB) error) {
 	m := NewMigration()
-	m.ID = migrationName
+	m.ID = migrationTime
 	m.Down = down
 	m.Up = up
 	self.Migrations = append(self.Migrations, *m)

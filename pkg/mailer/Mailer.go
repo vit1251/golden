@@ -90,6 +90,10 @@ func NewMailer(r *registry.Container) *Mailer {
 	return m
 }
 
+func (self *Mailer) GetReport() *MailerReport {
+	return self.report
+}
+
 func (self *Mailer) writeTrafic(mail int, data int) {
 	raw := fmt.Sprintf("TRF %d %d", mail, data)
 	self.stream.WriteComment(raw)
@@ -107,10 +111,10 @@ func (self *Mailer) SetSecret(secret string) {
 	self.secret = secret
 }
 
-func (self *Mailer) Start() error {
+func (self *Mailer) Start() (error, *MailerReport) {
 
 	if self.connectionCount > 0 {
-		return fmt.Errorf("fido session alredy in progress")
+		return fmt.Errorf("fido session alredy in progress"), nil
 	}
 
 	/* Initialize new report */
@@ -122,7 +126,7 @@ func (self *Mailer) Start() error {
 	/* Play! */
 	go self.run()
 
-	return nil
+	return nil, self.report
 }
 
 func (self *Mailer) IsTransmitting() bool {
@@ -135,7 +139,7 @@ func (self *Mailer) IsReceiving() bool {
 
 func (self *Mailer) run() {
 
-	self.report.SetStartSession(time.Now())
+	self.report.SetSessionStart(time.Now())
 
 	/* Reset active state */
 	self.activeState = NewMailerStateStart()
@@ -156,7 +160,7 @@ func (self *Mailer) run() {
 	log.Printf("Stop mailer routine")
 
 	/* Update report */
-	self.report.SetStopSession(time.Now())
+	self.report.SetSessionStop(time.Now())
 
 	/* Close connection */
 	self.wait.Done()

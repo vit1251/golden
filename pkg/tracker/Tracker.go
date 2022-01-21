@@ -77,7 +77,7 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	mapperManager := self.restoreMapperManager()
 	fileMapper := mapperManager.GetFileMapper()
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
-	statMapper := mapperManager.GetStatMapper()
+	//TODO - statMapper := mapperManager.GetStatMapper()
 
 	/* Parse */
 	newTicParser := NewTicParser(self.registry)
@@ -137,12 +137,12 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	fileMapper.RegisterFile(*newFile)
 
 	/* Register status */
-	statMapper.RegisterInFile(tic.GetFile())
+	//TODO - statMapper.RegisterInFile(tic.GetFile())
 
 	/* Move TIC */
 	areaTicLocation := path.Join(areaLocation, item.Name)
 	log.Printf("Move %+v -> %+v", item.AbsolutePath, areaTicLocation)
-	if err := os.Rename(item.AbsolutePath, areaTicLocation);err != nil {
+	if err := os.Rename(item.AbsolutePath, areaTicLocation); err != nil {
 		log.Printf("Fail on Rename: err = %+v", err)
 	}
 

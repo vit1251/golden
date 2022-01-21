@@ -247,7 +247,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 	mapperManager := self.restoreMapperManager()
 	echoMapper := mapperManager.GetEchoMapper()
 
-	statMapper := mapperManager.GetStatMapper()
+	//TODO - statMailerMapper := mapperManager.GetStatMapper()
 	charsetManager := self.restoreCharsetManager()
 
 	areaName := msgBody.GetArea()
@@ -364,7 +364,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 	}
 	if exists {
 		log.Printf("Message %s already exists", msgHash)
-		statMapper.RegisterDupe()
+		// TODO - statMapper.RegisterDupe()
 		return nil
 	}
 
@@ -399,7 +399,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 	}
 
 	/* Update counter */
-	statMapper.RegisterInMessage()
+	//TODO - statMapper.RegisterInMessage()
 
 	return nil
 }
@@ -485,10 +485,10 @@ func (self *Tosser) ProcessPacket(name string) error {
 
 func (self *Tosser) processNetmail(item cache.FileEntry) error {
 
-	mapperManager := self.restoreMapperManager()
-	statMapper := mapperManager.GetStatMapper()
+	//TODO - mapperManager := self.restoreMapperManager()
+	//TODO - statMapper := mapperManager.GetStatMapper()
 
-	statMapper.RegisterInPacket()
+	//TODO - statMapper.RegisterInPacket()
 
 	err1 := self.ProcessPacket(item.AbsolutePath)
 	if err1 != nil {
@@ -510,8 +510,8 @@ func (self *Tosser) processNetmail(item cache.FileEntry) error {
 
 func (self *Tosser) processARCmail(item cache.FileEntry) error {
 
-	mapperManager := self.restoreMapperManager()
-	statMapper := mapperManager.GetStatMapper()
+	//TODO - mapperManager := self.restoreMapperManager()
+	//TODO - statMapper := mapperManager.GetStatMapper()
 
 	newInbTempDir := cmn.GetTempInboundDirectory()
 
@@ -528,9 +528,9 @@ func (self *Tosser) processARCmail(item cache.FileEntry) error {
 		log.Printf("-- Process FTN packet start: packet = %+v", p)
 
 		/* Register packet */
-		if err := statMapper.RegisterInPacket(); err != nil {
-			log.Printf("Fail on RegisterInPacket: err = %+v", err)
-		}
+		//TODO - if err := statMapper.RegisterInPacket(); err != nil {
+		//TODO - log.Printf("Fail on RegisterInPacket: err = %+v", err)
+		//TODO - }
 
 		/* Process PKT network packet */
 		if err := self.ProcessPacket(p); err != nil {

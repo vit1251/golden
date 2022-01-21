@@ -421,12 +421,16 @@ span.hidden {
 
 /* Service index */
 
-.service-index-table {
+.service-index {
     width: 100%;
 }
 
-.service-index-header {
-    background-color: #666666;
+.service-index-item {
+    color: #808080;
+}
+
+.service-index-item:hover {
+    background-color: #0000AA;
 }
 
 /* Statistics */

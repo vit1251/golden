@@ -11,9 +11,9 @@ import (
 )
 
 type MigrationManager struct {
-	conn                  *sql.DB
-	registry              *registry.Container
-	applyMigrations       []string
+	conn            *sql.DB
+	registry        *registry.Container
+	applyMigrations []string
 }
 
 func NewMigrationManager(registry *registry.Container) *MigrationManager {
@@ -99,20 +99,29 @@ func (self *MigrationManager) Check() {
 	for _, migrationKey := range keys {
 		m := migrations.GetByKey(migrationKey)
 		if m != nil {
-			var status string
-			if self.isApply(m.ID) {
-				status = "SKIP"
-			} else {
-				if err := m.Up(self.conn); err != nil {
-					self.registerMigration(migrationKey)
-					status = fmt.Sprintf("FAIL ( %s )", err)
-				} else {
-					self.registerMigration(migrationKey)
-					status = "PASS"
-				}
+			err1 := self.checkMigration(migrationKey, m)
+			if err1 != nil {
+				panic(err1)
 			}
-			log.Printf("MigrationManager: Apply migration: key = %s status = %s", m.ID, status)
 		}
 	}
 
+}
+
+func (self *MigrationManager) checkMigration(migrationKey string, m *Migration) error {
+	var err error
+	var status string
+	if self.isApply(m.ID) {
+		status = "SKIP"
+	} else {
+		err = m.Up(self.conn)
+		if err != nil {
+			status = fmt.Sprintf("FAIL ( %s )", err)
+		} else {
+			self.registerMigration(migrationKey)
+			status = "PASS"
+		}
+	}
+	log.Printf("MigrationManager: Apply migration: key = %s status = %s", m.ID, status)
+	return err
 }

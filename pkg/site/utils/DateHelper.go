@@ -39,3 +39,28 @@ func DateHelper_renderDate(date time.Time) string {
 	monthNumber := DateHelper_monthAsNumber(date.Month())
 	return fmt.Sprintf("%04d-%02d-%02d %02d:%02d", date.Year(), monthNumber, date.Day(), date.Hour(), date.Minute())
 }
+
+func DateHelper_renderDateWithSecond(date time.Time) string {
+	monthNumber := DateHelper_monthAsNumber(date.Month())
+	return fmt.Sprintf("%04d-%02d-%02d %02d:%02d:%02d", date.Year(), monthNumber, date.Day(), date.Hour(), date.Minute(), date.Second())
+}
+
+func DateHelper_renderDurationInMin(duration int64) string {
+	return fmt.Sprintf("%d min.", duration)
+}
+
+func DateHelper_renderDurationInSec(duration int64) string {
+	if duration > 60 {
+		duration = duration / 60
+		return DateHelper_renderDurationInMin(duration)
+	}
+	return fmt.Sprintf("%d sec.", duration)
+}
+
+func DateHelper_renderDurationInMilli(duration int64) string {
+	if duration > 1000 {
+		duration = duration / 1000
+		return DateHelper_renderDurationInSec(duration)
+	}
+	return fmt.Sprintf("%d ㎳", duration)
+}
