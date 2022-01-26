@@ -3,7 +3,6 @@ package installer
 import (
 	"database/sql"
 	"github.com/vit1251/golden/pkg/site/utils"
-	"log"
 	"time"
 )
 
@@ -16,7 +15,6 @@ func NewMigrationList() *MigrationList {
 }
 
 func (self *MigrationList) Register(migrationTime time.Time, down func(*sql.DB) error, up func(*sql.DB) error) {
-	log.Printf("migration: register: migrationTime = %#v", migrationTime)
 	migrationName := utils.DateHelper_renderDateWithSecond(migrationTime)
 	self.Set(migrationName, down, up)
 }

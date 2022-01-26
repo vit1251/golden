@@ -3,10 +3,16 @@ package installer
 import (
 	"database/sql"
 	"fmt"
+	"time"
 )
 
 func init() {
-	migrations.Set("2020-10-23 00:07:05",
+	migrationLocation, err := time.LoadLocation("Europe/Moscow")
+	if err != nil {
+		panic(err)
+	}
+	migrationDate := time.Date(2020, time.October, 23, 0, 7, 5, 0, migrationLocation)
+	migrations.Register(migrationDate,
 		func(conn *sql.DB) error {
 			return fmt.Errorf("not implemented")
 		},
