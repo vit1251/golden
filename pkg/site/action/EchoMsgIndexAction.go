@@ -233,7 +233,7 @@ func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets
 
 	/* Render NEW point */
 	var newPointContent string = ""
-	if m.ViewCount == 0 {
+	if m.IsNew() {
 		newPointContent = "•"
 	}
 	newPointWidget := widgets.NewDivWidget().

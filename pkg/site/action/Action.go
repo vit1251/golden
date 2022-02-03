@@ -30,13 +30,16 @@ func (self Action) makeMenu() *widgets.MainMenuWidget {
 	mapperManager := self.restoreMapperManager()
 	echoMapper := mapperManager.GetEchoMapper()
 	netmailMapper := mapperManager.GetNetmailMapper()
+	fileMapper := mapperManager.GetFileMapper()
 
 	newCount, _ := echoMapper.GetMessageNewCount()
 	newDirect, _ := netmailMapper.GetMessageNewCount()
+	newFile, _ := fileMapper.GetFileNewCount()
 
 	mainMenu := widgets.NewMainMenuWidget()
 	mainMenu.SetParam("mainMenuEcho", newCount)
 	mainMenu.SetParam("mainMenuDirect", newDirect)
+	mainMenu.SetParam("mainMenuFile", newFile)
 
 	return mainMenu
 }

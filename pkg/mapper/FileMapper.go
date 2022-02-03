@@ -157,7 +157,7 @@ func (self *FileMapper) RemoveAreaByName(areaName string) error {
 	return err1
 }
 
-func (self *EchoMapper) ViewFileByFileName(fileArea string, fileName string) error {
+func (self *FileMapper) ViewFileByFileName(fileArea string, fileName string) error {
 
 	storageManager := self.restoreStorageManager()
 
@@ -173,4 +173,77 @@ func (self *EchoMapper) ViewFileByFileName(fileArea string, fileName string) err
 
 	return err1
 
+}
+
+func (self *FileMapper) GetFileNewCount() (int, error) {
+
+	storageManager := self.restoreStorageManager()
+
+	var newMessageCount int
+
+	query1 := "SELECT count(`fileId`) FROM `file` WHERE `fileViewCount` = 0"
+	var params []interface{}
+
+	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+
+		err1 := rows.Scan(&newMessageCount)
+		if err1 != nil {
+			return err1
+		}
+		return nil
+	})
+
+	return newMessageCount, nil
+}
+
+func (self *FileMapper) GetFileByFileName(echoTag string, fileName string) (*File, error) {
+
+	storageManager := self.restoreStorageManager()
+	conn := storageManager.GetConnection() // TODO
+
+	var result *File
+
+	/* Step 2. Start SQL transaction */
+	ConnTransaction, err := conn.Begin()
+	if err != nil {
+		return nil, err
+	}
+
+	sqlStmt := "SELECT `fileArea`, `fileName`, `fileDesc`, `fileTime`, `fileViewCount` FROM `file` WHERE `fileArea` = $1 AND `fileName` = $2"
+	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
+	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag, fileName)
+	if err1 != nil {
+		log.Printf("error on query: err = %+v", err1)
+		return nil, err1
+	}
+	defer rows.Close()
+	for rows.Next() {
+
+		var fileArea string
+		var fileName string
+		var fileDesc string
+		var fileTime *int64
+		var fileViewCount int
+
+		err2 := rows.Scan(&fileArea, &fileName, &fileDesc, &fileTime, &fileViewCount)
+		if err2 != nil {
+			log.Printf("error on scan: err = %+v", err2)
+			return nil, err2
+		}
+
+		newFile := NewFile()
+		newFile.SetArea(fileArea)
+		newFile.SetDesc(fileDesc)
+		newFile.SetFile(fileName)
+		newFile.SetViewCount(fileViewCount)
+		if fileTime != nil {
+			newFile.SetUnixTime(*fileTime)
+		}
+
+		result = newFile
+	}
+
+	ConnTransaction.Commit()
+
+	return result, nil
 }

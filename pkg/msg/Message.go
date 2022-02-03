@@ -100,3 +100,7 @@ func (self *Message) SetFromAddr(addr string) {
 func (self Message) GetFromAddr() string {
 	return self.FromAddr
 }
+
+func (self Message) IsNew() bool {
+	return self.ViewCount == 0
+}

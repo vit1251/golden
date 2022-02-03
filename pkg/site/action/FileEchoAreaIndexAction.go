@@ -144,6 +144,23 @@ func (self *FileEchoAreaIndexAction) renderRow(area *mapper.FileArea, file *mapp
 		SetContent(file.GetFile())
 	rowWidget.AddWidget(nameWidget)
 
+	/* Render NEW point */
+	var newPointContent string = ""
+	if file.IsNew() {
+		newPointContent = "•"
+	}
+	newPointWidget := widgets.NewDivWidget().
+		SetWidth("20px").
+		SetHeight("38px").
+		SetStyle("flex-shrink: 0").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
+		//SetStyle("border: 1px solid green").
+		SetStyle("color: yellow").
+		SetContent(newPointContent)
+	rowWidget.AddWidget(newPointWidget)
+
 	/* Render summary */
 	summaryWidget := widgets.NewDivWidget().
 		SetStyle("min-width: 350px").

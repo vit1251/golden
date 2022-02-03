@@ -6,11 +6,11 @@ import (
 )
 
 type File struct {
-	area		string              /* Area name        */
-	desc		string              /* Description      */
-	file		string              /* Filename         */
-	time		time.Time           /* Creation stamp   */
-	viewCount	int                 /* View count       */
+	area      string    /* Area name        */
+	desc      string    /* Description      */
+	file      string    /* Filename         */
+	time      time.Time /* Creation stamp   */
+	viewCount int       /* View count       */
 }
 
 func NewFile() *File {
@@ -61,4 +61,8 @@ func (self *File) SetViewCount(viewCount int) {
 
 func (self File) GetViewCount() int {
 	return self.viewCount
+}
+
+func (self File) IsNew() bool {
+	return self.viewCount == 0
 }
