@@ -32,7 +32,7 @@ func (self *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `fileArea`, `fileName`, `fileDesc`, `fileTime` FROM `file` WHERE `fileArea` = $1"
+	sqlStmt := "SELECT `fileArea`, `fileName`, `fileDesc`, `fileTime`, `fileViewCount` FROM `file` WHERE `fileArea` = $1"
 	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
 	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag)
 	if err1 != nil {
@@ -46,8 +46,9 @@ func (self *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 		var fileName string
 		var fileDesc string
 		var fileTime *int64
+		var fileViewCount int
 
-		err2 := rows.Scan(&fileArea, &fileName, &fileDesc, &fileTime)
+		err2 := rows.Scan(&fileArea, &fileName, &fileDesc, &fileTime, &fileViewCount)
 		if err2 != nil {
 			log.Printf("error on scan: err = %+v", err2)
 			return nil, err2
@@ -57,6 +58,7 @@ func (self *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 		newFile.SetArea(fileArea)
 		newFile.SetDesc(fileDesc)
 		newFile.SetFile(fileName)
+		newFile.SetViewCount(fileViewCount)
 		if fileTime != nil {
 			newFile.SetUnixTime(*fileTime)
 		}
@@ -153,4 +155,22 @@ func (self *FileMapper) RemoveAreaByName(areaName string) error {
 	})
 
 	return err1
+}
+
+func (self *EchoMapper) ViewFileByFileName(fileArea string, fileName string) error {
+
+	storageManager := self.restoreStorageManager()
+
+	query1 := "UPDATE `file` SET `fileViewCount` = `fileViewCount` + 1 WHERE `fileArea` = $1 AND `fileName` = $2"
+	var params []interface{}
+	params = append(params, fileArea)
+	params = append(params, fileName)
+
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
+		log.Printf("Insert complete with: err = %+v", err)
+		return nil
+	})
+
+	return err1
+
 }

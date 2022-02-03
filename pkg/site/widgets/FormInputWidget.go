@@ -3,6 +3,7 @@ package widgets
 import (
 	"fmt"
 	"io"
+	"strings"
 )
 
 type FormInputWidget struct {
@@ -11,6 +12,7 @@ type FormInputWidget struct {
 	Placeholder string
 	Value       string
 	class       string
+	disable     bool
 }
 
 func NewFormInputWidget() *FormInputWidget {
@@ -19,13 +21,38 @@ func NewFormInputWidget() *FormInputWidget {
 }
 
 func (self *FormInputWidget) Render(w io.Writer) error {
-	fmt.Fprintf(w, "<div class=\"input\">\n")
-	fmt.Fprintf(w, "\t<div>%s</div>\n", self.Title)
-	fmt.Fprintf(w, "\t<div>")
-	fmt.Fprintf(w, "\t\t<input class=\"%s\" type=\"text\" value=\"%s\" name=\"%s\" placeholder=\"%s\" />\n", self.class, self.Value, self.Name, self.Placeholder)
-	fmt.Fprintf(w, "\t</div>")
-	fmt.Fprintf(w, "</div>\n")
-	return nil
+
+	var out strings.Builder
+
+	/* Input wrapper start */
+	out.WriteString("<div class=\"input\">\n")
+
+	/* Title */
+	out.WriteString("<div>")
+	out.WriteString(self.Title)
+	out.WriteString("</div>")
+
+	/* Input */
+	out.WriteString("<div>")
+	out.WriteString("<")
+	out.WriteString("input ")
+	out.WriteString(fmt.Sprintf(" type=\"%s\"", "text"))
+	out.WriteString(fmt.Sprintf(" class=\"%s\"", self.class))
+	out.WriteString(fmt.Sprintf(" name=\"%s\"", self.Name))
+	out.WriteString(fmt.Sprintf(" value=\"%s\"", self.Value))
+	out.WriteString(fmt.Sprintf(" placeholder=\"%s\"", self.Placeholder))
+	if self.disable {
+		out.WriteString(fmt.Sprintf(" disabled"))
+	}
+	out.WriteString(" />")
+	out.WriteString("</div>")
+
+	/* Input wrapper stop */
+	out.WriteString("</div>")
+
+	/* Write out */
+	_, err := fmt.Fprintf(w, "%s", out.String())
+	return err
 }
 
 func (self *FormInputWidget) SetPlaceholder(s string) *FormInputWidget {
@@ -51,4 +78,8 @@ func (self *FormInputWidget) SetValue(value string) *FormInputWidget {
 func (self *FormInputWidget) SetClass(class string) *FormInputWidget {
 	self.class = class
 	return self
+}
+
+func (self *FormInputWidget) SetDisable(yesno bool) {
+	self.disable = yesno
 }

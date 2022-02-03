@@ -6,10 +6,11 @@ import (
 )
 
 type File struct {
-	area string
-	desc string
-	file string
-	time time.Time
+	area		string              /* Area name        */
+	desc		string              /* Description      */
+	file		string              /* Filename         */
+	time		time.Time           /* Creation stamp   */
+	viewCount	int                 /* View count       */
 }
 
 func NewFile() *File {
@@ -52,4 +53,12 @@ func (self File) GetUnixTime() int64 {
 
 func (self File) GetTime() time.Time {
 	return self.time
+}
+
+func (self *File) SetViewCount(viewCount int) {
+	self.viewCount = viewCount
+}
+
+func (self File) GetViewCount() int {
+	return self.viewCount
 }

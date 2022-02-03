@@ -15,6 +15,11 @@ Invoke-Expression @invokeExpressionOptions
 # Section 2. Compile executables...
 #
 Write-Host "Step 2. Compile executables..."
+$invokeExpressionOptions = @{
+    Command = "go get -v -u"
+}
+#[Environment]::GetEnvironmentVariables()
+Invoke-Expression @invokeExpressionOptions
 
 # Section 2.1. Compile X86_64 executable...
 #

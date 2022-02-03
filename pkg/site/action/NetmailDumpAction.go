@@ -71,9 +71,9 @@ func (self NetmailDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	outDoc := hex.Dump(rawPacket)
 
 	//
-	previewWidget := widgets.NewDivWidget().
-		SetClass("netmail-msg-view-body").
+	previewWidget := widgets.NewPreWidget().
 		SetContent(string(outDoc))
+
 	containerVBox.Add(previewWidget)
 
 	if err := bw.Render(w); err != nil {

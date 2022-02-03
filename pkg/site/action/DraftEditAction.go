@@ -3,6 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"net/http"
 )
@@ -39,6 +40,14 @@ func (self DraftEditAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	/* Prepare */
+	if newDraft.IsEchoMail() {
+		newTo := newDraft.GetTo()
+		if newTo == "" {
+			newDraft.SetTo("All")
+		}
+	}
+
 	/* Render base wiew */
 	bw := widgets.NewBaseWidget()
 
@@ -53,28 +62,11 @@ func (self DraftEditAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	containerVBox := widgets.NewVBoxWidget()
 	container.AddWidget(containerVBox)
 
-	var section *widgets.SectionWidget
-	if newDraft.IsEchoMail() {
-		newTitle := fmt.Sprintf("Edit conference message: %s", newDraft.GetArea())
-		section = widgets.NewSectionWidget().SetTitle(newTitle)
-	} else {
-		section = widgets.NewSectionWidget().SetTitle("Edit direct message")
-	}
+	section := widgets.NewSectionWidget()
 
-	composeForm := widgets.NewFormWidget().
-		SetAction(fmt.Sprintf("/draft/%s/edit/complete", newDraft.GetUUID())).
-		SetMethod("POST")
+	mainView := self.makeMainView(newDraft)
 
-	composeForm.SetWidget(widgets.NewVBoxWidget().
-		Add(widgets.NewFormInputWidget().SetTitle("ToName").SetName("to").SetValue(newDraft.GetTo())).
-		Add(widgets.NewFormInputWidget().SetTitle("ToAddr").SetName("to_addr").SetValue(newDraft.GetToAddr())).
-		Add(widgets.NewFormInputWidget().SetTitle("Subject").SetName("subject").SetValue(newDraft.GetSubject())).
-		Add(widgets.NewFormTextWidget().SetName("body").SetValue(newDraft.GetBody())).
-		Add(widgets.NewFormButtonWidget().SetType("submit").SetName("action").SetValue("remove").SetTitle("Remove")).
-		Add(widgets.NewFormButtonWidget().SetType("submit").SetName("action").SetValue("save").SetTitle("Save")).
-		Add(widgets.NewFormButtonWidget().SetType("submit").SetName("action").SetValue("delivery").SetTitle("Delivery message")))
-
-	section.SetWidget(composeForm)
+	section.SetWidget(mainView)
 	containerVBox.Add(section)
 
 	bw.SetWidget(vBox)
@@ -84,4 +76,48 @@ func (self DraftEditAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, status, http.StatusInternalServerError)
 	}
 
+}
+
+func (self DraftEditAction) makeMainView(newDraft *mapper.Draft) widgets.IWidget {
+
+	composeForm := widgets.NewFormWidget()
+	composeForm.SetAction(fmt.Sprintf("/draft/%s/edit/complete", newDraft.GetUUID()))
+	composeForm.SetMethod("POST")
+
+	items := widgets.NewVBoxWidget()
+
+	items.Add(widgets.NewFormButtonWidget().SetType("submit").SetName("action").SetValue("save").SetTitle("Save"))
+	items.Add(widgets.NewFormButtonWidget().SetType("submit").SetName("action").SetValue("delivery").SetTitle("Sent"))
+	items.Add(widgets.NewFormButtonWidget().SetType("submit").SetName("action").SetValue("remove").SetTitle("Remove"))
+
+	/* Area name */
+	if newDraft.IsEchoMail() {
+		areaInput := widgets.NewFormInputWidget()
+		areaInput.SetTitle("Area")
+		areaInput.SetName("area")
+		areaInput.SetValue(newDraft.GetArea())
+		areaInput.SetDisable(true)
+		items.Add(areaInput)
+	} else {
+		items.Add(widgets.NewFormInputWidget().SetTitle("ToAddr").SetName("to_addr").SetValue(newDraft.GetToAddr()))
+	}
+
+	/* User name */
+	if newDraft.IsEchoMail() {
+		areaTo := widgets.NewFormInputWidget()
+		areaTo.SetTitle("ToName")
+		areaTo.SetName("to")
+		areaTo.SetValue(newDraft.GetTo())
+		items.Add(areaTo)
+	} else {
+		items.Add(widgets.NewFormInputWidget().SetTitle("ToName").SetName("to").SetValue(newDraft.GetTo()))
+	}
+
+	items.Add(widgets.NewFormInputWidget().SetTitle("Subject").SetName("subject").SetValue(newDraft.GetSubject()))
+
+	items.Add(widgets.NewFormTextWidget().SetName("body").SetValue(newDraft.GetBody()))
+
+	composeForm.SetWidget(items)
+
+	return composeForm
 }

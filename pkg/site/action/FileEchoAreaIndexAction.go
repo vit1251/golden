@@ -123,6 +123,10 @@ func (self *FileEchoAreaIndexAction) renderRow(area *mapper.FileArea, file *mapp
 	path := fileMapper.GetFileAbsolutePath(areaName, fileName)
 	log.Printf("Check %s", path)
 
+	viewCount := file.GetViewCount()
+	if viewCount == 0 {
+		classNames = append(classNames, "file-area-index-item-new")
+	}
 	if !self.checkExists(path) {
 		classNames = append(classNames, "file-area-index-item-missing")
 	}

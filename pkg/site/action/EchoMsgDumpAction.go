@@ -57,14 +57,6 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	//outDoc := origMsg.GetContent()
 	outDoc := hex.Dump(origMsg.Packet)
 
-	/* Update view counter */
-	err5 := echoMapper.ViewMessageByHash(echoTag, msgHash)
-	if err5 != nil {
-		response := fmt.Sprintf("Fail on ViewMessageByHash on echoMapper: err = %+v", err5)
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
-
 	bw := widgets.NewBaseWidget()
 
 	vBox := widgets.NewVBoxWidget()
@@ -95,37 +87,9 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	indexTable := widgets.NewTableWidget().
 		SetClass("table")
 
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("FROM"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.From))))
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("TO"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.To))))
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("SUBJ"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(origMsg.Subject))))
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("DATE"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
-			fmt.Sprintf("%s", origMsg.DateWritten)))))
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("MSGID"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
-			fmt.Sprintf("%s", origMsg.MsgID)))))
-
-	indexTable.AddRow(widgets.NewTableRowWidget().
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText("REPLY"))).
-		AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(
-			fmt.Sprintf("%s", origMsg.Reply)))))
-
 	containerVBox.Add(indexTable)
 
-	previewWidget := widgets.NewDivWidget().
-		SetClass("echo-msg-dump-preview").
+	previewWidget := widgets.NewPreWidget().
 		SetContent(string(outDoc))
 	containerVBox.Add(previewWidget)
 

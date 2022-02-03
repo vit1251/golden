@@ -57,8 +57,13 @@ func (self DraftIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	for _, d := range drafts {
 
+		msgSubject := d.GetSubject()
+		if msgSubject == "" {
+			msgSubject = "-EMPTY-"
+		}
+
 		twitTable.AddRow(widgets.NewTableRowWidget().
-			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(d.GetSubject()))).
+			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewTextWidgetWithText(msgSubject))).
 			AddCell(widgets.NewTableCellWidget().SetWidget(widgets.NewLinkWidget().
 				SetContent("Edit").
 				SetClass("btn").
