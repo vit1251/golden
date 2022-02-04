@@ -6,10 +6,10 @@ import (
 )
 
 type Script struct {
-	Src string
+	Src   string
 	Async bool
 	Defer bool
-//	Type string
+	//	Type string
 }
 
 func NewScript() *Script {
@@ -33,10 +33,10 @@ func (self Script) String() string {
 	return result
 }
 
-func (self Script) SetSrc(s string) {
+func (self *Script) SetSrc(s string) {
 	self.Src = s
 }
 
-func (self Script) SetDefer(b bool) {
+func (self *Script) SetDefer(b bool) {
 	self.Defer = b
 }

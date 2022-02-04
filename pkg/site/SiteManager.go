@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/site/action"
+	"github.com/vit1251/golden/pkg/site/action/api"
 	"log"
 	"net/http"
 	"strings"
@@ -139,7 +140,13 @@ func (self *SiteManager) registerFrontend() {
 }
 
 func (self *SiteManager) registerBackend() {
+
+	/* Classic HTTP API */
 	self.Register("/api/netmail/remove", action.NewNetmailRemoveApiAction())
+
+	/* Modern Web-Socket command stream */
+	self.Register("/api/v1", api.NewCommandStream())
+
 }
 
 func (self *SiteManager) Start() {

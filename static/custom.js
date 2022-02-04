@@ -1,8 +1,9 @@
 
 class MetricFeature {
 
-    constructor() {
-        this.summaryMonitoringInterval = 2.5 * 60 * 1000;
+    constructor(commandStream) {
+        this.commandStream = commandStream;
+        this.monitoringInterval = 15 * 1000;
     }
 
     updateMetric(metricName, value) {
@@ -18,34 +19,31 @@ class MetricFeature {
     }
 
     summaryUpdateRoutine() {
-
-        fetch("/api/stat", {
-            method: "POST",
-            headers: {},
-            body: '',
-        })
-        .then((response) => {
-            return response.json();
-        })
-        .then((data) => {
-            //
-            console.log(data);
-            //
-            const NetmailMessageCount = data.NetmailMessageCount;
-            const EchomailMessageCount = data.EchomailMessageCount;
-            //const FileCount = resp.FileCount;
-            //
-            this.updateMetric('mainMenuDirect', NetmailMessageCount);
-            this.updateMetric('mainMenuEcho', EchomailMessageCount);
-            //
-            this.registerSummaryUpdateRoutine();
+        console.log(`Update metrics...`);
+        const request = {
+            requestId: '',
+            action: 'stat',
+        };
+        this.commandStream.send(request, (resp) => {
+            /* Process response */
+            const {
+                EchoMessageCount = 0,
+                NetMessageCount = 0,
+                FileCount = 0,
+            } = resp;
+            /* Update parameters */
+            this.updateMetric('mainMenuDirect', NetMessageCount);
+            this.updateMetric('mainMenuEcho', EchoMessageCount);
+            this.updateMetric('mainMenuFile', FileCount);
         });
+        /* Register next update */
+        this.registerSummaryUpdateRoutine();
     }
 
     registerSummaryUpdateRoutine() {
         setTimeout(() => {
             this.summaryUpdateRoutine();
-        }, this.summaryMonitoringInterval);
+        }, this.monitoringInterval);
     }
 
     register() {
@@ -54,63 +52,50 @@ class MetricFeature {
 
 }
 
-class ClockFeature {
+class CommandStream {
 
     constructor() {
-        this.sep = false;
+        const url = new URL('/api/v1', window.location.href);
+        url.protocol = 'ws';
+        this.socket = new WebSocket(url.href);
+        this.socket.onopen = () => {
+            this.state = 'READY';
+        };
+        this.socket.onmessage = (event) => {
+            const {data = ''} = event;
+            const msg = JSON.parse(data);
+            console.log(`Incoming message: ${JSON.stringify(msg)}`);
+            if (this.resolve) {
+                this.resolve(msg);
+                this.resolve = null;
+            }
+        };
+        this.socket.onclose = () => {
+            console.log(`Session is close.`);
+            this.state = 'CLOSE';
+        };
     }
 
-    makeTime() {
-        const now = new Date();
-        const min = now.getMinutes();
-        const hour = now.getHours();
-        const minStr = `${min}`.padStart(2, '0');
-        const hourStr = `${hour}`.padStart(2, '0');
-        if (this.sep) {
-            const result = `${hourStr}:${minStr}`;
-            return result;
-        } else {
-            const result = `${hourStr} ${minStr}`;
-            return result;
-        }
-    }
-
-    updateClock() {
-        const currentTime = this.makeTime();
-        let clock = document.getElementById("clock");
-        clock.innerHTML = currentTime;
-        this.sep = !this.sep;
-    }
-
-    setupClock() {
-        setInterval(() => {
-            this.updateClock();
-        }, 1000);
-    }
-
-    register() {
-        this.setupClock();
+    send(options, resolve) {
+        this.resolve = resolve;
+        this.socket.send(JSON.stringify(options));
     }
 
 }
 
-class Application {
+/**
+ * Main entry point
+ *
+ */
+const main = () => {
 
-    constructor() {
-        this.features = [
-            new MetricFeature(),
-            new ClockFeature(),
-        ];
-    }
+    const commandStream = new CommandStream();
 
-    run() {
-        this.features.forEach((feature) => {
-            feature.register();
-        });
-    }
+    /* Register metric update */
+    const metricFeature = new MetricFeature(commandStream);
+    metricFeature.register();
 
-}
+};
 
-const app = new Application();
-app.run();
+main();
 

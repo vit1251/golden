@@ -93,6 +93,46 @@ func (self *FileAreaMapper) UpdateFileAreasWithFileCount(fileAreas []FileArea) (
 	return result, err1
 }
 
+func (self *FileAreaMapper) UpdateNewFileAreasWithFileCount(fileAreas []FileArea) ([]FileArea, error) {
+
+	storageManager := self.restoreStorageManager()
+
+	sqlStmt := "SELECT `fileArea`, count(`fileName`) AS `fileCount` FROM `file` WHERE `fileViewCount` = 0 GROUP BY `fileArea` ORDER BY `fileArea` ASC"
+
+	var params []interface{}
+
+	metrics := make(map[string]int)
+
+	err1 := storageManager.Query(sqlStmt, params, func(rows *sql.Rows) error {
+
+		var fileArea string
+		var fileCount int
+
+		err2 := rows.Scan(&fileArea, &fileCount)
+		if err2 != nil {
+			return err2
+		}
+
+		metrics[fileArea] = fileCount
+
+		return nil
+	})
+
+	/* Populate metrics */
+	var result []FileArea
+	for _, a := range fileAreas {
+		var areaName string = a.GetName()
+		var areaNewCount int
+		if count, ok := metrics[areaName]; ok {
+			areaNewCount = count
+		}
+		a.SetNewCount(areaNewCount)
+		result = append(result, a)
+	}
+
+	return result, err1
+}
+
 func (self *FileAreaMapper) CreateFileArea(a *FileArea) error {
 
 	storageManager := self.restoreStorageManager()

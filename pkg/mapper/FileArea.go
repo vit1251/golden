@@ -1,13 +1,14 @@
 package mapper
 
 type FileArea struct {
-	name    string
-	Path    string
-	summary string
-	mode    string
-	charset string
-	count   int
-	order   int
+	name     string
+	Path     string
+	summary  string
+	mode     string
+	charset  string
+	count    int
+	order    int
+	newCount int
 }
 
 func NewFileArea() *FileArea {
@@ -60,4 +61,12 @@ func (self *FileArea) SetCount(count int) {
 
 func (self *FileArea) GetCount() int {
 	return self.count
+}
+
+func (self *FileArea) SetNewCount(count int) {
+	self.newCount = count
+}
+
+func (self *FileArea) GetNewCount() int {
+	return self.newCount
 }

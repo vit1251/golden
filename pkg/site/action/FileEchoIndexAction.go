@@ -30,12 +30,19 @@ func (self *FileEchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
-	areas, err2 := fileAreaMapper.UpdateFileAreasWithFileCount(simpleAreas)
+	areasWithCounter, err2 := fileAreaMapper.UpdateFileAreasWithFileCount(simpleAreas)
 	if err2 != nil {
 		response := fmt.Sprintf("Fail in UpdateFileAreasWithFileCount on fileAreaMapper: err = %+v", err2)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
+	areasWithNewCounter, err3 := fileAreaMapper.UpdateNewFileAreasWithFileCount(areasWithCounter)
+	if err3 != nil {
+		response := fmt.Sprintf("Fail in UpdateNewFileAreasWithFileCount on fileAreaMapper: err = %+v", err3)
+		http.Error(w, response, http.StatusInternalServerError)
+		return
+	}
+	areas := areasWithNewCounter
 
 	/* Render */
 	bw := widgets.NewBaseWidget()
@@ -143,7 +150,12 @@ func (self *FileEchoIndexAction) renderRow(area *mapper.FileArea) widgets.IWidge
 
 func (self *FileEchoIndexAction) renderMessageCounter(area *mapper.FileArea) widgets.IWidget {
 	counterWidget := widgets.NewDivWidget()
-	msgCount := fmt.Sprintf("%d", area.GetCount())
-	counterWidget.SetContent(msgCount)
+
+	newCount := area.GetNewCount()
+	if newCount > 0 {
+		msgCount := fmt.Sprintf("%d", newCount)
+		counterWidget.SetContent(msgCount)
+	}
+
 	return counterWidget
 }
