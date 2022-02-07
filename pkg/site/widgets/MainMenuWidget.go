@@ -9,76 +9,88 @@ type MainMenuWidget struct {
 }
 
 func NewMainMenuWidget() *MainMenuWidget {
+
 	mmw := new(MainMenuWidget)
-	mmw.mw = NewMenuWidget()
-	mmw.mw.actions = mmw.Init()
+
+	newMenuWidget := NewMenuWidget()
+	newMainGroup := new(MenuGroup)
+	newSetupGroup := new(MenuGroup)
+
+	mmw.InitMain(newMainGroup)
+	mmw.InitSetup(newSetupGroup)
+
+	newMenuWidget.Add(newMainGroup)
+	newMenuWidget.Add(newSetupGroup)
+
+	mmw.mw = newMenuWidget
+
 	return mmw
 }
 
-func (self *MainMenuWidget) Init() []*MenuAction {
+func (self *MainMenuWidget) InitMain(menuGroup *MenuGroup) {
 
-	var menus []*MenuAction
+	/* Home */
+	menuAction1 := NewMenuAction()
+	menuAction1.ID = "mainMenuHome"
+	menuAction1.Link = "/"
+	menuAction1.Label = "Home"
+	menuGroup.Add(menuAction1)
 
-	if menuAction := NewMenuAction(); menuAction != nil {
-		menuAction.ID = "mainMenuHome"
-		menuAction.Link = "/"
-		menuAction.Label = "Home"
-		menus = append(menus, menuAction)
-	}
+	/* Netmail */
+	menuAction2 := NewMenuAction()
+	menuAction2.ID = "mainMenuDirect"
+	menuAction2.Link = "/netmail"
+	menuAction2.Label = "Netmail"
+	menuAction2.Metric = -1
+	menuGroup.Add(menuAction2)
 
-	if menuAction := NewMenuAction(); menuAction != nil {
-		menuAction.ID = "mainMenuDirect"
-		menuAction.Link = "/netmail"
-		menuAction.Label = "Netmail"
-		menuAction.Metric = -1
-		menus = append(menus, menuAction)
-	}
+	/* Echomail */
+	menuAction3 := NewMenuAction()
+	menuAction3.ID = "mainMenuEcho"
+	menuAction3.Link = "/echo"
+	menuAction3.Label = "Echomail"
+	menuAction3.Metric = -1
+	menuGroup.Add(menuAction3)
 
-	if menuAction := NewMenuAction(); menuAction != nil {
-		menuAction.ID = "mainMenuEcho"
-		menuAction.Link = "/echo"
-		menuAction.Label = "Echomail"
-		menuAction.Metric = -1
-		menus = append(menus, menuAction)
-	}
+	/* Files */
+	menuAction4 := NewMenuAction()
+	menuAction4.ID = "mainMenuFile"
+	menuAction4.Link = "/file"
+	menuAction4.Label = "Files"
+	menuAction4.Metric = -1
+	menuGroup.Add(menuAction4)
 
-	if menuAction := NewMenuAction(); menuAction != nil {
-		menuAction.ID = "mainMenuFile"
-		menuAction.Link = "/file"
-		menuAction.Label = "Files"
-		menuAction.Metric = -1
-		menus = append(menus, menuAction)
-	}
+	/* Service */
+	menuAction5 := NewMenuAction()
+	menuAction5.ID = "mainMenuService"
+	menuAction5.Link = "/service"
+	menuAction5.Label = "Service"
+	menuGroup.Add(menuAction5)
 
-	if menuAction := NewMenuAction(); menuAction != nil {
-		menuAction.ID = "mainMenuService"
-		menuAction.Link = "/service"
-		menuAction.Label = "Service"
-		menus = append(menus, menuAction)
-	}
+	/* Address book */
+	menuAction6 := NewMenuAction()
+	menuAction6.ID = "mainMenuTwit"
+	menuAction6.Link = "/twit"
+	menuAction6.Label = "Twit"
+	menuGroup.Add(menuAction6)
 
-	if menuAction := NewMenuAction(); menuAction != nil {
-		menuAction.ID = "mainMenuTwit"
-		menuAction.Link = "/twit"
-		menuAction.Label = "Twit"
-		menus = append(menus, menuAction)
-	}
+	/* Draft */
+	menuAction7 := NewMenuAction()
+	menuAction7.ID = "mainMenuDraft"
+	menuAction7.Link = "/draft"
+	menuAction7.Label = "Draft"
+	menuGroup.Add(menuAction7)
 
-	if menuAction := NewMenuAction(); menuAction != nil {
-		menuAction.ID = "mainMenuDraft"
-		menuAction.Link = "/draft"
-		menuAction.Label = "Draft"
-		menus = append(menus, menuAction)
-	}
+}
 
-	if menuAction := NewMenuAction(); menuAction != nil {
-		menuAction.ID = "mainMenuSetup"
-		menuAction.Link = "/setup"
-		menuAction.Label = "Setup"
-		menus = append(menus, menuAction)
-	}
+func (self *MainMenuWidget) InitSetup(menuGroup *MenuGroup) {
 
-	return menus
+	menuAction1 := NewMenuAction()
+	menuAction1.ID = "mainMenuSetup"
+	menuAction1.Link = "/setup"
+	menuAction1.Label = "Setup"
+	menuGroup.Add(menuAction1)
+
 }
 
 func (self *MainMenuWidget) Render(w io.Writer) error {
@@ -87,11 +99,11 @@ func (self *MainMenuWidget) Render(w io.Writer) error {
 }
 
 func (self *MainMenuWidget) SetParam(ID string, value int) {
-	//log.Printf("Set: name = %s value = %d", ID, value)
-	for _, a := range self.mw.actions {
-		//log.Printf("compare: %s == %s", a.ID, ID)
-		if a.ID == ID {
-			a.Metric = value
+	for _, g := range self.mw.groups {
+		for _, a := range g.actions {
+			if a.ID == ID {
+				a.Metric = value
+			}
 		}
 	}
 }

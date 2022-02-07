@@ -20,10 +20,15 @@ func NewBaseWidget() *BaseWidget {
 	mainScript.SetDefer(true)
 	bw.AddScript(*mainScript)
 
-	/* Set main style */
+	/* Set theme style */
 	mainStyle := NewStyle()
 	mainStyle.SetHref("/static/custom.css")
 	bw.AddStyle(*mainStyle)
+
+	/* Set main style */
+	themeStyle := NewStyle()
+	themeStyle.SetHref("/static/theme_dark.css")
+	bw.AddStyle(*themeStyle)
 
 	/* Set main style */
 	modernStyle := NewStyle()

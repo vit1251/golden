@@ -27,18 +27,22 @@ func (self *EchoMsgIndexAction) renderActions(newArea *mapper.Area) widgets.IWid
 		Add(widgets.NewMenuAction().
 			SetLink(fmt.Sprintf("/echo/%s/message/compose", newArea.GetName())).
 			SetIcon("icofont-edit").
+			SetClass("mr-2").
 			SetLabel("Compose")).
 		Add(widgets.NewMenuAction().
 			SetLink(fmt.Sprintf("/echo/%s/tree", newArea.GetName())).
 			SetIcon("icon-tree").
+			SetClass("mr-2").
 			SetLabel("Tree")).
 		Add(widgets.NewMenuAction().
 			SetLink(fmt.Sprintf("/echo/%s/mark", newArea.GetName())).
 			SetIcon("icofont-mark-as-read").
+			SetClass("mr-2").
 			SetLabel("Mark as read")).
 		Add(widgets.NewMenuAction().
 			SetLink(fmt.Sprintf("/echo/%s/update", newArea.GetName())).
 			SetIcon("icofont-update").
+			SetClass("mr-2").
 			SetLabel("Settings"))
 
 	return actionBar
@@ -148,42 +152,6 @@ func (self *EchoMsgIndexAction) checkSenderInTwit(msg msg.Message, twitNames []m
 		}
 	}
 	return false
-}
-
-func (self *EchoMsgIndexAction) renderHeader() widgets.IWidget {
-
-	rowWidget := widgets.NewDivWidget()
-	rowWidget.SetStyle("display: flex")
-	rowWidget.SetStyle("direction: column")
-
-	userpicWidget := widgets.NewDivWidget().
-		SetWidth("30px").
-		SetHeight("30px").
-		SetContent("VS")
-	rowWidget.AddWidget(userpicWidget)
-
-	sourceWidget := widgets.NewDivWidget().
-		SetWidth("190px").
-		SetHeight("38px").
-		SetContent("Vitold Sedyshev")
-	rowWidget.AddWidget(sourceWidget)
-
-	subjectWidget := widgets.NewDivWidget().
-		SetStyle("min-width: 350px").
-		SetHeight("38px").
-		SetStyle("flex-grow: 1").
-		SetContent("Пора готовить к новому году")
-
-	rowWidget.AddWidget(subjectWidget)
-
-	dateWidget := widgets.NewDivWidget().
-		SetHeight("38px").
-		SetWidth("160px").
-		SetContent("2021-12-23")
-	rowWidget.AddWidget(dateWidget)
-
-	return rowWidget
-
 }
 
 func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets.IWidget {
