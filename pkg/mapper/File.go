@@ -11,6 +11,7 @@ type File struct {
 	file      string    /* Filename         */
 	time      time.Time /* Creation stamp   */
 	viewCount int       /* View count       */
+	path      string    /* Absolute path    */
 }
 
 func NewFile() *File {
@@ -65,4 +66,12 @@ func (self File) GetViewCount() int {
 
 func (self File) IsNew() bool {
 	return self.viewCount == 0
+}
+
+func (self *File) SetAbsolutePath(path string) {
+	self.path = path
+}
+
+func (self *File) GetAbsolutePath() string {
+	return self.path
 }

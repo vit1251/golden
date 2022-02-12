@@ -239,6 +239,7 @@ func (self *FileMapper) GetFileByFileName(echoTag string, fileName string) (*Fil
 		if fileTime != nil {
 			newFile.SetUnixTime(*fileTime)
 		}
+		newFile.SetAbsolutePath(self.GetFileAbsolutePath(fileArea, fileName))
 
 		result = newFile
 	}

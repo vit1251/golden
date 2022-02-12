@@ -1,6 +1,7 @@
 package action
 
 import (
+	"archive/zip"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/site/widgets"
@@ -97,6 +98,33 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 		containerVBox.Add(imageWidget)
 	}
 
+	if IsZipArchive(file.GetFile()) {
+		path := file.GetAbsolutePath()
+		//
+		divBox := widgets.NewDivWidget()
+		divBox.SetContent(path)
+		containerVBox.Add(divBox)
+		//
+		reader, err1 := zip.OpenReader(path)
+		if err1 == nil {
+			divBox1 := widgets.NewPreWidget()
+			var comment string = reader.Comment
+			comment = strings.Replace(comment, "\r\n", "\n", -1) // CRLF -> NL
+			divBox1.SetContent(comment)
+			containerVBox.Add(divBox1)
+			//
+			var out string
+			for _, f := range reader.File {
+				out += fmt.Sprintf("%s - %s (%d byte)<br />", f.Name, f.Comment, f.UncompressedSize64)
+			}
+			//
+			divBox2 := widgets.NewDivWidget()
+			divBox2.SetContent(out)
+			containerVBox.Add(divBox2)
+		}
+
+	}
+
 	/* Done */
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)
@@ -104,6 +132,11 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+}
+
+func IsZipArchive(filename string) bool {
+	upperName := strings.ToUpper(filename)
+	return strings.HasSuffix(upperName, ".ZIP")
 }
 
 func IsImage(filename string) bool {

@@ -173,12 +173,16 @@ func (self SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	sections := widgets.NewVBoxWidget()
 
+	sections.Add(widgets.NewFormButtonWidget().
+		SetTitle("Save").
+		SetType("submit"))
+	sections.Add(widgets.NewFormButtonWidget().
+		SetTitle("Discard").
+		SetType("reset"))
+
 	/* Make sections with settings */
 	sectionsWithSettings := self.makeSectionsWithSettings(setupSections)
 	sections.Add(sectionsWithSettings)
-
-	/* Add save action */
-	sections.Add(widgets.NewFormButtonWidget().SetTitle("Save").SetType("submit"))
 
 	setupForm.SetWidget(sections)
 

@@ -27,7 +27,7 @@ func NewBaseWidget() *BaseWidget {
 
 	/* Set main style */
 	themeStyle := NewStyle()
-	themeStyle.SetHref("/static/theme_dark.css")
+	themeStyle.SetHref("/static/theme_black.css")
 	bw.AddStyle(*themeStyle)
 
 	/* Set main style */
