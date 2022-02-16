@@ -1,6 +1,8 @@
 package installer
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type Migration struct {
 	ID    string

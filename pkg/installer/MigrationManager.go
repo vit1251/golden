@@ -8,6 +8,7 @@ import (
 	"log"
 	"sort"
 	"time"
+	_ "time/tzdata"
 )
 
 type MigrationManager struct {
