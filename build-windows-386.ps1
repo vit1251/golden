@@ -23,6 +23,7 @@ Invoke-Expression @invokeExpressionOptions
 
 # Section 3. Compile x86 executable...
 #
+Write-Host "Step 3. Compile x86 executable..."
 $Env:GOOS = "windows"
 $Env:GOARCH = "386"
 $Env:CGO_ENABLED = "1"
@@ -37,11 +38,11 @@ Invoke-Expression @invokeExpressionOptions
 
 # Section 4. Make ZIP portable distribution package...
 #
-Write-Host "Step 4. Make ZIP portable distribution package..."
-$TimeStamp = $(Get-Date -Format 'yyyyMMddHHmmtt')
-$compressArchiveOptions = @{
-    CompressionLevel = "Optimal"
-    LiteralPath = "golden-windows-386.exe", "ChangeLog", "LICENSE", "README.md", "docs"
-    DestinationPath = "Golden-Point-386-${PRODUCT_VERSION}-${TimeStamp}.zip"
-}
-Compress-Archive @compressArchiveOptions
+#Write-Host "Step 4. Make ZIP portable distribution package..."
+#$TimeStamp = $(Get-Date -Format 'yyyyMMddHHmmtt')
+#$compressArchiveOptions = @{
+#    CompressionLevel = "Optimal"
+#    LiteralPath = "golden-windows-386.exe", "ChangeLog", "LICENSE", "README.md", "docs"
+#    DestinationPath = "Golden-Point-386-${PRODUCT_VERSION}-${TimeStamp}.zip"
+#}
+#Compress-Archive @compressArchiveOptions

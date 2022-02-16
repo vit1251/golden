@@ -23,7 +23,7 @@ Invoke-Expression @invokeExpressionOptions
 
 # Section 3. Compile X86_64 executable...
 #
-Write-Host "Step 3. Compile X86_64 executable..."
+Write-Host "Step 3. Compile x64 executable..."
 $Env:GOOS = "windows"
 $Env:GOARCH = "amd64"
 $Env:CGO_ENABLED = "1"
@@ -38,11 +38,12 @@ Invoke-Expression @invokeExpressionOptions
 
 # Section 4. Make ZIP portable distribution package...
 #
-Write-Host "Step 4. Make ZIP portable distribution package..."
-$TimeStamp = $(Get-Date -Format 'yyyyMMddHHmmtt')
-$compressArchiveOptions = @{
-    CompressionLevel = "Optimal"
-    LiteralPath = "golden-windows-amd64.exe", "ChangeLog", "LICENSE", "README.md", "docs"
-    DestinationPath = "Golden-Point-amd64-${PRODUCT_VERSION}-${TimeStamp}.zip"
-}
-Compress-Archive @compressArchiveOptions
+#Write-Host "Step 4. Make ZIP portable distribution package..."
+#$TimeStamp = $(Get-Date -Format 'yyyyMMddHHmmtt')
+#$compressArchiveOptions = @{
+#    CompressionLevel = "Optimal"
+#    LiteralPath = "golden-windows-amd64.exe", "ChangeLog", "LICENSE", "README.md", "docs"
+#    DestinationPath = "Golden-Point-amd64-${PRODUCT_VERSION}-${TimeStamp}.zip"
+#}
+#Compress-Archive @compressArchiveOptions
+#

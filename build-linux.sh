@@ -22,4 +22,4 @@ go build -o golden-linux-amd64
 
 # Section 4. Make ZIP portable distribution package...
 #
-echo "Step 4. Make ZIP portable distribution package..."
+#echo "Step 4. Make ZIP portable distribution package..."
