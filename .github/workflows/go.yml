@@ -1,24 +1,40 @@
+
 name: Go
 on: [push]
 jobs:
+
+  build-windows:
+    name: Build on Windows
+    runs-on: windows-latest
+    steps:
+      - name: Set up Go 1.17
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.17
+        id: go
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+      - name: Make build
+        run: powershell -executionpolicy RemoteSigned -file "./build-windows.ps1"
+      - name: Upload Windows executable
+        uses: actions/upload-artifact@v1
+        with:
+          name: golden-windows-amd64
+          path: golden-windows-amd64.exe
 
   build-linux:
     name: Build on Ubuntu
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.15
+      - name: Set up Go 1.17
         uses: actions/setup-go@v1
         with:
-          go-version: 1.15
+          go-version: 1.17
         id: go
-      - name: Install Task
-        uses: Arduino/actions/setup-taskfile@master
-        with:
-          version: '3.x'
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
       - name: Make build
-        run: task
+        run: /bin/sh ./build-linux.sh
       - name: Upload Debian pacakge
         uses: actions/upload-artifact@v1
         with:
@@ -29,10 +45,10 @@ jobs:
     name: Build on macOS X
     runs-on: macos-latest
     steps:
-      - name: Set up Go 1.15
+      - name: Set up Go 1.17
         uses: actions/setup-go@v1
         with:
-          go-version: 1.15
+          go-version: 1.17
         id: go
       - name: Install Task
         uses: Arduino/actions/setup-taskfile@master
@@ -41,10 +57,9 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
       - name: Make build
-        run: task
+        run: /bin/sh ./build-darwin.sh
       - name: Upload macOS disk image
         uses: actions/upload-artifact@v1
         with:
           name: golden-darwin-amd64
           path: golden-darwin-amd64
-
