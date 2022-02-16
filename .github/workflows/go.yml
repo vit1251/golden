@@ -3,8 +3,8 @@ name: Go
 on: [push]
 jobs:
 
-  build-windows:
-    name: Build on Windows
+  build-windows-amd64:
+    name: "Build on Windows x86_64"
     runs-on: windows-latest
     steps:
       - name: Set up Go 1.17
@@ -15,15 +15,36 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
       - name: Make build
-        run: powershell -executionpolicy RemoteSigned -file "./build-windows.ps1"
+        run: powershell -executionpolicy RemoteSigned -file "./build-windows-amd64.ps1"
       - name: Upload Windows executable
         uses: actions/upload-artifact@v1
         with:
           name: golden-windows-amd64
           path: golden-windows-amd64.exe
 
+
+  build-windows-386:
+    name: "Build on Windows x86"
+    runs-on: windows-latest
+    steps:
+      - name: Set up Go 1.17
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.17
+        id: go
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+      - name: Make build
+        run: powershell -executionpolicy RemoteSigned -file "./build-windows-386.ps1"
+      - name: Upload Windows executable
+        uses: actions/upload-artifact@v1
+        with:
+          name: golden-windows-386
+          path: golden-windows-386.exe
+
+
   build-linux:
-    name: Build on Ubuntu
+    name: "Build on Ubuntu"
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go 1.17
@@ -42,7 +63,7 @@ jobs:
           path: golden-linux-amd64
 
   build-macos:
-    name: Build on macOS X
+    name: "Build on macOS X"
     runs-on: macos-latest
     steps:
       - name: Set up Go 1.17
