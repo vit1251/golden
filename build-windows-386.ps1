@@ -26,8 +26,8 @@ Invoke-Expression @invokeExpressionOptions
 $Env:GOOS = "windows"
 $Env:GOARCH = "386"
 $Env:CGO_ENABLED = "1"
-$Env:CC = "gcc.exe"
-$Env:CXX = "g++.exe"
+$Env:CC = "clang.exe"
+$Env:CXX = "clang++.exe"
 $ARCH = "386"
 $invokeExpressionOptions = @{
     Command = "go build -o golden-windows-$ARCH.exe"

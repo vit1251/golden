@@ -9,7 +9,11 @@
 
  1) Invoke PowerShell script in source code directory (example, directory C:\Golden\src)
 
-    C:\Golden\src> powershell -executionpolicy RemoteSigned -file "build-windows.ps1"
+    C:\Golden\src> powershell -executionpolicy RemoteSigned -file "build-windows-amd64.ps1"
+
+or
+
+    C:\Golden\src> powershell -executionpolicy RemoteSigned -file "build-windows-386.ps1"
 
 ## Build manually 
 
