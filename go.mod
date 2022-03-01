@@ -3,7 +3,6 @@ module github.com/vit1251/golden
 go 1.15
 
 require (
-	github.com/BurntSushi/toml v1.0.0
 	github.com/gobwas/ws v1.1.0
 	github.com/gorilla/mux v1.8.0
 	github.com/huandu/go-sqlbuilder v1.13.0

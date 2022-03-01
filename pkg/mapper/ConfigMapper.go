@@ -50,3 +50,38 @@ func (self ConfigMapper) GetConfigFromDatabase() (*Config, error) {
 	})
 	return config, nil
 }
+
+func (self *ConfigMapper) SetConfigToDatabase(config *Config) {
+	log.Printf("Update parameters: config = %#v", config)
+	for _, param := range config.params {
+		log.Printf("Update parameter: section = %s name = %s value = %s", param.section, param.name, param.value)
+		err1 := self.updateParameter(param.section, param.name, param.value)
+		log.Printf("Update error: %#v", err1)
+		if err1 != nil {
+		} else {
+			err2 := self.insertParameter(param.section, param.name, param.value)
+			log.Printf("Insert error: %#v", err2)
+		}
+	}
+}
+
+func (self ConfigMapper) insertParameter(section string, name string, value string) error {
+	return nil
+}
+
+func (self ConfigMapper) updateParameter(section string, name string, value string) error {
+
+	storageManager := self.restoreStorageManager()
+
+	query1 := "UPDATE `settings` SET `value` = ? WHERE `section` = ? AND `name` = ?"
+	var params []interface{}
+	params = append(params, value)   // 1 - value
+	params = append(params, section) // 2 - section
+	params = append(params, name)    // 3 name
+
+	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
+		return err
+	})
+
+	return err1
+}

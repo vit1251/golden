@@ -1,20 +1,19 @@
 package config
 
 import (
-	"bytes"
-	"errors"
-	"github.com/BurntSushi/toml"
-	ctx "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/registry"
 	"log"
-	"os"
-	"path"
 )
 
 type ConfigManager struct {
+	registry *registry.Container
 }
 
-func NewConfigManager() *ConfigManager {
-	return new(ConfigManager)
+func NewConfigManager(r *registry.Container) *ConfigManager {
+	newConfigManager := new(ConfigManager)
+	newConfigManager.registry = r
+	return newConfigManager
 }
 
 type Main struct {
@@ -51,28 +50,34 @@ type Config struct {
 
 var config *Config
 
-func (self *ConfigManager) GetConfigPath() string {
-	baseDir := ctx.GetFidoDirectory()
-	return path.Join(baseDir, "config.toml")
-}
-
 func (self *ConfigManager) Store(c *Config) error {
 
-	/* Encode settings */
-	buf := new(bytes.Buffer)
-	if err1 := toml.NewEncoder(buf).Encode(c); err1 != nil {
-		return err1
-	}
-	data := buf.Bytes()
+	mapperManager := self.restoreMapperManager()
+	configMapper := mapperManager.GetConfigMapper()
+	outdateConfig, _ := configMapper.GetConfigFromDatabase()
 
-	/* Prepare ou directory */
-	newConfigPath := self.GetConfigPath()
+	/* Main */
+	outdateConfig.Set("main", "Address", c.Main.Address)
+	outdateConfig.Set("main", "Password", c.Main.Password)
+	outdateConfig.Set("main", "Origin", c.Main.Origin)
+	outdateConfig.Set("main", "TearLine", c.Main.TearLine)
+	outdateConfig.Set("main", "Link", c.Main.Link)
+	outdateConfig.Set("main", "StationName", c.Main.StationName)
+	outdateConfig.Set("main", "RealName", c.Main.RealName)
+	outdateConfig.Set("main", "NetAddr", c.Main.NetAddr)
+	outdateConfig.Set("main", "City", c.Main.City)
+	outdateConfig.Set("main", "Country", c.Main.Country)
 
-	/* Store output */
-	err2 := os.WriteFile(newConfigPath, data, 0644)
-	if err2 != nil {
-		return err2
-	}
+	/* Mailer */
+	outdateConfig.Set("mailer", "Interval", c.Mailer.Interval)
+
+	/* Netmail */
+	outdateConfig.Set("netmail", "Charset", c.Netmail.Charset)
+
+	/* Echomail */
+	outdateConfig.Set("echomail", "Charset", c.Echomail.Charset)
+
+	configMapper.SetConfigToDatabase(outdateConfig)
 
 	return nil
 }
@@ -81,19 +86,30 @@ func (self *ConfigManager) Restore() (*Config, error) {
 
 	var c Config
 
-	/* Prepare ou directory */
-	newConfigPath := self.GetConfigPath()
+	mapperManager := self.restoreMapperManager()
+	configMapper := mapperManager.GetConfigMapper()
+	outdateConfig, _ := configMapper.GetConfigFromDatabase()
 
-	/* Restore output */
-	data, err1 := os.ReadFile(newConfigPath)
-	if err1 != nil {
-		return &c, err1
-	}
+	/* Main */
+	c.Main.Address, _ = outdateConfig.Get("main", "Address")
+	c.Main.Password, _ = outdateConfig.Get("main", "Password")
+	c.Main.Origin, _ = outdateConfig.Get("main", "Origin")
+	c.Main.TearLine, _ = outdateConfig.Get("main", "TearLine")
+	c.Main.Link, _ = outdateConfig.Get("main", "Link")
+	c.Main.StationName, _ = outdateConfig.Get("main", "StationName")
+	c.Main.RealName, _ = outdateConfig.Get("main", "RealName")
+	c.Main.NetAddr, _ = outdateConfig.Get("main", "NetAddr")
+	c.Main.City, _ = outdateConfig.Get("main", "City")
+	c.Main.Country, _ = outdateConfig.Get("main", "Country")
 
-	err2 := toml.Unmarshal(data, &c)
-	if err2 != nil {
-		return &c, err2
-	}
+	/* Mailer */
+	c.Mailer.Interval, _ = outdateConfig.Get("mailer", "Interval")
+
+	/* Netmail */
+	c.Netmail.Charset, _ = outdateConfig.Get("netmail", "Charset")
+
+	/* Echomail */
+	c.Echomail.Charset, _ = outdateConfig.Get("echomail", "Charset")
 
 	return &c, nil
 }
@@ -109,17 +125,11 @@ func (self *ConfigManager) GetConfig() *Config {
 	return config
 }
 
-func (self *ConfigManager) IsNotExists() bool {
-	newConfigPath := self.GetConfigPath()
-	_, err1 := os.Stat(newConfigPath)
-	log.Printf("err = %#v", err1)
-	if errors.Is(err1, os.ErrNotExist) {
-		return true
+func (self *ConfigManager) restoreMapperManager() *mapper.MapperManager {
+	managerPtr := self.registry.Get("MapperManager")
+	if manager, ok := managerPtr.(*mapper.MapperManager); ok {
+		return manager
 	} else {
-		return false
+		panic("no mapper manager")
 	}
-}
-
-func (self *ConfigManager) Reset() {
-	config = nil
 }

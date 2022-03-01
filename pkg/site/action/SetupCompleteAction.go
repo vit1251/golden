@@ -46,7 +46,6 @@ func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	if err2 != nil {
 		log.Printf("Update config error: err = %#v", err2)
 	}
-	configManager.Reset()
 
 	/* Redirect */
 	newLocation := fmt.Sprintf("/setup")
