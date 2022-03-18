@@ -10,8 +10,16 @@ type Area struct {
 	Summary         string /* Echo summary           */
 	charset         string /* Echo charset           */
 	MessageCount    int    /* Echo message count     */
-	NewMessageCount int    /* Echo new message count */
+	newMessageCount int    /* Echo new message count */
 	order           int64  /* Area sort order        */
+}
+
+func (self *Area) GetNewMessageCount() int {
+	return self.newMessageCount
+}
+
+func (self *Area) SetNewMessageCount(newMessageCount int) {
+	self.newMessageCount = newMessageCount
 }
 
 func NewArea() *Area {

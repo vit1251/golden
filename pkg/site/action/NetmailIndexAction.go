@@ -2,6 +2,7 @@ package action
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/i18n"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/utils"
 	"github.com/vit1251/golden/pkg/site/widgets"
@@ -46,12 +47,9 @@ func (self NetmailIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	containerVBox := widgets.NewVBoxWidget()
 
-	amw := widgets.NewActionMenuWidget().
-		Add(widgets.NewMenuAction().
-			SetLink("/netmail/compose").
-			SetIcon("icofont-edit").
-			SetLabel("Compose"))
-	containerVBox.Add(amw)
+	/* Action bar*/
+	actionBar := self.renderActions(r)
+	containerVBox.Add(actionBar)
 
 	container.AddWidget(containerVBox)
 	vBox.Add(container)
@@ -172,4 +170,21 @@ func (self *NetmailIndexAction) renderRow(m *mapper.NetmailMsg) widgets.IWidget 
 
 	return navigateItem
 
+}
+
+func (self NetmailIndexAction) renderActions(r *http.Request) widgets.IWidget {
+
+	/* Detect main language */
+	var mainLanguage string = i18n.GetLangNameFromRequest(r)
+
+	/* Render action bar */
+	actionBar := widgets.NewActionMenuWidget()
+
+	actionLabel := i18n.GetText(mainLanguage, "NetmailIndexAction", "action-button-create")
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink("/netmail/compose").
+		SetIcon("icofont-edit").
+		SetLabel(actionLabel))
+
+	return actionBar
 }

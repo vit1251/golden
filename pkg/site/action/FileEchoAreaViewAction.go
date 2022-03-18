@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
@@ -75,19 +76,8 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	container.AddWidget(containerVBox)
 
 	/* Context actions */
-	actionMenu := widgets.NewActionMenuWidget()
-	actionMenu.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/file/%s/tic/%s/download", area.GetName(), newFile)).
-		SetClass("netmail-reply-action").
-		SetIcon("icofont-edit").
-		SetLabel("Download"))
-	actionMenu.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/file/%s/tic/%s/remove", area.GetName(), newFile)).
-		SetClass("netmail-reply-action").
-		SetIcon("icofont-edit").
-		SetLabel("Remove"))
-
-	containerVBox.Add(actionMenu)
+	actionBar := self.renderActions(area, newFile)
+	containerVBox.Add(actionBar)
 
 	/* TODO - show meta here ... */
 	if IsImage(file.GetFile()) {
@@ -132,6 +122,25 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+}
+
+func (self *FileEchoAreaViewAction) renderActions(area *mapper.FileArea, newFile string) widgets.IWidget {
+
+	actionMenu := widgets.NewActionMenuWidget()
+
+	actionMenu.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/file/%s/tic/%s/download", area.GetName(), newFile)).
+		SetIcon("icofont-edit").
+		SetClass("mr-2").
+		SetLabel("Download"))
+
+	actionMenu.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/file/%s/tic/%s/remove", area.GetName(), newFile)).
+		SetIcon("icofont-edit").
+		SetClass("mr-2").
+		SetLabel("Remove"))
+
+	return actionMenu
 }
 
 func IsZipArchive(filename string) bool {

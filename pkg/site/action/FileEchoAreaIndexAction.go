@@ -71,17 +71,8 @@ func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 	vBox.Add(container)
 
 	/* Context actions */
-	amw := widgets.NewActionMenuWidget().
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/file/%s/upload", area.GetName())).
-			SetIcon("icofont-edit").
-			SetLabel("Upload")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/file/%s/update", area.GetName())).
-			SetIcon("icofont-update").
-			SetLabel("Settings"))
-
-	containerVBox.Add(amw)
+	actionBar := self.renderActions(area)
+	containerVBox.Add(actionBar)
 
 	indexTable := widgets.NewDivWidget().
 		SetClass("file-area-index-table")
@@ -207,5 +198,27 @@ func (self *FileEchoAreaIndexAction) checkExists(path string) bool {
 	}
 
 	return false
+
+}
+
+func (self *FileEchoAreaIndexAction) renderActions(area *mapper.FileArea) widgets.IWidget {
+
+	actionBar := widgets.NewActionMenuWidget()
+
+	/* Upload */
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/file/%s/upload", area.GetName())).
+		SetIcon("icofont-edit").
+		SetClass("mr-2").
+		SetLabel("Upload"))
+
+	/* Settings */
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/file/%s/update", area.GetName())).
+		SetIcon("icofont-update").
+		SetClass("mr-2").
+		SetLabel("Settings"))
+
+	return actionBar
 
 }

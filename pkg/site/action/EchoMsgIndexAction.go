@@ -23,27 +23,31 @@ func NewEchoMsgIndexAction() *EchoMsgIndexAction {
 
 func (self *EchoMsgIndexAction) renderActions(newArea *mapper.Area) widgets.IWidget {
 
-	actionBar := widgets.NewActionMenuWidget().
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/message/compose", newArea.GetName())).
-			SetIcon("icofont-edit").
-			SetClass("mr-2").
-			SetLabel("Compose")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/tree", newArea.GetName())).
-			SetIcon("icon-tree").
-			SetClass("mr-2").
-			SetLabel("Tree")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/mark", newArea.GetName())).
-			SetIcon("icofont-mark-as-read").
-			SetClass("mr-2").
-			SetLabel("Mark as read")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/update", newArea.GetName())).
-			SetIcon("icofont-update").
-			SetClass("mr-2").
-			SetLabel("Settings"))
+	actionBar := widgets.NewActionMenuWidget()
+
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s/message/compose", newArea.GetName())).
+		SetIcon("icofont-edit").
+		SetClass("mr-2").
+		SetLabel("Compose"))
+
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s/tree", newArea.GetName())).
+		SetIcon("icon-tree").
+		SetClass("mr-2").
+		SetLabel("Tree"))
+
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s/mark", newArea.GetName())).
+		SetIcon("icofont-mark-as-read").
+		SetClass("mr-2").
+		SetLabel("Mark as read"))
+
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s/update", newArea.GetName())).
+		SetIcon("icofont-update").
+		SetClass("mr-2").
+		SetLabel("Settings"))
 
 	return actionBar
 
@@ -194,7 +198,10 @@ func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets
 		SetStyle("white-space: nowrap").
 		SetStyle("overflow: hidden").
 		SetStyle("text-overflow: ellipsis").
-		//SetStyle("border: 1px solid green").
+		SetStyle("display: flex").
+		SetStyle("flex-direction: column").
+		SetStyle("align-items: flex-start").
+		SetStyle("justify-content: center").
 		SetContent(m.From)
 	rowWidget.AddWidget(sourceWidget)
 	// TODO - add `m.To` under m.From ....
@@ -211,6 +218,10 @@ func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets
 		SetStyle("white-space: nowrap").
 		SetStyle("overflow: hidden").
 		SetStyle("text-overflow: ellipsis").
+		SetStyle("display: flex").
+		SetStyle("flex-direction: column").
+		SetStyle("align-items: center").
+		SetStyle("justify-content: center").
 		//SetStyle("border: 1px solid green").
 		SetStyle("color: yellow").
 		SetContent(newPointContent)
@@ -222,6 +233,10 @@ func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets
 		SetHeight("38px").
 		SetStyle("flex-grow: 1").
 		SetStyle("white-space: nowrap").
+		SetStyle("display: flex").
+		SetStyle("flex-direction: column").
+		SetStyle("align-items: flex-start").
+		SetStyle("justify-content: center").
 		SetStyle("overflow: hidden").
 		SetStyle("text-overflow: ellipsis").
 		//SetStyle("border: 1px solid red").
@@ -229,12 +244,17 @@ func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets
 
 	rowWidget.AddWidget(subjectWidget)
 
+	/* Render date and time */
 	msgDate := utils.DateHelper_renderDate(m.DateWritten)
 	dateWidget := widgets.NewDivWidget().
 		SetHeight("38px").
 		SetWidth("180px").
 		SetStyle("flex-shrink: 0").
 		SetStyle("white-space: nowrap").
+		SetStyle("display: flex").
+		SetStyle("flex-direction: column").
+		SetStyle("align-items: flex-end").
+		SetStyle("justify-content: center").
 		SetStyle("overflow: hidden").
 		SetStyle("text-overflow: ellipsis").
 		//SetStyle("border: 1px solid blue").

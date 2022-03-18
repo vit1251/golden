@@ -86,23 +86,8 @@ func (self NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	container.AddWidget(containerVBox)
 
 	/* Context actions */
-	amw := widgets.NewActionMenuWidget().
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/netmail/%s/reply", origMsg.Hash)).
-			SetClass("netmail-reply-action").
-			SetIcon("icofont-edit").
-			SetLabel("Reply")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/netmail/%s/dump", origMsg.Hash)).
-			SetClass("netmail-dump-action").
-			SetIcon("icofont-dump").
-			SetLabel("Info")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/netmail/%s/remove", origMsg.Hash)).
-			SetClass("netmail-remove-action").
-			SetIcon("icofont-remove").
-			SetLabel("Delete"))
-	containerVBox.Add(amw)
+	actionBar := self.renderActions(origMsg)
+	containerVBox.Add(actionBar)
 
 	msgHeader := self.makeMessageHeaderSection(origMsg, msgBody)
 	msgHeaderWrapper := widgets.NewDivWidget().SetClass("netmail-msg-view-header-wrapper").AddWidget(msgHeader)
@@ -215,4 +200,28 @@ func (self NetmailViewAction) makeMessageHeaderSection(origMsg *mapper.NetmailMs
 
 	return headerTable
 
+}
+
+func (self NetmailViewAction) renderActions(origMsg *mapper.NetmailMsg) widgets.IWidget {
+	actionBar := widgets.NewActionMenuWidget()
+
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/netmail/%s/reply", origMsg.Hash)).
+		SetClass("mr-2").
+		SetIcon("icofont-edit").
+		SetLabel("Reply"))
+
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/netmail/%s/dump", origMsg.Hash)).
+		SetClass("mr-2").
+		SetIcon("icofont-dump").
+		SetLabel("Info"))
+
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/netmail/%s/remove", origMsg.Hash)).
+		SetIcon("icofont-remove").
+		SetClass("mr-2").
+		SetLabel("Delete"))
+
+	return actionBar
 }

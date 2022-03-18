@@ -86,7 +86,7 @@ func (self *EchoMapper) getAreaListNewCount() ([]*Area, error) {
 		}
 		a := NewArea()
 		a.SetName(name)
-		a.NewMessageCount = count
+		a.SetNewMessageCount(count)
 		result = append(result, a)
 		return nil
 	})
@@ -384,7 +384,7 @@ func (self *EchoMapper) UpdateAreaMessageCounters(areas []Area) ([]Area, error) 
 			var area3Name string = area3.GetName()
 			if strings.EqualFold(areaName, area3Name) {
 				//log.Printf("area = '%+v' area3 = '%+v'", areaName, area3Name)
-				area.NewMessageCount = area3.NewMessageCount
+				area.SetNewMessageCount(area3.GetNewMessageCount())
 			}
 		}
 

@@ -3,6 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
@@ -52,17 +53,8 @@ func (self *EchoAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 	vBox.Add(container)
 
 	/* Context actions */
-	amw := widgets.NewActionMenuWidget().
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/remove", area.GetName())).
-			SetIcon("icofont-remove").
-			SetLabel("Remove echo")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/purge", area.GetName())).
-			SetIcon("icofont-purge").
-			SetLabel("Purge echo"))
-
-	containerVBox.Add(amw)
+	actionsBar := self.renderActions(area)
+	containerVBox.Add(actionsBar)
 
 	headerWidget := widgets.NewHeaderWidget().
 		SetTitle(fmt.Sprintf("Settings on area %s", area.GetName()))
@@ -104,4 +96,25 @@ func (self *EchoAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+}
+
+func (self *EchoAreaUpdateAction) renderActions(area *mapper.Area) widgets.IWidget {
+
+	actionBar := widgets.NewActionMenuWidget()
+
+	/* Remove area action button */
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s/remove", area.GetName())).
+		SetIcon("icofont-remove").
+		SetClass("mr-2").
+		SetLabel("Remove echo"))
+
+	/* Purge area action button */
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s/purge", area.GetName())).
+		SetIcon("icofont-purge").
+		SetClass("mr-2").
+		SetLabel("Purge echo"))
+
+	return actionBar
 }

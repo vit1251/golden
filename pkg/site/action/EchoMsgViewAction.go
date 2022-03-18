@@ -173,43 +173,8 @@ func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *mapper.Area, origM
 	container.AddWidget(containerVBox)
 
 	/* Context actions */
-	var actions []*widgets.MenuAction
-	/* Action Reply */
-	if action := widgets.NewMenuAction(); action != nil {
-		action.SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.GetName(), origMsg.Hash))
-		//action.SetIcon("icofont-edit")
-		action.SetLabel("Reply")
-		actions = append(actions, action)
-	}
-	/* Action Remove */
-	if action := widgets.NewMenuAction(); action != nil {
-		action.SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.GetName(), origMsg.Hash))
-		//action.SetIcon("icofont-remove")
-		action.SetLabel("Remove")
-		actions = append(actions, action)
-	}
-	/* Action Dump */
-	if action := widgets.NewMenuAction(); action != nil {
-		action.SetLink(fmt.Sprintf("/echo/%s/message/%s/dump", area.GetName(), origMsg.Hash))
-		//action.SetIcon("icofont-remove")
-		action.SetLabel("Dump")
-		actions = append(actions, action)
-	}
-	/* Action Twit */
-	if action := widgets.NewMenuAction(); action != nil {
-		action.SetLink(fmt.Sprintf("/echo/%s/message/%s/twit", area.GetName(), origMsg.Hash))
-		//action.SetIcon("icofont-remove")
-		action.SetLabel("Twit")
-		actions = append(actions, action)
-	}
-
-	/* Render actions menu */
-	amw := widgets.NewActionMenuWidget()
-	for _, a := range actions {
-		amw.Add(a)
-	}
-
-	containerVBox.Add(amw)
+	actionsBar := self.renderActions(area, origMsg)
+	containerVBox.Add(actionsBar)
 
 	/* Message header section */
 	msgHeader := self.makeMessageHeaderSection(*origMsg)
@@ -224,4 +189,39 @@ func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *mapper.Area, origM
 
 	return mainWidget
 
+}
+
+func (self *EchoMsgViewAction) renderActions(area *mapper.Area, origMsg *msg.Message) widgets.IWidget {
+
+	actionBar := widgets.NewActionMenuWidget()
+
+	/* Reply */
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.GetName(), origMsg.Hash)).
+		SetIcon("icofont-edit").
+		SetClass("mr-2").
+		SetLabel("Reply"))
+
+	/* Action Remove */
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.GetName(), origMsg.Hash)).
+		SetIcon("icofont-remove").
+		SetClass("mr-2").
+		SetLabel("Remove"))
+
+	/* Action Dump */
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s/message/%s/dump", area.GetName(), origMsg.Hash)).
+		SetIcon("icofont-remove").
+		SetClass("mr-2").
+		SetLabel("Dump"))
+
+	/* Action Twit */
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s/message/%s/twit", area.GetName(), origMsg.Hash)).
+		SetIcon("icofont-remove").
+		SetClass("mr-2").
+		SetLabel("Twit"))
+
+	return actionBar
 }

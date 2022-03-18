@@ -2,6 +2,7 @@ package action
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/i18n"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"net/http"
@@ -48,13 +49,8 @@ func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	vBox.Add(container)
 
 	/* Context actions */
-	amw := widgets.NewActionMenuWidget().
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/create")).
-			SetIcon("icofont-update").
-			SetLabel("Create"))
-
-	containerVBox.Add(amw)
+	actionsBar := self.renderActions(r)
+	containerVBox.Add(actionsBar)
 
 	indexTable := widgets.NewDivWidget().
 		SetClass("echo-index-table")
@@ -80,9 +76,9 @@ func (self *EchoAreaIndexAction) renderMessageCounter(area *mapper.Area) widgets
 
 	counterWidget := widgets.NewDivWidget()
 
-	if area.NewMessageCount > 0 {
+	if area.GetNewMessageCount() > 0 {
 
-		newMsgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.NewMessageCount))
+		newMsgCount := widgets.NewTextWidgetWithText(fmt.Sprintf("%d", area.GetNewMessageCount()))
 		newMsgCount.SetClass("echo-index-item-count-new")
 
 		counterWidget.AddWidget(newMsgCount)
@@ -103,13 +99,13 @@ func (self *EchoAreaIndexAction) renderRow(area *mapper.Area) widgets.IWidget {
 	/* Make message row container */
 	rowWidget := widgets.NewDivWidget().
 		SetStyle("display: flex").
-		SetStyle("direction: column").
+		SetStyle("flex-direction: row").
 		SetStyle("align-items: center").
 		SetTitle(rowTitle)
 
 	var classNames []string
 	classNames = append(classNames, "echo-index-item")
-	if area.NewMessageCount > 0 {
+	if area.GetNewMessageCount() > 0 {
 		classNames = append(classNames, "echo-index-item-new")
 	}
 	rowWidget.SetClass(strings.Join(classNames, " "))
@@ -118,6 +114,10 @@ func (self *EchoAreaIndexAction) renderRow(area *mapper.Area) widgets.IWidget {
 	nameWidget := widgets.NewDivWidget().
 		SetWidth("190px").
 		SetHeight("38px").
+		SetStyle("display: flex").
+		SetStyle("flex-direction: column").
+		SetStyle("align-items: flex-start").
+		SetStyle("justify-content: center").
 		SetStyle("flex-shrink: 0").
 		SetStyle("white-space: nowrap").
 		SetStyle("overflow: hidden").
@@ -126,11 +126,36 @@ func (self *EchoAreaIndexAction) renderRow(area *mapper.Area) widgets.IWidget {
 		SetContent(area.GetName())
 	rowWidget.AddWidget(nameWidget)
 
+	/* Render NEW point */
+	var newPointContent string = ""
+	if area.GetNewMessageCount() > 0 {
+		newPointContent = "•"
+	}
+	newPointWidget := widgets.NewDivWidget().
+		SetWidth("20px").
+		SetHeight("38px").
+		SetStyle("flex-shrink: 0").
+		SetStyle("white-space: nowrap").
+		SetStyle("overflow: hidden").
+		SetStyle("text-overflow: ellipsis").
+		SetStyle("display: flex").
+		SetStyle("flex-direction: column").
+		SetStyle("align-items: center").
+		SetStyle("justify-content: center").
+		//SetStyle("border: 1px solid green").
+		SetStyle("color: yellow").
+		SetContent(newPointContent)
+	rowWidget.AddWidget(newPointWidget)
+
 	/* Render summary */
 	summaryWidget := widgets.NewDivWidget().
 		SetStyle("min-width: 350px").
 		SetHeight("38px").
 		SetStyle("flex-grow: 1").
+		SetStyle("display: flex").
+		SetStyle("flex-direction: column").
+		SetStyle("align-items: flex-start").
+		SetStyle("justify-content: center").
 		SetStyle("white-space: nowrap").
 		SetStyle("overflow: hidden").
 		SetStyle("text-overflow: ellipsis").
@@ -144,7 +169,10 @@ func (self *EchoAreaIndexAction) renderRow(area *mapper.Area) widgets.IWidget {
 		SetHeight("38px").
 		SetWidth("160px").
 		SetStyle("flex-shrink: 0").
-		//SetStyle("border: 1px solid blue").
+		SetStyle("display: flex").
+		SetStyle("flex-direction: column").
+		SetStyle("align-items: flex-end").
+		SetStyle("justify-content: center").
 		AddWidget(counterWidgetContent)
 	rowWidget.AddWidget(counterWidget)
 
@@ -156,5 +184,23 @@ func (self *EchoAreaIndexAction) renderRow(area *mapper.Area) widgets.IWidget {
 		AddWidget(rowWidget)
 
 	return navigateItem
+
+}
+
+func (self *EchoAreaIndexAction) renderActions(r *http.Request) widgets.IWidget {
+
+	/* Detect user browser primary language */
+	var mainLanguage string = i18n.GetLangNameFromRequest(r)
+
+	/* Render action bar */
+	actionBar := widgets.NewActionMenuWidget()
+
+	actionLabel := i18n.GetText(mainLanguage, "EchoAreaIndexAction", "action-button-create")
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/create")).
+		SetIcon("icofont-update").
+		SetLabel(actionLabel))
+
+	return actionBar
 
 }

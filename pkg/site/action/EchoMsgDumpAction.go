@@ -4,6 +4,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
@@ -73,16 +75,8 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	container.AddWidget(containerVBox)
 
 	/* Context actions */
-	amw := widgets.NewActionMenuWidget().
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.GetName(), origMsg.Hash)).
-			SetIcon("icofont-edit").
-			SetLabel("Reply")).
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.GetName(), origMsg.Hash)).
-			SetIcon("icofont-remove").
-			SetLabel("Delete"))
-	containerVBox.Add(amw)
+	actionsBar := self.renderActions(area, origMsg)
+	containerVBox.Add(actionsBar)
 
 	indexTable := widgets.NewTableWidget().
 		SetClass("table")
@@ -99,4 +93,20 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+}
+
+func (self *EchoMsgDumpAction) renderActions(area *mapper.Area, origMsg *msg.Message) widgets.IWidget {
+	actionBar := widgets.NewActionMenuWidget()
+
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.GetName(), origMsg.Hash)).
+		SetIcon("icofont-edit").
+		SetLabel("Reply"))
+
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.GetName(), origMsg.Hash)).
+		SetIcon("icofont-remove").
+		SetLabel("Delete"))
+
+	return actionBar
 }

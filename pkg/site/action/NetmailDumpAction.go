@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"net/http"
 )
@@ -57,14 +58,8 @@ func (self NetmailDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	container.AddWidget(containerVBox)
 
 	/* Context actions */
-	amw := widgets.NewActionMenuWidget().
-		Add(widgets.NewMenuAction().
-			SetLink(fmt.Sprintf("/netmail/%s/view", origMsg.Hash)).
-			SetClass("netmail-reply-action").
-			SetIcon("icofont-view").
-			SetLabel("View"))
-
-	containerVBox.Add(amw)
+	actionBar := self.renderActions(origMsg)
+	containerVBox.Add(actionBar)
 
 	/* Dump message */
 	rawPacket := origMsg.GetPacket()
@@ -82,4 +77,17 @@ func (self NetmailDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+}
+
+func (self NetmailDumpAction) renderActions(origMsg *mapper.NetmailMsg) widgets.IWidget {
+
+	actionBar := widgets.NewActionMenuWidget()
+
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/netmail/%s/view", origMsg.Hash)).
+		SetIcon("icofont-view").
+		SetClass("mr-2").
+		SetLabel("View"))
+
+	return actionBar
 }
