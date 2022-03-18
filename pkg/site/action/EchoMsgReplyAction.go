@@ -31,8 +31,8 @@ func (self EchoMsgReplyAction) preprocessBody(origMsg msg.Message) string {
 
 	/* Make reply content */
 	mtp := msg.NewMessageTextProcessor()
-	mtp.Prepare(origMsg.Content)
-	newContent := mtp.Content()
+	doc, _ := mtp.Prepare(origMsg.Content)
+	newContent := doc.Content()
 	log.Printf("reply: orig = %+v", newContent)
 
 	/* Message replay transform */

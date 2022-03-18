@@ -30,8 +30,8 @@ func (self *NetmailReplyAction) preprocessBody(origMsg *mapper.NetmailMsg) strin
 
 	/* Make reply content */
 	mtp := msg.NewMessageTextProcessor()
-	mtp.Prepare(origMsg.Content)
-	newContent := mtp.Content()
+	doc, _ := mtp.Prepare(origMsg.Content)
+	newContent := doc.Content()
 	log.Printf("reply: orig = %+v", newContent)
 
 	/* Message replay transform */

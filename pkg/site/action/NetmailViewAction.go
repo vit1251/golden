@@ -52,13 +52,8 @@ func (self NetmailViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 	/* Processing message body */
 	mtp := msg.NewMessageTextProcessor()
-	err4 := mtp.Prepare(content)
-	if err4 != nil {
-		response := fmt.Sprintf("Fail on Prepare on MessageTextProcessor")
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
-	outDoc := mtp.HTML()
+	doc, _ := mtp.Prepare(content)
+	outDoc := doc.HTML()
 
 	/* Update view counter */
 	err5 := netmailMapper.ViewMessageByHash(msgHash)

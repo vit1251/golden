@@ -6,11 +6,13 @@ import (
 	"strings"
 )
 
-type MessageTextProcessor struct {
-	html  string
-	raw   string
+type MessageDocument struct {
+	html string
+	raw  string
 }
 
+type MessageTextProcessor struct {
+}
 
 func NewMessageTextProcessor() *MessageTextProcessor {
 	mr := new(MessageTextProcessor)
@@ -32,12 +34,12 @@ func (self *MessageTextProcessor) processHtmlLine(oneLine string) string {
 	mlp := NewMessageLineParser()
 	ml := mlp.Parse(oneLine)
 
-	var newLine string 
+	var newLine string
 
 	if ml.QuoteLevel == 0 {
 		newLine = ml.PureLine
 	} else {
-		if ml.QuoteLevel % 2 == 0 {
+		if ml.QuoteLevel%2 == 0 {
 			newLine = "<span style='color: red'>" + ml.QuoteStart + ml.QuoteAuthor + ml.QuoteMarkers + ml.QuoteLine + "</span>"
 		} else {
 			newLine = "<span style='color: green'>" + ml.QuoteStart + ml.QuoteAuthor + ml.QuoteMarkers + ml.QuoteLine + "</span>"
@@ -47,7 +49,9 @@ func (self *MessageTextProcessor) processHtmlLine(oneLine string) string {
 	return newLine
 }
 
-func (self *MessageTextProcessor) Prepare(msg string) error {
+func (self *MessageTextProcessor) Prepare(msg string) (*MessageDocument, error) {
+
+	var doc *MessageDocument = new(MessageDocument)
 
 	newMsg := msg
 	newMsg = strings.ReplaceAll(newMsg, "\r\n", "\r")
@@ -58,17 +62,17 @@ func (self *MessageTextProcessor) Prepare(msg string) error {
 	for _, oneLine := range rows {
 		var newHtmlLine string = self.processHtmlLine(oneLine)
 		var newLine = oneLine
-		self.html += newHtmlLine + "<br>"
-		self.raw += newLine + "\r"
+		doc.html += newHtmlLine + "<br>"
+		doc.raw += newLine + "\r"
 	}
 
-	return nil
+	return doc, nil
 }
 
-func (self *MessageTextProcessor) HTML() template.HTML {
+func (self *MessageDocument) HTML() template.HTML {
 	return template.HTML(self.html)
 }
 
-func (self *MessageTextProcessor) Content() string {
+func (self *MessageDocument) Content() string {
 	return self.raw
 }

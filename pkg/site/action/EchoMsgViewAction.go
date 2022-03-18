@@ -58,12 +58,8 @@ func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	/* Prepare HTML message body */
 	mtp := msg.NewMessageTextProcessor()
-	if err4 := mtp.Prepare(content); err4 != nil {
-		response := fmt.Sprintf("Fail on Prepare in MessageTextProcessor: err = %+v", err4)
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
-	outDoc := mtp.HTML()
+	doc, _ := mtp.Prepare(content)
+	outDoc := doc.HTML()
 
 	/* Update message view counter */
 	err5 := echoMapper.ViewMessageByHash(echoTag, msgHash)
