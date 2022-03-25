@@ -25,6 +25,10 @@ func GetContributors() []Contributor {
 	contributors = append(contributors, Contributor{
 		Name: "Tommi Koivula",
 	})
+	contributors = append(contributors, Contributor{
+		Name: "Rudi Timmermans",
+		Addr: "2:292/140",
+	})
 
 	return contributors
 }
