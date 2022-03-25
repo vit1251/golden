@@ -269,19 +269,24 @@ span.hidden {
     font-size: 23pt;
 }
 
-.welcome-donate {
+.welcome-source-link {
+    display: block;
+    text-align: center;
+}
+
+.welcome-community {
     color: #383;
     text-decoration: underline;
     text-align: center;
     font-size: 23pt;
 }
 
-.welcome-source-link {
+.welcome-community-link {
     display: block;
     text-align: center;
 }
 
-/* Echomail area index */
+/* Echo area index */
 
 .echo-index-table {
     width: 100%;

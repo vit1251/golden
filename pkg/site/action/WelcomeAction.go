@@ -19,8 +19,6 @@ func NewWelcomeAction() *WelcomeAction {
 
 func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-
-
 	/* Render */
 	bw := widgets.NewBaseWidget()
 
@@ -48,17 +46,17 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	productWidget := self.renderProductVersion()
 	containerVBox.Add(productWidget)
 
-	/* Contributors */
-	contributorWidget := self.renderContributors()
-	containerVBox.Add(contributorWidget)
+	/* Community */
+	donateWidget := self.renderCommunity()
+	containerVBox.Add(donateWidget)
 
 	/* Source code */
 	sourceWidget := self.renderSourceCode()
 	containerVBox.Add(sourceWidget)
 
-	/* Donation*/
-	donateWidget := self.renderDonation()
-	containerVBox.Add(donateWidget)
+	/* Contributors */
+	contributorWidget := self.renderContributors()
+	containerVBox.Add(contributorWidget)
 
 	/* Render */
 	if err := bw.Render(w); err != nil {
@@ -71,8 +69,8 @@ func (self *WelcomeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (self *WelcomeAction) renderVerpic() widgets.IWidget {
 
-//	var version string = "1_2_16"
-//	var version string = "1_2_17"
+	//	var version string = "1_2_16"
+	//	var version string = "1_2_17"
 	var version string = "1_2_18"
 
 	imageName := fmt.Sprintf("Dog_%s.png", version)
@@ -150,7 +148,7 @@ func (self *WelcomeAction) renderSourceCode() widgets.IWidget {
 
 	sourceHeaderWidget := widgets.NewDivWidget().
 		SetClass("welcome-source").
-		SetContent("Source code and support").
+		SetContent("Source code and developing").
 		SetStyle("padding-bottom: 8px")
 	sourceWidget.AddWidget(sourceHeaderWidget)
 
@@ -164,24 +162,29 @@ func (self *WelcomeAction) renderSourceCode() widgets.IWidget {
 
 }
 
-func (self *WelcomeAction) renderDonation() widgets.IWidget {
+func (self *WelcomeAction) renderCommunity() widgets.IWidget {
 
-	donationWidget := widgets.NewDivWidget().
+	communityWidget := widgets.NewDivWidget().
 		SetStyle("padding-bottom: 32px")
 
-//	donationHeaderWidget := widgets.NewDivWidget().
-//		SetClass("welcome-donate").
-//		SetContent("Donation").
-//		SetStyle("padding-bottom: 8px")
-//	donationWidget.AddWidget(donationHeaderWidget)
+	communityHeaderWidget := widgets.NewDivWidget().
+		SetClass("welcome-community").
+		SetContent("User Group Community").
+		SetStyle("padding-bottom: 8px")
+	communityWidget.AddWidget(communityHeaderWidget)
 
-//	serviceList := widgets.NewDivWidget().
-//		SetClass("welcome-donate-list").
-//		SetStyle("text-align: center").
-//		AddWidget(patreonLink)
+	socialLink := widgets.NewLinkWidget().
+		SetLink("https://t.me/golden_point_community").
+		SetContent("https://t.me/golden_point_community").
+		SetClass("welcome-community-link")
 
-//	donationWidget.AddWidget(serviceList)
+	serviceList := widgets.NewDivWidget().
+		SetClass("welcome-community-list").
+		SetStyle("text-align: center").
+		AddWidget(socialLink)
 
-	return donationWidget
+	communityWidget.AddWidget(serviceList)
+
+	return communityWidget
 
 }

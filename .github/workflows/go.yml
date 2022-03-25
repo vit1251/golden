@@ -26,29 +26,6 @@ jobs:
           path: golden-windows-amd64.exe
 
 
-  build-windows-386:
-    name: "Build on Windows x86"
-    runs-on: windows-latest
-    steps:
-      - name: Set up Go 1.17
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.17
-      - name: Set up MinGW
-        uses: egor-tensin/setup-mingw@v2
-        with:
-            platform: x86
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
-      - name: Make build
-        run: powershell -executionpolicy RemoteSigned -file "./build-windows-386.ps1"
-      - name: Upload Windows executable
-        uses: actions/upload-artifact@v1
-        with:
-          name: golden-windows-386
-          path: golden-windows-386.exe
-
-
   build-linux:
     name: "Build on Ubuntu"
     runs-on: ubuntu-latest
@@ -67,6 +44,7 @@ jobs:
         with:
           name: golden-linux-amd64
           path: golden-linux-amd64
+
 
   build-macos:
     name: "Build on macOS X"
