@@ -1,10 +1,5 @@
 
-class MetricFeature {
-
-    constructor(commandStream) {
-        this.commandStream = commandStream;
-        this.monitoringInterval = 15 * 1000;
-    }
+class ContentChangeFeature {
 
     updateMetric(metricName, value) {
         let element = document.getElementById(metricName);
@@ -18,6 +13,20 @@ class MetricFeature {
         }
     }
 
+    register() {
+    }
+
+}
+
+class MetricFeature {
+
+    constructor(commandStream, cb) {
+        this.commandStream = commandStream;
+        this.monitoringInterval = 15 * 1000;
+        this.cb = cb;
+    }
+
+
     summaryUpdateRoutine() {
         console.log(`Update metrics...`);
         const request = {
@@ -25,16 +34,9 @@ class MetricFeature {
             action: 'stat',
         };
         this.commandStream.send(request, (resp) => {
-            /* Process response */
-            const {
-                EchoMessageCount = 0,
-                NetMessageCount = 0,
-                FileCount = 0,
-            } = resp;
-            /* Update parameters */
-            this.updateMetric('mainMenuDirect', NetMessageCount);
-            this.updateMetric('mainMenuEcho', EchoMessageCount);
-            this.updateMetric('mainMenuFile', FileCount);
+            if (this.cb) {
+                this.cb(resp);
+            }
         });
         /* Register next update */
         this.registerSummaryUpdateRoutine();
@@ -83,6 +85,33 @@ class CommandStream {
 
 }
 
+class NotificationFeature {
+
+    constructor(commandStream) {
+        this.commandStream = commandStream;
+        this.mute = true;
+    }
+
+    handleNotificationPermissionChange(permission) {
+        console.log(`Notification permission is ${permission}`);
+        if( permission === "granted" ) {
+            this.mute = false;
+            this.showMessage();
+        }
+    }
+
+    showMessage() {
+        const notify = new Notification("Golden Point", {
+            tag: 'golden-point-event',
+            body: 'You have 0 message(s).',
+        });
+    }
+
+    register() {
+        Notification.requestPermission(this.handleNotificationPermissionChange.bind(this));
+    }
+}
+
 /**
  * Main entry point
  *
@@ -91,8 +120,36 @@ const main = () => {
 
     const commandStream = new CommandStream();
 
-    /* Register metric update */
-    const metricFeature = new MetricFeature(commandStream);
+    /* Register update content service */
+    const contentChangeFeature = new ContentChangeFeature();
+    contentChangeFeature.register();
+
+    /* Register show notification service */
+    const notificationFeature = new NotificationFeature(commandStream);
+    notificationFeature.register();
+
+    /* Register update counter service */
+    const metricFeature = new MetricFeature(commandStream, (metrics) => {
+
+        const {
+            EchoMessageCount = 0,
+            NetMessageCount = 0,
+            FileCount = 0,
+        } = metrics;
+
+        /* Update content counter */
+        contentChangeFeature.updateMetric('mainMenuDirect', NetMessageCount);
+        contentChangeFeature.updateMetric('mainMenuEcho', EchoMessageCount);
+        contentChangeFeature.updateMetric('mainMenuFile', FileCount);
+
+        /* Show notification */
+        if (!notificationFeature.mute) {
+            if (NetMessageCount > 0) {
+                notificationFeature.showMessage(`You have ${NetMessageCount} message(s)!`);
+            }
+        }
+
+    });
     metricFeature.register();
 
 };
