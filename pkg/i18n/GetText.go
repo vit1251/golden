@@ -5,7 +5,6 @@ import (
 	"log"
 	"fmt"
 	"strings"
-	"net/http"
 )
 
 var mainTranslation *MainTranslation
@@ -71,6 +70,12 @@ func init() {
 		/* EchoAreaIndexAction */
 		echoAreaIndexActionTranslation := russianTranslation.GetActionTranslation("EchoAreaIndexAction")
 		echoAreaIndexActionTranslation.SetTranslation("action-button-create", "Создать сообщение")
+		/* EchoMsgIndexAction */
+		echoMsgIndexActionTranslation := russianTranslation.GetActionTranslation("EchoMsgIndexAction")
+		echoMsgIndexActionTranslation.SetTranslation("action-compose-button", "Создать сообщение")
+		echoMsgIndexActionTranslation.SetTranslation("action-tree-button", "Дерево")
+		echoMsgIndexActionTranslation.SetTranslation("action-mark-as-read-button", "Пометить как прочитанное")
+		echoMsgIndexActionTranslation.SetTranslation("action-settings-button", "Настроить")
 	}
 
 	/* English */
@@ -82,6 +87,12 @@ func init() {
 		/* EchoAreaIndexAction */
 		echoAreaIndexActionTranslation := englishTranslation.GetActionTranslation("EchoAreaIndexAction")
 		echoAreaIndexActionTranslation.SetTranslation("action-button-create", "Compose")
+		/* EchoMsgIndexAction */
+		echoMsgIndexActionTranslation := englishTranslation.GetActionTranslation("EchoMsgIndexAction")
+		echoMsgIndexActionTranslation.SetTranslation("action-compose-button", "Compose")
+		echoMsgIndexActionTranslation.SetTranslation("action-tree-button", "Tree")
+		echoMsgIndexActionTranslation.SetTranslation("action-mark-as-read-button", "Mark as read")
+		echoMsgIndexActionTranslation.SetTranslation("action-settings-button", "Settings")
 	}
 
 }
@@ -144,15 +155,4 @@ func GetDefaultLanguage() string {
 	}
 
 	return result
-}
-
-func GetLangNameFromRequest(r *http.Request) string {
-	var mainLanguage string = GetDefaultLanguage()
-	if acceptLanguages, ok := r.Header["Accept-Language"]; ok {
-		for _, acceptLanguage := range acceptLanguages {
-			log.Printf("User accept: %s", acceptLanguage)
-			// TODO - parse "ru,en-US;q=0.9,en;q=0.8" params...
-		}
-	}
-	return mainLanguage
 }

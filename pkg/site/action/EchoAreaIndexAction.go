@@ -49,7 +49,7 @@ func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	vBox.Add(container)
 
 	/* Context actions */
-	actionsBar := self.renderActions(r)
+	actionsBar := self.renderActions()
 	containerVBox.Add(actionsBar)
 
 	indexTable := widgets.NewDivWidget().
@@ -187,10 +187,9 @@ func (self *EchoAreaIndexAction) renderRow(area *mapper.Area) widgets.IWidget {
 
 }
 
-func (self *EchoAreaIndexAction) renderActions(r *http.Request) widgets.IWidget {
+func (self *EchoAreaIndexAction) renderActions() widgets.IWidget {
 
-	/* Detect user browser primary language */
-	var mainLanguage string = i18n.GetLangNameFromRequest(r)
+	var mainLanguage string = i18n.GetDefaultLanguage()
 
 	/* Render action bar */
 	actionBar := widgets.NewActionMenuWidget()

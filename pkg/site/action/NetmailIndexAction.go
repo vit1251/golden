@@ -48,7 +48,7 @@ func (self NetmailIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	containerVBox := widgets.NewVBoxWidget()
 
 	/* Action bar*/
-	actionBar := self.renderActions(r)
+	actionBar := self.renderActions()
 	containerVBox.Add(actionBar)
 
 	container.AddWidget(containerVBox)
@@ -172,10 +172,9 @@ func (self *NetmailIndexAction) renderRow(m *mapper.NetmailMsg) widgets.IWidget 
 
 }
 
-func (self NetmailIndexAction) renderActions(r *http.Request) widgets.IWidget {
+func (self NetmailIndexAction) renderActions() widgets.IWidget {
 
-	/* Detect main language */
-	var mainLanguage string = i18n.GetLangNameFromRequest(r)
+	var mainLanguage string = i18n.GetDefaultLanguage()
 
 	/* Render action bar */
 	actionBar := widgets.NewActionMenuWidget()

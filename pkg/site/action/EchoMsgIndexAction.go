@@ -7,6 +7,7 @@ import (
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/site/utils"
 	"github.com/vit1251/golden/pkg/site/widgets"
+	"github.com/vit1251/golden/pkg/i18n"
 	"log"
 	"net/http"
 	"strings"
@@ -23,31 +24,41 @@ func NewEchoMsgIndexAction() *EchoMsgIndexAction {
 
 func (self *EchoMsgIndexAction) renderActions(newArea *mapper.Area) widgets.IWidget {
 
+	var mainLanguage string = i18n.GetDefaultLanguage()
+
 	actionBar := widgets.NewActionMenuWidget()
 
+	/* Compose */
+	composeTitle := i18n.GetText(mainLanguage, "EchoMsgIndexAction", "action-compose-button")
 	actionBar.Add(widgets.NewMenuAction().
 		SetLink(fmt.Sprintf("/echo/%s/message/compose", newArea.GetName())).
 		SetIcon("icofont-edit").
 		SetClass("mr-2").
-		SetLabel("Compose"))
+		SetLabel(composeTitle))
 
+	/* Tree */
+	treeTitle := i18n.GetText(mainLanguage, "EchoMsgIndexAction", "action-tree-button")
 	actionBar.Add(widgets.NewMenuAction().
 		SetLink(fmt.Sprintf("/echo/%s/tree", newArea.GetName())).
 		SetIcon("icon-tree").
 		SetClass("mr-2").
-		SetLabel("Tree"))
+		SetLabel(treeTitle))
 
+	/* Mark as read */
+	markAsReadTitle := i18n.GetText(mainLanguage, "EchoMsgIndexAction", "action-mark-as-read-button")
 	actionBar.Add(widgets.NewMenuAction().
 		SetLink(fmt.Sprintf("/echo/%s/mark", newArea.GetName())).
 		SetIcon("icofont-mark-as-read").
 		SetClass("mr-2").
-		SetLabel("Mark as read"))
+		SetLabel(markAsReadTitle))
 
+	/* Settings */
+	settingsTitle := i18n.GetText(mainLanguage, "EchoMsgIndexAction", "action-settings-button")
 	actionBar.Add(widgets.NewMenuAction().
 		SetLink(fmt.Sprintf("/echo/%s/update", newArea.GetName())).
 		SetIcon("icofont-update").
 		SetClass("mr-2").
-		SetLabel("Settings"))
+		SetLabel(settingsTitle))
 
 	return actionBar
 
