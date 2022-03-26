@@ -137,9 +137,9 @@ func parseLang(lang string) Lang {
 
 	var l Lang
 
-	parts := strings.SplitN(lang, ".", 2)
+	parts := strings.SplitN(lang, ".", 3)
 
-	if len(parts) >= 2 {
+	if len(parts) >= 3 {
 		l.charset = parts[1]
 	}
 
