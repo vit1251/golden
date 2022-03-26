@@ -89,14 +89,13 @@ class NotificationFeature {
 
     constructor(commandStream) {
         this.commandStream = commandStream;
-        this.mute = true;
+        this.muted = true;
     }
 
     handleNotificationPermissionChange(permission) {
         console.log(`Notification permission is ${permission}`);
         if( permission === "granted" ) {
-            this.mute = false;
-            this.showMessage();
+            this.muted = false;
         }
     }
 
