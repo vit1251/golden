@@ -100,10 +100,14 @@ class NotificationFeature {
         }
     }
 
-    showMessage() {
+    /**
+     * Show message
+     *
+     */
+    showMessage(body = 'Welcome in Golden Point application!') {
         const notify = new Notification("Golden Point", {
             tag: 'golden-point-event',
-            body: 'You have 0 message(s).',
+            body: body,
         });
     }
 
