@@ -129,6 +129,7 @@ func GetText(langName string, actionName string, codeName string) string {
 type Lang struct {
 	lang1 string
 	lang2 string
+	lang3 string
 	charset string
 }
 
@@ -146,7 +147,11 @@ func parseLang(lang string) Lang {
 
 		code := parts[0]
 
-		langs := strings.SplitN(code, "_", 2)
+		langs := strings.SplitN(code, "_", 3)
+		
+		if len(langs) >= 3 {
+			l.lang3 = langs[1]
+		}		
 
 		if len(langs) >= 2 {
 			l.lang2 = langs[1]
@@ -163,6 +168,7 @@ func parseLang(lang string) Lang {
 func GetDefaultLanguage() string {
 
 	var result string = "en-US"
+	var result string = "nl-BE"
 
 	// LANG=ru_RU.UTF-8
 	if lang, exists := os.LookupEnv("LANG"); exists {
