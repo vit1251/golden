@@ -94,6 +94,23 @@ func init() {
 		echoMsgIndexActionTranslation.SetTranslation("action-mark-as-read-button", "Mark as read")
 		echoMsgIndexActionTranslation.SetTranslation("action-settings-button", "Settings")
 	}
+	
+	/* Dutch */
+	{
+		englishTranslation := mainTranslation.GetLangTranslation("nl-BE")
+		/* NetmailIndexAction */
+		netmailIndexActionTranslation := englishTranslation.GetActionTranslation("NetmailIndexAction")
+		netmailIndexActionTranslation.SetTranslation("action-button-create", "Nieuw bericht")
+		/* EchoAreaIndexAction */
+		echoAreaIndexActionTranslation := englishTranslation.GetActionTranslation("EchoAreaIndexAction")
+		echoAreaIndexActionTranslation.SetTranslation("action-button-create", "Nieuw bericht")
+		/* EchoMsgIndexAction */
+		echoMsgIndexActionTranslation := englishTranslation.GetActionTranslation("EchoMsgIndexAction")
+		echoMsgIndexActionTranslation.SetTranslation("action-compose-button", "Nieuw bericht")
+		echoMsgIndexActionTranslation.SetTranslation("action-tree-button", "Boomstructuur")
+		echoMsgIndexActionTranslation.SetTranslation("action-mark-as-read-button", "Markeer als gelezen")
+		echoMsgIndexActionTranslation.SetTranslation("action-settings-button", "Instellingen")
+	}	
 
 }
 
