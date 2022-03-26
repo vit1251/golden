@@ -1,7 +1,10 @@
 package i18n
 
 import (
+	"os"
 	"log"
+	"fmt"
+	"strings"
 	"net/http"
 )
 
@@ -95,9 +98,52 @@ func GetText(langName string, actionName string, codeName string) string {
 
 }
 
+type Lang struct {
+	lang1 string
+	lang2 string
+	charset string
+}
+
+func parseLang(lang string) Lang {
+
+	var l Lang
+
+	parts := strings.SplitN(lang, ".", 2)
+
+	if len(parts) >= 2 {
+		l.charset = parts[1]
+	}
+
+	if len(parts) >= 1 {
+
+		code := parts[0]
+
+		langs := strings.SplitN(code, "_", 2)
+
+		if len(langs) >= 2 {
+			l.lang2 = langs[1]
+		}
+
+		if len(langs) >= 1 {
+			l.lang1 = langs[0]
+		}
+	}
+
+	return l
+}
+
 func GetDefaultLanguage() string {
-	// TODO - parse command line or environment parameters ...
-	return "ru-RU"
+
+	var result string = "en-US"
+
+	// LANG=ru_RU.UTF-8
+	if lang, exists := os.LookupEnv("LANG"); exists {
+		l := parseLang(lang)
+		log.Printf("lang = %#v", l)
+		result = fmt.Sprintf("%s-%s", l.lang1, l.lang2)
+	}
+
+	return result
 }
 
 func GetLangNameFromRequest(r *http.Request) string {
