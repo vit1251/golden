@@ -173,7 +173,7 @@ func GetDefaultLanguage() string {
 	if lang, exists := os.LookupEnv("LANG"); exists {
 		l := parseLang(lang)
 		log.Printf("lang = %#v", l)
-		result = fmt.Sprintf("%s-%s", l.lang1, l.lang2, 1.lang3)
+		result = fmt.Sprintf("%s-%s", l.lang1, l.lang2, l.lang3)
 	}
 
 	return result
