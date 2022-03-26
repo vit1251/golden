@@ -167,7 +167,7 @@ func parseLang(lang string) Lang {
 
 func GetDefaultLanguage() string {
 
-	var result string = "en-US"
+	var result string = "en-US", "nl-BE"
 
 	// LANG=ru_RU.UTF-8
 	if lang, exists := os.LookupEnv("LANG"); exists {
