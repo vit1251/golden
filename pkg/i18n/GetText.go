@@ -94,6 +94,23 @@ func init() {
 		echoMsgIndexActionTranslation.SetTranslation("action-mark-as-read-button", "Mark as read")
 		echoMsgIndexActionTranslation.SetTranslation("action-settings-button", "Settings")
 	}
+	
+	/* Dutch */
+	{
+		englishTranslation := mainTranslation.GetLangTranslation("nl-BE")
+		/* NetmailIndexAction */
+		netmailIndexActionTranslation := englishTranslation.GetActionTranslation("NetmailIndexAction")
+		netmailIndexActionTranslation.SetTranslation("action-button-create", "Nieuw bericht")
+		/* EchoAreaIndexAction */
+		echoAreaIndexActionTranslation := englishTranslation.GetActionTranslation("EchoAreaIndexAction")
+		echoAreaIndexActionTranslation.SetTranslation("action-button-create", "Nieuw bericht")
+		/* EchoMsgIndexAction */
+		echoMsgIndexActionTranslation := englishTranslation.GetActionTranslation("EchoMsgIndexAction")
+		echoMsgIndexActionTranslation.SetTranslation("action-compose-button", "Nieuw bericht")
+		echoMsgIndexActionTranslation.SetTranslation("action-tree-button", "Boomstructuur")
+		echoMsgIndexActionTranslation.SetTranslation("action-mark-as-read-button", "Markeer als gelezen")
+		echoMsgIndexActionTranslation.SetTranslation("action-settings-button", "Instellingen")
+	}	
 
 }
 
@@ -112,6 +129,7 @@ func GetText(langName string, actionName string, codeName string) string {
 type Lang struct {
 	lang1 string
 	lang2 string
+	lang3 string
 	charset string
 }
 
@@ -119,9 +137,9 @@ func parseLang(lang string) Lang {
 
 	var l Lang
 
-	parts := strings.SplitN(lang, ".", 2)
+	parts := strings.SplitN(lang, ".", 3)
 
-	if len(parts) >= 2 {
+	if len(parts) >= 3 {
 		l.charset = parts[1]
 	}
 
@@ -129,7 +147,11 @@ func parseLang(lang string) Lang {
 
 		code := parts[0]
 
-		langs := strings.SplitN(code, "_", 2)
+		langs := strings.SplitN(code, "_", 3)
+		
+		if len(langs) >= 3 {
+			l.lang3 = langs[1]
+		}		
 
 		if len(langs) >= 2 {
 			l.lang2 = langs[1]
@@ -151,7 +173,7 @@ func GetDefaultLanguage() string {
 	if lang, exists := os.LookupEnv("LANG"); exists {
 		l := parseLang(lang)
 		log.Printf("lang = %#v", l)
-		result = fmt.Sprintf("%s-%s", l.lang1, l.lang2)
+		result = fmt.Sprintf("%s-%s", l.lang1, l.lang2, l.lang3)
 	}
 
 	return result
