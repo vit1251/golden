@@ -69,7 +69,7 @@ func init() {
 		netmailIndexActionTranslation.SetTranslation("action-button-create", "Создать сообщение")
 		/* EchoAreaIndexAction */
 		echoAreaIndexActionTranslation := russianTranslation.GetActionTranslation("EchoAreaIndexAction")
-		echoAreaIndexActionTranslation.SetTranslation("action-button-create", "Создать сообщение")
+		echoAreaIndexActionTranslation.SetTranslation("action-button-create", "Создать")
 		/* EchoMsgIndexAction */
 		echoMsgIndexActionTranslation := russianTranslation.GetActionTranslation("EchoMsgIndexAction")
 		echoMsgIndexActionTranslation.SetTranslation("action-compose-button", "Создать сообщение")
@@ -86,7 +86,7 @@ func init() {
 		netmailIndexActionTranslation.SetTranslation("action-button-create", "Compose")
 		/* EchoAreaIndexAction */
 		echoAreaIndexActionTranslation := englishTranslation.GetActionTranslation("EchoAreaIndexAction")
-		echoAreaIndexActionTranslation.SetTranslation("action-button-create", "Compose")
+		echoAreaIndexActionTranslation.SetTranslation("action-button-create", "Create")
 		/* EchoMsgIndexAction */
 		echoMsgIndexActionTranslation := englishTranslation.GetActionTranslation("EchoMsgIndexAction")
 		echoMsgIndexActionTranslation.SetTranslation("action-compose-button", "Compose")
