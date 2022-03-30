@@ -1,6 +1,7 @@
 package action
 
 import (
+	"log"
 	"fmt"
 	"github.com/vit1251/golden/pkg/mapper"
 	"net/http"
@@ -26,7 +27,7 @@ func (self *FileEchoCreateComplete) ServeHTTP(w http.ResponseWriter, r *http.Req
 		panic(err1)
 	}
 	echoTag := r.Form.Get("fileecho")
-	fmt.Printf("echoTag = %v", echoTag)
+	log.Printf("echoTag = %v", echoTag)
 
 	/* Create File area */
 	a := mapper.NewFileArea()

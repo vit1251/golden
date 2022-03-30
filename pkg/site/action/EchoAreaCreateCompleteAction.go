@@ -1,6 +1,7 @@
 package action
 
 import (
+	"log"
 	"fmt"
 	"github.com/vit1251/golden/pkg/mapper"
 	"net/http"
@@ -26,7 +27,7 @@ func (self *EchoAreaCreateComplete) ServeHTTP(w http.ResponseWriter, r *http.Req
 
 	//
 	echoTag := r.Form.Get("echoname")
-	fmt.Printf("echoTag = %v", echoTag)
+	log.Printf("echoTag = %v", echoTag)
 
 	a := mapper.NewArea()
 	a.SetName(echoTag)
