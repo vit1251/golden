@@ -1,6 +1,7 @@
 package msg
 
 import (
+//	"log"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -40,7 +41,7 @@ func (self SubjectCompactor) Compact(subject string) string {
 			size := len(match2[0])
 			newSubject = newSubject[size:]
 			newSubject = strings.TrimLeft(newSubject, " ")
-			//fmt.Printf("re = %q", match2)
+			//log.Printf("re = %q", match2)
 			num, _ := strconv.Atoi(match2[1])
 			level += num
 		} else {

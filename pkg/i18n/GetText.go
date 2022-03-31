@@ -76,6 +76,9 @@ func init() {
 		echoMsgIndexActionTranslation.SetTranslation("action-tree-button", "Дерево")
 		echoMsgIndexActionTranslation.SetTranslation("action-mark-as-read-button", "Пометить как прочитанное")
 		echoMsgIndexActionTranslation.SetTranslation("action-settings-button", "Настроить")
+		/* FileEchoIndexAction */
+		fileEchoIndexActionTranslation := russianTranslation.GetActionTranslation("FileEchoIndexAction")
+		fileEchoIndexActionTranslation.SetTranslation("action-button-create", "Создать")
 	}
 
 	/* English */
@@ -93,6 +96,9 @@ func init() {
 		echoMsgIndexActionTranslation.SetTranslation("action-tree-button", "Tree")
 		echoMsgIndexActionTranslation.SetTranslation("action-mark-as-read-button", "Mark as read")
 		echoMsgIndexActionTranslation.SetTranslation("action-settings-button", "Settings")
+		/* FileEchoIndexAction */
+		fileEchoIndexActionTranslation := englishTranslation.GetActionTranslation("FileEchoIndexAction")
+		fileEchoIndexActionTranslation.SetTranslation("action-button-create", "Create")
 	}
 
 	/* Dutch */

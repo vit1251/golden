@@ -14,7 +14,7 @@ go generate
 
 # Section 3. Compile...
 #
-echo "Step 3. Compile amd64 executable..."
+echo "Step 3. Compile AMD64 executable..."
 export GOOS="linux"
 export GOARCH="amd64"
 export CGO_ENABLED="1"

@@ -2,6 +2,7 @@ package action
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/i18n"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"net/http"
@@ -59,6 +60,10 @@ func (self *FileEchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	containerVBox := widgets.NewVBoxWidget()
 	container.AddWidget(containerVBox)
 	vBox.Add(container)
+
+	/* Context actions */
+	actionsBar := self.renderActions()
+	containerVBox.Add(actionsBar)
 
 	indexTable := widgets.NewDivWidget().
 		SetClass("file-index-table")
@@ -158,4 +163,21 @@ func (self *FileEchoIndexAction) renderMessageCounter(area *mapper.FileArea) wid
 	}
 
 	return counterWidget
+}
+
+func (self *FileEchoIndexAction) renderActions() widgets.IWidget {
+
+	var mainLanguage string = i18n.GetDefaultLanguage()
+
+	/* Render action bar */
+	actionBar := widgets.NewActionMenuWidget()
+
+	actionLabel := i18n.GetText(mainLanguage, "FileEchoIndexAction", "action-button-create")
+	actionBar.Add(widgets.NewMenuAction().
+		SetLink(fmt.Sprintf("/file/create")).
+		SetIcon("icofont-update").
+		SetLabel(actionLabel))
+
+	return actionBar
+
 }

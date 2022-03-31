@@ -92,6 +92,8 @@ func (self *SiteManager) registerFrontend() {
 
 	/* File section */
 	self.Register("/file", action.NewFileEchoIndexAction())
+	self.Register("/file/create", action.NewFileEchoCreateAction())
+	self.Register("/file/create/complete", action.NewFileEchoCreateCompleteAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}", action.NewFileEchoAreaIndexAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", action.NewFileEchoUpdateAction())
 	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", action.NewFileEchoRemoveAction())
