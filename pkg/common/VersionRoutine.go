@@ -5,7 +5,7 @@ func GetVersion() string {
 }
 
 func GetReleaseDate() string {
-	return "2022-01-15 02:13 MSK"
+	return "2022-03-31 04:30 MSK"
 }
 
 func GetReleaseBranch() string {
