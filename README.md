@@ -53,8 +53,3 @@ scenario in the "docs" directory instructions. Common scripts are:
     # ./golden --debug
 
 That's all.
-
-## Contributors
-
- * Vitold Sedyshev
- * Sergey Anohin
