@@ -9,13 +9,16 @@
 
  1) Запустите команду сборки в директории с исходным кодом (например, в директории C:\Golden\src):
 
-    C:\Golden\src> powershell -executionpolicy RemoteSigned -file "build-windows.ps1"
+```
+C:\Golden\src> powershell -executionpolicy RemoteSigned -file "build-windows.ps1"
+```
 
 ## Сборка в ручном режиме
 
  1) (Опционально) Подготовтье Golang окружение для целевой платформы
  2) Выполните последовательно следующие команды
- 
-    C:\Golden\src> go generate
-    C:\Golden\src> go build
 
+```
+C:\Golden\src> go generate
+C:\Golden\src> go build
+```

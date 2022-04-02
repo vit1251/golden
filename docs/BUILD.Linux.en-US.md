@@ -4,5 +4,5 @@
 2. Start shell command:
 
 ```
-# task
+# /bin/sh ./build-linux.sh
 ```

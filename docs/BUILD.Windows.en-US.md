@@ -9,16 +9,22 @@
 
  1) Invoke PowerShell script in source code directory (example, directory C:\Golden\src)
 
-    C:\Golden\src> powershell -executionpolicy RemoteSigned -file "build-windows-amd64.ps1"
+```
+C:\Golden\src> powershell -executionpolicy RemoteSigned -file "build-windows-amd64.ps1"
+```
 
 or
 
-    C:\Golden\src> powershell -executionpolicy RemoteSigned -file "build-windows-386.ps1"
+```
+C:\Golden\src> powershell -executionpolicy RemoteSigned -file "build-windows-386.ps1"
+```
 
 ## Build manually 
 
  1) (Optional) Prepare Golang environemnt for target platform
  2) Execute next commands
- 
-    C:\Golden\src> go generate
-    C:\Golden\src> go build
+
+```
+C:\Golden\src> go generate
+C:\Golden\src> go build
+```

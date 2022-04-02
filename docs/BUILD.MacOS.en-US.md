@@ -5,5 +5,5 @@
 3. In Golden Point source code direcotory start build command:
 
 ```
-# task
+% /bin/sh ./build-darwin.sh
 ```

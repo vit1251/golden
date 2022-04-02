@@ -1,21 +1,26 @@
-# Golden Point 1.2
+# Golden Point
 
-Golden Point is Fido point package
+Golden Point application solution for participation in FidoNet teleconferences and other FTN-based teleconferences
 
-For work with GoldenPoint after starting you will open browser on address http://127.0.0.1:8080
+Golden Point is a local HTTP service running by default on port 8080 of the local network interface
 
-## Binnary distribution
+## Getting Golden Point
 
-1. You may use unstable version (night) build place in https://github.com/vit1251/golden/actions
-2. You may use stable (release) build place in https://github.com/vit1251/golden/releases
+### Download build
 
-## Build from source code
+1. Each time after committing changes in the code, the process of obtaining the current (nightly) assembly takes place
+   You can download the result from the link https://github.com/vit1251/golden/actions
+2. At certain points in the year, stable output is fixed
+   You can download releases from the link https://github.com/vit1251/golden/releases
 
-In most cases, there is no need to build from source. The exceptions are when these assemblies produce
-node owners to add specific characteristics to their Points (example: pre-flashing node speciffic settings).
+### Getting build from source
 
-See BUILD.Windows.en-US.md, BUILD.Linux.en-US.md èëè BUILD.MacOS.en-US.md
+In most cases, you can use the latest builds. Exceptions are studies related to the expansion on new
+platforms and developer environment deployment.
 
-## Installation
+You can read more about how to assemble it yourself in the documents:
 
-See INSTALL.Windows.en-US.md, INSTALL.Linux.en-US.md èëè INSTALL.MacOS.en-US.md
+ * BUILD.Windows.ru-RU.md
+ * BUILD.Linux.ru-RU.md
+ * BUILD.MacOS.ru-RU.md
+
