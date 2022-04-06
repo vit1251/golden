@@ -6,6 +6,7 @@ import (
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/site/action"
 	"github.com/vit1251/golden/pkg/site/action/api"
+	"github.com/vit1251/golden/pkg/um"
 	"log"
 	"net/http"
 	"strings"
@@ -55,15 +56,11 @@ func (self *SiteManager) Register(pattern string, a IAction) {
 	actionFunc := a.ServeHTTP
 	self.rtr.HandleFunc(pattern, actionFunc)
 
-	/* Create router */
-	//	r := Route{}
-	//	r.pattern = pattern
-	//	r.action = a
-	//	self.routes = append(self.routes, r)
-
 }
 
 func (self *SiteManager) registerFrontend() {
+
+//	urlManager := self.restoreUrlManager()
 
 	/* Welcome section */
 	self.Register("/", action.NewWelcomeAction())
@@ -206,4 +203,13 @@ func (self *SiteManager) Stop() error {
 
 func (self *SiteManager) SetPort(port int) {
 	self.port = port
+}
+
+func (self *SiteManager) restoreUrlManager() *um.UrlManager {
+	managerPtr := self.registry.Get("UrlManager")
+	if manager, ok := managerPtr.(*um.UrlManager); ok {
+		return manager
+	} else {
+		panic("no url manager")
+	}
 }
