@@ -15,6 +15,7 @@ import (
 	"github.com/vit1251/golden/pkg/storage"
 	"github.com/vit1251/golden/pkg/tosser"
 	"github.com/vit1251/golden/pkg/tracker"
+	"github.com/vit1251/golden/pkg/um"
 	"io"
 	"log"
 	"os"
@@ -90,6 +91,7 @@ func (self *Application) Run() {
 	self.checkDatabaseLocation()
 
 	/* Start storage service */
+	self.registry.Register("UrlManager", um.NewUrlManager())
 	self.registry.Register("EventBus", eventbus.NewEventBus(self.registry))
 	self.registry.Register("StorageManager", storage.NewStorageManager(self.registry))
 	self.registry.Register("MapperManager", mapper.NewMapperManager(self.registry))

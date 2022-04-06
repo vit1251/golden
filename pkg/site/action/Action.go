@@ -9,6 +9,7 @@ import (
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"github.com/vit1251/golden/pkg/storage"
 	"github.com/vit1251/golden/pkg/tosser"
+	"github.com/vit1251/golden/pkg/um"
 	"net/http"
 )
 
@@ -95,5 +96,14 @@ func (self *Action) restoreConfigManager() *config.ConfigManager {
 		return manager
 	} else {
 		panic("no config manager")
+	}
+}
+
+func (self *Action) restoreUrlManager() *um.UrlManager {
+	managerPtr := self.registry.Get("UrlManager")
+	if manager, ok := managerPtr.(*um.UrlManager); ok {
+		return manager
+	} else {
+		panic("no url manager")
 	}
 }

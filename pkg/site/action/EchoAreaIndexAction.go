@@ -92,6 +92,8 @@ func (self *EchoAreaIndexAction) renderMessageCounter(area *mapper.Area) widgets
 
 func (self *EchoAreaIndexAction) renderRow(area *mapper.Area) widgets.IWidget {
 
+	urlManager := self.restoreUrlManager()
+
 	rowTitle := fmt.Sprintf("[%d] %s - %s (%s)",
 		area.GetOrder(), area.GetName(), area.GetSummary(), area.GetCharset(),
 	)
@@ -177,7 +179,10 @@ func (self *EchoAreaIndexAction) renderRow(area *mapper.Area) widgets.IWidget {
 	rowWidget.AddWidget(counterWidget)
 
 	/* Link container */
-	navigateAddress := fmt.Sprintf("/echo/%s", area.GetName())
+	
+	navigateAddress := urlManager.CreateUrl("/echo/{echo_name}").
+		SetParam("echo_name", area.GetName()).
+		Build()
 
 	navigateItem := widgets.NewLinkWidget().
 		SetLink(navigateAddress).
