@@ -2,15 +2,14 @@ package site
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/site/action"
 	"github.com/vit1251/golden/pkg/site/action/api"
 	"github.com/vit1251/golden/pkg/um"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"strings"
-	"time"
 )
 
 type IAction interface {
@@ -25,14 +24,12 @@ type Route struct {
 
 type WebSite struct {
 	routes []Route
-	rtr    *mux.Router
 }
 
 type SiteManager struct {
 	registry *registry.Container
 	port     int
 	WebSite  *WebSite /* Web site common type   */
-	rtr      *mux.Router
 	addr     string
 }
 
@@ -42,119 +39,110 @@ func NewSiteManager(registry *registry.Container) *SiteManager {
 	site.addr = "127.0.0.1"
 	site.port = 8080
 	site.registry = registry
-	site.rtr = mux.NewRouter()
 
 	return site
 }
 
-func (self *SiteManager) Register(pattern string, a IAction) {
-
-	/* Register owner */
+func (self *SiteManager) ContainerMiddleware(a IAction) IAction {
 	a.SetContainer(self.registry)
-
-	/* Register */
-	actionFunc := a.ServeHTTP
-	self.rtr.HandleFunc(pattern, actionFunc)
-
+	return a
 }
 
-func (self *SiteManager) registerFrontend() {
+func Register(router *mux.Router, pattern string, a IAction) {
+	router.HandleFunc(pattern, a.ServeHTTP)
+}
 
-//	urlManager := self.restoreUrlManager()
+func (self *SiteManager) createRouter() *mux.Router {
 
-	/* Welcome section */
-	self.Register("/", action.NewWelcomeAction())
+	router := mux.NewRouter()
+
+	/* Welcome */
+	Register(router, "/", self.ContainerMiddleware(action.NewWelcomeAction()))
 
 	/* Echo section */
-	self.Register("/echo", action.NewEchoAreaIndexAction())
-	self.Register("/echo/create", action.NewEchoAreaCreateAction())
-	self.Register("/echo/create/complete", action.NewEchoAreaCreateCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}", action.NewEchoMsgIndexAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tree", action.NewEchoMsgTreeAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", action.NewEchoAreaRemoveAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove/complete", action.NewEchoRemoveCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge", action.NewEchoAreaPurgeAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge/complete", action.NewEchoAreaPurgeCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/mark", action.NewEchoAreaMarkAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/mark/complete", action.NewEchoAreaMarkCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", action.NewEchoAreaUpdateAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update/complete", action.NewEchoAreaUpdateCompleteAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", action.NewEchoMsgComposeAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/view", action.NewEchoMsgViewAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/dump", action.NewEchoMsgDumpAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/twit", action.NewEchoMsgTwitAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply", action.NewEchoMsgReplyAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove", action.NewEchoMsgRemoveAction())
-	self.Register("/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", action.NewEchoMsgRemoveCompleteAction())
+	Register(router, "/echo", self.ContainerMiddleware(action.NewEchoAreaIndexAction()))
+	Register(router, "/echo/create", self.ContainerMiddleware(action.NewEchoAreaCreateAction()))
+	Register(router, "/echo/create/complete", self.ContainerMiddleware(action.NewEchoAreaCreateCompleteAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}", self.ContainerMiddleware(action.NewEchoMsgIndexAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tree", self.ContainerMiddleware(action.NewEchoMsgTreeAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", self.ContainerMiddleware(action.NewEchoAreaRemoveAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove/complete", self.ContainerMiddleware(action.NewEchoRemoveCompleteAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge", self.ContainerMiddleware(action.NewEchoAreaPurgeAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge/complete", self.ContainerMiddleware(action.NewEchoAreaPurgeCompleteAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/mark", self.ContainerMiddleware(action.NewEchoAreaMarkAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/mark/complete", self.ContainerMiddleware(action.NewEchoAreaMarkCompleteAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", self.ContainerMiddleware(action.NewEchoAreaUpdateAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update/complete", self.ContainerMiddleware(action.NewEchoAreaUpdateCompleteAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", self.ContainerMiddleware(action.NewEchoMsgComposeAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/view", self.ContainerMiddleware(action.NewEchoMsgViewAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/dump", self.ContainerMiddleware(action.NewEchoMsgDumpAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/twit", self.ContainerMiddleware(action.NewEchoMsgTwitAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply", self.ContainerMiddleware(action.NewEchoMsgReplyAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove", self.ContainerMiddleware(action.NewEchoMsgRemoveAction()))
+	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", self.ContainerMiddleware(action.NewEchoMsgRemoveCompleteAction()))
 
 	/* File section */
-	self.Register("/file", action.NewFileEchoIndexAction())
-	self.Register("/file/create", action.NewFileEchoCreateAction())
-	self.Register("/file/create/complete", action.NewFileEchoCreateCompleteAction())
-	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}", action.NewFileEchoAreaIndexAction())
-	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", action.NewFileEchoUpdateAction())
-	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", action.NewFileEchoRemoveAction())
-	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove/complete", action.NewFileEchoRemoveCompleteAction())
-	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/view", action.NewFileEchoAreaViewAction())
-	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/download", action.NewFileEchoAreaDownloadAction())
-	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/remove", action.NewFileEchoAreaRemoveAction())
-	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload", action.NewFileEchoAreaUploadAction())
-	self.Register("/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload/complete", action.NewFileEchoAreaUploadCompleteAction())
+	Register(router, "/file", self.ContainerMiddleware(action.NewFileEchoIndexAction()))
+	Register(router, "/file/create", self.ContainerMiddleware(action.NewFileEchoCreateAction()))
+	Register(router, "/file/create/complete", self.ContainerMiddleware(action.NewFileEchoCreateCompleteAction()))
+	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}", self.ContainerMiddleware(action.NewFileEchoAreaIndexAction()))
+	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", self.ContainerMiddleware(action.NewFileEchoUpdateAction()))
+	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", self.ContainerMiddleware(action.NewFileEchoRemoveAction()))
+	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove/complete", self.ContainerMiddleware(action.NewFileEchoRemoveCompleteAction()))
+	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/view", self.ContainerMiddleware(action.NewFileEchoAreaViewAction()))
+	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/download", self.ContainerMiddleware(action.NewFileEchoAreaDownloadAction()))
+	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/remove", self.ContainerMiddleware(action.NewFileEchoAreaRemoveAction()))
+	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload", self.ContainerMiddleware(action.NewFileEchoAreaUploadAction()))
+	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload/complete", self.ContainerMiddleware(action.NewFileEchoAreaUploadCompleteAction()))
 
 	/* Netmail section */
-	self.Register("/netmail", action.NewNetmailIndexAction())
-	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/view", action.NewNetmailViewAction())
-	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/dump", action.NewNetmailDumpAction())
-	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/reply", action.NewNetmailReplyAction())
-	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/remove", action.NewNetmailRemoveAction())
-	self.Register("/netmail/{msgid:[A-Za-z0-9+]+}/attach/{attidx:[0-9]+}/view", action.NewNetmailAttachViewAction())
-	self.Register("/netmail/compose", action.NewNetmailComposeAction())
+	Register(router, "/netmail", self.ContainerMiddleware(action.NewNetmailIndexAction()))
+	Register(router, "/netmail/{msgid:[A-Za-z0-9+]+}/view", self.ContainerMiddleware(action.NewNetmailViewAction()))
+	Register(router, "/netmail/{msgid:[A-Za-z0-9+]+}/dump", self.ContainerMiddleware(action.NewNetmailDumpAction()))
+	Register(router, "/netmail/{msgid:[A-Za-z0-9+]+}/reply", self.ContainerMiddleware(action.NewNetmailReplyAction()))
+	Register(router, "/netmail/{msgid:[A-Za-z0-9+]+}/remove", self.ContainerMiddleware(action.NewNetmailRemoveAction()))
+	Register(router, "/netmail/{msgid:[A-Za-z0-9+]+}/attach/{attidx:[0-9]+}/view", self.ContainerMiddleware(action.NewNetmailAttachViewAction()))
+	Register(router, "/netmail/compose", self.ContainerMiddleware(action.NewNetmailComposeAction()))
 
 	/* Setup section */
-	self.Register("/setup", action.NewSetupAction())
-	self.Register("/setup/complete", action.NewSetupCompleteAction())
+	Register(router, "/setup", self.ContainerMiddleware(action.NewSetupAction()))
+	Register(router, "/setup/complete", self.ContainerMiddleware(action.NewSetupCompleteAction()))
 
 	/* Service section */
-	self.Register("/service", action.NewServiceAction())
-	self.Register("/service/mailer/stat", action.NewServiceMailerAction())
-	self.Register("/service/mailer/event", action.NewServiceMailerEventAction())
-	self.Register("/service/toss/stat", action.NewServiceTossAction())
-	self.Register("/service/toss/event", action.NewServiceTossEventAction())
-	self.Register("/service/tracker/stat", action.NewServiceTrackerAction())
-	self.Register("/service/tracker/event", action.NewServiceTrackerEventAction())
+	Register(router, "/service", self.ContainerMiddleware(action.NewServiceAction()))
+	Register(router, "/service/mailer/stat", self.ContainerMiddleware(action.NewServiceMailerAction()))
+	Register(router, "/service/mailer/event", self.ContainerMiddleware(action.NewServiceMailerEventAction()))
+	Register(router, "/service/toss/stat", self.ContainerMiddleware(action.NewServiceTossAction()))
+	Register(router, "/service/toss/event", self.ContainerMiddleware(action.NewServiceTossEventAction()))
+	Register(router, "/service/tracker/stat", self.ContainerMiddleware(action.NewServiceTrackerAction()))
+	Register(router, "/service/tracker/event", self.ContainerMiddleware(action.NewServiceTrackerEventAction()))
 
 	/* Twit -> AddressBook */
-	self.Register("/twit", action.NewTwitIndexAction())
-	self.Register("/twit/{twitid:[A-Za-z0-9+]+}/remove", action.NewTwitRemoveCompleteAction())
+	Register(router, "/twit", self.ContainerMiddleware(action.NewTwitIndexAction()))
+	Register(router, "/twit/{twitid:[A-Za-z0-9+]+}/remove", self.ContainerMiddleware(action.NewTwitRemoveCompleteAction()))
 
 	/* Draft section */
-	self.Register("/draft", action.NewDraftIndexAction())
-	self.Register("/draft/{draftid:[A-Za-z0-9\\-+]+}/edit", action.NewDraftEditAction())
-	self.Register("/draft/{draftid:[A-Za-z0-9\\-+]+}/edit/complete", action.NewDraftEditCompleteAction())
+	Register(router, "/draft", self.ContainerMiddleware(action.NewDraftIndexAction()))
+	Register(router, "/draft/{draftid:[A-Za-z0-9\\-+]+}/edit", self.ContainerMiddleware(action.NewDraftEditAction()))
+	Register(router, "/draft/{draftid:[A-Za-z0-9\\-+]+}/edit/complete", self.ContainerMiddleware(action.NewDraftEditCompleteAction()))
 
 	/* Static section */
-	self.Register("/assets/css/main.css", action.NewStyleAction())
-	self.Register("/static/{name:[A-Za-z0-9\\.\\_\\-]+}", action.NewStaticAction())
-
-}
-
-func (self *SiteManager) registerBackend() {
+	Register(router, "/assets/css/main.css", self.ContainerMiddleware(action.NewStyleAction()))
+	Register(router, "/static/{name:[A-Za-z0-9\\.\\_\\-]+}", self.ContainerMiddleware(action.NewStaticAction()))
 
 	/* Classic HTTP API */
-	self.Register("/api/netmail/remove", action.NewNetmailRemoveApiAction())
+	Register(router, "/api/netmail/remove", self.ContainerMiddleware(action.NewNetmailRemoveApiAction()))
 
 	/* Modern Web-Socket command stream */
-	self.Register("/api/v1", api.NewCommandStream())
+	Register(router, "/api/v1", self.ContainerMiddleware(api.NewCommandStream()))
+
+	return router
 
 }
 
 func (self *SiteManager) Start() {
 
 	log.Printf("SiteManager: Start HTTP service: addr = %s port = %d", self.addr, self.port)
-
-	/* Prepare routes  */
-	self.registerFrontend()
-	self.registerBackend()
 
 	/* Start service */
 	go self.run()
@@ -175,29 +163,25 @@ func (self *SiteManager) Start() {
 
 func (self *SiteManager) run() {
 
+	/* Step 1. Create router */
+	router := self.createRouter()
+
+	/* Step 2. Start HTTP service */
 	serviceAddr := fmt.Sprintf("%s:%d", self.addr, self.port)
 	srv := &http.Server{
-		Handler: self.rtr,
-		Addr:    serviceAddr,
-		// Good practice: enforce timeouts for servers you create!
-		WriteTimeout: 10 * time.Minute,
-		ReadTimeout:  10 * time.Minute,
+		Handler:  router,
+		Addr:     serviceAddr,
 	}
-
-	err := srv.ListenAndServe()
-	if err != nil {
-		log.Printf("SiteManager: service error: err = %+v", err)
+	err1 := srv.ListenAndServe()
+	if err1 != nil {
+		panic(err1)
 	}
 
 }
 
 func (self *SiteManager) Stop() error {
-
-	log.Printf("SiteManager: Service stop")
-
-	//
-	//	webSite.Stop()
-
+	/* Step 1. Stop HTTP service */
+	// TODO - stop HTTP service ...
 	return nil
 }
 
