@@ -1,13 +1,11 @@
 package i18n
 
 import (
-	"os"
-	"log"
 	"fmt"
+	"log"
+	"os"
 	"strings"
 )
-
-var mainTranslation *MainTranslation
 
 type MainTranslation struct {
 	mainTranslations map[string]*LangTranslation
@@ -59,6 +57,8 @@ func GetText(langName string, actionName string, codeName string) string {
 
 	var result string = codeName
 
+	mainTranslation := GetMainTranslation()
+
 	newLangTranslation := mainTranslation.GetLangTranslation(langName)
 	newActionTranslation := newLangTranslation.GetActionTranslation(actionName)
 	result = newActionTranslation.GetTranslation(codeName)
@@ -68,8 +68,8 @@ func GetText(langName string, actionName string, codeName string) string {
 }
 
 type Lang struct {
-	lang1 string
-	lang2 string
+	lang1   string
+	lang2   string
 	charset string
 }
 
