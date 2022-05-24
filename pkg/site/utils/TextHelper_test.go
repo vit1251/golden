@@ -13,7 +13,7 @@ func Test1_TextHelper_makeNameTitle(t *testing.T) {
 	expected := "AM"
 
 	if actual != expected {
-		t.Fatalf("Invalid")
+		t.Fatalf("Test1 is FAIL.\n\tACTUAL = %v\n\tEXPECTED = %v", actual, expected)
 	}
 
 }
@@ -27,7 +27,7 @@ func Test2_TextHelper_makeNameTitle(t *testing.T) {
 	expected := "AM"
 
 	if actual != expected {
-		t.Fatalf("Invalid")
+		t.Fatalf("Test2 is FAIL.\n\tACTUAL = %v\n\tEXPECTED = %v", actual, expected)
 	}
 
 }
@@ -41,7 +41,7 @@ func Test3_TextHelper_makeNameTitle(t *testing.T) {
 	expected := "AM"
 
 	if actual != expected {
-		t.Fatalf("Invalid")
+		t.Fatalf("Test3 is FAIL.\n\tACTUAL = %v\n\tEXPECTED = %v", actual, expected)
 	}
 
 }

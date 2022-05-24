@@ -7,11 +7,31 @@ import (
 	"strings"
 )
 
-func TextHelper_makeNameTitle(name string) string {
+func TextHelper_makeNameTitle(source string) string {
 
-	parts := strings.Split(name, " ")
+	/* Stage 1. Smart name splitting */
+	var parts []string
+	var mem strings.Builder
+
+	for _, ch := range source {
+		if ch == ' ' {
+			if mem.Len() > 0 {
+				part := mem.String()
+				parts = append(parts, part)
+			}
+			mem.Reset()
+		} else {
+			mem.WriteRune(ch)
+		}
+	}
+	if mem.Len() > 0 {
+		part := mem.String()
+		parts = append(parts, part)
+	}
+
+	/* Stage 2. Construct short name */
+	
 	partCount := len(parts)
-
 	if partCount >= 2 {
 		firstName := parts[0]
 		lastName := parts[partCount-1]
