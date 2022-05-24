@@ -45,3 +45,17 @@ func Test3_TextHelper_makeNameTitle(t *testing.T) {
 	}
 
 }
+
+// Wrong path: empty name
+func Test4_TextHelper_makeNameTitle(t *testing.T) {
+
+	source := "    "
+	
+	actual := TextHelper_makeNameTitle(source)
+	expected := "?"
+
+	if actual != expected {
+		t.Fatalf("Test4 is FAIL.\n\tACTUAL = %v\n\tEXPECTED = %v", actual, expected)
+	}
+
+}
