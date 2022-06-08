@@ -71,7 +71,8 @@ func (self *WelcomeAction) renderVerpic() widgets.IWidget {
 
 	//	var version string = "1_2_16"
 	//	var version string = "1_2_17"
-	var version string = "1_2_18"
+	//	var version string = "1_2_18"
+	var version string = "1_2_19"
 
 	imageName := fmt.Sprintf("Dog_%s.png", version)
 	imagePath := fmt.Sprintf("/static/%s", imageName)

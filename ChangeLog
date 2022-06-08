@@ -1,3 +1,7 @@
+2022-05-30 00:00 +3000 - Golden Point 1.2.19
+
+ - TextHelper cause panic on boundary error (#157)
+
 2022-04-02 03:04 +0300 - Golden Point 1.2.18
 
  - Session Rx/Tx summary report page (#125)
