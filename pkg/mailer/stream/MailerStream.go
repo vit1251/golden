@@ -1,6 +1,7 @@
 package stream
 
 import (
+	"context"
 	"bufio"
 	"log"
 	"net"
@@ -9,6 +10,10 @@ import (
 )
 
 type MailerStream struct {
+
+	dialer net.Dialer
+	dialerCancel context.CancelFunc
+
 	conn net.Conn
 
 	reader *bufio.Reader
@@ -29,16 +34,21 @@ func NewMailerStream() *MailerStream {
 	return stream
 }
 
-func (self *MailerStream) OpenSession(system string) error {
+func (self *MailerStream) OpenSession(remoteSystem string) error {
 
-	conn, err1 := net.DialTimeout("tcp", system, time.Millisecond*1000)
+	/* Step 1. Create context */
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	self.dialerCancel = cancel
+
+	/* Step 2. Start new TCP connection */
+	conn, err1 := self.dialer.DialContext(ctx, "tcp", remoteSystem)
 	if err1 != nil {
 		log.Printf("MailerStream: Fail to open and connect socket: err = %+v", err1)
 		return err1
 	}
-
 	log.Printf("MailerStream: Socket open")
 
+	/* Step 3. Initialize stream channels */
 	self.InFrameReady = make(chan interface{})
 	self.OutFrameReady = make(chan interface{})
 
