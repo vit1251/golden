@@ -18,6 +18,10 @@ type StatMailer struct {
 	Status       string /* Summary report                */
 }
 
+func (self StatMailer) GetDuration() uint64 {
+	return uint64(self.SessionStop - self.SessionStart)
+}
+
 func (self *StatMailerMapper) GetMailerSummary() ([]StatMailer, error) {
 
 	var result []StatMailer

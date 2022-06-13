@@ -104,8 +104,8 @@ func (self *ServiceMailerAction) renderRow(s *mapper.StatMailer) widgets.IWidget
 	rowWidget.AddWidget(startMailerWidget)
 
 	/* Render sender name */
-
-	sessionDuration := utils.DateHelper_renderDurationInMilli(s.SessionStop - s.SessionStart)
+	var newDuration uint64 = s.GetDuration()
+	sessionDuration := utils.TimeHelper_renderDurationInMilli(newDuration)
 	stopMailerWidget := widgets.NewDivWidget().
 		SetWidth("190px").
 		SetHeight("38px").
