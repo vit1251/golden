@@ -1,15 +1,18 @@
 package tracker
 
 import (
+	"fmt"
+	"log"
+	"os"
+	"path"
+	"time"
+
+	"github.com/google/uuid"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/mailer/cache"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
-	"log"
-	"os"
-	"path"
-	"time"
 )
 
 type Tracker struct {
@@ -72,6 +75,13 @@ func (self *Tracker) ProcessOutbound() error {
 	return nil
 }
 
+/// Create new TicFile index
+func (self *Tracker) createNewTicFilename(tic *TicFile) string {
+	id := uuid.New()
+	result := fmt.Sprintf("%s", id.String())
+	return result
+}
+
 func (self *Tracker) processTICmail(item cache.FileEntry) error {
 
 	mapperManager := self.restoreMapperManager()
@@ -119,8 +129,9 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	}
 
 	/* Create new path */
+	indexName := self.createNewTicFilename(tic)
 	inboxTicLocation := path.Join(inboundDirectory, tic.GetFile())
-	areaFileLocation := path.Join(areaLocation, tic.GetLFile())
+	areaFileLocation := path.Join(areaLocation, indexName)
 	log.Printf("inboxTicLocation = %s areaFileLocation = %s", inboxTicLocation, areaFileLocation)
 
 	/* Move */
@@ -128,12 +139,20 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 		log.Printf("Fail on Rename: err = %+v", err)
 	}
 
+	/* Prepare ornginal name */
+	var orig_name string = tic.GetLFile()
+	if orig_name == "" {
+		log.Printf("Tracker: no Long name is exists. Using DOS compatible name.")
+		orig_name = tic.GetFile()
+	}
+
 	/* Register file */
 	newFile := mapper.NewFile()
 	newFile.SetArea(tic.GetArea())
 	newFile.SetDesc(tic.GetDesc())
 	newFile.SetUnixTime(tic.GetUnixTime())
-	newFile.SetFile(tic.GetFile())
+	newFile.SetFile(indexName)
+	newFile.SetOrigName(orig_name)
 	fileMapper.RegisterFile(*newFile)
 
 	/* Register status */

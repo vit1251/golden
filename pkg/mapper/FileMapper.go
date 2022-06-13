@@ -2,11 +2,12 @@ package mapper
 
 import (
 	"database/sql"
+	"log"
+	"path/filepath"
+
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
-	"log"
-	"path/filepath"
 )
 
 type FileMapper struct {
@@ -32,7 +33,7 @@ func (self *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `fileArea`, `fileName`, `fileDesc`, `fileTime`, `fileViewCount` FROM `file` WHERE `fileArea` = $1"
+	sqlStmt := "SELECT `fileArea`, `indexName`, `fileName`, `fileDesc`, `fileTime`, `fileViewCount` FROM `file` WHERE `fileArea` = $1"
 	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
 	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag)
 	if err1 != nil {
@@ -43,12 +44,13 @@ func (self *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 	for rows.Next() {
 
 		var fileArea string
+		var indexName string
 		var fileName string
 		var fileDesc string
 		var fileTime *int64
 		var fileViewCount int
 
-		err2 := rows.Scan(&fileArea, &fileName, &fileDesc, &fileTime, &fileViewCount)
+		err2 := rows.Scan(&fileArea, &indexName, &fileName, &fileDesc, &fileTime, &fileViewCount)
 		if err2 != nil {
 			log.Printf("error on scan: err = %+v", err2)
 			return nil, err2
@@ -57,7 +59,8 @@ func (self *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 		newFile := NewFile()
 		newFile.SetArea(fileArea)
 		newFile.SetDesc(fileDesc)
-		newFile.SetFile(fileName)
+		newFile.SetFile(indexName)
+		newFile.SetOrigName(fileName)
 		newFile.SetViewCount(fileViewCount)
 		if fileTime != nil {
 			newFile.SetUnixTime(*fileTime)
@@ -79,10 +82,11 @@ func (self *FileMapper) RegisterFile(tic File) error {
 
 	storageManager := self.restoreStorageManager()
 
-	query1 := "INSERT INTO `file` ( `fileName`, `fileArea`, `fileDesc`, `fileTime` ) VALUES ( ?, ?, ?, ? )"
+	query1 := "INSERT INTO `file` ( `indexName`, `fileName`, `fileArea`, `fileDesc`, `fileTime` ) VALUES ( ?, ?, ?, ?, ? )"
 
 	var params []interface{}
 	params = append(params, tic.GetFile())
+	params = append(params, tic.GetOrigName())
 	params = append(params, tic.GetArea())
 	params = append(params, tic.GetDesc())
 	params = append(params, tic.GetUnixTime())
@@ -115,12 +119,12 @@ func (self *FileMapper) GetFileBoxAbsolutePath(areaName string) string {
 	return path
 }
 
-func (self *FileMapper) RemoveFileByName(fileName string) error {
+func (self *FileMapper) RemoveFileByName(indexName string) error {
 	storageManager := self.restoreStorageManager()
 
-	query1 := "DELETE FROM `file` WHERE `fileName` = ?"
+	query1 := "DELETE FROM `file` WHERE `indexName` = ?"
 	var params []interface{}
-	params = append(params, fileName)
+	params = append(params, indexName)
 
 	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		return err
@@ -157,14 +161,14 @@ func (self *FileMapper) RemoveAreaByName(areaName string) error {
 	return err1
 }
 
-func (self *FileMapper) ViewFileByFileName(fileArea string, fileName string) error {
+func (self *FileMapper) ViewFileByIndexName(fileArea string, indexName string) error {
 
 	storageManager := self.restoreStorageManager()
 
-	query1 := "UPDATE `file` SET `fileViewCount` = `fileViewCount` + 1 WHERE `fileArea` = $1 AND `fileName` = $2"
+	query1 := "UPDATE `file` SET `fileViewCount` = `fileViewCount` + 1 WHERE `fileArea` = $1 AND `indexName` = $2"
 	var params []interface{}
 	params = append(params, fileArea)
-	params = append(params, fileName)
+	params = append(params, indexName)
 
 	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
 		log.Printf("Insert complete with: err = %+v", err)
@@ -196,7 +200,7 @@ func (self *FileMapper) GetFileNewCount() (int, error) {
 	return newMessageCount, nil
 }
 
-func (self *FileMapper) GetFileByFileName(echoTag string, fileName string) (*File, error) {
+func (self *FileMapper) GetFileByIndexName(echoTag string, indexName string) (*File, error) {
 
 	storageManager := self.restoreStorageManager()
 	conn := storageManager.GetConnection() // TODO
@@ -209,9 +213,9 @@ func (self *FileMapper) GetFileByFileName(echoTag string, fileName string) (*Fil
 		return nil, err
 	}
 
-	sqlStmt := "SELECT `fileArea`, `fileName`, `fileDesc`, `fileTime`, `fileViewCount` FROM `file` WHERE `fileArea` = $1 AND `fileName` = $2"
+	sqlStmt := "SELECT `fileArea`, `indexName`, `fileName`, `fileDesc`, `fileTime`, `fileViewCount` FROM `file` WHERE `fileArea` = $1 AND `indexName` = $2"
 	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
-	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag, fileName)
+	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag, indexName)
 	if err1 != nil {
 		log.Printf("error on query: err = %+v", err1)
 		return nil, err1
@@ -220,12 +224,13 @@ func (self *FileMapper) GetFileByFileName(echoTag string, fileName string) (*Fil
 	for rows.Next() {
 
 		var fileArea string
+		var indexName string
 		var fileName string
 		var fileDesc string
 		var fileTime *int64
 		var fileViewCount int
 
-		err2 := rows.Scan(&fileArea, &fileName, &fileDesc, &fileTime, &fileViewCount)
+		err2 := rows.Scan(&fileArea, &indexName, &fileName, &fileDesc, &fileTime, &fileViewCount)
 		if err2 != nil {
 			log.Printf("error on scan: err = %+v", err2)
 			return nil, err2
@@ -234,12 +239,14 @@ func (self *FileMapper) GetFileByFileName(echoTag string, fileName string) (*Fil
 		newFile := NewFile()
 		newFile.SetArea(fileArea)
 		newFile.SetDesc(fileDesc)
-		newFile.SetFile(fileName)
+		newFile.SetFile(indexName)
+		newFile.SetOrigName(fileName)
 		newFile.SetViewCount(fileViewCount)
 		if fileTime != nil {
 			newFile.SetUnixTime(*fileTime)
 		}
-		newFile.SetAbsolutePath(self.GetFileAbsolutePath(fileArea, fileName))
+		var newIndexName string = newFile.GetFile()
+		newFile.SetAbsolutePath(self.GetFileAbsolutePath(fileArea, newIndexName))
 
 		result = newFile
 	}

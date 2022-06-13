@@ -3,14 +3,15 @@ package action
 import (
 	"errors"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/mapper"
-	"github.com/vit1251/golden/pkg/site/utils"
-	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/site/utils"
+	"github.com/vit1251/golden/pkg/site/widgets"
 )
 
 type FileEchoAreaIndexAction struct {
@@ -49,7 +50,7 @@ func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 
 	files, err2 := fileMapper.GetFileHeaders(echoTag)
 	if err2 != nil {
-		response := fmt.Sprintf("Fail on GetFileHeaders on fileMapper")
+		response := fmt.Sprintf("Fail on GetFileHeaders on fileMapper: %+v", err2)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
@@ -110,8 +111,8 @@ func (self *FileEchoAreaIndexAction) renderRow(area *mapper.FileArea, file *mapp
 
 	/* Check exists */
 	var areaName string = area.GetName()
-	var fileName string = file.GetFile()
-	path := fileMapper.GetFileAbsolutePath(areaName, fileName)
+	var indexName string = file.GetFile()
+	path := fileMapper.GetFileAbsolutePath(areaName, indexName)
 	log.Printf("Check %s", path)
 
 	viewCount := file.GetViewCount()
@@ -132,7 +133,7 @@ func (self *FileEchoAreaIndexAction) renderRow(area *mapper.FileArea, file *mapp
 		SetStyle("overflow: hidden").
 		SetStyle("text-overflow: ellipsis").
 		//SetStyle("border: 1px solid green").
-		SetContent(file.GetFile())
+		SetContent(file.GetOrigName())
 	rowWidget.AddWidget(nameWidget)
 
 	/* Render NEW point */

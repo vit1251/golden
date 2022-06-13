@@ -3,12 +3,13 @@ package action
 import (
 	"archive/zip"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/mapper"
-	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/site/widgets"
 )
 
 type FileEchoAreaViewAction struct {
@@ -29,8 +30,8 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	vars := mux.Vars(r)
 	echoTag := vars["echoname"]
 	log.Printf("echoTag = %v", echoTag)
-	newFile := vars["file"]
-	log.Printf("file = %v", newFile)
+	indexName := vars["file"]
+	log.Printf("indexName = %v", indexName)
 
 	/* Get message area */
 	area, err1 := fileAreaMapper.GetAreaByName(echoTag)
@@ -42,7 +43,7 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	log.Printf("area = %+v", area)
 
 	/**/
-	file, err2 := fileMapper.GetFileByFileName(echoTag, newFile)
+	file, err2 := fileMapper.GetFileByIndexName(echoTag, indexName)
 	if err2 != nil {
 		response := fmt.Sprintf("Fail on GetFileByFileName on fileMapper")
 		http.Error(w, response, http.StatusInternalServerError)
@@ -50,9 +51,9 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	}
 
 	/* Update view counter */
-	err3 := fileMapper.ViewFileByFileName(area.GetName(), newFile)
+	err3 := fileMapper.ViewFileByIndexName(area.GetName(), indexName)
 	if err3 != nil {
-		response := fmt.Sprintf("Fail on ViewFileByFileName on fileMapper")
+		response := fmt.Sprintf("Fail on ViewFileByIndexName on fileMapper")
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
@@ -76,12 +77,12 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	container.AddWidget(containerVBox)
 
 	/* Context actions */
-	actionBar := self.renderActions(area, newFile)
+	actionBar := self.renderActions(area, indexName)
 	containerVBox.Add(actionBar)
 
 	/* TODO - show meta here ... */
 	if IsImage(file.GetFile()) {
-		imageURL := fmt.Sprintf("/file/%s/tic/%s/download", area.GetName(), newFile)
+		imageURL := fmt.Sprintf("/file/%s/tic/%s/download", area.GetName(), indexName)
 		imageWidget := widgets.NewImageWidget()
 		imageWidget.SetSource(imageURL)
 		imageWidget.SetClass("preview")

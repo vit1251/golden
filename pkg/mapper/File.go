@@ -6,12 +6,13 @@ import (
 )
 
 type File struct {
-	area      string    /* Area name        */
-	desc      string    /* Description      */
-	file      string    /* Filename         */
-	time      time.Time /* Creation stamp   */
-	viewCount int       /* View count       */
-	path      string    /* Absolute path    */
+	area      string    /* Area name         */
+	desc      string    /* Description       */
+	file      string    /* Disk index        */
+	orig_name string    /* Original filename */
+	time      time.Time /* Creation stamp    */
+	viewCount int       /* View count        */
+	path      string    /* Absolute path     */
 }
 
 func NewFile() *File {
@@ -74,4 +75,12 @@ func (self *File) SetAbsolutePath(path string) {
 
 func (self *File) GetAbsolutePath() string {
 	return self.path
+}
+
+func (self *File) SetOrigName(orig_name string) {
+	self.orig_name = orig_name
+}
+
+func (self File) GetOrigName() string {
+	return self.orig_name
 }
