@@ -22,6 +22,7 @@ func NewFileEchoAreaViewAction() *FileEchoAreaViewAction {
 
 func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	urlManager := self.restoreUrlManager()
 	mapperManager := self.restoreMapperManager()
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	fileMapper := mapperManager.GetFileMapper()
@@ -51,7 +52,8 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	}
 
 	/* Update view counter */
-	err3 := fileMapper.ViewFileByIndexName(area.GetName(), indexName)
+	var areaName string = area.GetName()
+	err3 := fileMapper.ViewFileByIndexName(areaName, indexName)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on ViewFileByIndexName on fileMapper")
 		http.Error(w, response, http.StatusInternalServerError)
@@ -81,15 +83,19 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	containerVBox.Add(actionBar)
 
 	/* TODO - show meta here ... */
-	if IsImage(file.GetFile()) {
-		imageURL := fmt.Sprintf("/file/%s/tic/%s/download", area.GetName(), indexName)
+	var origName = file.GetOrigName()
+	if IsImage(origName) {
+
+		imageAddr := urlManager.CreateUrl("/file/{farea_name}/tic/{tic_index}/download").
+			SetParam("farea_name", areaName).
+			SetParam("tic_index", indexName).
+			Build()
+
 		imageWidget := widgets.NewImageWidget()
-		imageWidget.SetSource(imageURL)
+		imageWidget.SetSource(imageAddr)
 		imageWidget.SetClass("preview")
 		containerVBox.Add(imageWidget)
-	}
-
-	if IsZipArchive(file.GetFile()) {
+	} else if IsZipArchive(origName) {
 		path := file.GetAbsolutePath()
 		//
 		divBox := widgets.NewDivWidget()
@@ -112,6 +118,8 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 			divBox2 := widgets.NewDivWidget()
 			divBox2.SetContent(out)
 			containerVBox.Add(divBox2)
+		} else {
+			// TODO - process preview more files ...
 		}
 
 	}
