@@ -43,19 +43,30 @@ func (self *setupSection) Register(c *config.Config, section string, name string
 
 }
 
-func (self SetupAction) makeNetworkingSection(c *config.Config) setupSection {
+func (self SetupAction) makeFidoSection(c *config.Config) setupSection {
 
 	/* Section header */
 	netSetupSession := new(setupSection)
-	netSetupSession.Name = "Networking"
+	netSetupSession.Name = "Fidonet options"
 
 	/* Section options */
-	netSetupSession.Register(c, "main", "Address", "FidoNet network point address (i.e. POINT address)")
-	netSetupSession.Register(c, "main", "NetAddr", "FidoNet network BOSS address (example: f24.n5023.z2.binkp.net:24554)")
-	netSetupSession.Register(c, "main", "Password", "FidoNet point password")
-	netSetupSession.Register(c, "main", "Link", "FidoNet uplink provide (i.e. BOSS address)")
+	netSetupSession.Register(c, "main", "Address", "FidoNet point address (example: 2:5020/1024.11)")
+	netSetupSession.Register(c, "main", "Password", "FidoNet point password (example: pa$$w0rd)")
+	netSetupSession.Register(c, "main", "Link", "FidoNet uplink provide (example: 2:5020/1024)")
 
 	return *netSetupSession
+}
+
+func (self SetupAction) makeGatewaySection(c *config.Config) setupSection {
+
+	/* Section header */
+	gwSetupSession := new(setupSection)
+	gwSetupSession.Name = "Gateway options"
+
+	/* Section options */
+	gwSetupSession.Register(c, "main", "NetAddr", "Gateway IP address and port (example: f1024.n5020.z2.binkp.net:24554)")
+
+	return *gwSetupSession
 }
 
 func (self SetupAction) makeUserSection(c *config.Config) setupSection {
@@ -115,9 +126,13 @@ func (self SetupAction) makeSections(c *config.Config) []setupSection {
 
 	var setupSections []setupSection
 
-	/* Networking section */
-	networkingSection := self.makeNetworkingSection(c)
+	/* Fidonet section */
+	networkingSection := self.makeFidoSection(c)
 	setupSections = append(setupSections, networkingSection)
+
+	/* Gateway  section */
+	gatewaySection := self.makeGatewaySection(c)
+	setupSections = append(setupSections, gatewaySection)
 
 	/* User section */
 	userSection := self.makeUserSection(c)

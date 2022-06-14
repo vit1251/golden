@@ -38,6 +38,12 @@ func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		self.updateParam(newConfig, r.PostForm, p.Section, p.Name)
 	}
 
+	/* Setup default parameters */
+	// TODO - if netAddr == "" {
+	// TODO - uplinkAddr := "2:5030/1024"
+	// TODO - newNetAddr := self.createNetAddr(uplinkAddr)
+	// TODO - }
+
 	/* Dump config */
 	log.Printf("Dump config %#v", newConfig)
 
