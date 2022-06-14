@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -82,10 +83,23 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 	actionBar := self.renderActions(area, indexName)
 	containerVBox.Add(actionBar)
 
-	/* TODO - show meta here ... */
+	/* Show preview widget */
+	var origPath string = file.GetAbsolutePath()
 	var origName = file.GetOrigName()
+
+	/* Common attributes */
+	containerVBox.Add(self.renderAttribute("Original TIC filename", origName))
+	containerVBox.Add(self.renderAttribute("Disk path", origPath))
+	fi, err := os.Stat(origPath)
+	if err == nil {
+		var storageSize string = fmt.Sprintf("%d", fi.Size()/1024)
+		containerVBox.Add(self.renderAttribute("Disk size, KB", storageSize))
+	}
+
+	/* Extension base attributes */
 	if IsImage(origName) {
 
+		/* Render preview */
 		imageAddr := urlManager.CreateUrl("/file/{farea_name}/tic/{tic_index}/download").
 			SetParam("farea_name", areaName).
 			SetParam("tic_index", indexName).
@@ -95,31 +109,37 @@ func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 		imageWidget.SetSource(imageAddr)
 		imageWidget.SetClass("preview")
 		containerVBox.Add(imageWidget)
+
+		/* Render image attributes */
+		// TODO - image size and etc...
+
 	} else if IsZipArchive(origName) {
-		path := file.GetAbsolutePath()
-		//
-		divBox := widgets.NewDivWidget()
-		divBox.SetContent(path)
-		containerVBox.Add(divBox)
-		//
-		reader, err1 := zip.OpenReader(path)
+
+		/* Render archive attributes */
+		// TODO - add more attributes ...
+
+		/* Processing archive */
+		reader, err1 := zip.OpenReader(origPath)
 		if err1 == nil {
+
+			/* Render archive comment */
 			divBox1 := widgets.NewPreWidget()
 			var comment string = reader.Comment
 			comment = strings.Replace(comment, "\r\n", "\n", -1) // CRLF -> NL
 			divBox1.SetContent(comment)
 			containerVBox.Add(divBox1)
-			//
+
+			/* Render archive index */
 			var out string
 			for _, f := range reader.File {
 				out += fmt.Sprintf("%s - %s (%d byte)<br />", f.Name, f.Comment, f.UncompressedSize64)
 			}
-			//
 			divBox2 := widgets.NewDivWidget()
 			divBox2.SetContent(out)
 			containerVBox.Add(divBox2)
+
 		} else {
-			// TODO - process preview more files ...
+			// TODO - process broken ZIP arcive ...
 		}
 
 	}
@@ -150,6 +170,16 @@ func (self *FileEchoAreaViewAction) renderActions(area *mapper.FileArea, newFile
 		SetLabel("Remove"))
 
 	return actionMenu
+}
+
+func (self *FileEchoAreaViewAction) renderAttribute(name string, value string) widgets.IWidget {
+
+	output := fmt.Sprintf("%s = %+v", name, value)
+
+	divBox := widgets.NewDivWidget()
+	divBox.SetContent(output)
+
+	return divBox
 }
 
 func IsZipArchive(filename string) bool {
