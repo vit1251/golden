@@ -127,7 +127,7 @@ func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r 
 	content := ticBuilder.Build()
 
 	/* Change charset */
-	newContent, err4 := charsetManager.EncodeMessageBody([]rune(content), areaCharset)
+	newContent, err4 := charsetManager.EncodeMessageBody(content, areaCharset)
 	if err4 != nil {
 		panic(err4)
 	}

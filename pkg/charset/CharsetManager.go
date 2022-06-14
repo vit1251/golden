@@ -8,25 +8,28 @@ import (
 )
 
 type CharsetManager struct {
+	mapping map[string]*charmap.Charmap
 }
 
 func NewCharsetManager(r *registry.Container) *CharsetManager {
 	cm := new(CharsetManager)
+	cm.mapping = make(map[string]*charmap.Charmap)
+	//
+	cm.registerCharset("CP866", charmap.CodePage866)
+	cm.registerCharset("LATIN-1", charmap.ISO8859_1)
+	cm.registerCharset("CP437", charmap.CodePage437)
+	cm.registerCharset("ASCII", charmap.ISO8859_1) // TODO - processing as special case ...
+	//
 	return cm
 }
 
-func (self *CharsetManager) DecodeString(source []byte) (string, error) {
-	var result string
-	runes, err := self.Decode(source)
-	result = string(runes)
-	return result, err
+func (self *CharsetManager) registerCharset(name string, c *charmap.Charmap) {
+	self.mapping[name] = c
 }
 
-func (self *CharsetManager) Decode(source []byte) ([]rune, error) {
+func (self *CharsetManager) decode(source []byte, charmap *charmap.Charmap) ([]rune, error) {
 
 	var result []rune
-
-	charmap := charmap.CodePage866
 
 	for _, ch := range source {
 		r := charmap.DecodeByte(ch)
@@ -36,11 +39,7 @@ func (self *CharsetManager) Decode(source []byte) ([]rune, error) {
 	return result, nil
 }
 
-//func (self *CharsetManager) EncodeString(source string) ([]byte, error) {
-// TODO - implement it later or newer ...
-//}
-
-func (self *CharsetManager) Encode(source []rune, charmap *charmap.Charmap) ([]byte, error) {
+func (self *CharsetManager) encode(source []rune, charmap *charmap.Charmap) ([]byte, error) {
 
 	var result []byte
 
@@ -56,33 +55,37 @@ func (self *CharsetManager) Encode(source []rune, charmap *charmap.Charmap) ([]b
 }
 
 func (self CharsetManager) DecodeMessageBody(msgBody []byte, charset string) (string, error) {
-	var result string
-	if charset == "CP866" {
-		if unicodeBody, err1 := self.Decode(msgBody); err1 == nil {
+
+	var convertationMap *charmap.Charmap = self.searchCharmapByIndex(charset)
+
+	if convertationMap != nil {
+		var result string
+		if unicodeBody, err1 := self.decode(msgBody, convertationMap); err1 == nil {
 			result = string(unicodeBody)
 		} else {
-				return result, err1
-			}
+			return result, err1
+		}
+		return result, nil
 	} else if charset == "UTF-8" {
+		var result string
 		result = string(msgBody)
-	} else if charset == "LATIN-1" {
-		result = string(msgBody)
-	} else {
-		return result, fmt.Errorf("wrong charset on message")
+		return result, nil
 	}
-	return result, nil
+
+	return "", fmt.Errorf("wrong charset on message")
 }
 
-func (self CharsetManager) EncodeMessageBody(msgBody []rune, charset string) ([]byte, error) {
+func (self CharsetManager) EncodeMessageBody(msgBody string, charset string) ([]byte, error) {
 
-	if charset == "CP866" {
+	var convertationMap *charmap.Charmap = self.searchCharmapByIndex(charset)
 
-		if unicodeBody, err1 := self.Encode(msgBody, charmap.CodePage866); err1 == nil {
+	if convertationMap != nil {
+		var newMsgBody []rune = []rune(msgBody)
+		if unicodeBody, err1 := self.encode(newMsgBody, convertationMap); err1 == nil {
 			return unicodeBody, nil
 		} else {
 			return nil, err1
 		}
-
 	} else if charset == "UTF-8" {
 
 		var result []byte
@@ -94,16 +97,15 @@ func (self CharsetManager) EncodeMessageBody(msgBody []rune, charset string) ([]
 		}
 		return result, nil
 
-	} else if charset == "LATIN-1" {
-
-		if unicodeBody, err1 := self.Encode(msgBody, charmap.ISO8859_1); err1 == nil {
-			return unicodeBody, nil
-		} else {
-			return nil, err1
-		}
-
 	}
 
 	return nil, nil
 
+}
+
+func (self CharsetManager) searchCharmapByIndex(charmapIndex string) *charmap.Charmap {
+	if value, ok := self.mapping[charmapIndex]; ok {
+		return value
+	}
+	return nil
 }

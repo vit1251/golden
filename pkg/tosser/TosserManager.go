@@ -201,19 +201,19 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	em.body += fmt.Sprintf(" * Origin: %s (%s)", newOrigin, newConfig.Main.Address) + packet.CR
 
 	/* Encode message headers */
-	newSubject, err1 := charsetManager.EncodeMessageBody([]rune(em.Subject), msgCharset)
+	newSubject, err1 := charsetManager.EncodeMessageBody(em.Subject, msgCharset)
 	if err1 != nil {
 		return "", err1
 	}
-	newTo, err2 := charsetManager.EncodeMessageBody([]rune(em.To), msgCharset)
+	newTo, err2 := charsetManager.EncodeMessageBody(em.To, msgCharset)
 	if err2 != nil {
 		return "", err2
 	}
-	newFrom, err3 := charsetManager.EncodeMessageBody([]rune(newConfig.Main.RealName), msgCharset)
+	newFrom, err3 := charsetManager.EncodeMessageBody(newConfig.Main.RealName, msgCharset)
 	if err3 != nil {
 		return "", err3
 	}
-	newBody, err4 := charsetManager.EncodeMessageBody([]rune(em.GetBody()), msgCharset)
+	newBody, err4 := charsetManager.EncodeMessageBody(em.GetBody(), msgCharset)
 	if err4 != nil {
 		return "", err3
 	}
@@ -405,19 +405,19 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
 	/* Encode message */
 	var msgCharset string = charset // TODO - check valid charset here ...
-	newSubject, err1 := charsetManager.EncodeMessageBody([]rune(nm.Subject), msgCharset)
+	newSubject, err1 := charsetManager.EncodeMessageBody(nm.Subject, msgCharset)
 	if err1 != nil {
 		return err1
 	}
-	newTo, err2 := charsetManager.EncodeMessageBody([]rune(nm.To), msgCharset)
+	newTo, err2 := charsetManager.EncodeMessageBody(nm.To, msgCharset)
 	if err2 != nil {
 		return err2
 	}
-	newFrom, err3 := charsetManager.EncodeMessageBody([]rune(FromName), msgCharset)
+	newFrom, err3 := charsetManager.EncodeMessageBody(FromName, msgCharset)
 	if err3 != nil {
 		return err3
 	}
-	newBody, err4 := charsetManager.EncodeMessageBody([]rune(nm.GetBody()), msgCharset)
+	newBody, err4 := charsetManager.EncodeMessageBody(nm.GetBody(), msgCharset)
 	if err4 != nil {
 		return err4
 	}
