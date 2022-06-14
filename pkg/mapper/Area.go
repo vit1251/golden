@@ -12,6 +12,7 @@ type Area struct {
 	MessageCount    int    /* Echo message count     */
 	newMessageCount int    /* Echo new message count */
 	order           int64  /* Area sort order        */
+	areaIndex       string /* Area index             */
 }
 
 func (self *Area) GetNewMessageCount() int {
@@ -28,7 +29,15 @@ func NewArea() *Area {
 	return a
 }
 
-func (self *Area) GetName() string {
+func (self Area) GetAreaIndex() string {
+	return self.areaIndex
+}
+
+func (self *Area) SetAreaIndex(areaIndex string) {
+	self.areaIndex = areaIndex
+}
+
+func (self Area) GetName() string {
 	return self.name
 }
 

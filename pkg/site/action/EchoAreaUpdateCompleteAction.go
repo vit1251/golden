@@ -1,7 +1,6 @@
 package action
 
 import (
-	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -19,6 +18,7 @@ func NewEchoAreaUpdateCompleteAction() *EchoAreaUpdateCompleteAction {
 
 func (self *EchoAreaUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	urlManager := self.restoreUrlManager()
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
@@ -30,11 +30,11 @@ func (self *EchoAreaUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 
 	/* ... */
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %v", areaIndex)
 
 	/* ... */
-	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -62,7 +62,10 @@ func (self *EchoAreaUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 	}
 
 	/* Render */
-	newLocation := fmt.Sprintf("/echo/%s", echoTag)
-	http.Redirect(w, r, newLocation, 303)
+	echoIndexAddr := urlManager.CreateUrl("/echo/{area_index}").
+		SetParam("area_index", area.GetAreaIndex()).
+		Build()
+
+	http.Redirect(w, r, echoIndexAddr, 303)
 
 }

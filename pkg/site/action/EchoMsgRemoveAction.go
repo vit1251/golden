@@ -19,17 +19,18 @@ func NewEchoMsgRemoveAction() *EchoMsgRemoveAction {
 
 func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	urlManager := self.restoreUrlManager()
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()
 
 	//
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %v", areaIndex)
 
 	//
-	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -37,7 +38,8 @@ func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	//
 	msgHash := vars["msgid"]
-	msg, err2 := echoMapper.GetMessageByHash(echoTag, msgHash)
+	var areaName string = area.GetName()
+	msg, err2 := echoMapper.GetMessageByHash(areaName, msgHash)
 	if err2 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash on echoMapper: err = %+v", err2)
 		http.Error(w, response, http.StatusInternalServerError)
@@ -65,9 +67,13 @@ func (self *EchoMsgRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	containerVBox.Add(headerWidget)
 
 	//
+	removeCompleteAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/remove/complete").
+		SetParam("area_index", area.GetAreaIndex()).
+		SetParam("message_index", msg.Hash).
+		Build()
 	formWidget := widgets.NewFormWidget().
 		SetMethod("POST").
-		SetAction(fmt.Sprintf("/echo/%s/message/%s/remove/complete", area.GetName(), msg.Hash))
+		SetAction(removeCompleteAddr)
 	formVBox := widgets.NewVBoxWidget()
 	formWidget.SetWidget(formVBox)
 	containerVBox.Add(formWidget)

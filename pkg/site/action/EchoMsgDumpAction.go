@@ -28,18 +28,19 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	//
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %v", areaIndex)
 
 	//
-	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if err1 != nil {
 		panic(err1)
 	}
 	log.Printf("area = %+v", area)
 
 	//
-	msgHeaders, err112 := echoMapper.GetMessageHeaders(echoTag)
+	var areaName string = area.GetName()
+	msgHeaders, err112 := echoMapper.GetMessageHeaders(areaName)
 	if err112 != nil {
 		response := fmt.Sprintf("Fail on GetAreas")
 		http.Error(w, response, http.StatusInternalServerError)
@@ -49,7 +50,7 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	//
 	msgHash := vars["msgid"]
-	origMsg, err3 := echoMapper.GetMessageByHash(echoTag, msgHash)
+	origMsg, err3 := echoMapper.GetMessageByHash(areaName, msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetAreas")
 		http.Error(w, response, http.StatusInternalServerError)
@@ -96,15 +97,28 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
 func (self *EchoMsgDumpAction) renderActions(area *mapper.Area, origMsg *msg.Message) widgets.IWidget {
+
+	urlManager := self.restoreUrlManager()
+
 	actionBar := widgets.NewActionMenuWidget()
 
+	/* Reply */
+	replyAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/reply").
+		SetParam("area_index", area.GetAreaIndex()).
+		SetParam("message_index", origMsg.Hash).
+		Build()
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.GetName(), origMsg.Hash)).
+		SetLink(replyAddr).
 		SetIcon("icofont-edit").
 		SetLabel("Reply"))
 
+	/* Remove */
+	removeAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/remove").
+		SetParam("area_index", area.GetAreaIndex()).
+		SetParam("message_index", origMsg.Hash).
+		Build()
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.GetName(), origMsg.Hash)).
+		SetLink(removeAddr).
 		SetIcon("icofont-remove").
 		SetLabel("Delete"))
 

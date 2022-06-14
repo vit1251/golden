@@ -1,13 +1,12 @@
 package tracker
 
 import (
-	"fmt"
+	"github.com/vit1251/golden/pkg/utils"
 	"log"
 	"os"
 	"path"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/mailer/cache"
@@ -75,13 +74,6 @@ func (self *Tracker) ProcessOutbound() error {
 	return nil
 }
 
-/// Create new TicFile index
-func (self *Tracker) createNewTicFilename(tic *TicFile) string {
-	id := uuid.New()
-	result := fmt.Sprintf("%s", id.String())
-	return result
-}
-
 func (self *Tracker) processTICmail(item cache.FileEntry) error {
 
 	mapperManager := self.restoreMapperManager()
@@ -129,7 +121,7 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	}
 
 	/* Create new path */
-	indexName := self.createNewTicFilename(tic)
+	indexName := utils.IndexHelper_makeUUID()
 	inboxTicLocation := path.Join(inboundDirectory, tic.GetFile())
 	areaFileLocation := path.Join(areaLocation, indexName)
 	log.Printf("inboxTicLocation = %s areaFileLocation = %s", inboxTicLocation, areaFileLocation)

@@ -3,6 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 )
 
@@ -17,6 +18,7 @@ func NewEchoMsgTwitAction() *EchoMsgTwitAction {
 
 func (self EchoMsgTwitAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	urlManager := self.restoreUrlManager()
 	mapperManager := self.restoreMapperManager()
 	twitMapper := mapperManager.GetTwitMapper()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
@@ -24,11 +26,11 @@ func (self EchoMsgTwitAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 	/* Get "echoname" in user request */
 	vars := mux.Vars(r)
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %+v", areaIndex)
 
-	/* Restore area by "echoname" key */
-	echoTag := vars["echoname"]
-	//log.Printf("echoTag = %+v", echoTag)
-	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
+	/* Get Echo area by area index */
+	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreaByName in echoAreaMapper: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)
@@ -37,8 +39,8 @@ func (self EchoMsgTwitAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 	/* Restore message by "echoname" and "msgid" key */
 	msgHash := vars["msgid"]
-	//log.Printf("msgid = %+v", msgid)
-	origMsg, err3 := echoMapper.GetMessageByHash(echoTag, msgHash)
+	var areaName string = area.GetName()
+	origMsg, err3 := echoMapper.GetMessageByHash(areaName, msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash in echoMapper: err = %+v", err3)
 		http.Error(w, response, http.StatusInternalServerError)
@@ -55,8 +57,9 @@ func (self EchoMsgTwitAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 
 	/* Redirect */
-	areaName := area.GetName()
-	newLocation := fmt.Sprintf("/echo/%s", areaName)
-	http.Redirect(w, r, newLocation, 303)
+	echoAddr := urlManager.CreateUrl("/echo/{area_index}").
+		SetParam("area_index", area.GetAreaIndex()).
+		Build()
+	http.Redirect(w, r, echoAddr, 303)
 
 }

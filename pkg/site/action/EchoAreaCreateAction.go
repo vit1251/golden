@@ -34,9 +34,10 @@ func (self *EchoAreaCreateAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 
 	vBox.Add(container)
 
+	areaCreateCompleteAddr := "/echo/create/complete"
 	setupForm := widgets.NewFormWidget().
 		SetMethod("POST").
-		SetAction("/echo/create/complete")
+		SetAction(areaCreateCompleteAddr)
 
 	/* Add custom param field */
 	setupFormBox := widgets.NewVBoxWidget()

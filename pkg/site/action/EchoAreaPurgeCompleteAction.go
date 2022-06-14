@@ -1,7 +1,6 @@
 package action
 
 import (
-	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -18,8 +17,10 @@ func NewEchoAreaPurgeCompleteAction() *EchoAreaPurgeCompleteAction {
 
 func (self *EchoAreaPurgeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	urlManager := self.restoreUrlManager()
 	mapperManager := self.restoreMapperManager()
 	echoMapper := mapperManager.GetEchoMapper()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	//
 	err := r.ParseForm()
@@ -27,15 +28,27 @@ func (self *EchoAreaPurgeCompleteAction) ServeHTTP(w http.ResponseWriter, r *htt
 		panic(err)
 	}
 
-	//
+	/* Parse URL parameters */
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
-
-	echoMapper.RemoveMessagesByAreaName(echoTag)
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %v", areaIndex)
 
 	//
-	newLocation := fmt.Sprintf("/echo")
-	http.Redirect(w, r, newLocation, 303)
+	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
+	if err1 != nil {
+		panic(err1)
+	}
+	log.Printf("area = %+v", area)
+
+	var areaName string = area.GetName()
+	err2 := echoMapper.RemoveMessagesByAreaName(areaName)
+	if err2 != nil {
+		panic(err2)
+	}
+
+	/* Redirect */
+	echoAddr := urlManager.CreateUrl("/echo").
+		Build()
+	http.Redirect(w, r, echoAddr, 303)
 
 }

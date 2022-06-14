@@ -28,16 +28,24 @@ func (self *EchoAreaRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *ht
 		panic(err)
 	}
 
-	//
+	/* Parse URL parameters */
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %v", areaIndex)
 
-	if err1 := echoMapper.RemoveMessagesByAreaName(echoTag); err1 != nil {
+	//
+	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
+	if err1 != nil {
+		panic(err1)
+	}
+	log.Printf("area = %+v", area)
+
+	var areaName string = area.GetName()
+	if err1 := echoMapper.RemoveMessagesByAreaName(areaName); err1 != nil {
 		log.Printf("err1 = %+v", err1)
 	}
 
-	echoAreaMapper.RemoveAreaByName(echoTag)
+	echoAreaMapper.RemoveAreaByName(areaName)
 
 	//
 	newLocation := fmt.Sprintf("/echo")
