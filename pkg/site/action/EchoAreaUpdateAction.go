@@ -20,16 +20,17 @@ func NewEchoAreaUpdateAction() *EchoAreaUpdateAction {
 
 func (self *EchoAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	urlManager := self.restoreUrlManager()
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	//
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %v", areaIndex)
 
 	//
-	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -61,9 +62,13 @@ func (self *EchoAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 
 	containerVBox.Add(headerWidget)
 
+	settingsSaveAddr := urlManager.CreateUrl("/echo/{area_index}/update/complete").
+		SetParam("area_index", area.GetAreaIndex()).
+		Build()
+
 	formWidget := widgets.NewFormWidget().
 		SetMethod("POST").
-		SetAction(fmt.Sprintf("/echo/%s/update/complete", area.GetName()))
+		SetAction(settingsSaveAddr)
 	formVBox := widgets.NewVBoxWidget()
 	formWidget.SetWidget(formVBox)
 	containerVBox.Add(formWidget)
@@ -100,18 +105,25 @@ func (self *EchoAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 
 func (self *EchoAreaUpdateAction) renderActions(area *mapper.Area) widgets.IWidget {
 
+	urlManager := self.restoreUrlManager()
 	actionBar := widgets.NewActionMenuWidget()
 
 	/* Remove area action button */
+	removeAreaAddr := urlManager.CreateUrl("/echo/{area_index}/remove").
+		SetParam("area_index", area.GetAreaIndex()).
+		Build()
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s/remove", area.GetName())).
+		SetLink(removeAreaAddr).
 		SetIcon("icofont-remove").
 		SetClass("mr-2").
 		SetLabel("Remove echo"))
 
 	/* Purge area action button */
+	purgeAreaAddr := urlManager.CreateUrl("/echo/{area_index}/purge").
+		SetParam("area_index", area.GetAreaIndex()).
+		Build()
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s/purge", area.GetName())).
+		SetLink(purgeAreaAddr).
 		SetIcon("icofont-purge").
 		SetClass("mr-2").
 		SetLabel("Purge echo"))

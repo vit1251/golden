@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	uuid "github.com/satori/go.uuid"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/config"
@@ -14,6 +13,7 @@ import (
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/tmpl"
+	"github.com/vit1251/golden/pkg/utils"
 	"hash/crc32"
 	"io"
 	"io/ioutil"
@@ -253,7 +253,7 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 		Value: msgIdValue,
 		Raw:   []byte(fmt.Sprintf("\x01MSGID: %s", msgIdValue)),
 	})
-	uuidValue := fmt.Sprintf("%s", makeUUID())
+	var uuidValue string = utils.IndexHelper_makeUUID()
 	msgBody.AddKludge(packet.Kludge{
 		Name:  "UUID",
 		Value: uuidValue,
@@ -487,7 +487,7 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 		Value: msgIdKludge,
 		Raw:   []byte(fmt.Sprintf("\x01MSGID: %s", msgIdKludge)),
 	})
-	uuidKludge := fmt.Sprintf("%s", makeUUID())
+	var uuidKludge string = utils.IndexHelper_makeUUID()
 	msgBody.AddKludge(packet.Kludge{
 		Name:  "UUID",
 		Value: uuidKludge,
@@ -554,15 +554,6 @@ func (self *TosserManager) restoreConfigManager() *config.ConfigManager {
 	} else {
 		panic("no config manager")
 	}
-}
-
-func makeUUID() string {
-	u1 := uuid.NewV4()
-	//	u1, err4 := uuid.NewV4()
-	//	if err4 != nil {
-	//		return err4
-	//	}
-	return u1.String()
 }
 
 func makeCRC32(rawMsg []byte) string {

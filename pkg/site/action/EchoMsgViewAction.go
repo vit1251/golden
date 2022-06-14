@@ -7,6 +7,7 @@ import (
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"html/template"
+	"log"
 	"net/http"
 )
 
@@ -25,13 +26,13 @@ func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()
 
-	/* Get "echoname" in user request */
+	/* Parse URL parameters */
 	vars := mux.Vars(r)
 
-	/* Restore area by "echoname" key */
-	echoTag := vars["echoname"]
-	//log.Printf("echoTag = %+v", echoTag)
-	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
+	//
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %v", areaIndex)
+	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if err1 != nil {
 		response := fmt.Sprintf("Fail on GetAreaByName in echoAreaMapper: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)
@@ -40,8 +41,10 @@ func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	/* Restore message by "echoname" and "msgid" key */
 	msgHash := vars["msgid"]
-	//log.Printf("msgid = %+v", msgid)
-	origMsg, err3 := echoMapper.GetMessageByHash(echoTag, msgHash)
+	log.Printf("msgHash = %+v", msgHash)
+
+	var areaName string = area.GetName()
+	origMsg, err3 := echoMapper.GetMessageByHash(areaName, msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash in echoMapper: err = %+v", err3)
 		http.Error(w, response, http.StatusInternalServerError)
@@ -62,7 +65,7 @@ func (self *EchoMsgViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	outDoc := doc.HTML()
 
 	/* Update message view counter */
-	err5 := echoMapper.ViewMessageByHash(echoTag, msgHash)
+	err5 := echoMapper.ViewMessageByHash(areaName, msgHash)
 	if err5 != nil {
 		response := fmt.Sprintf("Fail on ViewMessageByHash on echoMapper: err = %+v", err5)
 		http.Error(w, response, http.StatusInternalServerError)
@@ -189,32 +192,49 @@ func (self EchoMsgViewAction) makeMainEchoMsgViewWidget(area *mapper.Area, origM
 
 func (self *EchoMsgViewAction) renderActions(area *mapper.Area, origMsg *msg.Message) widgets.IWidget {
 
+	urlManager := self.restoreUrlManager()
 	actionBar := widgets.NewActionMenuWidget()
 
 	/* Reply */
+	messageReplyAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/reply").
+		SetParam("area_index", area.GetAreaIndex()).
+		SetParam("message_index", origMsg.Hash).
+		Build()
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s//message/%s/reply", area.GetName(), origMsg.Hash)).
+		SetLink(messageReplyAddr).
 		SetIcon("icofont-edit").
 		SetClass("mr-2").
 		SetLabel("Reply"))
 
 	/* Action Remove */
+	messageRemoveAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/remove").
+		SetParam("area_index", area.GetAreaIndex()).
+		SetParam("message_index", origMsg.Hash).
+		Build()
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s/message/%s/remove", area.GetName(), origMsg.Hash)).
+		SetLink(messageRemoveAddr).
 		SetIcon("icofont-remove").
 		SetClass("mr-2").
 		SetLabel("Remove"))
 
 	/* Action Dump */
+	messageDumpAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/dump").
+		SetParam("area_index", area.GetAreaIndex()).
+		SetParam("message_index", origMsg.Hash).
+		Build()
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s/message/%s/dump", area.GetName(), origMsg.Hash)).
+		SetLink(messageDumpAddr).
 		SetIcon("icofont-remove").
 		SetClass("mr-2").
 		SetLabel("Dump"))
 
 	/* Action Twit */
+	messageTwitAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/twit").
+		SetParam("area_index", area.GetAreaIndex()).
+		SetParam("message_index", origMsg.Hash).
+		Build()
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s/message/%s/twit", area.GetName(), origMsg.Hash)).
+		SetLink(messageTwitAddr).
 		SetIcon("icofont-remove").
 		SetClass("mr-2").
 		SetLabel("Twit"))

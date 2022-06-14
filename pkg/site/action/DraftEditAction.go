@@ -48,7 +48,7 @@ func (self DraftEditAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	/* Render base wiew */
+	/* Render base view */
 	bw := widgets.NewBaseWidget()
 
 	vBox := widgets.NewVBoxWidget()
@@ -80,8 +80,13 @@ func (self DraftEditAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (self DraftEditAction) makeMainView(newDraft *mapper.Draft) widgets.IWidget {
 
+	urlManager := self.restoreUrlManager()
+
+	draftEditCompleteAddr := urlManager.CreateUrl("/draft/{draft_index}/edit/complete").
+		SetParam("draft_index", newDraft.GetUUID()).
+		Build()
 	composeForm := widgets.NewFormWidget()
-	composeForm.SetAction(fmt.Sprintf("/draft/%s/edit/complete", newDraft.GetUUID()))
+	composeForm.SetAction(draftEditCompleteAddr)
 	composeForm.SetMethod("POST")
 
 	items := widgets.NewVBoxWidget()

@@ -3,6 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
@@ -25,21 +26,22 @@ func (self EchoMsgTreeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %v", areaIndex)
 
-	newArea, err1 := echoAreaMapper.GetAreaByName(echoTag)
+	newArea, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if err1 != nil {
-		response := fmt.Sprintf("Fail on GetAreaByName where echoTag is %s: err = %+v", echoTag, err1)
+		response := fmt.Sprintf("Fail on GetAreaByName where areaIndex is %s: err = %+v", areaIndex, err1)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 	log.Printf("area = %+v", newArea)
 
 	/* Get message headers */
-	msgHeaders, err2 := echoMapper.GetMessageHeaders(echoTag)
+	var areaName string = newArea.GetName()
+	msgHeaders, err2 := echoMapper.GetMessageHeaders(areaName)
 	if err2 != nil {
-		response := fmt.Sprintf("Fail on GetMessageHeaders where echoTag is %s: err = %+v", echoTag, err2)
+		response := fmt.Sprintf("Fail on GetMessageHeaders where areaName is %s: err = %+v", areaName, err2)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
@@ -69,7 +71,7 @@ func (self EchoMsgTreeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 	/* Render tree */
 	log.Printf("Tree = %+v", tree.GetRoot())
-	nodeTree := self.renderTree(*tree.GetRoot())
+	nodeTree := self.renderTree(newArea, *tree.GetRoot())
 
 	containerVBox.Add(nodeTree)
 
@@ -81,7 +83,9 @@ func (self EchoMsgTreeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 }
 
-func (self EchoMsgTreeAction) renderTree(root msg.MessageNode) widgets.IWidget {
+func (self EchoMsgTreeAction) renderTree(area *mapper.Area, root msg.MessageNode) widgets.IWidget {
+
+	urlManager := self.restoreUrlManager()
 
 	list := widgets.NewListWidget()
 
@@ -91,9 +95,13 @@ func (self EchoMsgTreeAction) renderTree(root msg.MessageNode) widgets.IWidget {
 
 		newSubject := fmt.Sprintf("%s", newMsg.Subject)
 
+		msgAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/view").
+			SetParam("area_index", area.GetAreaIndex()).
+			SetParam("message_index", newMsg.Hash).
+			Build()
 		newLink := widgets.NewLinkWidget().
 			SetContent(newSubject).
-			SetLink(fmt.Sprintf("/echo/%s/message/%s/view", newMsg.Area, newMsg.Hash))
+			SetLink(msgAddr)
 
 		if len(node.Items) == 0 {
 
@@ -104,7 +112,7 @@ func (self EchoMsgTreeAction) renderTree(root msg.MessageNode) widgets.IWidget {
 			vbox := widgets.NewVBoxWidget()
 
 			vbox.Add(newLink)
-			vbox.Add(self.renderTree(*node))
+			vbox.Add(self.renderTree(area, *node))
 
 			list.AddItem(vbox)
 

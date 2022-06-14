@@ -1,10 +1,12 @@
 package mapper
 
-import uuid "github.com/satori/go.uuid"
+import (
+	"github.com/vit1251/golden/pkg/utils"
+)
 
 const (
 	DraftStateActive = 0
-	DraftStateDone = 1
+	DraftStateDone   = 1
 )
 
 type Draft struct {
@@ -23,14 +25,9 @@ type Draft struct {
 
 func NewDraft() *Draft {
 	newDraft := new(Draft)
-	newDraft.uuid = newDraft.makeUUID()
+	newDraft.uuid = utils.IndexHelper_makeUUID()
 	newDraft.done = DraftStateActive
 	return newDraft
-}
-
-func (self Draft) makeUUID() string {
-	u1 := uuid.NewV4()
-	return u1.String()
 }
 
 func (self Draft) GetId() string {

@@ -19,16 +19,17 @@ func NewEchoAreaMarkAction() *EchoAreaMarkAction {
 
 func (self *EchoAreaMarkAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	urlManager := self.restoreUrlManager()
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	//
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %v", areaIndex)
 
 	//
-	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -55,9 +56,12 @@ func (self *EchoAreaMarkAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 	containerVBox.Add(headerWidget)
 
 	//
+	markCompleteAddr := urlManager.CreateUrl("/echo/{area_index}/mark/complete").
+		SetParam("area_index", area.GetAreaIndex()).
+		Build()
 	formWidget := widgets.NewFormWidget().
 		SetMethod("POST").
-		SetAction(fmt.Sprintf("/echo/%s/mark/complete", area.GetName()))
+		SetAction(markCompleteAddr)
 	formVBox := widgets.NewVBoxWidget()
 	formWidget.SetWidget(formVBox)
 	containerVBox.Add(formWidget)

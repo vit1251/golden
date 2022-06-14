@@ -3,11 +3,11 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/i18n"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/site/utils"
 	"github.com/vit1251/golden/pkg/site/widgets"
-	"github.com/vit1251/golden/pkg/i18n"
 	"log"
 	"net/http"
 	"strings"
@@ -24,38 +24,52 @@ func NewEchoMsgIndexAction() *EchoMsgIndexAction {
 
 func (self *EchoMsgIndexAction) renderActions(newArea *mapper.Area) widgets.IWidget {
 
+	urlManager := self.restoreUrlManager()
+
 	var mainLanguage string = i18n.GetDefaultLanguage()
 
 	actionBar := widgets.NewActionMenuWidget()
 
 	/* Compose */
+	composeAddr := urlManager.CreateUrl("/echo/{area_index}/message/compose").
+		SetParam("area_index", newArea.GetAreaIndex()).
+		Build()
 	composeTitle := i18n.GetText(mainLanguage, "EchoMsgIndexAction", "action-compose-button")
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s/message/compose", newArea.GetName())).
+		SetLink(composeAddr).
 		SetIcon("icofont-edit").
 		SetClass("mr-2").
 		SetLabel(composeTitle))
 
 	/* Tree */
+	treeAddr := urlManager.CreateUrl("/echo/{area_index}/tree").
+		SetParam("area_index", newArea.GetAreaIndex()).
+		Build()
 	treeTitle := i18n.GetText(mainLanguage, "EchoMsgIndexAction", "action-tree-button")
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s/tree", newArea.GetName())).
+		SetLink(treeAddr).
 		SetIcon("icon-tree").
 		SetClass("mr-2").
 		SetLabel(treeTitle))
 
 	/* Mark as read */
+	markAsReadAddr := urlManager.CreateUrl("/echo/{area_index}/mark").
+		SetParam("area_index", newArea.GetAreaIndex()).
+		Build()
 	markAsReadTitle := i18n.GetText(mainLanguage, "EchoMsgIndexAction", "action-mark-as-read-button")
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s/mark", newArea.GetName())).
+		SetLink(markAsReadAddr).
 		SetIcon("icofont-mark-as-read").
 		SetClass("mr-2").
 		SetLabel(markAsReadTitle))
 
 	/* Settings */
+	settingsAddr := urlManager.CreateUrl("/echo/{area_index}/update").
+		SetParam("area_index", newArea.GetAreaIndex()).
+		Build()
 	settingsTitle := i18n.GetText(mainLanguage, "EchoMsgIndexAction", "action-settings-button")
 	actionBar.Add(widgets.NewMenuAction().
-		SetLink(fmt.Sprintf("/echo/%s/update", newArea.GetName())).
+		SetLink(settingsAddr).
 		SetIcon("icofont-update").
 		SetClass("mr-2").
 		SetLabel(settingsTitle))
@@ -76,21 +90,22 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 	/* Parse URL parameters */
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %v", areaIndex)
 
-	newArea, err1 := echoAreaMapper.GetAreaByName(echoTag)
+	newArea, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if err1 != nil {
-		response := fmt.Sprintf("Fail on GetAreaByName where echoTag is %s: err = %+v", echoTag, err1)
+		response := fmt.Sprintf("Fail on GetAreaByName where areaIndex is %s: err = %+v", areaIndex, err1)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 	log.Printf("area = %+v", newArea)
 
 	/* Get message headers */
-	msgHeaders, err2 := echoMapper.GetMessageHeaders(echoTag)
+	var areaName string = newArea.GetName()
+	msgHeaders, err2 := echoMapper.GetMessageHeaders(areaName)
 	if err2 != nil {
-		response := fmt.Sprintf("Fail on GetMessageHeaders where echoTag is %s: err = %+v", echoTag, err2)
+		response := fmt.Sprintf("Fail on GetMessageHeaders where areaName is %s: err = %+v", areaName, err2)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
@@ -144,7 +159,7 @@ func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 		}
 
 		/* Render message row */
-		msgRow := self.renderRow(&msg, newConfig.Main.RealName)
+		msgRow := self.renderRow(newArea, &msg, newConfig.Main.RealName)
 		indexTable.AddWidget(msgRow)
 
 	}
@@ -169,7 +184,9 @@ func (self *EchoMsgIndexAction) checkSenderInTwit(msg msg.Message, twitNames []m
 	return false
 }
 
-func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets.IWidget {
+func (self *EchoMsgIndexAction) renderRow(area *mapper.Area, m *msg.Message, myName string) widgets.IWidget {
+
+	urlManager := self.restoreUrlManager()
 
 	/* Make message row container */
 	rowWidget := widgets.NewDivWidget().
@@ -273,7 +290,11 @@ func (self *EchoMsgIndexAction) renderRow(m *msg.Message, myName string) widgets
 	rowWidget.AddWidget(dateWidget)
 
 	/* Link container */
-	navigateAddress := fmt.Sprintf("/echo/%s/message/%s/view", m.Area, m.Hash)
+	navigateAddress := urlManager.CreateUrl("/echo/{area_index}/message/{message_hash}/view").
+		SetParam("area_index", area.GetAreaIndex()).
+		SetParam("message_hash", m.Hash).
+		Build()
+
 	navigateItem := widgets.NewLinkWidget().
 		SetLink(navigateAddress).
 		AddWidget(rowWidget)

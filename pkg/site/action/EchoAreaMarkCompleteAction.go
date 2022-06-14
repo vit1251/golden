@@ -19,6 +19,7 @@ func NewEchoAreaMarkCompleteAction() *EchoAreaMarkCompleteAction {
 func (self *EchoAreaMarkCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mapperManager := self.restoreMapperManager()
+	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()
 
 	//
@@ -29,12 +30,20 @@ func (self *EchoAreaMarkCompleteAction) ServeHTTP(w http.ResponseWriter, r *http
 
 	//
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
-	log.Printf("echoTag = %v", echoTag)
+	areaIndex := vars["echoname"]
+	log.Printf("echoTag = %v", areaIndex)
 
-	err1 := echoMapper.MarkAllReadByAreaName(echoTag)
+	//
+	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if err1 != nil {
-		log.Printf("Error mark al as read")
+		panic(err1)
+	}
+	log.Printf("area = %+v", area)
+
+	var areaName string = area.GetName()
+	err2 := echoMapper.MarkAllReadByAreaName(areaName)
+	if err2 != nil {
+		panic(err2)
 	}
 
 	//

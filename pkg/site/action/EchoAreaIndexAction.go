@@ -5,6 +5,7 @@ import (
 	"github.com/vit1251/golden/pkg/i18n"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
+	"github.com/vit1251/golden/pkg/utils"
 	"net/http"
 	"strings"
 )
@@ -29,6 +30,16 @@ func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		response := fmt.Sprintf("Fail on GetAreas")
 		http.Error(w, response, http.StatusInternalServerError)
 		return
+	}
+
+	/* Update area index default identification */
+	for _, area := range areas {
+		var areaIndex string = area.GetAreaIndex()
+		if areaIndex == "" {
+			var areaIndex string = utils.IndexHelper_makeUUID()
+			area.SetAreaIndex(areaIndex)
+			echoAreaMapper.Update(&area)
+		}
 	}
 
 	bw := widgets.NewBaseWidget()
@@ -179,9 +190,9 @@ func (self *EchoAreaIndexAction) renderRow(area *mapper.Area) widgets.IWidget {
 	rowWidget.AddWidget(counterWidget)
 
 	/* Link container */
-	
-	navigateAddress := urlManager.CreateUrl("/echo/{echo_name}").
-		SetParam("echo_name", area.GetName()).
+
+	navigateAddress := urlManager.CreateUrl("/echo/{area_index}").
+		SetParam("area_index", area.GetAreaIndex()).
 		Build()
 
 	navigateItem := widgets.NewLinkWidget().

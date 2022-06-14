@@ -1,9 +1,8 @@
 package action
 
 import (
-	"log"
-	"fmt"
 	"github.com/vit1251/golden/pkg/mapper"
+	"log"
 	"net/http"
 )
 
@@ -17,6 +16,7 @@ func NewEchoAreaCreateCompleteAction() *EchoAreaCreateComplete {
 
 func (self *EchoAreaCreateComplete) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+	urlManager := self.restoreUrlManager()
 	mapperManager := self.restoreMapperManager()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
@@ -31,10 +31,16 @@ func (self *EchoAreaCreateComplete) ServeHTTP(w http.ResponseWriter, r *http.Req
 
 	a := mapper.NewArea()
 	a.SetName(echoTag)
-	echoAreaMapper.Register(a)
+	err2 := echoAreaMapper.Register(a)
+	if err2 != nil {
+		panic(err2)
+	}
 
-	//
-	newLocation := fmt.Sprintf("/echo/%s", a.GetName())
-	http.Redirect(w, r, newLocation, 303)
+	/* Redirect */
+	newAreaAddr := urlManager.CreateUrl("/echo/{area_index}").
+		SetParam("area_index", a.GetAreaIndex()).
+		Build()
+
+	http.Redirect(w, r, newAreaAddr, 303)
 
 }

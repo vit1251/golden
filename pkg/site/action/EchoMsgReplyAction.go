@@ -52,19 +52,21 @@ func (self *EchoMsgReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 	/* Get URL params */
 	vars := mux.Vars(r)
-	echoTag := vars["echoname"]
+	areaIndex := vars["echoname"]
+	log.Printf("areaIndex = %+v", areaIndex)
 
 	/* Get area */
-	area, err1 := echoAreaMapper.GetAreaByName(echoTag)
+	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if err1 != nil {
-		response := fmt.Sprintf("Fail in GetAreaByName on echoAreaMapper: err = %+v", err1)
+		response := fmt.Sprintf("Fail in GetAreaByAreaIndex on echoAreaMapper: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)
 		return
 	}
 
 	/* Get orig message */
 	msgHash := vars["msgid"]
-	origMsg, err3 := echoMapper.GetMessageByHash(echoTag, msgHash)
+	var areaName string = area.GetName()
+	origMsg, err3 := echoMapper.GetMessageByHash(areaName, msgHash)
 	if err3 != nil {
 		response := fmt.Sprintf("Fail in GetMessageByHash on echoMapper: err = %+v", err3)
 		http.Error(w, response, http.StatusInternalServerError)
