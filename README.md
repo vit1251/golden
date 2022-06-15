@@ -1,5 +1,7 @@
 # Golden Point 1.x
 
+![Golden Point](/docs/images/GoldenPointMessage.png)
+
 Golden Point is a FidoNet (FTN) point package written with in Golang to provide a mailer, tosser and other related utilities.
 
 To work with GoldenPoint after starting you will need to open your browser on address http://127.0.0.1:8080
