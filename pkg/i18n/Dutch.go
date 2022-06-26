@@ -13,7 +13,7 @@ func init() {
 	actionTranslation.SetTranslation("menu-echomail", "Echomail")
 	actionTranslation.SetTranslation("menu-files", "Bestanden")
 	actionTranslation.SetTranslation("menu-service", "Diensten")
-	actionTranslation.SetTranslation("menu-people", "Adresboek)
+	actionTranslation.SetTranslation("menu-people", "Adresboek")
 	actionTranslation.SetTranslation("menu-draft", "Voorlopige versie")
 	actionTranslation.SetTranslation("menu-setup", "Instellingen")
 
