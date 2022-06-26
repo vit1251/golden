@@ -4,7 +4,7 @@ func init() {
 
 	mainTranslation := GetMainTranslation()
 
-	dutchTranslation := mainTranslation.GetLangTranslation("nl-BE")
+	englishTranslation := mainTranslation.GetLangTranslation("nl-BE")
 
 	/* Main menu */
 	actionTranslation := englishTranslation.GetActionTranslation("Actie")
