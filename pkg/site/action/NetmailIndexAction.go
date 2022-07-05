@@ -22,7 +22,7 @@ func NewNetmailIndexAction() *NetmailIndexAction {
 
 func (self NetmailIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	netmailMapper := mapperManager.GetNetmailMapper()
 
 	/* Message headers */

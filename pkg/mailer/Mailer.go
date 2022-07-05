@@ -5,9 +5,9 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/vit1251/golden/pkg/mailer/auth"
-	"github.com/vit1251/golden/pkg/mailer/cache"
 	stream2 "github.com/vit1251/golden/pkg/mailer/stream"
 	"github.com/vit1251/golden/pkg/mailer/util"
+	"github.com/vit1251/golden/pkg/queue"
 	"github.com/vit1251/golden/pkg/registry"
 	"log"
 	"os"
@@ -50,8 +50,8 @@ type Mailer struct {
 	connComplete chan int /* ???                         */
 	recvUnix     int      /* ???                         */
 
-	sendName *cache.FileEntry /* Upload entry                */
-	recvName *cache.FileEntry /* Download entry              */
+	sendName *queue.FileEntry /* Upload entry                */
+	recvName *queue.FileEntry /* Download entry              */
 
 	workInbound  string /* ???                         */
 	workOutbound string /* ???                         */
@@ -69,8 +69,8 @@ type Mailer struct {
 	rxRoutineResult ReceiveRoutineResult
 	txRoutineResult TransmitRoutineResult
 
-	outboundQueue []cache.FileEntry
-	inboundQueue  []cache.FileEntry
+	outboundQueue []queue.FileEntry
+	inboundQueue  []queue.FileEntry
 
 	queue *util.TheQueue /* TheQueue      */
 
@@ -239,7 +239,7 @@ func (self *Mailer) SetStationName(name string) {
 	self.systemName = name
 }
 
-func (self *Mailer) AddOutbound(path cache.FileEntry) {
+func (self *Mailer) AddOutbound(path queue.FileEntry) {
 	self.outboundQueue = append(self.outboundQueue, path)
 }
 

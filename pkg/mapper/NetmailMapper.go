@@ -19,7 +19,7 @@ func NewNetmailMapper(r *registry.Container) *NetmailMapper {
 
 func (self *NetmailMapper) GetMessageHeaders() ([]*NetmailMsg, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result []*NetmailMsg
 
@@ -40,7 +40,7 @@ func (self *NetmailMapper) GetMessageHeaders() ([]*NetmailMsg, error) {
 		var nmViewCount int
 
 		err2 := rows.Scan(&nmId, &nmMsgId, &nmHash, &nmSubject, &nmViewCount, &nmFrom, &nmTo, &nmOrigAddr, &nmDestAddr, &nmDate)
-		if err2 != nil{
+		if err2 != nil {
 			return err2
 		}
 
@@ -66,7 +66,7 @@ func (self *NetmailMapper) GetMessageHeaders() ([]*NetmailMsg, error) {
 
 func (self *NetmailMapper) Write(msg *NetmailMsg) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "INSERT INTO `netmail` " +
 		"(nmMsgId, nmHash, nmFrom, nmTo, nmSubject, nmBody, nmDate, nmOrigAddr, nmDestAddr, nmPacket) " +
@@ -93,7 +93,7 @@ func (self *NetmailMapper) Write(msg *NetmailMsg) error {
 
 func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result *NetmailMsg
 
@@ -116,7 +116,7 @@ func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error)
 		var nmPacket []byte
 
 		err2 := rows.Scan(&nmId, &nmMsgId, &nmSubject, &nmViewCount, &nmFrom, &nmTo, &nmDate, &nmBody, &nmOrigAddr, &nmDestAddr, &nmPacket)
-		if err2 != nil{
+		if err2 != nil {
 			return err2
 		}
 
@@ -144,7 +144,7 @@ func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error)
 
 func (self *NetmailMapper) ViewMessageByHash(msgHash string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "UPDATE `netmail` SET `nmViewCount` = `nmViewCount` + 1 WHERE `nmHash` = $1"
 	var params []interface{}
@@ -160,7 +160,7 @@ func (self *NetmailMapper) ViewMessageByHash(msgHash string) error {
 
 func (self *NetmailMapper) GetMessageNewCount() (int, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var newMessageCount int
 
@@ -181,7 +181,7 @@ func (self *NetmailMapper) GetMessageNewCount() (int, error) {
 
 func (self *NetmailMapper) RemoveMessageByHash(msgHash string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `netmail` WHERE `nmHash` = ?"
 	var params []interface{}
@@ -192,13 +192,4 @@ func (self *NetmailMapper) RemoveMessageByHash(msgHash string) error {
 	})
 
 	return err1
-}
-
-func (self *NetmailMapper) restoreStorageManager() *storage.StorageManager {
-	managerPtr := self.registry.Get("StorageManager")
-	if manager, ok := managerPtr.(*storage.StorageManager); ok {
-		return manager
-	} else {
-		panic("no storage manager")
-	}
 }

@@ -2,6 +2,8 @@ package action
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/um"
 	"log"
 	"net/http"
 )
@@ -17,10 +19,10 @@ func NewEchoMsgRemoveCompleteAction() *EchoMsgRemoveCompleteAction {
 
 func (self *EchoMsgRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	echoMapper := mapperManager.GetEchoMapper()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
-	urlManager := self.restoreUrlManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
 
 	//
 	err := r.ParseForm()

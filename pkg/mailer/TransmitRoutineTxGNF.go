@@ -2,15 +2,15 @@ package mailer
 
 import (
 	"fmt"
-	"github.com/vit1251/golden/pkg/mailer/cache"
 	"github.com/vit1251/golden/pkg/mailer/stream"
+	"github.com/vit1251/golden/pkg/queue"
 	"log"
 	"os"
 )
 
-func popNextFileEntry(mailer *Mailer) *cache.FileEntry {
+func popNextFileEntry(mailer *Mailer) *queue.FileEntry {
 
-	var result *cache.FileEntry = nil
+	var result *queue.FileEntry = nil
 
 	queueSize := len(mailer.outboundQueue)
 	if queueSize > 0 {
@@ -44,7 +44,6 @@ func makeFilePakcet(mailer *Mailer, stm *os.File) error {
 	return nil
 
 }
-
 
 func TransmitRoutineTxGNF(mailer *Mailer) TransmitRoutineResult {
 

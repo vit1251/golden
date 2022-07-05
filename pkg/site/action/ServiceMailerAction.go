@@ -22,7 +22,7 @@ func NewServiceMailerAction() *ServiceMailerAction {
 
 func (self *ServiceMailerAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	statMailerMapper := mapperManager.GetStatMailerMapper()
 
 	/* Get statistics */

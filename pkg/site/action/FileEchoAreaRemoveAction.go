@@ -3,6 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"log"
 	"net/http"
 	"os"
@@ -17,10 +18,9 @@ func NewFileEchoAreaRemoveAction() *FileEchoAreaRemoveAction {
 	return fa
 }
 
-
 func (self *FileEchoAreaRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	fileMapper := mapperManager.GetFileMapper()
 

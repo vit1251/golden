@@ -19,7 +19,7 @@ func NewDraftEditCompleteAction() *DraftEditCompleteAction {
 
 func (self DraftEditCompleteAction) processSaveAction(w http.ResponseWriter, r *http.Request) error {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.registry)
 	draftMapper := mapperManager.GetDraftMapper()
 
 	/* Get draft */
@@ -66,7 +66,7 @@ func (self DraftEditCompleteAction) processSendAction(w http.ResponseWriter, r *
 
 func (self DraftEditCompleteAction) restoreDraft(r *http.Request) (*mapper.Draft, error) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.registry)
 	draftMapper := mapperManager.GetDraftMapper()
 
 	/* Get draft message */
@@ -143,8 +143,7 @@ func (self DraftEditCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Req
 
 func (self DraftEditCompleteAction) processConferenceMessage(draft mapper.Draft) error {
 
-	tosserManager := self.restoreTosserManager()
-	//statManager := self.restoreStatManager()
+	tosserManager := tosser.RestoreTosserManager(self.GetRegistry())
 
 	/* Create message */
 	em := tosser.NewEchoMessage()
@@ -163,13 +162,13 @@ func (self DraftEditCompleteAction) processConferenceMessage(draft mapper.Draft)
 	}
 
 	/* Register packet */
-//	if err := statMapper.RegisterOutPacket(); err != nil {
-//		log.Printf("Fail on RegisterInPacket: err = %+v", err)
-//	}
+	//	if err := statMapper.RegisterOutPacket(); err != nil {
+	//		log.Printf("Fail on RegisterInPacket: err = %+v", err)
+	//	}
 
-//	if err := statMapper.RegisterOutMessage(); err != nil {
-//		log.Printf("Fail on RegisterOutMessage: err = %+v", err)
-//	}
+	//	if err := statMapper.RegisterOutMessage(); err != nil {
+	//		log.Printf("Fail on RegisterOutMessage: err = %+v", err)
+	//	}
 
 	return nil
 
@@ -177,8 +176,7 @@ func (self DraftEditCompleteAction) processConferenceMessage(draft mapper.Draft)
 
 func (self DraftEditCompleteAction) processDirectMessage(draft mapper.Draft) error {
 
-	tosserManager := self.restoreTosserManager()
-	//statManager := self.restoreStatManager()
+	tosserManager := tosser.RestoreTosserManager(self.GetRegistry())
 
 	nm := tosser.NewNetmailMessage()
 	nm.SetSubject(draft.GetSubject())
@@ -210,7 +208,7 @@ func (self DraftEditCompleteAction) processDirectMessage(draft mapper.Draft) err
 
 func (self DraftEditCompleteAction) processRemoveAction(w http.ResponseWriter, r *http.Request) error {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.registry)
 	draftMapper := mapperManager.GetDraftMapper()
 
 	/* Get draft message */

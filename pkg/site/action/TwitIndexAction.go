@@ -2,6 +2,7 @@ package action
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"net/http"
 )
@@ -16,7 +17,7 @@ func NewTwitIndexAction() *TwitIndexAction {
 
 func (self TwitIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	twitMapper := mapperManager.GetTwitMapper()
 
 	/* Restore twits */

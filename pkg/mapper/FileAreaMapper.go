@@ -3,6 +3,7 @@ package mapper
 import (
 	"database/sql"
 	"github.com/vit1251/golden/pkg/registry"
+	"github.com/vit1251/golden/pkg/storage"
 	"log"
 )
 
@@ -18,7 +19,7 @@ func NewFileAreaMapper(r *registry.Container) *FileAreaMapper {
 
 func (self *FileAreaMapper) GetAreas() ([]FileArea, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var areas []FileArea
 
@@ -55,7 +56,7 @@ func (self *FileAreaMapper) GetAreas() ([]FileArea, error) {
 
 func (self *FileAreaMapper) UpdateFileAreasWithFileCount(fileAreas []FileArea) ([]FileArea, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	sqlStmt := "SELECT `fileArea`, count(`fileName`) AS `fileCount` FROM `file` GROUP BY `fileArea` ORDER BY `fileArea` ASC"
 
@@ -95,7 +96,7 @@ func (self *FileAreaMapper) UpdateFileAreasWithFileCount(fileAreas []FileArea) (
 
 func (self *FileAreaMapper) UpdateNewFileAreasWithFileCount(fileAreas []FileArea) ([]FileArea, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	sqlStmt := "SELECT `fileArea`, count(`fileName`) AS `fileCount` FROM `file` WHERE `fileViewCount` = 0 GROUP BY `fileArea` ORDER BY `fileArea` ASC"
 
@@ -135,7 +136,7 @@ func (self *FileAreaMapper) UpdateNewFileAreasWithFileCount(fileAreas []FileArea
 
 func (self *FileAreaMapper) CreateFileArea(a *FileArea) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var areaName string = a.GetName()
 	var areaMode string = a.GetMode()
@@ -169,7 +170,7 @@ func (self *FileAreaMapper) CreateFileArea(a *FileArea) error {
 
 func (self *FileAreaMapper) GetAreaByName(areaName string) (*FileArea, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result *FileArea
 

@@ -1,21 +1,24 @@
 package um
 
 import (
-	"strings"
 	"fmt"
+	"github.com/vit1251/golden/pkg/registry"
 	"net/url"
+	"strings"
 )
 
 type UrlManager struct {
+	registry.Service
 }
 
 type Url struct {
 	pattern string
-	params map[string]string
+	params  map[string]string
 }
 
-func NewUrlManager() *UrlManager {
+func NewUrlManager(r *registry.Container) *UrlManager {
 	new_um := new(UrlManager)
+	new_um.SetRegistry(r)
 	return new_um
 }
 

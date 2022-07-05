@@ -3,6 +3,7 @@ package mapper
 import (
 	"database/sql"
 	"github.com/vit1251/golden/pkg/registry"
+	"github.com/vit1251/golden/pkg/storage"
 	"log"
 )
 
@@ -20,7 +21,7 @@ func (self DraftMapper) GetDraftMessages(state int) ([]Draft, error) {
 
 	var result []Draft
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "SELECT `draftId`, `draftUUID`, `draftSubject`, `draftArea`, `draftBody`, `draftDone` FROM `draft` WHERE `draftDone` = ? ORDER BY `draftId` ASC"
 
@@ -59,7 +60,7 @@ func (self DraftMapper) GetDraftMessages(state int) ([]Draft, error) {
 
 func (self DraftMapper) RegisterNewDraft(draft Draft) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "INSERT INTO `draft` (`draftUUID`, `draftArea`,`draftBody`,`draftDest`,`draftDestAddr`,`draftSubject`,`draftReply`) VALUES (?,?,?,?,?,?,?)"
 	var params []interface{}
@@ -86,7 +87,7 @@ func (self DraftMapper) GetDraftByUUID(uuid string) (*Draft, error) {
 
 	var result *Draft
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "SELECT `draftId`, `draftUUID`, `draftDest`, `draftDestAddr`, `draftSubject`, `draftArea`, `draftBody`, `draftDone`, `draftReply` FROM `draft` WHERE `draftUUID` = ?"
 
@@ -131,7 +132,7 @@ func (self DraftMapper) GetDraftByUUID(uuid string) (*Draft, error) {
 
 func (self DraftMapper) UpdateDraft(newDraft Draft) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "UPDATE `draft` SET `draftSubject` = ?, `draftBody` = ?, `draftDest` = ?, `draftDestAddr` = ? WHERE `draftUUID` = ?"
 	var params []interface{}
@@ -153,7 +154,7 @@ func (self DraftMapper) UpdateDraft(newDraft Draft) error {
 
 func (self DraftMapper) RemoveByUUID(uuid string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `draft` WHERE `draftUUID` = ?"
 	var params []interface{}

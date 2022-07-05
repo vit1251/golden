@@ -22,7 +22,7 @@ func NewFileMapper(r *registry.Container) *FileMapper {
 
 func (self *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 	conn := storageManager.GetConnection() // TODO
 
 	var result []File
@@ -80,7 +80,7 @@ func (self *FileMapper) CheckFileExists(tic File) (bool, error) {
 
 func (self *FileMapper) RegisterFile(tic File) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "INSERT INTO `file` ( `indexName`, `fileName`, `fileArea`, `fileDesc`, `fileTime` ) VALUES ( ?, ?, ?, ?, ? )"
 
@@ -98,15 +98,6 @@ func (self *FileMapper) RegisterFile(tic File) error {
 	return nil
 }
 
-func (self FileMapper) restoreStorageManager() *storage.StorageManager {
-	managerPtr := self.registry.Get("StorageManager")
-	if manager, ok := managerPtr.(*storage.StorageManager); ok {
-		return manager
-	} else {
-		panic("no storage manager")
-	}
-}
-
 func (self FileMapper) GetFileAbsolutePath(areaName string, name string) string {
 	boxDirectory := cmn.GetFilesDirectory()
 	path := filepath.Join(boxDirectory, areaName, name)
@@ -120,7 +111,7 @@ func (self *FileMapper) GetFileBoxAbsolutePath(areaName string) string {
 }
 
 func (self *FileMapper) RemoveFileByName(indexName string) error {
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `file` WHERE `indexName` = ?"
 	var params []interface{}
@@ -134,7 +125,7 @@ func (self *FileMapper) RemoveFileByName(indexName string) error {
 }
 
 func (self *FileMapper) RemoveFilesByAreaName(areaName string) error {
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `file` WHERE `fileArea` = $1"
 	var params []interface{}
@@ -148,7 +139,7 @@ func (self *FileMapper) RemoveFilesByAreaName(areaName string) error {
 }
 
 func (self *FileMapper) RemoveAreaByName(areaName string) error {
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `filearea` WHERE `areaName` = $1"
 	var params []interface{}
@@ -163,7 +154,7 @@ func (self *FileMapper) RemoveAreaByName(areaName string) error {
 
 func (self *FileMapper) ViewFileByIndexName(fileArea string, indexName string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "UPDATE `file` SET `fileViewCount` = `fileViewCount` + 1 WHERE `fileArea` = $1 AND `indexName` = $2"
 	var params []interface{}
@@ -181,7 +172,7 @@ func (self *FileMapper) ViewFileByIndexName(fileArea string, indexName string) e
 
 func (self *FileMapper) GetFileNewCount() (int, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var newMessageCount int
 
@@ -202,7 +193,7 @@ func (self *FileMapper) GetFileNewCount() (int, error) {
 
 func (self *FileMapper) GetFileByIndexName(echoTag string, indexName string) (*File, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 	conn := storageManager.GetConnection() // TODO
 
 	var result *File

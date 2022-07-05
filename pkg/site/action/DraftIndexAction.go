@@ -17,7 +17,7 @@ func NewDraftIndexAction() *DraftIndexAction {
 
 func (self DraftIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.registry)
 	draftMapper := mapperManager.GetDraftMapper()
 
 	/* Restore draft index */

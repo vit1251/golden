@@ -2,12 +2,14 @@ package tosser
 
 import (
 	"bufio"
+	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/fidotime"
-	"github.com/vit1251/golden/pkg/mailer/cache"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/packet"
+	"github.com/vit1251/golden/pkg/queue"
 	"github.com/vit1251/golden/pkg/tosser/arcmail"
 	"io"
 	"log"
@@ -18,7 +20,7 @@ import (
 	"time"
 )
 
-func (self *Tosser) processNewMessage(pkt *TosserPacket) error {
+func (self *TosserService) processNewMessage(pkt *TosserPacket) error {
 
 	//packetHeader := packet.GetHeader()
 	packedMessage := pkt.GetMessage()
@@ -40,11 +42,11 @@ func (self *Tosser) processNewMessage(pkt *TosserPacket) error {
 
 }
 
-func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msgBody *packet.MessageBody) error {
+func (self *TosserService) processNewDirectMessage(msgHeader *packet.PackedMessage, msgBody *packet.MessageBody) error {
 
-	configManager := self.restoreConfigManager()
-	charsetManager := self.restoreCharsetManager()
-	mapperManager := self.restoreMapperManager()
+	configManager := config.RestoreConfigManager(self.GetRegistry())
+	charsetManager := charset.RestoreCharsetManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	netmailMapper := mapperManager.GetNetmailMapper()
 
 	newConfig := configManager.GetConfig()
@@ -207,10 +209,10 @@ func (self *Tosser) processNewDirectMessage(msgHeader *packet.PackedMessage, msg
 
 }
 
-func (self *Tosser) acquireAreaByName(areaName string) *mapper.Area {
+func (self *TosserService) acquireAreaByName(areaName string) *mapper.Area {
 
-	configManager := self.restoreConfigManager()
-	mapperManager := self.restoreMapperManager()
+	configManager := config.RestoreConfigManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	newConfig := configManager.GetConfig()
@@ -242,13 +244,12 @@ func (self *Tosser) acquireAreaByName(areaName string) *mapper.Area {
 	return a
 }
 
-func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBody *packet.MessageBody) error {
+func (self *TosserService) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBody *packet.MessageBody) error {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	echoMapper := mapperManager.GetEchoMapper()
 
-	//TODO - statMailerMapper := mapperManager.GetStatMapper()
-	charsetManager := self.restoreCharsetManager()
+	charsetManager := charset.RestoreCharsetManager(self.GetRegistry())
 
 	areaName := msgBody.GetArea()
 
@@ -405,7 +406,7 @@ func (self *Tosser) processNewEchoMessage(msgHeader *packet.PackedMessage, msgBo
 }
 
 /// TODO - move to `msg` packet later ...
-func (self *Tosser) debugEchomail(newMsg *msg.Message) {
+func (self *TosserService) debugEchomail(newMsg *msg.Message) {
 
 	log.Printf("--- Process ECHOMAIL message complete ---\n"+
 		"   From: %s\n"+
@@ -421,7 +422,7 @@ func (self *Tosser) debugEchomail(newMsg *msg.Message) {
 
 }
 
-func (self *Tosser) ProcessPacket(name string) error {
+func (self *TosserService) ProcessPacket(name string) error {
 
 	/* Open stream */
 	stream, err1 := os.Open(name)
@@ -483,12 +484,7 @@ func (self *Tosser) ProcessPacket(name string) error {
 	return nil
 }
 
-func (self *Tosser) processNetmail(item cache.FileEntry) error {
-
-	//TODO - mapperManager := self.restoreMapperManager()
-	//TODO - statMapper := mapperManager.GetStatMapper()
-
-	//TODO - statMapper.RegisterInPacket()
+func (self *TosserService) processNetmail(item queue.FileEntry) error {
 
 	err1 := self.ProcessPacket(item.AbsolutePath)
 	if err1 != nil {
@@ -508,10 +504,7 @@ func (self *Tosser) processNetmail(item cache.FileEntry) error {
 	return nil
 }
 
-func (self *Tosser) processARCmail(item cache.FileEntry) error {
-
-	//TODO - mapperManager := self.restoreMapperManager()
-	//TODO - statMapper := mapperManager.GetStatMapper()
+func (self *TosserService) processARCmail(item queue.FileEntry) error {
 
 	newInbTempDir := cmn.GetTempInboundDirectory()
 
@@ -554,12 +547,14 @@ func (self *Tosser) processARCmail(item cache.FileEntry) error {
 
 }
 
-func (self *Tosser) ProcessInbound() error {
+func (self *TosserService) ProcessInbound() error {
+
+	queueManager := queue.RestoreQueueManager(self.GetRegistry())
 
 	log.Printf("ProcessInbound")
 
 	/* New mailer inbound */
-	mi := cache.NewMailerInbound(self.registry)
+	mi := queueManager.GetMailerInbound()
 
 	/* Scan inbound */
 	items, err2 := mi.Scan()
@@ -569,10 +564,10 @@ func (self *Tosser) ProcessInbound() error {
 	log.Printf("items = %+v", items)
 
 	for _, item := range items {
-		if item.Type == cache.TypeNetmail {
+		if item.Type == queue.TypeNetmail {
 			log.Printf("Tosser: Netmail packet: name = %s", item.Name)
 			self.processNetmail(item)
-		} else if item.Type == cache.TypeARCmail {
+		} else if item.Type == queue.TypeARCmail {
 			log.Printf("Tosser: ARCmail packet: name = %s", item.Name)
 			self.processARCmail(item)
 		} else {

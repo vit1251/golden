@@ -3,8 +3,8 @@ package mailer
 import (
 	"bytes"
 	cmn "github.com/vit1251/golden/pkg/common"
-	"github.com/vit1251/golden/pkg/mailer/cache"
 	"github.com/vit1251/golden/pkg/mailer/stream"
+	"github.com/vit1251/golden/pkg/queue"
 	"log"
 	"path"
 )
@@ -25,7 +25,7 @@ func processFile(mailer *Mailer, nextFrame stream.Frame) {
 	recvUnixtime, _ := cmn.ParseSize(parts[2])
 	//recvOffset, _ := cmn.ParseSize(parts[3])
 
-	mailer.recvName = cache.NewFileEntry()
+	mailer.recvName = queue.NewFileEntry()
 	mailer.recvName.AbsolutePath = path.Join(mailer.workInbound, recvName) // TODO - unescape file name ...
 	mailer.recvName.Name = recvName
 

@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
+	"github.com/vit1251/golden/pkg/um"
 	"net/http"
 )
 
@@ -18,7 +19,7 @@ func NewDraftEditAction() *DraftEditAction {
 
 func (self DraftEditAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.registry)
 	draftMapper := mapperManager.GetDraftMapper()
 
 	/* Restore draftid */
@@ -80,7 +81,7 @@ func (self DraftEditAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (self DraftEditAction) makeMainView(newDraft *mapper.Draft) widgets.IWidget {
 
-	urlManager := self.restoreUrlManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
 
 	draftEditCompleteAddr := urlManager.CreateUrl("/draft/{draft_index}/edit/complete").
 		SetParam("draft_index", newDraft.GetUUID()).

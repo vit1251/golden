@@ -1,4 +1,4 @@
-package cache
+package queue
 
 import (
 	cmn "github.com/vit1251/golden/pkg/common"
@@ -9,7 +9,13 @@ import (
 )
 
 type MailerOutbound struct {
-	registry     *registry.Container
+	registry *registry.Container
+}
+
+func newMailerOutbound(registry *registry.Container) *MailerOutbound {
+	mo := new(MailerOutbound)
+	mo.registry = registry
+	return mo
 }
 
 func (self *MailerOutbound) TransmitFile(filename string) {

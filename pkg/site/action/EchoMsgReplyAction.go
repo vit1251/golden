@@ -45,7 +45,7 @@ func (self EchoMsgReplyAction) preprocessBody(origMsg msg.Message) string {
 
 func (self *EchoMsgReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()
 	draftMapper := mapperManager.GetDraftMapper()

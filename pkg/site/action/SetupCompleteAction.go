@@ -22,7 +22,7 @@ func (self *SetupCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	log.Printf("Store new settings")
 
-	configManager := self.restoreConfigManager()
+	configManager := config.RestoreConfigManager(self.GetRegistry())
 
 	newConfig := configManager.GetConfig()
 

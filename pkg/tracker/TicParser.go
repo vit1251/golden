@@ -64,7 +64,7 @@ func (self *TicParser) prcessLine(ticFile TicFile, newLine string) (TicFile, err
 
 func (self *TicParser) Parse(stream io.Reader) (*TicFile, error) {
 
-	charsetManager := self.restoreCharsetManager()
+	charsetManager := charset.RestoreCharsetManager(self.registry)
 
 	content, err1 := ioutil.ReadAll(stream)
 	if err1 != nil {
@@ -106,13 +106,4 @@ func (self TicParser) ParseFile(filename string) (*TicFile, error) {
 	}
 
 	return ticFile, nil
-}
-
-func (self TicParser) restoreCharsetManager() *charset.CharsetManager {
-	managerPtr := self.registry.Get("CharsetManager")
-	if manager, ok := managerPtr.(*charset.CharsetManager); ok {
-		return manager
-	} else {
-		panic("no charset manager")
-	}
 }

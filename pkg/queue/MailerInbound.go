@@ -1,4 +1,4 @@
-package cache
+package queue
 
 import (
 	cmn "github.com/vit1251/golden/pkg/common"
@@ -10,16 +10,16 @@ import (
 )
 
 type MailerInbound struct {
-	registry     *registry.Container
+	registry *registry.Container
 }
 
-func NewMailerInbound(registry *registry.Container) *MailerInbound {
+func newMailerInbound(registry *registry.Container) *MailerInbound {
 	mi := new(MailerInbound)
 	mi.registry = registry
 	return mi
 }
 
-func (self *MailerInbound) nodeTypePrediction(name string) (FileEntryType) {
+func (self *MailerInbound) nodeTypePrediction(name string) FileEntryType {
 
 	var result FileEntryType = TypeUnknown
 

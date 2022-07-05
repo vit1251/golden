@@ -3,6 +3,7 @@ package mapper
 import (
 	"database/sql"
 	"github.com/vit1251/golden/pkg/registry"
+	"github.com/vit1251/golden/pkg/storage"
 	"log"
 	"time"
 )
@@ -26,7 +27,7 @@ func (self *StatMailerMapper) GetMailerSummary() ([]StatMailer, error) {
 
 	var result []StatMailer
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "SELECT `statMailerSessionStart`, `statMailerSessionStop`, `statMailerSummary` FROM `stat_mailer` ORDER BY `statMailerId` DESC LIMIT 10"
 	var params []interface{}
@@ -74,7 +75,7 @@ func (self *StatMailerMapper) UpdateSession(mailerReport *StatMailer) error {
 }
 
 func (self *StatMailerMapper) insertMailerReport(sessionID int64, report *StatMailer) error {
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var query string
 	query += "INSERT INTO `stat_mailer` "
@@ -103,7 +104,7 @@ func (self *StatMailerMapper) insertMailerReport(sessionID int64, report *StatMa
 
 func (self *StatMailerMapper) updateMailerReport(report *StatMailer) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var query string
 	query += "UPDATE `stat_mailer` "

@@ -6,6 +6,7 @@ import (
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/site/widgets"
+	"github.com/vit1251/golden/pkg/um"
 	"log"
 	"net/http"
 )
@@ -20,7 +21,7 @@ func NewEchoMsgTreeAction() *EchoMsgTreeAction {
 
 func (self EchoMsgTreeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()
 
@@ -85,7 +86,7 @@ func (self EchoMsgTreeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 func (self EchoMsgTreeAction) renderTree(area *mapper.Area, root msg.MessageNode) widgets.IWidget {
 
-	urlManager := self.restoreUrlManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
 
 	list := widgets.NewListWidget()
 

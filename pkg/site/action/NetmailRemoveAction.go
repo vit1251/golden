@@ -3,6 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"log"
 	"net/http"
 )
@@ -17,7 +18,7 @@ func NewNetmailRemoveAction() *NetmailRemoveAction {
 
 func (self *NetmailRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	netmailMapper := mapperManager.GetNetmailMapper()
 
 	//
@@ -34,7 +35,7 @@ func (self *NetmailRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
 	log.Printf("msg = %s\n", msgHash)
 
-	if err := netmailMapper.RemoveMessageByHash(msgHash) ; err != nil {
+	if err := netmailMapper.RemoveMessageByHash(msgHash); err != nil {
 		response := fmt.Sprintf("Fail on GetMessageByHash")
 		http.Error(w, response, http.StatusInternalServerError)
 		return

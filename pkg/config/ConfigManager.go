@@ -52,7 +52,7 @@ var config *Config
 
 func (self *ConfigManager) Store(c *Config) error {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.registry)
 	configMapper := mapperManager.GetConfigMapper()
 	outdateConfig, _ := configMapper.GetConfigFromDatabase()
 
@@ -86,7 +86,7 @@ func (self *ConfigManager) Restore() (*Config, error) {
 
 	var c Config
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.registry)
 	configMapper := mapperManager.GetConfigMapper()
 	outdateConfig, _ := configMapper.GetConfigFromDatabase()
 
@@ -123,13 +123,4 @@ func (self *ConfigManager) GetConfig() *Config {
 		config = newConfig
 	}
 	return config
-}
-
-func (self *ConfigManager) restoreMapperManager() *mapper.MapperManager {
-	managerPtr := self.registry.Get("MapperManager")
-	if manager, ok := managerPtr.(*mapper.MapperManager); ok {
-		return manager
-	} else {
-		panic("no mapper manager")
-	}
 }

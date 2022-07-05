@@ -7,8 +7,8 @@ import (
 )
 
 type TrackerManager struct {
-	registry    *registry.Container
-	event       chan bool
+	registry *registry.Container
+	event    chan bool
 }
 
 func NewTrackerManager(r *registry.Container) *TrackerManager {
@@ -16,7 +16,7 @@ func NewTrackerManager(r *registry.Container) *TrackerManager {
 	newTrackerManager.registry = r
 	newTrackerManager.event = make(chan bool)
 
-	eventBus := newTrackerManager.restoreEventBus()
+	eventBus := eventbus.RestoreEventBus(r)
 	eventBus.Register(newTrackerManager)
 
 	return newTrackerManager
@@ -50,13 +50,4 @@ func (self *TrackerManager) run() {
 		procIteration += 1
 	}
 	log.Printf(" * Tracker service stop")
-}
-
-func (self TrackerManager) restoreEventBus() *eventbus.EventBus {
-	managerPtr := self.registry.Get("EventBus")
-	if manager, ok := managerPtr.(*eventbus.EventBus); ok {
-		return manager
-	} else {
-		panic("no event bus")
-	}
 }

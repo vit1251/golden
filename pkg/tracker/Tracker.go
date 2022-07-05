@@ -1,26 +1,26 @@
 package tracker
 
 import (
+	"github.com/vit1251/golden/pkg/queue"
 	"github.com/vit1251/golden/pkg/utils"
 	"log"
 	"os"
 	"path"
 	"time"
 
-	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
-	"github.com/vit1251/golden/pkg/mailer/cache"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
 )
 
 type Tracker struct {
+	registry.Service
 	registry *registry.Container
 }
 
 func NewTracker(r *registry.Container) *Tracker {
 	newTracker := new(Tracker)
-	newTracker.registry = r
+	newTracker.SetRegistry(r)
 	return newTracker
 }
 
@@ -46,8 +46,10 @@ func (self Tracker) Track() {
 
 func (self *Tracker) ProcessInbound() error {
 
+	queueManager := queue.RestoreQueueManager(self.GetRegistry())
+
 	/* New mailer inbound */
-	mi := cache.NewMailerInbound(self.registry)
+	mi := queueManager.GetMailerInbound()
 
 	/* Scan inbound */
 	items, err2 := mi.Scan()
@@ -57,7 +59,7 @@ func (self *Tracker) ProcessInbound() error {
 	log.Printf("items = %+v", items)
 
 	for _, item := range items {
-		if item.Type == cache.TypeTICmail {
+		if item.Type == queue.TypeTICmail {
 			log.Printf("Tracker: TIC packet: name = %s", item.Name)
 			if err := self.processTICmail(item); err != nil {
 				log.Printf("Tracker: process TIC with error: err = %+v", err)
@@ -74,9 +76,9 @@ func (self *Tracker) ProcessOutbound() error {
 	return nil
 }
 
-func (self *Tracker) processTICmail(item cache.FileEntry) error {
+func (self *Tracker) processTICmail(item queue.FileEntry) error {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.registry)
 	fileMapper := mapperManager.GetFileMapper()
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	//TODO - statMapper := mapperManager.GetStatMapper()
@@ -158,22 +160,4 @@ func (self *Tracker) processTICmail(item cache.FileEntry) error {
 	}
 
 	return nil
-}
-
-func (self Tracker) restoreCharsetManager() *charset.CharsetManager {
-	managerPtr := self.registry.Get("CharsetManager")
-	if manager, ok := managerPtr.(*charset.CharsetManager); ok {
-		return manager
-	} else {
-		panic("no charset manager")
-	}
-}
-
-func (self Tracker) restoreMapperManager() *mapper.MapperManager {
-	managerPtr := self.registry.Get("MapperManager")
-	if manager, ok := managerPtr.(*mapper.MapperManager); ok {
-		return manager
-	} else {
-		panic("no mapper manager")
-	}
 }

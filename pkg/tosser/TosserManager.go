@@ -30,6 +30,10 @@ type TosserManager struct {
 	registry *registry.Container
 }
 
+func (self *TosserManager) GetRegistry() *registry.Container {
+	return self.registry
+}
+
 func NewTosserManager(registry *registry.Container) *TosserManager {
 
 	tm := new(TosserManager)
@@ -37,7 +41,8 @@ func NewTosserManager(registry *registry.Container) *TosserManager {
 
 	tm.event = make(chan bool)
 
-	eventBus := tm.restoreEventBus()
+	/* Step 2. Register in EventBus */
+	eventBus := eventbus.RestoreEventBus(registry)
 	eventBus.Register(tm)
 
 	return tm
@@ -49,15 +54,6 @@ func (self *TosserManager) HandleEvent(event string) {
 		if self.event != nil {
 			self.event <- true
 		}
-	}
-}
-
-func (self *TosserManager) restoreEventBus() *eventbus.EventBus {
-	managerPtr := self.registry.Get("EventBus")
-	if manager, ok := managerPtr.(*eventbus.EventBus); ok {
-		return manager
-	} else {
-		panic("no event bus")
 	}
 }
 
@@ -137,10 +133,10 @@ func (self *TosserManager) prepareOrigin(Origin string) string {
 
 func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error) {
 
-	configManager := self.restoreConfigManager()
-	mapperManager := self.restoreMapperManager()
+	configManager := config.RestoreConfigManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
-	charsetManager := self.restoreCharsetManager()
+	charsetManager := charset.RestoreCharsetManager(self.GetRegistry())
 
 	newConfig := configManager.GetConfig()
 
@@ -341,8 +337,8 @@ func (self *TosserManager) PushPacket(src string, dst string) error {
 
 func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 
-	configManager := self.restoreConfigManager()
-	charsetManager := self.restoreCharsetManager()
+	configManager := config.RestoreConfigManager(self.GetRegistry())
+	charsetManager := charset.RestoreCharsetManager(self.GetRegistry())
 
 	newConfig := configManager.GetConfig()
 
@@ -519,15 +515,6 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	return nil
 }
 
-func (self *TosserManager) restoreCharsetManager() *charset.CharsetManager {
-	managerPtr := self.registry.Get("CharsetManager")
-	if manager, ok := managerPtr.(*charset.CharsetManager); ok {
-		return manager
-	} else {
-		panic("no charset manager")
-	}
-}
-
 func (self *TosserManager) makeChrsKludgeByCharsetName(charset string) string {
 	if charset == "UTF-8" {
 		return "UTF-8 4"
@@ -535,24 +522,6 @@ func (self *TosserManager) makeChrsKludgeByCharsetName(charset string) string {
 		return "CP866 2"
 	} else {
 		return "CP866 2"
-	}
-}
-
-func (self TosserManager) restoreMapperManager() *mapper.MapperManager {
-	managerPtr := self.registry.Get("MapperManager")
-	if manager, ok := managerPtr.(*mapper.MapperManager); ok {
-		return manager
-	} else {
-		panic("no mapper manager")
-	}
-}
-
-func (self *TosserManager) restoreConfigManager() *config.ConfigManager {
-	managerPtr := self.registry.Get("ConfigManager")
-	if manager, ok := managerPtr.(*config.ConfigManager); ok {
-		return manager
-	} else {
-		panic("no config manager")
 	}
 }
 

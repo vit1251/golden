@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	commonfunc "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/packet"
 	"io"
 	"net/http"
@@ -21,7 +22,7 @@ func NewNetmailAttachViewAction() *NetmailAttachViewAction {
 
 func (self NetmailAttachViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	netmailMapper := mapperManager.GetNetmailMapper()
 
 	//

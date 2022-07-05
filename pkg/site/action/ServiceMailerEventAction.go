@@ -2,6 +2,7 @@ package action
 
 import (
 	"fmt"
+	"github.com/vit1251/golden/pkg/eventbus"
 	"net/http"
 )
 
@@ -15,7 +16,7 @@ func NewServiceMailerEventAction() *ServiceMailerEventAction {
 
 func (self *ServiceMailerEventAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	eventBus := self.restoreEventBus()
+	eventBus := eventbus.RestoreEventBus(self.GetRegistry())
 
 	/* Create mailer event */
 	newMailerEvent := eventBus.CreateEvent("Mailer")

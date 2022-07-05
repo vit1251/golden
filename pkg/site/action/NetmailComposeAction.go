@@ -17,7 +17,7 @@ func NewNetmailComposeAction() *NetmailComposeAction {
 
 func (self *NetmailComposeAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	draftMapper := mapperManager.GetDraftMapper()
 
 	/* Create direct message draft */

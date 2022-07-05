@@ -20,7 +20,7 @@ func NewNetmailDumpAction() *NetmailDumpAction {
 
 func (self NetmailDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	netmailMapper := mapperManager.GetNetmailMapper()
 
 	//

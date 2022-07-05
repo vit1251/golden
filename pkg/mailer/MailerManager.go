@@ -5,8 +5,8 @@ import (
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/eventbus"
-	"github.com/vit1251/golden/pkg/mailer/cache"
 	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/queue"
 	"github.com/vit1251/golden/pkg/registry"
 	"log"
 	"strconv"
@@ -14,7 +14,7 @@ import (
 )
 
 type MailerManager struct {
-	registry      *registry.Container
+	registry.Service
 	event         chan bool
 	procIteration int
 	running       bool
@@ -22,12 +22,15 @@ type MailerManager struct {
 }
 
 func NewMailerManager(r *registry.Container) *MailerManager {
+	/* Step 1. Create new EventBus instance */
 	newMailerManager := new(MailerManager)
-	newMailerManager.registry = r
+	newMailerManager.SetRegistry(r)
 	newMailerManager.event = make(chan bool)
 	newMailerManager.mailerActive = false
-	eventBus := newMailerManager.restoreEventBus()
+	/* Step 2. Register mailer manager in EventBus */
+	eventBus := eventbus.RestoreEventBus(r)
 	eventBus.Register(newMailerManager)
+	//
 	return newMailerManager
 }
 
@@ -47,7 +50,7 @@ func (self *MailerManager) Start() {
 
 func (self *MailerManager) GetMailerInterval() int {
 
-	configManager := self.restoreConfigManager()
+	configManager := config.RestoreConfigManager(self.GetRegistry())
 
 	newConfig := configManager.GetConfig()
 
@@ -121,15 +124,17 @@ func (self *MailerManager) Stop() {
 
 func (self *MailerManager) processMailer() error {
 
+	queueManager := queue.RestoreQueueManager(self.GetRegistry())
+
 	var stat mapper.StatMailer
 
 	log.Printf("MailerManager: processMailer")
 
-	configManager := self.restoreConfigManager()
-	mapperManager := self.restoreMapperManager()
+	configManager := config.RestoreConfigManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	statMailerMapper := mapperManager.GetStatMailerMapper()
 
-	eventBus := self.restoreEventBus()
+	eventBus := eventbus.RestoreEventBus(self.GetRegistry())
 
 	/* Directory */
 	inb := cmn.GetInboundDirectory()
@@ -142,7 +147,7 @@ func (self *MailerManager) processMailer() error {
 	newConfig := configManager.GetConfig()
 
 	/* Get parameters */
-	m := NewMailer(self.registry)
+	m := NewMailer(self.GetRegistry())
 	m.SetTempOutbound(TempOutbound)
 	m.SetTempInbound(TempInbound)
 	m.SetTemp(Temp)
@@ -158,7 +163,7 @@ func (self *MailerManager) processMailer() error {
 	}
 
 	/* Populate outbound queue */
-	mo := cache.NewMailerOutbound(self.registry)
+	mo := queueManager.GetMailerOutbound()
 	items, err2 := mo.GetItems()
 	if err2 != nil {
 		return nil
@@ -209,31 +214,4 @@ func convertMailerReportToStatMailer(result *mapper.StatMailer, report *MailerRe
 	result.SessionStart = report.GetSessionStart().UnixMilli()
 	result.SessionStop = report.GetSessionStop().UnixMilli()
 	return nil
-}
-
-func (self *MailerManager) restoreEventBus() *eventbus.EventBus {
-	managerPtr := self.registry.Get("EventBus")
-	if manager, ok := managerPtr.(*eventbus.EventBus); ok {
-		return manager
-	} else {
-		panic("no eventbus manager")
-	}
-}
-
-func (self MailerManager) restoreMapperManager() *mapper.MapperManager {
-	managerPtr := self.registry.Get("MapperManager")
-	if manager, ok := managerPtr.(*mapper.MapperManager); ok {
-		return manager
-	} else {
-		panic("no mapper manager")
-	}
-}
-
-func (self *MailerManager) restoreConfigManager() *config.ConfigManager {
-	managerPtr := self.registry.Get("ConfigManager")
-	if manager, ok := managerPtr.(*config.ConfigManager); ok {
-		return manager
-	} else {
-		panic("no config manager")
-	}
 }

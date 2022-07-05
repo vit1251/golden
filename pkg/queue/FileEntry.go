@@ -1,5 +1,4 @@
-package cache
-
+package queue
 
 type FileEntryType int
 

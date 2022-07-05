@@ -10,6 +10,7 @@ import (
 	"github.com/vit1251/golden/pkg/installer"
 	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/queue"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/site"
 	"github.com/vit1251/golden/pkg/storage"
@@ -91,15 +92,16 @@ func (self *Application) Run() {
 	self.checkDatabaseLocation()
 
 	/* Start storage service */
-	self.registry.Register("UrlManager", um.NewUrlManager())
+	self.registry.Register("UrlManager", um.NewUrlManager(self.registry))
+	self.registry.Register(queue.QUEUE_MANAGER_ID, queue.NewQueueManager(self.registry))
 	self.registry.Register("EventBus", eventbus.NewEventBus(self.registry))
 	self.registry.Register("StorageManager", storage.NewStorageManager(self.registry))
 	self.registry.Register("MapperManager", mapper.NewMapperManager(self.registry))
-	self.registry.Register("ConfigManager", config.NewConfigManager(self.registry))
+	self.registry.Register(config.CONFIG_MANAGER_ID, config.NewConfigManager(self.registry))
 
-	self.registry.Register("MigrationManager", installer.NewMigrationManager(self.registry))
+	self.registry.Register(installer.MIGRATION_MANAGER_ID, installer.NewMigrationManager(self.registry))
 
-	self.registry.Register("CharsetManager", charset.NewCharsetManager(self.registry))
+	self.registry.Register(charset.CHARSET_MANAGER_ID, charset.NewCharsetManager(self.registry))
 
 	self.registry.Register("TrackerManager", tracker.NewTrackerManager(self.registry))
 	self.registry.Register("TosserManager", tosser.NewTosserManager(self.registry))
@@ -113,27 +115,27 @@ func (self *Application) Run() {
 	log.Printf("Time zone: %+v (%+v)", zone, offset)
 
 	/* Initialize database (apply new migration) */
-	migrationManager := self.restoreMigrationManager()
+	migrationManager := installer.RestoreMigrationManager(self.registry)
 	migrationManager.Check()
 
 	/* Restore configuration */
 	// TODO - get config ...
 
 	/* Start mail processor */
-	tosserManager := self.restoreTosserManager()
+	tosserManager := tosser.RestoreTosserManager(self.registry)
 	tosserManager.Start()
 
 	/* Start file processor */
-	trackerManager := self.restoreTrackerManager()
+	trackerManager := tracker.RestoreTrackerManager(self.registry)
 	trackerManager.Start()
 
 	/* Start UI site */
-	siteManager := self.restoreSiteManager()
+	siteManager := site.RestoreSiteManager(self.registry)
 	siteManager.SetPort(servicePort)
 	siteManager.Start()
 
 	/* Start mailer */
-	mailerManager := self.restoreMailerManager()
+	mailerManager := mailer.RestoreMailerManager(self.registry)
 	mailerManager.Start()
 
 	/* Wait system Ctrl+C keyboard interruption or OS terminate request */
@@ -163,89 +165,9 @@ func (self *Application) stopStorageService() {
 
 	log.Printf("Application: Sync storage.")
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 	storageManager.Close()
 
-}
-
-/* Restore managers */
-
-func (self *Application) restoreSiteManager() *site.SiteManager {
-
-	siteManagerPtr := self.registry.Get("SiteManager")
-	if siteManager, ok := siteManagerPtr.(*site.SiteManager); ok {
-		return siteManager
-	} else {
-		panic("no site manager")
-	}
-
-}
-
-func (self *Application) restoreStorageManager() *storage.StorageManager {
-
-	managerPtr := self.registry.Get("StorageManager")
-	if manager, ok := managerPtr.(*storage.StorageManager); ok {
-		return manager
-	} else {
-		panic("no storage manager")
-	}
-
-}
-
-func (self *Application) restoreMailerManager() *mailer.MailerManager {
-
-	managerPtr := self.registry.Get("MailerManager")
-	if manager, ok := managerPtr.(*mailer.MailerManager); ok {
-		return manager
-	} else {
-		panic("no mailer manager")
-	}
-
-}
-
-func (self *Application) restoreMigrationManager() *installer.MigrationManager {
-	managerPtr := self.registry.Get("MigrationManager")
-	if manager, ok := managerPtr.(*installer.MigrationManager); ok {
-		return manager
-	} else {
-		panic("no migration manager")
-	}
-}
-
-func (self *Application) restoreTosserManager() *tosser.TosserManager {
-	managerPtr := self.registry.Get("TosserManager")
-	if manager, ok := managerPtr.(*tosser.TosserManager); ok {
-		return manager
-	} else {
-		panic("no tosser manager")
-	}
-}
-
-func (self *Application) restoreTrackerManager() *tracker.TrackerManager {
-	managerPtr := self.registry.Get("TrackerManager")
-	if manager, ok := managerPtr.(*tracker.TrackerManager); ok {
-		return manager
-	} else {
-		panic("no tracker manager")
-	}
-}
-
-func (self *Application) restoreConfigManager() *config.ConfigManager {
-	managerPtr := self.registry.Get("ConfigManager")
-	if manager, ok := managerPtr.(*config.ConfigManager); ok {
-		return manager
-	} else {
-		panic("no config manager")
-	}
-}
-
-func (self *Application) restoreMapperManager() *mapper.MapperManager {
-	managerPtr := self.registry.Get("MapperManager")
-	if manager, ok := managerPtr.(*mapper.MapperManager); ok {
-		return manager
-	} else {
-		panic("no config manager")
-	}
 }
 
 func (self *Application) checkDatabaseLocation() {

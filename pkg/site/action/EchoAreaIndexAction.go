@@ -5,6 +5,7 @@ import (
 	"github.com/vit1251/golden/pkg/i18n"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
+	"github.com/vit1251/golden/pkg/um"
 	"github.com/vit1251/golden/pkg/utils"
 	"net/http"
 	"strings"
@@ -21,7 +22,7 @@ func NewEchoAreaIndexAction() *EchoAreaIndexAction {
 
 func (self *EchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.registry)
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	/* Get message area */
@@ -103,7 +104,7 @@ func (self *EchoAreaIndexAction) renderMessageCounter(area *mapper.Area) widgets
 
 func (self *EchoAreaIndexAction) renderRow(area *mapper.Area) widgets.IWidget {
 
-	urlManager := self.restoreUrlManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
 
 	rowTitle := fmt.Sprintf("[%d] %s - %s (%s)",
 		area.GetOrder(), area.GetName(), area.GetSummary(), area.GetCharset(),

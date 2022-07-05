@@ -3,6 +3,7 @@ package mapper
 import (
 	"database/sql"
 	"github.com/vit1251/golden/pkg/registry"
+	"github.com/vit1251/golden/pkg/storage"
 	"github.com/vit1251/golden/pkg/utils"
 	"log"
 )
@@ -19,7 +20,7 @@ func NewEchoAreaMapper(r *registry.Container) *EchoAreaMapper {
 
 func (self *EchoAreaMapper) Register(a *Area) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var areaName string = a.GetName()
 	var areaType string = ""
@@ -54,8 +55,8 @@ func (self *EchoAreaMapper) Register(a *Area) error {
 
 func (self *EchoAreaMapper) GetAreas() ([]Area, error) {
 
-	storageManager := self.restoreStorageManager()
-	mapperManager := self.restoreMapperManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
+	mapperManager := RestoreMapperManager(self.registry)
 	echoMapper := mapperManager.GetEchoMapper()
 
 	var result []Area
@@ -98,7 +99,7 @@ func (self *EchoAreaMapper) GetAreas() ([]Area, error) {
 
 func (self *EchoAreaMapper) GetAreaByName(areaName string) (*Area, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result *Area
 
@@ -138,7 +139,7 @@ func (self *EchoAreaMapper) GetAreaByName(areaName string) (*Area, error) {
 
 func (self *EchoAreaMapper) GetAreaByAreaIndex(areaIndex string) (*Area, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result *Area
 
@@ -189,7 +190,7 @@ func (self *EchoAreaMapper) updateByAreaName(area *Area) error {
 
 	log.Printf("EchoAreaMapper: Update: area = %+v", area)
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var areaIndex string = area.GetAreaIndex()
 	var areaSummary string = area.GetSummary()
@@ -216,7 +217,7 @@ func (self *EchoAreaMapper) updateByAreaName(area *Area) error {
 
 func (self *EchoAreaMapper) RemoveAreaByName(echoName string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	//                                               1
 	query1 := "DELETE FROM `area` WHERE `areaName` = ?"

@@ -1,17 +1,19 @@
 package util
 
-import "github.com/vit1251/golden/pkg/mailer/cache"
+import (
+	"github.com/vit1251/golden/pkg/queue"
+)
 
 type Directory struct {
-	items []cache.FileEntry
+	items []queue.FileEntry
 }
 
-func (self *Directory) Push(entry cache.FileEntry) {
+func (self *Directory) Push(entry queue.FileEntry) {
 	self.items = append(self.items, entry)
 }
 
 func (self *Directory) RemoveByName(name string) {
-	var newItems []cache.FileEntry
+	var newItems []queue.FileEntry
 	for _, item := range self.items {
 		if item.Name != name {
 			newItems = append(newItems, item)

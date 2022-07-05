@@ -2,6 +2,7 @@ package action
 
 import (
 	"encoding/json"
+	"github.com/vit1251/golden/pkg/mapper"
 	"net/http"
 )
 
@@ -15,7 +16,7 @@ func NewNetmailRemoveApiAction() *NetmailRemoveApiAction {
 
 func (self *NetmailRemoveApiAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	netmailMapper := mapperManager.GetNetmailMapper()
 
 	var code int = 0

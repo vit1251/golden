@@ -3,6 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"net/http"
 )
 
@@ -16,7 +17,7 @@ func NewTwitRemoveCompleteAction() *TwitRemoveCompleteAction {
 
 func (self TwitRemoveCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	twitMapper := mapperManager.GetTwitMapper()
 
 	/* Get "echoname" in user request */

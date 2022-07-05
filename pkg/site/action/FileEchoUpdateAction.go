@@ -19,7 +19,7 @@ func NewFileEchoUpdateAction() *FileEchoUpdateAction {
 
 func (self FileEchoUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	//fileMapper := mapperManager.GetFileMapper()
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 

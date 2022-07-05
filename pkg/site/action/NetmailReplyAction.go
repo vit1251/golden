@@ -44,7 +44,7 @@ func (self *NetmailReplyAction) preprocessBody(origMsg *mapper.NetmailMsg) strin
 
 func (self *NetmailReplyAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	netmailMapper := mapperManager.GetNetmailMapper()
 	draftMapper := mapperManager.GetDraftMapper()
 

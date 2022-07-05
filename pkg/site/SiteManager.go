@@ -2,11 +2,10 @@ package site
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/site/action"
 	"github.com/vit1251/golden/pkg/site/action/api"
-	"github.com/vit1251/golden/pkg/um"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"strings"
@@ -169,8 +168,8 @@ func (self *SiteManager) run() {
 	/* Step 2. Start HTTP service */
 	serviceAddr := fmt.Sprintf("%s:%d", self.addr, self.port)
 	srv := &http.Server{
-		Handler:  router,
-		Addr:     serviceAddr,
+		Handler: router,
+		Addr:    serviceAddr,
 	}
 	err1 := srv.ListenAndServe()
 	if err1 != nil {
@@ -187,13 +186,4 @@ func (self *SiteManager) Stop() error {
 
 func (self *SiteManager) SetPort(port int) {
 	self.port = port
-}
-
-func (self *SiteManager) restoreUrlManager() *um.UrlManager {
-	managerPtr := self.registry.Get("UrlManager")
-	if manager, ok := managerPtr.(*um.UrlManager); ok {
-		return manager
-	} else {
-		panic("no url manager")
-	}
 }

@@ -4,7 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/pkg/config"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/tracker"
 	"hash/crc32"
 	"io"
@@ -25,9 +28,9 @@ func NewFileEchoAreaUploadCompleteAction() *FileEchoAreaUploadCompleteAction {
 
 func (self FileEchoAreaUploadCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	configManager := self.restoreConfigManager()
-	charsetManager := self.restoreCharsetManager()
-	mapperManager := self.restoreMapperManager()
+	configManager := config.RestoreConfigManager(self.GetRegistry())
+	charsetManager := charset.RestoreCharsetManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	//fileMapper := mapperManager.GetFileMapper()
 

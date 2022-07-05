@@ -17,17 +17,8 @@ func NewConfigMapper(r *registry.Container) *ConfigMapper {
 	return newConfigMapper
 }
 
-func (self ConfigMapper) restoreStorageManager() *storage.StorageManager {
-	storageManagerPtr := self.registry.Get("StorageManager")
-	if storageManager, ok := storageManagerPtr.(*storage.StorageManager); ok {
-		return storageManager
-	} else {
-		panic("no storage manager")
-	}
-}
-
 func (self ConfigMapper) GetConfigFromDatabase() (*Config, error) {
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 	config := NewConfig()
 	query1 := "SELECT `section`, `name`, `value` FROM `settings`"
 	var params []interface{}
@@ -71,7 +62,7 @@ func (self ConfigMapper) insertParameter(section string, name string, value stri
 
 func (self ConfigMapper) updateParameter(section string, name string, value string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "UPDATE `settings` SET `value` = ? WHERE `section` = ? AND `name` = ?"
 	var params []interface{}

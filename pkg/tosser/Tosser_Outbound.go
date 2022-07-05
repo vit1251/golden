@@ -2,9 +2,9 @@ package tosser
 
 import "log"
 
-func (self *Tosser) ProcessOutbound() error {
+func (self *TosserService) ProcessOutbound() error {
 
-	log.Printf("ProcessOutbound")
+	log.Printf("TODO - process outbound...")
 
 	return nil
 }

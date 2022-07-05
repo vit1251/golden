@@ -3,6 +3,7 @@ package action
 import (
 	"archive/zip"
 	"fmt"
+	"github.com/vit1251/golden/pkg/um"
 	"log"
 	"net/http"
 	"os"
@@ -23,8 +24,8 @@ func NewFileEchoAreaViewAction() *FileEchoAreaViewAction {
 
 func (self *FileEchoAreaViewAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	urlManager := self.restoreUrlManager()
-	mapperManager := self.restoreMapperManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	fileMapper := mapperManager.GetFileMapper()
 

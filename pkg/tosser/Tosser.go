@@ -1,26 +1,22 @@
 package tosser
 
 import (
-	"github.com/vit1251/golden/pkg/charset"
-	"github.com/vit1251/golden/pkg/config"
-	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/storage"
 	"log"
 	"time"
 )
 
-type Tosser struct {
-	registry *registry.Container
+type TosserService struct {
+	registry.Service
 }
 
-func NewTosser(registry *registry.Container) *Tosser {
-	tosser := new(Tosser)
-	tosser.registry = registry
+func NewTosser(registry *registry.Container) *TosserService {
+	tosser := new(TosserService)
+	tosser.SetRegistry(registry)
 	return tosser
 }
 
-func (self *Tosser) Toss() {
+func (self *TosserService) Toss() {
 
 	tosserStart := time.Now()
 	log.Printf("Start tosser session")
@@ -37,40 +33,4 @@ func (self *Tosser) Toss() {
 	log.Printf("Stop tosser session")
 	elapsed := time.Since(tosserStart)
 	log.Printf("Tosser session: %+v", elapsed)
-}
-
-func (self Tosser) restoreCharsetManager() *charset.CharsetManager {
-	managerPtr := self.registry.Get("CharsetManager")
-	if manager, ok := managerPtr.(*charset.CharsetManager); ok {
-		return manager
-	} else {
-		panic("no charset manager")
-	}
-}
-
-func (self Tosser) restoreStorageManager() *storage.StorageManager {
-	managerPtr := self.registry.Get("StorageManager")
-	if manager, ok := managerPtr.(*storage.StorageManager); ok {
-		return manager
-	} else {
-		panic("no storage manager")
-	}
-}
-
-func (self Tosser) restoreMapperManager() *mapper.MapperManager {
-	managerPtr := self.registry.Get("MapperManager")
-	if manager, ok := managerPtr.(*mapper.MapperManager); ok {
-		return manager
-	} else {
-		panic("no mapper manager")
-	}
-}
-
-func (self *Tosser) restoreConfigManager() *config.ConfigManager {
-	managerPtr := self.registry.Get("ConfigManager")
-	if manager, ok := managerPtr.(*config.ConfigManager); ok {
-		return manager
-	} else {
-		panic("no config manager")
-	}
 }

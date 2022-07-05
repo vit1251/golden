@@ -3,6 +3,7 @@ package mapper
 import (
 	"database/sql"
 	"github.com/vit1251/golden/pkg/registry"
+	"github.com/vit1251/golden/pkg/storage"
 )
 
 type TwitMapper struct {
@@ -17,7 +18,7 @@ func NewTwitMapper(r *registry.Container) *TwitMapper {
 
 func (self TwitMapper) GetTwitNames() ([]Twit, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result []Twit
 
@@ -30,7 +31,7 @@ func (self TwitMapper) GetTwitNames() ([]Twit, error) {
 		var twitName string
 
 		err2 := rows.Scan(&twitId, &twitName)
-		if err2 != nil{
+		if err2 != nil {
 			return err2
 		}
 
@@ -48,7 +49,7 @@ func (self TwitMapper) GetTwitNames() ([]Twit, error) {
 
 func (self TwitMapper) RegisterTwitByName(twitName string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query := "INSERT INTO `twit` (`twitName`) VALUES ( ? )"
 
@@ -64,7 +65,7 @@ func (self TwitMapper) RegisterTwitByName(twitName string) error {
 
 func (self TwitMapper) RemoveById(twitId string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `twit` WHERE `twitId` = ?"
 	var params []interface{}

@@ -3,6 +3,8 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/config"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
 	"log"
 	"net/http"
@@ -18,8 +20,8 @@ func NewFileEchoAreaUploadAction() *FileEchoAreaUploadAction {
 
 func (self FileEchoAreaUploadAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	configManager := self.restoreConfigManager()
-	mapperManager := self.restoreMapperManager()
+	configManager := config.RestoreConfigManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 
 	/* Get BOSS address */

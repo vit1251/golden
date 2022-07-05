@@ -20,7 +20,7 @@ func NewFileEchoIndexAction() *FileEchoIndexAction {
 
 func (self *FileEchoIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	//fileMapper := mapperManager.GetFileMapper()
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 

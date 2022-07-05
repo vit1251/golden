@@ -156,7 +156,7 @@ func (self SetupAction) makeSections(c *config.Config) []setupSection {
 
 func (self SetupAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	configManager := self.restoreConfigManager()
+	configManager := config.RestoreConfigManager(self.GetRegistry())
 
 	/* Get params */
 	newConfig := configManager.GetConfig()

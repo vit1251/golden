@@ -3,11 +3,13 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/i18n"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/site/utils"
 	"github.com/vit1251/golden/pkg/site/widgets"
+	"github.com/vit1251/golden/pkg/um"
 	"log"
 	"net/http"
 	"strings"
@@ -24,7 +26,7 @@ func NewEchoMsgIndexAction() *EchoMsgIndexAction {
 
 func (self *EchoMsgIndexAction) renderActions(newArea *mapper.Area) widgets.IWidget {
 
-	urlManager := self.restoreUrlManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
 
 	var mainLanguage string = i18n.GetDefaultLanguage()
 
@@ -80,8 +82,8 @@ func (self *EchoMsgIndexAction) renderActions(newArea *mapper.Area) widgets.IWid
 
 func (self *EchoMsgIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	configManager := self.restoreConfigManager()
-	mapperManager := self.restoreMapperManager()
+	configManager := config.RestoreConfigManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()
 	twitMapper := mapperManager.GetTwitMapper()
@@ -186,7 +188,7 @@ func (self *EchoMsgIndexAction) checkSenderInTwit(msg msg.Message, twitNames []m
 
 func (self *EchoMsgIndexAction) renderRow(area *mapper.Area, m *msg.Message, myName string) widgets.IWidget {
 
-	urlManager := self.restoreUrlManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
 
 	/* Make message row container */
 	rowWidget := widgets.NewDivWidget().

@@ -1,9 +1,9 @@
 package action
 
 import (
-	"log"
 	"fmt"
 	"github.com/vit1251/golden/pkg/mapper"
+	"log"
 	"net/http"
 )
 
@@ -18,7 +18,7 @@ func NewFileEchoCreateCompleteAction() *FileEchoCreateComplete {
 func (self *FileEchoCreateComplete) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Prepare mappers */
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 
 	/* Parse POST parameters */

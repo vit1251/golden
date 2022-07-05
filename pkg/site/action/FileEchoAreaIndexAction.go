@@ -25,7 +25,7 @@ func NewFileEchoAreaIndexAction() *FileEchoAreaIndexAction {
 
 func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	fileMapper := mapperManager.GetFileMapper()
 
@@ -97,7 +97,7 @@ func (self *FileEchoAreaIndexAction) ServeHTTP(w http.ResponseWriter, r *http.Re
 
 func (self *FileEchoAreaIndexAction) renderRow(area *mapper.FileArea, file *mapper.File) widgets.IWidget {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	fileMapper := mapperManager.GetFileMapper()
 
 	/* Make message row container */

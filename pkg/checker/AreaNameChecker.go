@@ -6,7 +6,7 @@ var printable []rune = []rune{
 	'K', 'L', 'M', 'N', 'O',
 	'P', 'Q', 'R', 'S', 'T',
 	'U', 'V', 'W', 'X', 'Y',
-	'Z', '.', '-', '~', '_'
+	'Z', '.', '-', '~', '_',
 }
 
 func IsPrintable(source rune) bool {

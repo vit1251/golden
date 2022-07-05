@@ -5,6 +5,7 @@ import (
 	"github.com/huandu/go-sqlbuilder"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/registry"
+	"github.com/vit1251/golden/pkg/storage"
 	"log"
 	"strings"
 )
@@ -21,7 +22,7 @@ func NewEchoMapper(r *registry.Container) *EchoMapper {
 
 func (self *EchoMapper) GetAreaList() ([]string, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result []string
 
@@ -43,7 +44,7 @@ func (self *EchoMapper) GetAreaList() ([]string, error) {
 
 func (self *EchoMapper) getAreaListCount() ([]*Area, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result []*Area
 
@@ -69,7 +70,7 @@ func (self *EchoMapper) getAreaListCount() ([]*Area, error) {
 
 func (self *EchoMapper) getAreaListNewCount() ([]*Area, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result []*Area
 
@@ -96,7 +97,7 @@ func (self *EchoMapper) getAreaListNewCount() ([]*Area, error) {
 
 func (self *EchoMapper) GetMessageHeaders(echoTag string) ([]msg.Message, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result []msg.Message
 
@@ -156,7 +157,7 @@ func (self *EchoMapper) GetMessageHeaders(echoTag string) ([]msg.Message, error)
 
 func (self *EchoMapper) GetMessageByHash(echoTag string, msgHash string) (*msg.Message, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result *msg.Message
 
@@ -214,7 +215,7 @@ func (self *EchoMapper) GetMessageByHash(echoTag string, msgHash string) (*msg.M
 
 func (self *EchoMapper) ViewMessageByHash(echoTag string, msgHash string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "UPDATE `message` SET `msgViewCount` = `msgViewCount` + 1 WHERE `msgArea` = $1 AND `msgHash` = $2"
 	var params []interface{}
@@ -232,7 +233,7 @@ func (self *EchoMapper) ViewMessageByHash(echoTag string, msgHash string) error 
 
 func (self *EchoMapper) RemoveMessageByHash(echoTag string, msgHash string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
 	var params []interface{}
@@ -249,7 +250,7 @@ func (self *EchoMapper) RemoveMessageByHash(echoTag string, msgHash string) erro
 
 func (self *EchoMapper) IsMessageExistsByHash(echoTag string, msgHash string) (bool, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result bool = false
 
@@ -275,7 +276,7 @@ func (self *EchoMapper) IsMessageExistsByHash(echoTag string, msgHash string) (b
 
 func (self *EchoMapper) Write(msg msg.Message) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	/* Step 3. Make prepare SQL insert query */
 	query1 := "INSERT INTO `message` " +
@@ -308,7 +309,7 @@ func (self *EchoMapper) Write(msg msg.Message) error {
 
 func (self *EchoMapper) GetMessageNewCount() (int, error) {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var newMessageCount int
 
@@ -329,7 +330,7 @@ func (self *EchoMapper) GetMessageNewCount() (int, error) {
 
 func (self *EchoMapper) RemoveMessagesByAreaName(echoTag string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `message` WHERE `msgArea` = $1"
 	var params []interface{}
@@ -397,7 +398,7 @@ func (self *EchoMapper) UpdateAreaMessageCounters(areas []Area) ([]Area, error) 
 
 func (self *EchoMapper) MarkAllReadByAreaName(echoTag string) error {
 
-	storageManager := self.restoreStorageManager()
+	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "UPDATE `message` SET `msgViewCount` = `msgViewCount` + 1 WHERE `msgArea` = $1"
 	var params []interface{}

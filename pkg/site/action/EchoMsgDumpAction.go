@@ -7,6 +7,7 @@ import (
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/msg"
 	"github.com/vit1251/golden/pkg/site/widgets"
+	"github.com/vit1251/golden/pkg/um"
 	"log"
 	"net/http"
 )
@@ -22,7 +23,7 @@ func NewEchoMsgDumpAction() *EchoMsgDumpAction {
 
 func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := self.restoreMapperManager()
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()
 
@@ -98,7 +99,7 @@ func (self *EchoMsgDumpAction) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 func (self *EchoMsgDumpAction) renderActions(area *mapper.Area, origMsg *msg.Message) widgets.IWidget {
 
-	urlManager := self.restoreUrlManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
 
 	actionBar := widgets.NewActionMenuWidget()
 

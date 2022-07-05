@@ -3,6 +3,8 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/um"
 	"log"
 	"net/http"
 )
@@ -18,8 +20,8 @@ func NewEchoMsgTwitAction() *EchoMsgTwitAction {
 
 func (self EchoMsgTwitAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	urlManager := self.restoreUrlManager()
-	mapperManager := self.restoreMapperManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	twitMapper := mapperManager.GetTwitMapper()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 	echoMapper := mapperManager.GetEchoMapper()

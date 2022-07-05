@@ -2,6 +2,8 @@ package action
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/um"
 	"log"
 	"net/http"
 )
@@ -17,8 +19,8 @@ func NewEchoAreaPurgeCompleteAction() *EchoAreaPurgeCompleteAction {
 
 func (self *EchoAreaPurgeCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	urlManager := self.restoreUrlManager()
-	mapperManager := self.restoreMapperManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.registry)
 	echoMapper := mapperManager.GetEchoMapper()
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 

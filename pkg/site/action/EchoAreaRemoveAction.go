@@ -3,7 +3,9 @@ package action
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
+	"github.com/vit1251/golden/pkg/um"
 	"log"
 	"net/http"
 )
@@ -18,8 +20,8 @@ func NewEchoAreaRemoveAction() *EchoAreaRemoveAction {
 
 func (self *EchoAreaRemoveAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	urlManager := self.restoreUrlManager()
-	mapperManager := self.restoreMapperManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	/* Parse URL parameters */

@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/site/widgets"
+	"github.com/vit1251/golden/pkg/um"
 	"log"
 	"net/http"
 )
@@ -20,8 +21,8 @@ func NewEchoAreaUpdateAction() *EchoAreaUpdateAction {
 
 func (self *EchoAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	urlManager := self.restoreUrlManager()
-	mapperManager := self.restoreMapperManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	//
@@ -105,7 +106,7 @@ func (self *EchoAreaUpdateAction) ServeHTTP(w http.ResponseWriter, r *http.Reque
 
 func (self *EchoAreaUpdateAction) renderActions(area *mapper.Area) widgets.IWidget {
 
-	urlManager := self.restoreUrlManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
 	actionBar := widgets.NewActionMenuWidget()
 
 	/* Remove area action button */

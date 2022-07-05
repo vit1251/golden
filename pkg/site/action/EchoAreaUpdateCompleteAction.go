@@ -2,6 +2,8 @@ package action
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/vit1251/golden/pkg/mapper"
+	"github.com/vit1251/golden/pkg/um"
 	"log"
 	"net/http"
 	"strconv"
@@ -18,8 +20,8 @@ func NewEchoAreaUpdateCompleteAction() *EchoAreaUpdateCompleteAction {
 
 func (self *EchoAreaUpdateCompleteAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	urlManager := self.restoreUrlManager()
-	mapperManager := self.restoreMapperManager()
+	urlManager := um.RestoreUrlManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
 
 	/* Parse POST parameters */
