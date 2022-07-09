@@ -26,18 +26,14 @@ import (
 )
 
 type TosserManager struct {
-	event    chan bool
-	registry *registry.Container
-}
-
-func (self *TosserManager) GetRegistry() *registry.Container {
-	return self.registry
+	registry.Service
+	event chan bool
 }
 
 func NewTosserManager(registry *registry.Container) *TosserManager {
 
 	tm := new(TosserManager)
-	tm.registry = registry
+	tm.SetRegistry(registry)
 
 	tm.event = make(chan bool)
 
@@ -62,7 +58,7 @@ func (self *TosserManager) Start() {
 }
 
 func (self *TosserManager) processTosser() {
-	newTosser := NewTosser(self.registry)
+	newTosser := NewTosser(self.GetRegistry())
 	newTosser.Toss()
 }
 

@@ -96,14 +96,14 @@ func (self *Application) Run() {
 	self.registry.Register(queue.QUEUE_MANAGER_ID, queue.NewQueueManager(self.registry))
 	self.registry.Register("EventBus", eventbus.NewEventBus(self.registry))
 	self.registry.Register("StorageManager", storage.NewStorageManager(self.registry))
-	self.registry.Register("MapperManager", mapper.NewMapperManager(self.registry))
+	self.registry.Register(mapper.MAPPER_MANAGER_ID, mapper.NewMapperManager(self.registry))
 	self.registry.Register(config.CONFIG_MANAGER_ID, config.NewConfigManager(self.registry))
 
 	self.registry.Register(installer.MIGRATION_MANAGER_ID, installer.NewMigrationManager(self.registry))
 
 	self.registry.Register(charset.CHARSET_MANAGER_ID, charset.NewCharsetManager(self.registry))
 
-	self.registry.Register("TrackerManager", tracker.NewTrackerManager(self.registry))
+	self.registry.Register(tracker.TRACKER_MANAGER_ID, tracker.NewTrackerManager(self.registry))
 	self.registry.Register("TosserManager", tosser.NewTosserManager(self.registry))
 	self.registry.Register("MailerManager", mailer.NewMailerManager(self.registry))
 

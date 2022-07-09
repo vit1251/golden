@@ -15,7 +15,6 @@ import (
 
 type Tracker struct {
 	registry.Service
-	registry *registry.Container
 }
 
 func NewTracker(r *registry.Container) *Tracker {
@@ -78,13 +77,13 @@ func (self *Tracker) ProcessOutbound() error {
 
 func (self *Tracker) processTICmail(item queue.FileEntry) error {
 
-	mapperManager := mapper.RestoreMapperManager(self.registry)
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 	fileMapper := mapperManager.GetFileMapper()
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	//TODO - statMapper := mapperManager.GetStatMapper()
 
 	/* Parse */
-	newTicParser := NewTicParser(self.registry)
+	newTicParser := NewTicParser(self.GetRegistry())
 	tic, err1 := newTicParser.ParseFile(item.AbsolutePath)
 	if err1 != nil {
 		return err1
