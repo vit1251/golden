@@ -15,7 +15,7 @@ func init() {
 	actionTranslation.SetTranslation("menu-service", "Diensten")
 	actionTranslation.SetTranslation("menu-people", "Adresboek")
 	actionTranslation.SetTranslation("menu-draft", "Concept")
-	actionTranslation.SetTranslation("menu-setup", "Setup")
+	actionTranslation.SetTranslation("menu-setup", "Instellingen")
 
 	/* NetmailIndexAction */
 	netmailIndexActionTranslation := dutchTranslation.GetActionTranslation("NetmailIndexAction")
