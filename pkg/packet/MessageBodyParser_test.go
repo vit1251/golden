@@ -17,7 +17,7 @@ func TestMessageBodyParser_Parse(t *testing.T) {
 		"begin 644 cat.txt\r" +
 		"#0V%T\r" +
 		"`\r" +
-		"end\r"+
+		"end\r" +
 		"\r" +
 		"This is CAT.TXT with similar content.\r" +
 		"\r" +
@@ -33,12 +33,12 @@ func TestMessageBodyParser_Parse(t *testing.T) {
 	content := mBody.GetContent()
 	t.Logf("content = %q", content)
 
-	/* Check attachemnts */
+	/* Check attachments */
 	for aIndex, a := range mBody.GetAttachments() {
 		t.Logf("---")
 		t.Logf("attach #%d: size = %d", aIndex, a.Len())
 		raw := a.GetData()
-		t.Logf("body = %s", raw.Bytes())
+		t.Logf("body = %s", raw)
 	}
 
 }
@@ -70,19 +70,19 @@ func TestNewMessageBodyParser(t *testing.T) {
 	}
 	t.Logf("msg = %+v", mBody)
 
-	/* Check attachemnts */
+	/* Check attachments */
 	for aIndex, a := range mBody.GetAttachments() {
 		t.Logf("---")
 		t.Logf("attach #%d: size = %d", aIndex, a.Len())
 		raw := a.GetData()
-		if stream, err := os.Create(fmt.Sprintf("test_%d.png", aIndex));err == nil {
-			newBlock := raw.Bytes()
+		if stream, err := os.Create(fmt.Sprintf("test_%d.png", aIndex)); err == nil {
+			newBlock := raw
 			t.Logf("newBlock: size = %d", len(newBlock))
 			size, _ := stream.Write(newBlock)
 			t.Logf("write: size = %d", size)
 			stream.Close()
 		}
-		t.Logf("body = %s", raw.Bytes())
+		t.Logf("body = %s", raw)
 	}
 
 }
