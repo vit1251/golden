@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"strings"
 	"github.com/vit1251/golden/pkg/charset"
 	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/config"
@@ -13,6 +14,7 @@ import (
 	"github.com/vit1251/golden/pkg/queue"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/site"
+	"github.com/vit1251/golden/pkg/site2"
 	"github.com/vit1251/golden/pkg/storage"
 	"github.com/vit1251/golden/pkg/tosser"
 	"github.com/vit1251/golden/pkg/tracker"
@@ -80,8 +82,10 @@ func (self *Application) Run() {
 	/* Parse parameters */
 	var servicePort int = 8080
 	var debugMode bool = false
+	var modernMode bool = false
 	flag.IntVar(&servicePort, "P", 8080, "Set HTTP service port")
 	flag.BoolVar(&debugMode, "debug", false, "Enable debugging mode")
+	flag.BoolVar(&modernMode, "modern", false, "Enable modern site mode")
 	flag.Parse()
 
 	/* Start debugging */
@@ -107,7 +111,12 @@ func (self *Application) Run() {
 	self.registry.Register("TosserManager", tosser.NewTosserManager(self.registry))
 	self.registry.Register("MailerManager", mailer.NewMailerManager(self.registry))
 
-	self.registry.Register("SiteManager", site.NewSiteManager(self.registry))
+        if modernMode {
+                self.registry.Register("Site2Manager", site2.NewSite2Manager(self.registry))
+        } else {
+                self.registry.Register("SiteManager", site.NewSiteManager(self.registry))
+        }
+
 
 	/* Debug message */
 	cur := time.Now()
@@ -129,14 +138,23 @@ func (self *Application) Run() {
 	trackerManager := tracker.RestoreTrackerManager(self.registry)
 	trackerManager.Start()
 
-	/* Start UI site */
-	siteManager := site.RestoreSiteManager(self.registry)
-	siteManager.SetPort(servicePort)
-	siteManager.Start()
+	/* Start site */
+	if modernMode {
+                site2Manager := site2.RestoreSite2Manager(self.registry)
+                site2Manager.SetPort(servicePort)
+                site2Manager.Start()
+        } else {
+        	siteManager := site.RestoreSiteManager(self.registry)
+        	siteManager.SetPort(servicePort)
+        	siteManager.Start()
+        }
 
 	/* Start mailer */
 	mailerManager := mailer.RestoreMailerManager(self.registry)
 	mailerManager.Start()
+
+        /* Show welcome message */
+        self.showWelcomeMessage(modernMode)
 
 	/* Wait system Ctrl+C keyboard interruption or OS terminate request */
 	self.waitInterrupt()
@@ -152,6 +170,30 @@ func (self *Application) Run() {
 
 	/* Wait */
 	log.Printf("Complete.")
+
+}
+
+func (self *Application) showWelcomeMessage(modernMode bool) {
+
+        var siteAddress string
+        if modernMode {
+            site2Manager := site2.RestoreSite2Manager(self.registry)
+            siteAddress = site2Manager.GetLocation()
+        } else {
+            siteManager := site.RestoreSiteManager(self.registry)
+            siteAddress = siteManager.GetLocation()
+        }
+
+	var report strings.Builder
+
+	report.WriteString("Golden Point is running at:\n")
+	report.WriteString("\n")
+	report.WriteString(siteAddress)
+	report.WriteString("\n")
+	report.WriteString("Note: You MUST setup your instalattion on first run.\n")
+	report.WriteString("      Please open `Setup` section initially.\n")
+
+	fmt.Printf("%s", report.String())
 
 }
 

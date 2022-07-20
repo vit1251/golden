@@ -5,10 +5,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/site/action"
-	"github.com/vit1251/golden/pkg/site/action/api"
 	"log"
 	"net/http"
-	"strings"
 )
 
 type IAction interface {
@@ -132,9 +130,6 @@ func (self *SiteManager) createRouter() *mux.Router {
 	/* Classic HTTP API */
 	Register(router, "/api/netmail/remove", self.ContainerMiddleware(action.NewNetmailRemoveApiAction()))
 
-	/* Modern Web-Socket command stream */
-	Register(router, "/api/v1", self.ContainerMiddleware(api.NewCommandStream()))
-
 	return router
 
 }
@@ -145,18 +140,6 @@ func (self *SiteManager) Start() {
 
 	/* Start service */
 	go self.run()
-
-	/* Report */
-	var report strings.Builder
-
-	report.WriteString("Golden Point is running at:\n")
-	report.WriteString("\n")
-	report.WriteString(fmt.Sprintf("    http://%s:%d\n", self.addr, self.port))
-	report.WriteString("\n")
-	report.WriteString("Note: You MUST setup your instalattion on first run.\n")
-	report.WriteString("      Please open `Setup` section initially.\n")
-
-	fmt.Printf("%s", report.String())
 
 }
 
@@ -186,4 +169,8 @@ func (self *SiteManager) Stop() error {
 
 func (self *SiteManager) SetPort(port int) {
 	self.port = port
+}
+
+func (self *SiteManager) GetLocation() string {
+        return fmt.Sprintf("http://%s:%d\n", self.addr, self.port)
 }
