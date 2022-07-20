@@ -21,14 +21,21 @@ func NewStaticAction() *StaticAction {
 
 func (self *StaticAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
+        /* Parse parameters */
 	vars := mux.Vars(r)
 	name := vars["name"]
 
-	if content, ok := assets.Main[name]; ok {
-		ext := filepath.Ext(name)
-		contentType := mime.TypeByExtension(ext)
+        /* Determine Content-Type */
+	ext := filepath.Ext(name)
+	contentType := mime.TypeByExtension(ext)
 
-		w.Header().Set("Content-Length", fmt.Sprintf("%d", len(content)))
+        /* Read content */
+	content, err1 := assets.Content.ReadFile(name)
+        if err1 == nil {
+
+                size := len(content)
+
+		w.Header().Set("Content-Length", fmt.Sprintf("%d", size))
 		w.Header().Set("Content-Type", contentType)
 
 		w.WriteHeader(200)

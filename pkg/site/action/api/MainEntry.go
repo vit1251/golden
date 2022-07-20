@@ -32,19 +32,24 @@ func (self *commandStream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		defer conn.Close()
 
 		for {
+			/* Step 1. Read client data */
 			req, op, err1 := wsutil.ReadClientData(conn)
 			if err1 != nil {
-				log.Printf("Command stream read error: err = %#v", err1)
+				log.Printf("Fail on `ReadClientData` with %s", err1)
 				break
 			}
-			//
-			log.Printf("CommandStream: req = %s", req)
-			resp := self.processRequest(req)
-			//
-			err2 := wsutil.WriteServerMessage(conn, op, resp)
-			if err2 != nil {
-				log.Printf("Command stream write error: err = %#v", err2)
-				break
+			/* Step 2. Debug message */
+			log.Printf("CommandStream: req = %+v op = %+v", req, op)
+			/* Step 3. Processing request */
+			if op.IsData() {
+				/* Step 1. Process user request */
+				resp := self.processRequest(req)
+				/* Step 2. Send user response */
+				err2 := wsutil.WriteServerMessage(conn, op, resp)
+				if err2 != nil {
+					log.Printf("Command stream write error: err = %#v", err2)
+					break
+				}
 			}
 		}
 	}()
