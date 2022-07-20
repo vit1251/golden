@@ -45,12 +45,22 @@ You may download binary builds
  - The unstable version (night) build provided in CI/CD system on https://github.com/vit1251/golden/actions
  - Stable version (release) build provided in https://github.com/vit1251/golden/releases
 
-## Building from source code
+## Install from source code
 
-In most cases, there is no need to build from the source. But you may read about your platform compile
-scenario in the "docs" directory instructions. Common scripts are:
+### Prepare build environemnt
 
-    # go generate
+To compile Golden Point your system MUST have next product:
+
+    * Golang >= 1.16
+    * Node >= 1.14
+    * NPM
+
+Golang and Node MAY use network to download dependencies.
+
+### Building routine
+
+Common steps are:
+
     # go build
     # ./golden --debug
 
