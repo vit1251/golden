@@ -2,7 +2,7 @@
 import Hotkeys from 'react-hot-keys';
 
 import { useParams } from "react-router-dom";
-import { Header } from '../common/Header';
+import { Header } from '../../common/Header';
 
 export const EchoMsgView = (props) => {
     const { echoTag, msgId } = useParams();

@@ -4,13 +4,19 @@ import Hotkeys from 'react-hot-keys';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Header } from '../common/Header';
-import { eventBus } from '../EventBus.js';
+import { Header } from '../../common/Header';
+import { eventBus } from '../../EventBus.js';
 import { Row } from './Row.js';
 
 export const EchoMsgIndex = (props) => {
 
     const areas = useSelector((state) => state.areas) ?? [];
+
+    useEffect(() => {
+        eventBus.invoke({
+            type: 'ECHO_INDEX',
+        });
+    }, []);
 
     const { echoTag } = useParams();
     console.log(`echoTag = `, echoTag);
@@ -44,7 +50,7 @@ export const EchoMsgIndex = (props) => {
                 />
 
             <div class="container">
-                <h1>Echoarea {area.name}</h1>
+                <h1>Echoarea</h1>
 
             </div>
         </>

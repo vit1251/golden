@@ -26,9 +26,9 @@ func (self *EchoMsgIndexAction) processRequest(req []byte) []byte {
 	echoMapper := mapperManager.GetEchoMapper()
 
 	/* Step 1. Find current area by area UUID */
-	areaIndex := ""
+	areaIndex := "e3c002a2-fde8-407e-bbd8-0de177527484"
 	currentArea, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
-	if err1 != nil {
+	if currentArea == nil || err1 != nil {
 		return nil
 	}
 	log.Printf("currentArea = %+v", currentArea)

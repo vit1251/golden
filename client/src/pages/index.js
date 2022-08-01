@@ -1,6 +1,6 @@
 
-import { Welcome } from './Welcome.js';
+import { App } from './App.js';
 
 export {
-    Welcome,
+    App,
 }

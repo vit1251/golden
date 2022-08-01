@@ -4,8 +4,8 @@ import Hotkeys from 'react-hot-keys';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Header } from '../common/Header';
-import { eventBus } from '../EventBus.js';
+import { Header } from '../../common/Header';
+import { eventBus } from '../../EventBus.js';
 import { Row } from './Row.js';
 
 export const EchoIndex = (props) => {
@@ -36,7 +36,7 @@ export const EchoIndex = (props) => {
                 onKeyUp={handlePrevMessage}
                 />
 
-            <div class="container">
+            <div className="container">
                 <h1>Echomail</h1>
 
                 <Row areas={areas} />
