@@ -1,10 +1,10 @@
-package action
+package site
 
 import (
 	"bytes"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/pkg/assets"
+	"github.com/vit1251/golden/pkg/site/action"
 	"io"
 	"log"
 	"path"
@@ -14,7 +14,7 @@ import (
 )
 
 type StaticAction struct {
-	Action
+	action.Action
 }
 
 func NewStaticAction() *StaticAction {
@@ -35,7 +35,7 @@ func (self *StaticAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         /* Read content */
         resourcePath := path.Join("static", name)
         log.Printf("Resource path %s", resourcePath)
-	content, err1 := assets.Content.ReadFile(resourcePath)
+	content, err1 := staticContent.ReadFile(resourcePath)
 
         if err1 == nil {
 

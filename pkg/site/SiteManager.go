@@ -125,7 +125,7 @@ func (self *SiteManager) createRouter() *mux.Router {
 
 	/* Static section */
 	Register(router, "/assets/css/main.css", self.ContainerMiddleware(action.NewStyleAction()))
-	Register(router, "/static/{name:[A-Za-z0-9\\.\\_\\-]+}", self.ContainerMiddleware(action.NewStaticAction()))
+	Register(router, "/static/{name:[A-Za-z0-9\\.\\_\\-]+}", self.ContainerMiddleware(NewStaticAction()))
 
 	/* Classic HTTP API */
 	Register(router, "/api/netmail/remove", self.ContainerMiddleware(action.NewNetmailRemoveApiAction()))

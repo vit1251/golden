@@ -1,8 +1,8 @@
-package assets
+package site
 
 import (
         "embed"
 )
 
 //go:embed static/*
-var Content embed.FS
+var staticContent embed.FS
