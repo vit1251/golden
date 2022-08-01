@@ -9,14 +9,9 @@ import (
 	"net/http"
 )
 
-type IAction interface {
-	SetContainer(r *registry.Container)
-	ServeHTTP(w http.ResponseWriter, r *http.Request)
-}
-
 type Route struct {
 	pattern string  /* Regilar expression         */
-	action  IAction /* Processing callback        */
+	action  api.IAction /* Processing callback        */
 }
 
 type WebSite struct {
@@ -40,12 +35,12 @@ func NewSite2Manager(registry *registry.Container) *Site2Manager {
 	return site
 }
 
-func (self *Site2Manager) ContainerMiddleware(a IAction) IAction {
+func (self *Site2Manager) ContainerMiddleware(a api.IAction) api.IAction {
 	a.SetContainer(self.registry)
 	return a
 }
 
-func Register(router *mux.Router, pattern string, a IAction) {
+func Register(router *mux.Router, pattern string, a api.IAction) {
 	router.HandleFunc(pattern, a.ServeHTTP)
 }
 
@@ -54,6 +49,7 @@ func (self *Site2Manager) createRouter() *mux.Router {
 	router := mux.NewRouter()
 
 	Register(router, "/api/v1", self.ContainerMiddleware(api.NewCommandStream()))
+	Register(router, "/static/{name:[A-Za-z0-9\\.\\_\\-]+}", self.ContainerMiddleware(NewStaticAction()))
 
 	return router
 
