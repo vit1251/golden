@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-type Handler func() []byte
+type Handler func(req []byte) []byte
 
 type IAction interface {
 	SetContainer(r *registry.Container)
@@ -13,9 +13,9 @@ type IAction interface {
 }
 
 type Action struct {
-	Type    string
+	Type   string
 	r      *registry.Container
-	Handle  Handler
+	Handle Handler
 }
 
 func (self *Action) SetContainer(r *registry.Container) {

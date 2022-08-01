@@ -9,10 +9,9 @@ import (
 	"net/http"
 )
 
-
 type commandStream struct {
 	registry *registry.Container
-	actions []*Action
+	actions  []*Action
 }
 
 func NewCommandStream() *commandStream {
@@ -25,19 +24,29 @@ func (self *commandStream) SetContainer(r *registry.Container) {
 }
 
 func (self *commandStream) RegisterAction(a *Action) {
-    self.actions = append(self.actions, a)
+	self.actions = append(self.actions, a)
+}
+
+func (self *commandStream) initializeActions() {
+
+	/* Echo */
+	self.RegisterAction(&NewEchoIndexAction(self.registry).Action)
+	self.RegisterAction(&NewEchoMsgIndexAction(self.registry).Action)
+
+	/* Summary */
+	self.RegisterAction(&NewUpdateStateAction(self.registry).Action)
+
 }
 
 func (self *commandStream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
 	conn, _, _, err := ws.UpgradeHTTP(r, w)
 	if err != nil {
 		// handle error
 	}
 
-        /* Initialize actions */
-        self.RegisterAction(&NewUpdateStateAction(self.registry).Action)
-        self.RegisterAction(&NewEchoIndexAction(self.registry).Action)
-        self.RegisterAction(&NewEchoAreaIndexAction(self.registry).Action)
+	/* Initialize actions */
+	self.initializeActions()
 
 	go func() {
 		defer conn.Close()
@@ -57,11 +66,11 @@ func (self *commandStream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				resp := self.processRequest(req)
 				/* Step 2. Send user response */
 				if resp != nil {
-        				err2 := wsutil.WriteServerMessage(conn, op, resp)
-	        			if err2 != nil {
-		        			log.Printf("Command stream write error: err = %#v", err2)
-			        		break
-				        }
+					err2 := wsutil.WriteServerMessage(conn, op, resp)
+					if err2 != nil {
+						log.Printf("Command stream write error: err = %#v", err2)
+						break
+					}
 				}
 			}
 		}
@@ -69,24 +78,27 @@ func (self *commandStream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 type Request struct {
-        Type string `json:"type"`
+	Type string `json:"type"`
 }
 
 func (self *commandStream) processRequest(body []byte) []byte {
 
-        req := Request{}
-        json.Unmarshal(body, &req)
+	req := Request{}
+	err1 := json.Unmarshal(body, &req)
+	if err1 != nil {
+		log.Printf("err = %+v", err1)
+	}
 
-        log.Printf("req = %+v", req)
+	log.Printf("req = %+v", req)
 
-        /* Processing */
-        for _, a := range self.actions {
-            log.Printf("action = %s", a.Type)
-            if a.Type == req.Type {
-                log.Printf("Process")
-                return a.Handle()
-            }
-        }
+	/* Processing */
+	for _, a := range self.actions {
+		log.Printf("action = %s", a.Type)
+		if a.Type == req.Type {
+			log.Printf("Process")
+			return a.Handle(body)
+		}
+	}
 
-        return nil
+	return nil
 }

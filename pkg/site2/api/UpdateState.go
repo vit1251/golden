@@ -7,44 +7,44 @@ import (
 )
 
 type UpdateStateAction struct {
-        Action
+	Action
 }
 
 type messageStatus struct {
-        CommonResponse
+	CommonResponse
 	NetMessageCount  int
 	EchoMessageCount int
 	FileCount        int
 }
 
 func NewUpdateStateAction(r *registry.Container) *UpdateStateAction {
-        o := new(UpdateStateAction)
-        o.Action.Type = "SUMMARY"
-        o.SetRegistry(r)
-        o.Handle = o.processRequest
-        return o
+	o := new(UpdateStateAction)
+	o.Action.Type = "SUMMARY"
+	o.SetRegistry(r)
+	o.Handle = o.processRequest
+	return o
 }
 
-func (self *UpdateStateAction) processRequest() []byte {
+func (self *UpdateStateAction) processRequest(req []byte) []byte {
 
-    	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
+	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
 
-    	netMapper := mapperManager.GetNetmailMapper()
-    	echoMapper := mapperManager.GetEchoMapper()
-    	fileMapper := mapperManager.GetFileMapper()
+	netMapper := mapperManager.GetNetmailMapper()
+	echoMapper := mapperManager.GetEchoMapper()
+	fileMapper := mapperManager.GetFileMapper()
 
-    	newNetCount, _ := netMapper.GetMessageNewCount()
-    	newEchoCount, _ := echoMapper.GetMessageNewCount()
-    	newFileCount, _ := fileMapper.GetFileNewCount()
+	newNetCount, _ := netMapper.GetMessageNewCount()
+	newEchoCount, _ := echoMapper.GetMessageNewCount()
+	newFileCount, _ := fileMapper.GetFileNewCount()
 
-    	resp := new(messageStatus)
-    	resp.CommonResponse.Type = self.Type
+	resp := new(messageStatus)
+	resp.CommonResponse.Type = self.Type
 
-    	resp.NetMessageCount = newNetCount
-    	resp.EchoMessageCount = newEchoCount
-    	resp.FileCount = newFileCount
+	resp.NetMessageCount = newNetCount
+	resp.EchoMessageCount = newEchoCount
+	resp.FileCount = newFileCount
 
-        /* Done */
-        out, _ := json.Marshal(resp)
-        return out
+	/* Done */
+	out, _ := json.Marshal(resp)
+	return out
 }
