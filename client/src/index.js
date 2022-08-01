@@ -2,13 +2,23 @@
 import { Provider } from 'react-redux';
 import { createRoot } from "react-dom/client";
 import { HashRouter, Routes, Route } from "react-router-dom";
+
 import { Welcome } from "./pages";
-import { EchoIndex } from './pages/EchoIndex';
-import { EchoAreaIndex } from './pages/EchoAreaIndex';
-import { EchoMailView } from './pages/EchoMailView';
-import { FileIndex } from './pages/FileIndex';
+import {
+    EchoIndex,
+    EchoMsgIndex,
+    EchoMsgView,
+} from './pages/echomail';
+import {
+    FileIndex,
+//    FileTicIndex,
+//    FileTicView,
+} from './pages/files';
+
 import './custom.css';
+
 import './theme_black.css';
+
 import { store } from './Storage.js';
 
 const container = document.getElementById('app');
