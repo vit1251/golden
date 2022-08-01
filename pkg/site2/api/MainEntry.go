@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
-	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
 	"log"
 	"net/http"
 )
 
+
 type commandStream struct {
 	registry *registry.Container
+	actions []*Action
 }
 
 func NewCommandStream() *commandStream {
@@ -23,11 +24,21 @@ func (self *commandStream) SetContainer(r *registry.Container) {
 	self.registry = r
 }
 
+func (self *commandStream) RegisterAction(a *Action) {
+    self.actions = append(self.actions, a)
+}
+
 func (self *commandStream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	conn, _, _, err := ws.UpgradeHTTP(r, w)
 	if err != nil {
 		// handle error
 	}
+
+        /* Initialize actions */
+        self.RegisterAction(&NewUpdateStateAction(self.registry).Action)
+        self.RegisterAction(&NewEchoIndexAction(self.registry).Action)
+        self.RegisterAction(&NewEchoAreaIndexAction(self.registry).Action)
+
 	go func() {
 		defer conn.Close()
 
@@ -45,40 +56,37 @@ func (self *commandStream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				/* Step 1. Process user request */
 				resp := self.processRequest(req)
 				/* Step 2. Send user response */
-				err2 := wsutil.WriteServerMessage(conn, op, resp)
-				if err2 != nil {
-					log.Printf("Command stream write error: err = %#v", err2)
-					break
+				if resp != nil {
+        				err2 := wsutil.WriteServerMessage(conn, op, resp)
+	        			if err2 != nil {
+		        			log.Printf("Command stream write error: err = %#v", err2)
+			        		break
+				        }
 				}
 			}
 		}
 	}()
 }
 
-type messageStatus struct {
-	NetMessageCount  int
-	EchoMessageCount int
-	FileCount        int
+type Request struct {
+        Type string `json:"type"`
 }
 
-func (self *commandStream) processRequest(req []byte) []byte {
+func (self *commandStream) processRequest(body []byte) []byte {
 
-	mapperManager := mapper.RestoreMapperManager(self.registry)
-	netMapper := mapperManager.GetNetmailMapper()
-	echoMapper := mapperManager.GetEchoMapper()
-	fileMapper := mapperManager.GetFileMapper()
+        req := Request{}
+        json.Unmarshal(body, &req)
 
-	newNetCount, _ := netMapper.GetMessageNewCount()
-	newEchoCount, _ := echoMapper.GetMessageNewCount()
-	newFileCount, _ := fileMapper.GetFileNewCount()
+        log.Printf("req = %+v", req)
 
-	result := messageStatus{
-		NetMessageCount:  newNetCount,
-		EchoMessageCount: newEchoCount,
-		FileCount:        newFileCount,
-	}
+        /* Processing */
+        for _, a := range self.actions {
+            log.Printf("action = %s", a.Type)
+            if a.Type == req.Type {
+                log.Printf("Process")
+                return a.Handle()
+            }
+        }
 
-	/* Done */
-	out, _ := json.Marshal(result)
-	return out
+        return nil
 }
