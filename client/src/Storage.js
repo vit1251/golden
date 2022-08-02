@@ -13,6 +13,12 @@ const reducer = (state = initialState, action) => {
             ...state,
             areas,
         };
+    } else if (action.type === 'ECHO_MSG_INDEX') {
+        const { headers = [] } = action;
+        return {
+            ...state,
+            messages: headers,
+        };
     } else if (action.type === 'SUMMARY') {
         const {
             NetMessageCount = 0,

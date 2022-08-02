@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
 	"log"
@@ -16,6 +17,26 @@ func NewEchoMsgIndexAction(r *registry.Container) *EchoMsgIndexAction {
 	o.SetRegistry(r)
 	o.Handle = o.processRequest
 	return o
+}
+
+type echoMsgHeader struct {
+	//        ID string
+	//        MsgID string
+	Hash string `json:"hash"`
+	//        Area string
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	//        UnixTime string
+	DateWritten string `json:"date"`
+	ViewCount   int    `json:"view_count"`
+	//        Reply string
+	//        FromAddr string
+}
+
+type echoMsgIndexResponse struct {
+	CommonResponse
+	Headers []echoMsgHeader `json:"headers"`
 }
 
 func (self *EchoMsgIndexAction) processRequest(req []byte) []byte {
@@ -42,10 +63,20 @@ func (self *EchoMsgIndexAction) processRequest(req []byte) []byte {
 	log.Printf("messageHeaders = %+v", messageHeaders)
 
 	/* Step 3. Populate API response */
+	resp := new(echoMsgIndexResponse)
+	resp.CommonResponse.Type = self.Type
+
 	for _, messageHeader := range messageHeaders {
 		log.Printf("messageHeader = %+v", messageHeader)
+		msgHeader := echoMsgHeader{}
+		msgHeader.Hash = messageHeader.Hash
+		msgHeader.From = messageHeader.From
+		msgHeader.Subject = messageHeader.Subject
+		msgHeader.DateWritten = messageHeader.DateWritten.String()
+		resp.Headers = append(resp.Headers, msgHeader)
 	}
 
-	return nil
-
+	/* Done */
+	out, _ := json.Marshal(resp)
+	return out
 }

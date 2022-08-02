@@ -6,19 +6,27 @@ import "./Row.css";
 
 export const Row = (props) => {
 
-    const { areas = [] } = props;
+    const {
+        data = [],
+        columns = [],
+        onRowLink = (row) => '#',
+    } = props;
 
     return (
         <>
 
             <div className="rowContainer">
-               {areas.map((area) => (
-                 <Link to={`/echomail/${area.area_index}`}>
+               {data.map((row) => (
+                 <Link to={onRowLink(row)}>
                  <div className="row">
-                   <div className="rowName">{area.name}</div>
-                   <div className="rowMarker">{true ? '•' : null}</div>
-                   <div className="rowSummary">{area.summary}</div>
-                   <div className="rowCounter">{area.new_message_count > 0 ? area.new_message_count : null}</div>
+                   {columns.map((column) => {
+                       const { className = '', key, render } = column;
+                       const { [key]: raw = '' } = row;
+                       const value = render ? render(row) : raw;
+                       return (
+                           <div className={className}>{value}</div>
+                       );
+                   })}
                  </div>
                  </Link>
                ))}

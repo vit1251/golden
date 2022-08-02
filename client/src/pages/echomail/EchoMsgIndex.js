@@ -8,9 +8,12 @@ import { Header } from '../../common/Header';
 import { eventBus } from '../../EventBus.js';
 import { Row } from './Row.js';
 
+import "./EchoMsgIndex.css";
+
 export const EchoMsgIndex = (props) => {
 
-    const areas = useSelector((state) => state.areas) ?? [];
+    const areas = useSelector((state) => state.areas);
+    const messages = useSelector((state) => state.messages);
 
     useEffect(() => {
         eventBus.invoke({
@@ -52,6 +55,25 @@ export const EchoMsgIndex = (props) => {
             <div class="container">
                 <h1>Echoarea</h1>
 
+                <Row
+                    onRowLink={(row) => {
+                        const { hash = '' } = row;
+                        return `/echomail/${echoTag}/${hash}/view`;
+                    }}
+                    columns={[
+                       {className: 'rowUserpic', key: ''},
+                       {className: 'rowFrom', key: 'from'},
+                       {className: 'rowMarker', render: (row) => {
+                           const { view_count = 0 } = row;
+                           const value = view_count == 0 ? '•' : null;
+                           return value;
+                       }},
+                       {className: 'rowSubject', key: 'subject'},
+                       {className: 'rowDate', key: 'date'},
+                    ]}
+                    data={messages}
+                    />
+                    
             </div>
         </>
     );
