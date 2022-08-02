@@ -27,13 +27,13 @@ export const App = (props) => {
                 <Routes>
                     <Route path="/" element={<Welcome />} />
                     <Route path="/netmail" element={<NetmailIndex />} />
-                    <Route path="/netmail/:msg_id/view" element={<NetmailView />} />
+                    <Route path="/netmail/:msgId/view" element={<NetmailView />} />
                     <Route path="/echomail" element={<EchoIndex />} />
                     <Route path="/echomail/:echoTag" element={<EchoMsgIndex />} />
-                    <Route path="/echomail/:echoTag/:msg_id/view" element={<EchoMsgView />} />
+                    <Route path="/echomail/:echoTag/:msgId/view" element={<EchoMsgView />} />
                     <Route path="/files" element={<FileIndex />} />
                     <Route path="/files/:echoTag/tics" element={<FileTicIndex />} />
-                    <Route path="/files/:echoTag/:file_id/view" element={<FileTicView />} />
+                    <Route path="/files/:echoTag/:fileId/view" element={<FileTicView />} />
                 </Routes>
             </HashRouter>
         </>

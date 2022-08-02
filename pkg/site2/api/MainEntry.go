@@ -32,6 +32,7 @@ func (self *commandStream) initializeActions() {
 	/* Echo */
 	self.RegisterAction(&NewEchoIndexAction(self.registry).Action)
 	self.RegisterAction(&NewEchoMsgIndexAction(self.registry).Action)
+	self.RegisterAction(&NewEchoMsgViewAction(self.registry).Action)
 
 	/* Summary */
 	self.RegisterAction(&NewUpdateStateAction(self.registry).Action)

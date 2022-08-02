@@ -4,6 +4,10 @@ import { createStore } from "redux";
 const initialState = {
     summary: {},
     areas: [],
+    messages: [],
+    message: {
+        body: '',
+    },
 };
 
 const reducer = (state = initialState, action) => {
@@ -18,6 +22,12 @@ const reducer = (state = initialState, action) => {
         return {
             ...state,
             messages: headers,
+        };
+    } else if (action.type === 'ECHO_MSG_VIEW') {
+        const { message = {} } = action;
+        return {
+            ...state,
+            message,
         };
     } else if (action.type === 'SUMMARY') {
         const {
