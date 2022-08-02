@@ -49,8 +49,9 @@ func (self *Site2Manager) createRouter() *mux.Router {
 	router := mux.NewRouter()
 
 	Register(router, "/api/v1", self.ContainerMiddleware(api.NewCommandStream()))
-	Register(router, "/{name:[A-Za-z0-9\\.\\_\\-]+}", self.ContainerMiddleware(NewStaticAction()))
+	Register(router, "/static/{name:[A-Za-z0-9\\.\\_\\-]+}", self.ContainerMiddleware(NewStaticAction()))
 	Register(router, "/", self.ContainerMiddleware(NewIndexAction()))
+	Register(router, "/{name:[A-Za-z0-9\\.\\_\\-]+}", self.ContainerMiddleware(NewPublicAction()))
 
 	return router
 

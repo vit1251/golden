@@ -1,0 +1,11 @@
+.panel {
+    display: none !important;
+}
+
+.hidden-print {
+    display: none !important;
+}
+
+.actions {
+    display: none !important;
+}

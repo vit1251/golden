@@ -21,8 +21,8 @@ func NewIndexAction() *IndexAction {
 func (self *IndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Read content */
-	resourcePath := path.Join("static", "index.html")
-	content, err1 := staticContent.ReadFile(resourcePath)
+	resourcePath := path.Join("public", "index.html")
+	content, err1 := publicContent.ReadFile(resourcePath)
 
         if err1 == nil {
 
