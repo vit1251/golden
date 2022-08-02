@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
+	"github.com/vit1251/golden/pkg/site/utils"
 	"log"
 )
 
@@ -34,12 +35,24 @@ type echoMsgHeader struct {
 	//        FromAddr string
 }
 
+type echoMsgIndexRequest struct {
+	commonRequest
+	EchoTag string `json:"echoTag"`
+}
+
 type echoMsgIndexResponse struct {
 	CommonResponse
 	Headers []echoMsgHeader `json:"headers"`
 }
 
-func (self *EchoMsgIndexAction) processRequest(req []byte) []byte {
+func (self *EchoMsgIndexAction) processRequest(body []byte) []byte {
+
+	/**/
+	req := echoMsgIndexRequest{}
+	err1 := json.Unmarshal(body, &req)
+	if err1 != nil {
+		log.Printf("err = %+v", err1)
+	}
 
 	/* Step 0. Prepare mappers */
 	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
@@ -47,7 +60,7 @@ func (self *EchoMsgIndexAction) processRequest(req []byte) []byte {
 	echoMapper := mapperManager.GetEchoMapper()
 
 	/* Step 1. Find current area by area UUID */
-	areaIndex := "e3c002a2-fde8-407e-bbd8-0de177527484"
+	areaIndex := req.EchoTag
 	currentArea, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
 	if currentArea == nil || err1 != nil {
 		return nil
@@ -72,7 +85,7 @@ func (self *EchoMsgIndexAction) processRequest(req []byte) []byte {
 		msgHeader.Hash = messageHeader.Hash
 		msgHeader.From = messageHeader.From
 		msgHeader.Subject = messageHeader.Subject
-		msgHeader.DateWritten = messageHeader.DateWritten.String()
+		msgHeader.DateWritten = utils.DateHelper_renderDate(messageHeader.DateWritten)
 		resp.Headers = append(resp.Headers, msgHeader)
 	}
 

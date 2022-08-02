@@ -77,13 +77,9 @@ func (self *commandStream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}()
 }
 
-type Request struct {
-	Type string `json:"type"`
-}
-
 func (self *commandStream) processRequest(body []byte) []byte {
 
-	req := Request{}
+	req := commonRequest{}
 	err1 := json.Unmarshal(body, &req)
 	if err1 != nil {
 		log.Printf("err = %+v", err1)
