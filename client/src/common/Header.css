@@ -1,0 +1,29 @@
+
+.Header {
+    background-color: var(--color-header-bg);
+    color: var(--color-header-text);
+    padding: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.Header-item-group {
+    display: flex;
+    flex-flow: row;
+}
+
+.Header-item {
+    font-weight: 600;
+    font-size: 14pt;
+    margin-right: 16px;
+}
+
+.Header a {
+    color: var(--color-header-text);
+}
+
+.Header a:hover {
+    color: var(--color-header-text);
+    opacity: 0.75;
+}

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { eventBus } from '../EventBus';
 
+import './Header.css';
+
 export const Header = (props) => {
 
     const {

@@ -1,4 +1,5 @@
 
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { useSelector } from 'react-redux';
@@ -10,6 +11,8 @@ import { Header } from '../../common/Header';
 import { Message } from './Message.js';
 
 export const EchoMsgView = (props) => {
+
+    const navigate = useNavigate();
 
     const { body } = useSelector((state) => state.message);
 
@@ -24,25 +27,24 @@ export const EchoMsgView = (props) => {
         });
     }, [echoTag, msgId]);
 
-    const handlePrevMessage = () => {
-        console.log(`handlePrevMessage...`);
+    const handleMsgIndex = () => {
+        console.log(`Back on message index..`);
+        navigate(`/echomail/${echoTag}`);
     };
 
     return (
         <>
             <Header />
 
-            <Hotkeys 
-                keyName="ctrl+left,pgup"
-                onKeyUp={handlePrevMessage}
-                />
-
             <div class="container">
                 <h1>EchoMailView</h1>
-            
+
                 <Message body={body} />
+
             </div>
-            
+
+            <Hotkeys keyName="esc" onKeyDown={handleMsgIndex} />
+
         </>
     );
 };

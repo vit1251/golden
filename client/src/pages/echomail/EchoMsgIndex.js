@@ -1,9 +1,11 @@
 
-import Hotkeys from 'react-hot-keys';
-
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+
+import Hotkeys from 'react-hot-keys';
+
 import { Header } from '../../common/Header';
 import { eventBus } from '../../EventBus.js';
 import { Row } from './Row.js';
@@ -11,6 +13,10 @@ import { Row } from './Row.js';
 import "./EchoMsgIndex.css";
 
 export const EchoMsgIndex = (props) => {
+
+    const navigate = useNavigate();
+
+    const [activeIndex, setActiveIndex] = useState(0);
 
     const areas = useSelector((state) => state.areas);
     const messages = useSelector((state) => state.messages);
@@ -41,16 +47,17 @@ export const EchoMsgIndex = (props) => {
     const handlePrevMessage = () => {
         console.log(`handlePrevMessage...`);
     };
+    const handleNextMessage = () => {
+        console.log(`handlePrevMessage...`);
+    };
+    const handleAreaIndex = () => {
+        navigate(`/echomail`);
+    };
 
     return (
         <>
 
             <Header />
-
-            <Hotkeys
-                keyName="ctrl+left,pgup"
-                onKeyUp={handlePrevMessage}
-                />
 
             <div class="container">
                 <h1>Echoarea</h1>
@@ -72,9 +79,15 @@ export const EchoMsgIndex = (props) => {
                        {className: 'rowDate', key: 'date'},
                     ]}
                     data={messages}
+                    activeIndex={activeIndex}
                     />
-                    
+
             </div>
+
+            <Hotkeys keyName="up" onKeyDown={handlePrevMessage} />
+            <Hotkeys keyName="down" onKeyDown={handleNextMessage} />
+            <Hotkeys keyName="esc" onKeyDown={handleAreaIndex} />
+
         </>
     );
 };

@@ -1,4 +1,9 @@
 
+import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+
+import Hotkeys from 'react-hot-keys';
+
 import './Message.css';
 
 const parseLines = (content) => {
@@ -88,31 +93,63 @@ const makeQuoteChar = (count) => {
     return result;
 }
 
+const makeClassNameByCounter = (counter) => {
+
+    if (counter === 0) {
+        return '';
+    }
+    if (counter % 2 === 0) {
+        return 'rowRed';
+        } else {
+        return 'rowGreen'; }
+
+};
+
 export const Message = (props) => {
+
+    const [line, setLine] = useState(0);
+
     const { body } = props;
     const rows = parseLines(body);
+    const msgLineCount = rows.length;
+
+    const handlePrevLine = () => {
+        if (line > 0) {
+            setLine(line - 1);
+        }
+    };
+    const handleNextLine = () => {
+        if ((line + 1) < msgLineCount) {
+            setLine(line + 1);
+        }
+    };
+
     return (
         <>
-            {rows.map((row) => {
+
+
+            <Hotkeys keyName="up" onKeyDown={handlePrevLine} />
+            <Hotkeys keyName="down" onKeyDown={handleNextLine} />
+
+            {rows.map((row, index) => {
                 const quote = parseQuote(row);
                 const { who, count, msg } = quote;
                 const qp = makeQuoteChar(count);
                 const is_quote = !who.empty();
                 return (
-                   <>
-                     <div className={ quote.count % 2 ? 'rowRed' : 'rowGreen' } data-tooltip={JSON.stringify(quote)}>{ is_quote ? (
+                   <div key={`msg-line-${index}`} className={index === line ? 'rowActive' : ''}>
+                     <div className={makeClassNameByCounter(quote.count) } data-tooltip={JSON.stringify(quote)}>{ is_quote ? (
                         <>
                             <div className="rowQuote">
-                                {who.value}{qp} {msg}
+                                {who.value}{qp} {msg === '' ? <br /> : msg }
                             </div>
                         </>
                      ) : (
                         <>
-                            <div>{row}</div>
+                            <div>{row === '' ? <br /> : row }</div>
                         </>
                      )}</div>
-
-                   </>
+                   </div>
                 );
             })}
         </>

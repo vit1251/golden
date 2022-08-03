@@ -1,4 +1,8 @@
 
+.rowActive {
+    background-color: #000080;
+}
+
 .rowQuote {
     padding-left: 16px;
     padding-top: 8px;
