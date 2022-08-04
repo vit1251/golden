@@ -53,6 +53,9 @@ export const EchoMsgIndex = (props) => {
     const handleAreaIndex = () => {
         navigate(`/echomail`);
     };
+    const handleCreateMessage = () => {
+        navigate(`/echomail/${echoTag}/create`);
+    };
 
     return (
         <>
@@ -87,6 +90,7 @@ export const EchoMsgIndex = (props) => {
             <Hotkeys keyName="up" onKeyDown={handlePrevMessage} />
             <Hotkeys keyName="down" onKeyDown={handleNextMessage} />
             <Hotkeys keyName="esc" onKeyDown={handleAreaIndex} />
+            <Hotkeys keyName="ins" onKeyDown={handleCreateMessage} />
 
         </>
     );

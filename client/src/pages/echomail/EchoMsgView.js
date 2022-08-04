@@ -14,6 +14,7 @@ export const EchoMsgView = (props) => {
 
     const navigate = useNavigate();
 
+    const messages = useSelector((state) => state.messages);
     const { body } = useSelector((state) => state.message);
 
     const { echoTag, msgId } = useParams();
@@ -43,11 +44,32 @@ export const EchoMsgView = (props) => {
         navigate(`/echomail/${echoTag}`);
     };
 
+    const handlePrevMessage = () => {
+        const msgIndex = messages.findIndex((msg) => msg.hash === msgId);
+        console.log(`Your index ${msgIndex}`);
+        if ((msgIndex - 1) >= 0) {
+            const { hash: prevHash } = messages[msgIndex - 1];
+            navigate(`/echomail/${echoTag}/${prevHash}/view`);
+        } else {
+            // TODO - play blump...
+        }
+    };
+    const handleNextMessage = () => {
+        const msgIndex = messages.findIndex((msg) => msg.hash === msgId);
+        console.log(`Your index ${msgIndex}`);
+        if ((msgIndex + 1) < messages.length) {
+            const { hash: nextHash } = messages[msgIndex + 1];
+            navigate(`/echomail/${echoTag}/${nextHash}/view`);
+        } else {
+            // TODO - play blump...
+        }
+    };
+
     return (
         <>
             <Header />
 
-            <div class="container">
+            <div className="container">
                 <h1>EchoMailView</h1>
 
                 <Message body={body} />
@@ -56,6 +78,8 @@ export const EchoMsgView = (props) => {
 
             <Hotkeys keyName="esc" onKeyDown={handleMsgIndex} />
             <Hotkeys keyName="del" onKeyDown={handleMsgRemove} />
+            <Hotkeys keyName="left" onKeyDown={handlePrevMessage} />
+            <Hotkeys keyName="right" onKeyDown={handleNextMessage} />
 
         </>
     );

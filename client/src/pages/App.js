@@ -6,6 +6,7 @@ import {
     EchoIndex,
     EchoMsgIndex,
     EchoMsgView,
+    EchoMsgCompose,
 } from './echomail';
 import {
     FileIndex,
@@ -34,6 +35,7 @@ export const App = (props) => {
                     <Route path="/echomail" element={<EchoIndex />} />
                     <Route path="/echomail/:echoTag" element={<EchoMsgIndex />} />
                     <Route path="/echomail/:echoTag/:msgId/view" element={<EchoMsgView />} />
+                    <Route path="/echomail/:echoTag/create" element={<EchoMsgCompose />} />
                     <Route path="/files" element={<FileIndex />} />
                     <Route path="/files/:echoTag/tics" element={<FileTicIndex />} />
                     <Route path="/files/:echoTag/:fileId/view" element={<FileTicView />} />

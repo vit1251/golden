@@ -60,7 +60,8 @@ func (self *EchoMsgViewAction) processRequest(body []byte) []byte {
 	currentAreaName := currentArea.GetName()
 	msgHash := req.MsgId
 	message, err2 := echoMapper.GetMessageByHash(currentAreaName, msgHash)
-	if err2 != nil {
+	if message == nil || err2 != nil {
+		log.Printf("No message: msgId = %+v", msgHash)
 		return nil
 	}
 	log.Printf("message = %+v", message)
