@@ -7,37 +7,33 @@ import (
 	"log"
 )
 
-type EchoMsgViewAction struct {
+type EchoMsgRemoveAction struct {
 	Action
 }
 
-func NewEchoMsgViewAction(r *registry.Container) *EchoMsgViewAction {
-	o := new(EchoMsgViewAction)
-	o.Action.Type = "ECHO_MSG_VIEW"
+func NewEchoMsgRemoveAction(r *registry.Container) *EchoMsgRemoveAction {
+	o := new(EchoMsgRemoveAction)
+	o.Action.Type = "ECHO_MSG_REMOVE"
 	o.SetRegistry(r)
 	o.Handle = o.processRequest
 	return o
 }
 
-type echoMsg struct {
-	Body string `json:"body"`
-}
-
-type echoMsgViewRequest struct {
+type echoMsgRemoveRequest struct {
 	commonRequest
 	EchoTag string `json:"echoTag"`
 	MsgId   string `json:"msgId"`
 }
 
-type echoMsgViewResponse struct {
+type echoMsgRemoveResponse struct {
 	CommonResponse
-	EchoMsg echoMsg `json:"message"`
+	Code int `json:"code"`
 }
 
-func (self *EchoMsgViewAction) processRequest(body []byte) []byte {
+func (self *EchoMsgRemoveAction) processRequest(body []byte) []byte {
 
 	/**/
-	req := echoMsgViewRequest{}
+	req := echoMsgRemoveRequest{}
 	err1 := json.Unmarshal(body, &req)
 	if err1 != nil {
 		log.Printf("err = %+v", err1)
@@ -56,26 +52,19 @@ func (self *EchoMsgViewAction) processRequest(body []byte) []byte {
 	}
 	log.Printf("currentArea = %+v", currentArea)
 
-	/* Step 2. Get message headers by current area name */
+	/* Step 2. Remove message by hash */
 	currentAreaName := currentArea.GetName()
 	msgHash := req.MsgId
-	message, err2 := echoMapper.GetMessageByHash(currentAreaName, msgHash)
+	err2 := echoMapper.RemoveMessageByHash(currentAreaName, msgHash)
 	if err2 != nil {
-		return nil
-	}
-	log.Printf("message = %+v", message)
-
-	/* Update message view counter */
-	err3 := echoMapper.ViewMessageByHash(currentAreaName, msgHash)
-	if err3 != nil {
 		return nil
 	}
 
 	/* Step 3. Populate API response */
-	resp := new(echoMsgViewResponse)
+	resp := new(echoMsgRemoveResponse)
 	resp.CommonResponse.Type = self.Type
 
-	resp.EchoMsg.Body = message.Content
+	resp.Code = 0
 
 	/* Done */
 	out, _ := json.Marshal(resp)

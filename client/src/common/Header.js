@@ -18,21 +18,21 @@ export const Header = (props) => {
             name: 'Home',
             path: '/',
         },
-        {
-            name: 'Netmail',
-            path: '/netmail',
-            itemCount: NetMessageCount,
-        },
+//        {
+//            name: 'Netmail',
+//            path: '/netmail',
+//            itemCount: NetMessageCount,
+//        },
         {
             name: 'Echomail',
             path: '/echomail',
             itemCount: EchoMessageCount,
         },
-        {
-            name: 'Files',
-            path: '/files',
-            itemCount: FileCount,
-        },
+//        {
+//            name: 'Files',
+//            path: '/files',
+//            itemCount: FileCount,
+//        },
 //        {
 //            name: 'Service',
 //            path: '/service',

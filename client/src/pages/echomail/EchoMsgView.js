@@ -32,6 +32,17 @@ export const EchoMsgView = (props) => {
         navigate(`/echomail/${echoTag}`);
     };
 
+    const handleMsgRemove = () => {
+        /* Step 1. Remove message */
+        eventBus.invoke({
+            type: 'ECHO_MSG_REMOVE',
+            echoTag,
+            msgId,
+        });
+        /* Step 2. Message index */
+        navigate(`/echomail/${echoTag}`);
+    };
+
     return (
         <>
             <Header />
@@ -44,6 +55,7 @@ export const EchoMsgView = (props) => {
             </div>
 
             <Hotkeys keyName="esc" onKeyDown={handleMsgIndex} />
+            <Hotkeys keyName="del" onKeyDown={handleMsgRemove} />
 
         </>
     );

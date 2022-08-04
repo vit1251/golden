@@ -72,7 +72,7 @@ export const EchoMsgIndex = (props) => {
                        {className: 'rowFrom', key: 'from'},
                        {className: 'rowMarker', render: (row) => {
                            const { view_count = 0 } = row;
-                           const value = view_count == 0 ? '•' : null;
+                           const value = view_count === 0 ? '•' : null;
                            return value;
                        }},
                        {className: 'rowSubject', key: 'subject'},
