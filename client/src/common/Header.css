@@ -6,17 +6,23 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
-.Header-item-group {
+.HeaderGroup {
     display: flex;
     flex-flow: row;
 }
 
-.Header-item {
+.HeaderItem {
     font-weight: 600;
-    font-size: 14pt;
-    margin-right: 16px;
+    font-family: monospace;
+    font-size: 16pt;
+    padding: 0 4px;
+}
+
+.HeaderIcon {
+    -border: 1px solid yellow;
 }
 
 .Header a {

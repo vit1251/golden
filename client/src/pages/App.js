@@ -16,6 +16,9 @@ import {
     NetmailIndex,
     NetmailView,
 } from './netmail';
+import {
+    Setup,
+} from './setup';
 
 import '../themes/custom.css';
 import '../themes/theme_black.css';
@@ -34,6 +37,7 @@ export const App = (props) => {
                     <Route path="/files" element={<FileIndex />} />
                     <Route path="/files/:echoTag/tics" element={<FileTicIndex />} />
                     <Route path="/files/:echoTag/:fileId/view" element={<FileTicView />} />
+                    <Route path="/setup" element={<Setup />} />
                 </Routes>
             </HashRouter>
         </>

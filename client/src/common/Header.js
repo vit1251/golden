@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { eventBus } from '../EventBus';
 
+import { Settings } from 'react-feather';
+
 import './Header.css';
 
 export const Header = (props) => {
@@ -47,10 +49,10 @@ export const Header = (props) => {
 
     return (
         <div className="Header">
-            <div className="Header-item-group">
+            <div className="HeaderGroup">
                 {items.map((item, index) => (
-                <div key={index} className="Header-item">
-                    <span className="tab-label">
+                <div key={index} className="HeaderItem">
+                    <span className="HeaderLabel">
                         <Link to={item.path}>{item.name}</Link>
                     </span>
                     {item.itemCount ? (
@@ -62,18 +64,11 @@ export const Header = (props) => {
                 </div>
                 ))}
             </div>
-{/*
-            <div className="Header-item-group">
-                <a className="nav-link" href="/setup">
-                    <div className="Header-item">
-                        <span className="tab-label">
-                            <Link to="/setup">Setup</Link>
-                        </span>
-                        <span className="badge hidden" id="mainMenuSetup"></span>
-                    </div>
-                </a>
+            <div className="HeaderGroup">
+                <div className="HeaderItem HeaderIcon">
+                    <Link to="/setup"><Settings size={20} /></Link>
+                </div>
             </div>
-*/}
         </div>
     );
 };
