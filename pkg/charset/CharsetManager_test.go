@@ -30,6 +30,24 @@ func TestEncodeToCP866(t *testing.T) {
 
 	var msgBody string = "Привет, мир!"
 
+	got, err1 := charsetManager.EncodeMessageBody(msgBody, "CP850")
+	if err1 != nil {
+		panic(err1)
+	}
+
+	var want []byte = []byte{0x8F, 0xE0, 0xA8, 0xA2, 0xA5, 0xE2, 0x2C, 0x20, 0xAC, 0xA8, 0xE0, 0x21}
+	if !bytes.Equal(got, want) {
+		t.Errorf("got %q, wanted %q", got, want)
+	}
+
+}
+
+func TestEncodeToCP866(t *testing.T) {
+
+	charsetManager := NewCharsetManager(nil)
+
+	var msgBody string = "Привет, мир!"
+
 	got, err1 := charsetManager.EncodeMessageBody(msgBody, "CP866")
 	if err1 != nil {
 		panic(err1)
