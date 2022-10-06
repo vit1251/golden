@@ -15,6 +15,7 @@ func NewCharsetManager(r *registry.Container) *CharsetManager {
 	cm := new(CharsetManager)
 	cm.mapping = make(map[string]*charmap.Charmap)
 	//
+	cm.registerCharset("CP850", charmap.CodePage850)
 	cm.registerCharset("CP866", charmap.CodePage866)
 	cm.registerCharset("LATIN-1", charmap.ISO8859_1)
 	cm.registerCharset("CP437", charmap.CodePage437)
