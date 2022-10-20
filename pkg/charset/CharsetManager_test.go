@@ -24,11 +24,11 @@ func TestDecodeFromCP866(t *testing.T) {
 
 }
 
-func TestEncodeToCP866(t *testing.T) {
+func TestEncodeToCP850(t *testing.T) {
 
 	charsetManager := NewCharsetManager(nil)
 
-	var msgBody string = "Привет, мир!"
+	var msgBody string = "Hello World!"
 
 	got, err1 := charsetManager.EncodeMessageBody(msgBody, "CP850")
 	if err1 != nil {
