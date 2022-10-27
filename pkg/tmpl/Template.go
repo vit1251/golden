@@ -1,7 +1,7 @@
 package tmpl
 
 import (
-	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/internal/common"
 	"strings"
 )
 
@@ -13,11 +13,11 @@ func NewTemplate() *Template {
 	r := new(Template)
 	r.Vars = make(map[string]string)
 
-	r.Set("GOLDEN_PLATFORM", cmn.GetPlatform())
-	r.Set("GOLDEN_ARCH", cmn.GetArch())
-	r.Set("GOLDEN_VERSION", cmn.GetVersion())
-	r.Set("GOLDEN_RELEASE_DATE", cmn.GetReleaseDate())
-	r.Set("GOLDEN_RELEASE_HASH", cmn.GetReleaseBranch())
+	r.Set("GOLDEN_PLATFORM", commonfunc.GetPlatform())
+	r.Set("GOLDEN_ARCH", commonfunc.GetArch())
+	r.Set("GOLDEN_VERSION", commonfunc.GetVersion())
+	r.Set("GOLDEN_RELEASE_DATE", commonfunc.GetReleaseDate())
+	r.Set("GOLDEN_RELEASE_HASH", commonfunc.GetReleaseBranch())
 
 	return r
 }
