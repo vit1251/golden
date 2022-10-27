@@ -18,7 +18,7 @@ echo "Step 3. Compile AMD64 executable..."
 export GOOS="linux"
 export GOARCH="amd64"
 export CGO_ENABLED="1"
-go build -o golden-linux-amd64
+go build -o golden-linux-amd64 ./cmd/golden
 
 # Section 4. Make ZIP portable distribution package...
 #

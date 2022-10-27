@@ -20,7 +20,6 @@ platforms and developer environment deployment.
 
 You can read more about how to assemble it yourself in the documents:
 
- * BUILD.Windows.ru-RU.md
  * BUILD.Linux.ru-RU.md
  * BUILD.MacOS.ru-RU.md
 
