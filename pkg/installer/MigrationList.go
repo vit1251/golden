@@ -2,7 +2,7 @@ package installer
 
 import (
 	"database/sql"
-	"github.com/vit1251/golden/pkg/site/utils"
+	"github.com/vit1251/golden/internal/site/utils"
 	"time"
 )
 

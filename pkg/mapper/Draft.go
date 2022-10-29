@@ -1,7 +1,7 @@
 package mapper
 
 import (
-	"github.com/vit1251/golden/pkg/utils"
+	"github.com/vit1251/golden/internal/utils"
 )
 
 const (

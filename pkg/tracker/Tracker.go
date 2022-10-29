@@ -1,14 +1,14 @@
 package tracker
 
 import (
+	cmn "github.com/vit1251/golden/internal/common"
+	"github.com/vit1251/golden/internal/utils"
 	"github.com/vit1251/golden/pkg/queue"
-	"github.com/vit1251/golden/pkg/utils"
 	"log"
 	"os"
 	"path"
 	"time"
 
-	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
 )

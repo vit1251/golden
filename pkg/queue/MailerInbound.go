@@ -1,7 +1,7 @@
 package queue
 
 import (
-	cmn "github.com/vit1251/golden/pkg/common"
+	cmn "github.com/vit1251/golden/internal/common"
 	"github.com/vit1251/golden/pkg/registry"
 	"io/ioutil"
 	"path"

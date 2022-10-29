@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
-	cmn "github.com/vit1251/golden/pkg/common"
+	cmn "github.com/vit1251/golden/internal/common"
 	"github.com/vit1251/golden/pkg/registry"
 	"log"
 	"time"
@@ -18,7 +18,7 @@ func (self *StorageManager) GetConnection() *sql.DB {
 	return self.conn
 }
 
-/// Initialize storage
+// / Initialize storage
 func NewStorageManager(r *registry.Container) *StorageManager {
 	sm := new(StorageManager)
 	sm.Open()

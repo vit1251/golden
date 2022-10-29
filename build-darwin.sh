@@ -17,7 +17,7 @@ go generate
 export GOOS="darwin"
 export GOARCH="amd64"
 export CGO_ENABLED="1"
-go build -o golden-darwin-amd64
+go build -o golden-darwin-amd64 ./cmd/golden
 
 # Section 4. Create ZIP archive ....
 #

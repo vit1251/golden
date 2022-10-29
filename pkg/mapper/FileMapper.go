@@ -2,10 +2,10 @@ package mapper
 
 import (
 	"database/sql"
+	cmn "github.com/vit1251/golden/internal/common"
 	"log"
 	"path/filepath"
 
-	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
 )

@@ -2,9 +2,9 @@ package mapper
 
 import (
 	"database/sql"
+	"github.com/vit1251/golden/internal/utils"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
-	"github.com/vit1251/golden/pkg/utils"
 	"log"
 )
 

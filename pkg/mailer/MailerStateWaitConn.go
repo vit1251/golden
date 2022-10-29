@@ -2,7 +2,7 @@ package mailer
 
 import (
 	"fmt"
-	cmn "github.com/vit1251/golden/pkg/common"
+	"github.com/vit1251/golden/internal/common"
 	"time"
 )
 
@@ -25,12 +25,12 @@ func (self *MailerStateWaitConn) makeSystemTime() string {
 }
 
 func (self *MailerStateWaitConn) makeOperationSystemName() string {
-	return cmn.GetPlatform()
+	return commonfunc.GetPlatform()
 }
 
 func (self *MailerStateWaitConn) makeVersionString() string {
 	appName := "GoldenMailer"
-	appVersion := cmn.GetVersion()
+	appVersion := commonfunc.GetVersion()
 	protocolVersion := "binkp/1.0"
 	return fmt.Sprintf("%s/%s %s", appName, appVersion, protocolVersion)
 }

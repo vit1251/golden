@@ -2,7 +2,7 @@ package mailer
 
 import (
 	"fmt"
-	cmn "github.com/vit1251/golden/pkg/common"
+	cmn "github.com/vit1251/golden/internal/common"
 	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/mapper"

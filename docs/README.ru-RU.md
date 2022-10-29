@@ -20,7 +20,6 @@ Golden Point представляет из себя локальный HTTP се
 
 Подробнее как самостоятельно производить сборку можно прочитать в документах:
 
- * BUILD.Windows.ru-RU.md
  * BUILD.Linux.ru-RU.md
  * BUILD.MacOS.ru-RU.md
 

@@ -2,7 +2,7 @@ package mailer
 
 import (
 	"bytes"
-	cmn "github.com/vit1251/golden/pkg/common"
+	cmn "github.com/vit1251/golden/internal/common"
 	"github.com/vit1251/golden/pkg/mailer/stream"
 	"github.com/vit1251/golden/pkg/queue"
 	"log"

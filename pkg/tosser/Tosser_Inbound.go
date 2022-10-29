@@ -2,8 +2,8 @@ package tosser
 
 import (
 	"bufio"
+	cmn "github.com/vit1251/golden/internal/common"
 	"github.com/vit1251/golden/pkg/charset"
-	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/fidotime"
 	"github.com/vit1251/golden/pkg/mapper"
@@ -405,7 +405,7 @@ func (self *TosserService) processNewEchoMessage(msgHeader *packet.PackedMessage
 	return nil
 }
 
-/// TODO - move to `msg` packet later ...
+// / TODO - move to `msg` packet later ...
 func (self *TosserService) debugEchomail(newMsg *msg.Message) {
 
 	log.Printf("--- Process ECHOMAIL message complete ---\n"+

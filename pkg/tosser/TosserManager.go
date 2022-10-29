@@ -4,8 +4,9 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"github.com/vit1251/golden/internal/common"
+	"github.com/vit1251/golden/internal/utils"
 	"github.com/vit1251/golden/pkg/charset"
-	cmn "github.com/vit1251/golden/pkg/common"
 	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/eventbus"
 	"github.com/vit1251/golden/pkg/fidotime"
@@ -13,7 +14,6 @@ import (
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/tmpl"
-	"github.com/vit1251/golden/pkg/utils"
 	"hash/crc32"
 	"io"
 	"io/ioutil"
@@ -93,7 +93,7 @@ func (self *TosserManager) makeTimeZone() string {
 	return newZone
 }
 
-/// ORIGIN LENGTH 79 http://ftsc.org/docs/fsc-0068.001
+// / ORIGIN LENGTH 79 http://ftsc.org/docs/fsc-0068.001
 func (self *TosserManager) prepareOrigin(Origin string) string {
 
 	/* Set empty origin */
@@ -137,8 +137,8 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 	newConfig := configManager.GetConfig()
 
 	//
-	tempOutbound := cmn.GetTempOutboundDirectory()
-	packetName := cmn.MakePacketName()
+	tempOutbound := commonfunc.GetTempOutboundDirectory()
+	packetName := commonfunc.MakePacketName()
 	newPacketName := path.Join(tempOutbound, packetName)
 
 	stream, err0 := os.Create(newPacketName)
@@ -287,9 +287,9 @@ func (self *TosserManager) makePacketEchoMessage(em *EchoMessage) (string, error
 
 func (self *TosserManager) WriteEchoMessage(em *EchoMessage) error {
 
-	inbound := cmn.GetInboundDirectory()
-	outbound := cmn.GetOutboundDirectory()
-	tempOutbound := cmn.GetTempOutboundDirectory()
+	inbound := commonfunc.GetInboundDirectory()
+	outbound := commonfunc.GetOutboundDirectory()
+	tempOutbound := commonfunc.GetTempOutboundDirectory()
 
 	packetName, err1 := self.makePacketEchoMessage(em)
 	if err1 != nil {
@@ -350,8 +350,8 @@ func (self *TosserManager) WriteNetmailMessage(nm *NetmailMessage) error {
 	Origin = cleanOrigin
 
 	/* Create packet name */
-	pktName := cmn.MakePacketName()
-	outboundDirectory := cmn.GetOutboundDirectory()
+	pktName := commonfunc.MakePacketName()
+	outboundDirectory := commonfunc.GetOutboundDirectory()
 	name := path.Join(outboundDirectory, pktName)
 	log.Printf("Write Netmail packet %s", name)
 
