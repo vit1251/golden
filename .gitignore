@@ -13,15 +13,9 @@
 # Golang
 go.sum
 
-# Output directory
-package
-
 # Binary output
 golden-linux-amd64
 golden-darwin-amd64
-
-# Developer version binary output
-golden
 
 # Fido storage
 *.tic
