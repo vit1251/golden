@@ -28,14 +28,14 @@ func TestEncodeToCP850(t *testing.T) {
 
 	charsetManager := NewCharsetManager(nil)
 
-	var msgBody string = "Hello World!"
+	var msgBody string = "Hallo Wereld!"
 
 	got, err1 := charsetManager.EncodeMessageBody(msgBody, "CP850")
 	if err1 != nil {
 		panic(err1)
 	}
 
-	var want []byte = []byte{0x8F, 0xE0, 0xA8, 0xA2, 0xA5, 0xE2, 0x2C, 0x20, 0xAC, 0xA8, 0xE0, 0x21}
+	var want []byte = []byte{4861, 6c6c, 6f20, 5765, 7265, 6c64, 210a}
 	if !bytes.Equal(got, want) {
 		t.Errorf("got %q, wanted %q", got, want)
 	}
