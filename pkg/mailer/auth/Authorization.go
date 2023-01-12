@@ -46,16 +46,18 @@ func (self *Authorizer) convertStringToByte(source []byte) []byte {
 	return source
 }
 
-func (self *Authorizer) SetSecret(secret string) {
-	self.secret = []byte(secret)
+func (self *Authorizer) SetSecret(secret []byte) {
+	self.secret = secret
 }
 
-func (self *Authorizer) SetChallengeData(challengeData string) {
-	if newChallengeData, err := hex.DecodeString(challengeData); err != nil {
-		panic(err)
-	} else {
-		self.challengeData = newChallengeData
+func (self *Authorizer) SetChallengeData(challengeData []byte) error {
+	newChallengeData := make([]byte, hex.DecodedLen(len(challengeData)))
+	_, err1 := hex.Decode(newChallengeData, challengeData)
+	if err1 != nil {
+		return err1
 	}
+	self.challengeData = newChallengeData
+	return nil
 }
 
 //               +-------------A4--------------+
@@ -72,7 +74,7 @@ func (self *Authorizer) SetChallengeData(challengeData string) {
 //   hash-function digest of the password is used as an input (16-byte
 //   for [MD5] and 20-byte for [SHA-1]) to the keyed hashed calculation.
 
-func (self *Authorizer) CalculateDigest() (string, error) {
+func (self *Authorizer) CalculateDigest() ([]byte, error) {
 
 	/* A1: secret XOR opad (k_opad) */
 	var A1 []byte
@@ -115,7 +117,8 @@ func (self *Authorizer) CalculateDigest() (string, error) {
 	log.Printf("A4 = %x", A4)
 
 	/* Make string representation */
-	result := hex.EncodeToString(A4)
+	out := make([]byte, hex.EncodedLen(len(A4)))
+	hex.Encode(out, A4)
 
-	return result, nil
+	return out, nil
 }
