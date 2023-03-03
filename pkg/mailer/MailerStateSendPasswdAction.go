@@ -1,18 +1,6 @@
 package mailer
 
-type MailerSendPasswdAction struct {
-	MailerState
-}
-
-func NewMailerStateSendPasswdAction() *MailerSendPasswdAction {
-	return new(MailerSendPasswdAction)
-}
-
-func (self *MailerSendPasswdAction) String() string {
-	return "MailerSendPasswdAction"
-}
-
-func (self *MailerSendPasswdAction) Process(mailer *Mailer) IMailerState {
+func mailerSendPasswdAction(mailer *Mailer) mailerStateFn {
 	mailer.stream.WritePassword("-")
-	return NewMailerStateIfSecure()
+	return mailerStateIfSecure
 }

@@ -5,25 +5,12 @@ import (
 	"log"
 )
 
-type MailerStateWaitAddr struct {
-	MailerState
-}
-
-func NewMailerStateWaitAddr() *MailerStateWaitAddr {
-	msrh := new(MailerStateWaitAddr)
-	return msrh
-}
-
-func (self *MailerStateWaitAddr) String() string {
-	return "MailerStateWaitAddr"
-}
-
-func (self *MailerStateWaitAddr) processFrame(mailer *Mailer, nextFrame stream.Frame) IMailerState {
+func mailerStateWaitAddrProcessFrame(mailer *Mailer, nextFrame stream.Frame) mailerStateFn {
 
 	/* M_ADR frame received */
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandFrame.CommandID == stream.M_ADR {
-			return NewMailerStateAuthRemote()
+			return mailerStateAuthRemote
 		}
 	}
 
@@ -32,7 +19,7 @@ func (self *MailerStateWaitAddr) processFrame(mailer *Mailer, nextFrame stream.F
 		if nextFrame.CommandFrame.CommandID == stream.M_BSY {
 			mailer.report.SetStatus("Remote system is BUSY")
 			log.Printf("Remote system is BUSY")
-			return NewMailerStateEnd()
+			return mailerStateEnd
 		}
 	}
 
@@ -40,7 +27,7 @@ func (self *MailerStateWaitAddr) processFrame(mailer *Mailer, nextFrame stream.F
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandFrame.CommandID == stream.M_BSY {
 			log.Printf("Remote system is ERROR")
-			return NewMailerStateEnd()
+			return mailerStateEnd
 		}
 	}
 
@@ -51,12 +38,12 @@ func (self *MailerStateWaitAddr) processFrame(mailer *Mailer, nextFrame stream.F
 		}
 	}
 
-	return NewMailerStateWaitAddr()
+	return mailerStateWaitAddr
 }
 
-func (self *MailerStateWaitAddr) Process(mailer *Mailer) IMailerState {
+func mailerStateWaitAddr(mailer *Mailer) mailerStateFn {
 
 	nextFrame := <-mailer.stream.InFrame
-	return self.processFrame(mailer, nextFrame)
+	return mailerStateWaitAddrProcessFrame(mailer, nextFrame)
 
 }
