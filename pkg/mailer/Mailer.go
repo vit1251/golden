@@ -14,12 +14,14 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"reflect"
+	"runtime"
 )
 
 type Mailer struct {
 	registry *registry.Container /* ???                         */
 
-	activeState IMailerState /* Mailer state                */
+	activeState mailerStateFn /* Mailer state                */
 
 	rxState RxState /* RX FSM                      */
 	txState TxState /* TX FSM                      */
@@ -137,19 +139,26 @@ func (self *Mailer) IsReceiving() bool {
 	return self.recvName != nil
 }
 
+func makeFuncName(i interface{}) string {
+	wideName := runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+	parts := strings.Split(wideName, ".")
+	ourName := parts[len(parts) - 1]
+	return ourName
+}
+
 func (self *Mailer) run() {
 
 	self.report.SetSessionStart(time.Now())
 
 	/* Reset active state */
-	self.activeState = NewMailerStateStart()
+	self.activeState = mailerStateStart
 
 	/* Start processing */
 	log.Printf("Start mailer routine")
 	for {
-		log.Printf("mailer: process state %s", self.activeState)
-		newState := self.activeState.Process(self)
-		log.Printf("mailer: chage state: %s -> %s", self.activeState, newState)
+		log.Printf("mailer: state = %s", makeFuncName(self.activeState))
+		newState := self.activeState(self)
+		log.Printf("mailer: change state: %s -> %s", makeFuncName(self.activeState), makeFuncName(newState))
 		self.activeState = newState
 		/* Stop processing when done */
 		if newState == nil {

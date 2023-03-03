@@ -1,33 +1,21 @@
 package mailer
 
-type MailerStateTransmit struct {
-	MailerState
-}
-
-func NewMailerStateTransmit() *MailerStateTransmit {
-	return new(MailerStateTransmit)
-}
-
-func (self *MailerStateTransmit) String() string {
-	return "MailerStateTransmit"
-}
-
-func (self *MailerStateTransmit) Process(mailer *Mailer) IMailerState {
+func mailerStateTransmit(mailer *Mailer) mailerStateFn {
 
 	/* Transmit routine returned OK */
 	if mailer.txRoutineResult == TxOk {
-		return NewMailerStateSwitch()
+		return mailerStateSwitch
 	}
 
 	/* Transmit routine returned Failure */
 	if mailer.txRoutineResult == TxFailure {
-		return NewMailerStateEnd()
+		return mailerStateEnd
 	}
 
 	/* Transmit routine returned Continue */
 	if mailer.txRoutineResult == TxContinue {
 		mailer.txRoutineResult = TransmitRoutine(mailer)
-		return self
+		return mailerStateTransmit
 	}
 
 	panic("unkown state")

@@ -1,9 +1,3 @@
 package mailer
 
-type MailerState struct {
-}
-
-type IMailerState interface {
-	Process(mailer *Mailer) IMailerState
-	String() string
-}
+type mailerStateFn func(mailer *Mailer) mailerStateFn

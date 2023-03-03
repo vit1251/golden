@@ -1,32 +1,20 @@
 package mailer
 
-type MailerStateReceive struct {
-	MailerState
-}
-
-func NewMailerStateReceive() *MailerStateReceive {
-	return new(MailerStateReceive)
-}
-
-func (self *MailerStateReceive) String() string {
-	return "MailerStateReceive"
-}
-
-func (self *MailerStateReceive) Process(mailer *Mailer) IMailerState {
+func mailerStateReceive(mailer *Mailer) mailerStateFn {
 
 	/* Receive routine returned OK */
 	if mailer.rxRoutineResult == RxOk {
-		return NewMailerStateSwitch()
+		return mailerStateSwitch
 	}
 
 	/* Receive routine returned Failure */
 	if mailer.rxRoutineResult == RxFailure {
-		return NewMailerStateEnd()
+		return mailerStateEnd
 	}
 
 	if mailer.rxRoutineResult == RxContinue {
 		mailer.rxRoutineResult = ReceiveRoutine(mailer)
-		return self
+		return mailerStateReceive
 	}
 
 	panic("unknown state")

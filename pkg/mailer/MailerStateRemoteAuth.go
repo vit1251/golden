@@ -1,21 +1,6 @@
 package mailer
 
-type MailerStateAuthRemote struct {
-	MailerState
-}
-
-func NewMailerStateAuthRemote() *MailerStateAuthRemote {
-	return new(MailerStateAuthRemote)
-}
-
-func (self *MailerStateAuthRemote) String() string {
-	return "MailerStateAuthRemote"
-}
-
-func (self *MailerStateAuthRemote) Process(mailer *Mailer) IMailerState {
-
+func mailerStateAuthRemote(mailer *Mailer) mailerStateFn {
 	mailer.stream.WritePassword("-")
-
-	return NewMailerStateIfSecure()
-
+	return mailerStateIfSecure
 }
