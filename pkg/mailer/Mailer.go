@@ -32,9 +32,9 @@ type Mailer struct {
 	connectionCount int            /* Active session count        */
 	wait            sync.WaitGroup /* Sync                        */
 
-	addr       string /* Network address             */
-	secret     string /* Secret password             */
-	ServerAddr string /* Server IPv4 or FQDN address */
+	addr         string  /* Network address             */
+	secret       string  /* Secret password             */
+	ServerAddr   string  /* Server IPv4 or FQDN address */
 
 	inboundDirectory  string /* ???                         */
 	outboundDirectory string /* ???                         */
@@ -245,8 +245,8 @@ func (self *Mailer) AddOutbound(path queue.FileEntry) {
 
 func (self *Mailer) createAuthorization(chData []byte) string {
 	a := auth.NewAuthorizer()
-	a.SetChallengeData(string(chData))
-	a.SetSecret(self.secret)
+	a.SetChallengeData(chData)
+	a.SetSecret([]byte(self.secret))
 	responseDigest, err := a.CalculateDigest()
 	if err != nil {
 		panic(err)
