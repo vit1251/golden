@@ -4,19 +4,7 @@ import (
 	"log"
 )
 
-type MailerStateSwitch struct {
-}
-
-func NewMailerStateSwitch() *MailerStateSwitch {
-	msr := new(MailerStateSwitch)
-	return msr
-}
-
-func (self *MailerStateSwitch) String() string {
-	return "MailerStateSwitch"
-}
-
-func (self *MailerStateSwitch) processBoth(mailer *Mailer) IMailerState {
+func mailerStateSwitchProcessBoth(mailer *Mailer) mailerStateFn {
 
 	select {
 
@@ -25,22 +13,22 @@ func (self *MailerStateSwitch) processBoth(mailer *Mailer) IMailerState {
 		log.Printf("Data available in Input Buffer")
 		if ok {
 			mailer.rxRoutineResult = ReceiveRoutine(mailer)
-			return NewMailerStateReceive()
+			return mailerStateReceive
 		} else {
-			return NewMailerStateEnd()
+			return mailerStateEnd
 		}
 
 	/* Free space exists in output buffer */
 	case mailer.stream.OutFrameReady <- nil:
 		log.Printf("Free space exists in output buffer")
 		mailer.txRoutineResult = TransmitRoutine(mailer)
-		return NewMailerStateTransmit()
+		return mailerStateTransmit
 
 	}
 
 }
 
-func (self *MailerStateSwitch) processReading(mailer *Mailer) IMailerState {
+func mailerStateSwitchProcessReading(mailer *Mailer) mailerStateFn {
 
 	select {
 
@@ -49,29 +37,29 @@ func (self *MailerStateSwitch) processReading(mailer *Mailer) IMailerState {
 		log.Printf("Data available in Input Buffer")
 		if ok {
 			mailer.rxRoutineResult = ReceiveRoutine(mailer)
-			return NewMailerStateReceive()
+			return mailerStateReceive
 		} else {
-			return NewMailerStateEnd()
+			return mailerStateEnd
 		}
 	}
 
 }
 
-func (self *MailerStateSwitch) Process(mailer *Mailer) IMailerState {
+func mailerStateSwitch(mailer *Mailer) mailerStateFn {
 
 	/* RxState is RxDone and TxState is TxDone */
 	if mailer.rxState == RxDone && mailer.txState == TxDone {
 		mailer.report.SetStatus("Session RX/TX complete.")
-		return NewMailerStateEnd()
+		return mailerStateEnd
 	}
 
 	/* TxState */
 	if mailer.txState == TxWLA {
-		return self.processReading(mailer)
+		return mailerStateSwitchProcessReading(mailer)
 	} else {
-		return self.processBoth(mailer)
+		return mailerStateSwitchProcessBoth(mailer)
 	}
 
-	return self
+	return mailerStateSwitch
 
 }

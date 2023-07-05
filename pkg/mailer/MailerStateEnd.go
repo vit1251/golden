@@ -5,20 +5,7 @@ import (
 	"log"
 )
 
-type MailerStateEnd struct {
-	MailerState
-}
-
-func NewMailerStateEnd() *MailerStateEnd {
-	state := new(MailerStateEnd)
-	return state
-}
-
-func (self *MailerStateEnd) String() string {
-	return "MailerStateEnd"
-}
-
-func (self *MailerStateEnd) Process(mailer *Mailer) IMailerState {
+func mailerStateEnd(mailer *Mailer) mailerStateFn {
 
 	log.Printf("Exit")
 

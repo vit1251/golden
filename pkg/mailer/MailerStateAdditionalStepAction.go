@@ -5,19 +5,7 @@ import (
 	"log"
 )
 
-type MailerStateAdditionalStep struct {
-	MailerState
-}
-
-func NewMailerStateAdditionalStep() *MailerStateAdditionalStep {
-	return new(MailerStateAdditionalStep)
-}
-
-func (self *MailerStateAdditionalStep) String() string {
-	return "MailerStateAdditionalStep"
-}
-
-func (self *MailerStateAdditionalStep) processCommandFrame(mailer *Mailer, nextFrame stream.Frame) IMailerState {
+func mailerStateAdditionalStepProcessCommandFrame(mailer *Mailer, nextFrame stream.Frame) mailerStateFn {
 
 	var streamCommandId = nextFrame.CommandFrame.CommandID
 
@@ -33,30 +21,30 @@ func (self *MailerStateAdditionalStep) processCommandFrame(mailer *Mailer, nextF
 		mailer.report.SetRemoteIdent(string(nextFrame.CommandFrame.Body))
 
 		if mailer.respAuthorization != "" {
-			return NewMailerStateSecureAuthRemoteAction()
+			return mailerStateSecureAuthRemoteAction
 		} else {
-			return NewMailerStateAuthRemote()
+			return mailerStateAuthRemote
 		}
 	}
 
-	return self
+	return mailerStateAdditionalStep
 }
 
-func (self *MailerStateAdditionalStep) processFrame(mailer *Mailer, nextFrame stream.Frame) IMailerState {
+func mailerStateAdditionalStepProcessFrame(mailer *Mailer, nextFrame stream.Frame) mailerStateFn {
 
 	if nextFrame.IsCommandFrame() {
-		return self.processCommandFrame(mailer, nextFrame)
+		return mailerStateAdditionalStepProcessCommandFrame(mailer, nextFrame)
 	}
 
-	return self
+	return mailerStateAdditionalStep
 
 }
 
-func (self *MailerStateAdditionalStep) Process(mailer *Mailer) IMailerState {
+func mailerStateAdditionalStep(mailer *Mailer) mailerStateFn {
 
 	select {
 	case nextFrame := <-mailer.stream.InFrame:
-		return self.processFrame(mailer, nextFrame)
+		return mailerStateAdditionalStepProcessFrame(mailer, nextFrame)
 	}
 
 }
