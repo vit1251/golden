@@ -25,7 +25,7 @@ func (self *Area) SetNewMessageCount(newMessageCount int) {
 
 func NewArea() *Area {
 	a := new(Area)
-	a.charset = "CP866"
+	a.charset = "CP850"
 	return a
 }
 
@@ -46,15 +46,15 @@ func (self *Area) SetName(name string) {
 }
 
 func (self *Area) SetCharset(newCharset string) {
-	if newCharset == "CP866" || newCharset == "UTF-8" {
+	if newCharset == "CP850" || newCharset == "UTF-8" {
 		self.charset = newCharset
 	}
 }
 
 func (self Area) GetCharset() string {
 	if self.charset == "" {
-		log.Printf("Warning: no charset for %s. Set 'CP866' as default.", self.name)
-		self.charset = "CP866"
+		log.Printf("Warning: no charset for %s. Set 'CP850' as default.", self.name)
+		self.charset = "CP850"
 	}
 	return self.charset
 }
