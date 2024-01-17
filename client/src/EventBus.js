@@ -1,13 +1,9 @@
 
-import { EventEmitter } from 'events';
-
 import { store } from './Storage.js';
 
-
-class EventBus extends EventEmitter {
+class EventBus {
 
     constructor() {
-        super();
         this.active = false;
         this.socket = new WebSocket('ws://127.0.0.1:8080/api/v1');
         this.socket.addEventListener('open', (event) => {

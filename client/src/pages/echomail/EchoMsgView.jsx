@@ -8,7 +8,7 @@ import Hotkeys from 'react-hot-keys';
 
 import { eventBus } from '../../EventBus.js';
 import { Header } from '../../common/Header';
-import { Message } from './Message.js';
+import { Message } from './Message';
 
 export const EchoMsgView = (props) => {
 

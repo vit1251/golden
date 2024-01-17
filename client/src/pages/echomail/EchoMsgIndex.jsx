@@ -7,8 +7,8 @@ import { useParams } from 'react-router-dom';
 import Hotkeys from 'react-hot-keys';
 
 import { Header } from '../../common/Header';
-import { eventBus } from '../../EventBus.js';
-import { Row } from './Row.js';
+import { eventBus } from '../../EventBus';
+import { Row } from './Row';
 
 import "./EchoMsgIndex.css";
 

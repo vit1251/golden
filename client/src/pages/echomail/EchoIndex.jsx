@@ -4,9 +4,10 @@ import Hotkeys from 'react-hot-keys';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+
 import { Header } from '../../common/Header';
-import { eventBus } from '../../EventBus.js';
-import { Row } from './Row.js';
+import { eventBus } from '../../EventBus';
+import { Row } from './Row';
 
 import "./EchoIndex.css";
 

@@ -1,25 +1,18 @@
 
 import { HashRouter, Routes, Route } from "react-router-dom";
 
-import { Welcome } from "./Welcome.js";
-import {
-    EchoIndex,
-    EchoMsgIndex,
-    EchoMsgView,
-    EchoMsgCompose,
-} from './echomail';
-import {
-    FileIndex,
-    FileTicIndex,
-    FileTicView,
-} from './files';
-import {
-    NetmailIndex,
-    NetmailView,
-} from './netmail';
-import {
-    Setup,
-} from './setup';
+import { Welcome } from "./Welcome";
+
+import { EchoIndex } from './echomail/EchoIndex';
+import { EchoMsgIndex } from './echomail/EchoMsgIndex';
+import { EchoMsgView } from './echomail/EchoMsgView';
+import { EchoMsgCompose } from './echomail/EchoMsgCompose';
+import { FileIndex } from './files/FileIndex';
+import { FileTicIndex } from './files/FileTicIndex';
+import { FileTicView } from './files/FileTicView';
+import { NetmailIndex } from './netmail/NetmailIndex';
+import { NetmailView } from './netmail/NetmailView';
+import { Setup } from './setup/Setup';
 
 import '../themes/custom.css';
 import '../themes/theme_black.css';
