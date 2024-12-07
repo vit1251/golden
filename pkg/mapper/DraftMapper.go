@@ -2,9 +2,10 @@ package mapper
 
 import (
 	"database/sql"
+	"log"
+
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
-	"log"
 )
 
 type DraftMapper struct {
@@ -18,18 +19,16 @@ func NewDraftMapper(r *registry.Container) *DraftMapper {
 }
 
 func (self DraftMapper) GetDraftMessages(state int) ([]Draft, error) {
-
 	var result []Draft
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "SELECT `draftId`, `draftUUID`, `draftSubject`, `draftArea`, `draftBody`, `draftDone` FROM `draft` WHERE `draftDone` = ? ORDER BY `draftId` ASC"
+	query1 := "SELECT `draftId`, `draftUUID`, `draftSubject`, `draftArea`, `draftBody`, `draftDone` FROM `draft` WHERE `draftDone` = ? ORDER BY `draftId` DESC"
 
 	var params []interface{}
 	params = append(params, state)
 
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
-
 		var draftId string
 		var draftUUID string
 		var draftSubject string
@@ -59,7 +58,6 @@ func (self DraftMapper) GetDraftMessages(state int) ([]Draft, error) {
 }
 
 func (self DraftMapper) RegisterNewDraft(draft Draft) error {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "INSERT INTO `draft` (`draftUUID`, `draftArea`,`draftBody`,`draftDest`,`draftDestAddr`,`draftSubject`,`draftReply`) VALUES (?,?,?,?,?,?,?)"
@@ -80,11 +78,9 @@ func (self DraftMapper) RegisterNewDraft(draft Draft) error {
 	})
 
 	return err1
-
 }
 
 func (self DraftMapper) GetDraftByUUID(uuid string) (*Draft, error) {
-
 	var result *Draft
 
 	storageManager := storage.RestoreStorageManager(self.registry)
@@ -95,7 +91,6 @@ func (self DraftMapper) GetDraftByUUID(uuid string) (*Draft, error) {
 	params = append(params, uuid)
 
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
-
 		var draftId string
 		var draftUUID string
 		var draftDest string
@@ -131,7 +126,6 @@ func (self DraftMapper) GetDraftByUUID(uuid string) (*Draft, error) {
 }
 
 func (self DraftMapper) UpdateDraft(newDraft Draft) error {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "UPDATE `draft` SET `draftSubject` = ?, `draftBody` = ?, `draftDest` = ?, `draftDestAddr` = ? WHERE `draftUUID` = ?"
@@ -153,7 +147,6 @@ func (self DraftMapper) UpdateDraft(newDraft Draft) error {
 }
 
 func (self DraftMapper) RemoveByUUID(uuid string) error {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `draft` WHERE `draftUUID` = ?"
@@ -168,5 +161,4 @@ func (self DraftMapper) RemoveByUUID(uuid string) error {
 	})
 
 	return err1
-
 }

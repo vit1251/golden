@@ -2,9 +2,10 @@ package mapper
 
 import (
 	"database/sql"
+	"log"
+
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
-	"log"
 )
 
 type NetmailMapper struct {
@@ -18,16 +19,14 @@ func NewNetmailMapper(r *registry.Container) *NetmailMapper {
 }
 
 func (self *NetmailMapper) GetMessageHeaders() ([]*NetmailMsg, error) {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result []*NetmailMsg
 
-	query1 := "SELECT `nmId`, `nmMsgId`, `nmHash`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmOrigAddr`, `nmDestAddr`, `nmDate` FROM `netmail` ORDER BY `nmDate` ASC, `nmId` ASC"
+	query1 := "SELECT `nmId`, `nmMsgId`, `nmHash`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmOrigAddr`, `nmDestAddr`, `nmDate` FROM `netmail` ORDER BY `nmDate` DESC, `nmId` ASC"
 	var params []interface{}
 
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
-
 		var nmId string
 		var nmMsgId string
 		var nmHash string
@@ -65,7 +64,6 @@ func (self *NetmailMapper) GetMessageHeaders() ([]*NetmailMsg, error) {
 }
 
 func (self *NetmailMapper) Write(msg *NetmailMsg) error {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "INSERT INTO `netmail` " +
@@ -92,7 +90,6 @@ func (self *NetmailMapper) Write(msg *NetmailMsg) error {
 }
 
 func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error) {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result *NetmailMsg
@@ -102,7 +99,6 @@ func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error)
 	params = append(params, msgHash)
 
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
-
 		var nmId string
 		var nmMsgId string
 		var nmSubject string
@@ -143,7 +139,6 @@ func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error)
 }
 
 func (self *NetmailMapper) ViewMessageByHash(msgHash string) error {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "UPDATE `netmail` SET `nmViewCount` = `nmViewCount` + 1 WHERE `nmHash` = $1"
@@ -159,7 +154,6 @@ func (self *NetmailMapper) ViewMessageByHash(msgHash string) error {
 }
 
 func (self *NetmailMapper) GetMessageNewCount() (int, error) {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var newMessageCount int
@@ -168,7 +162,6 @@ func (self *NetmailMapper) GetMessageNewCount() (int, error) {
 	var params []interface{}
 
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
-
 		err1 := rows.Scan(&newMessageCount)
 		if err1 != nil {
 			return err1
@@ -180,7 +173,6 @@ func (self *NetmailMapper) GetMessageNewCount() (int, error) {
 }
 
 func (self *NetmailMapper) RemoveMessageByHash(msgHash string) error {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `netmail` WHERE `nmHash` = ?"

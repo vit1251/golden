@@ -109,7 +109,7 @@ func (self *EchoMapper) GetMessageHeaders(echoTag string) ([]msg.Message, error)
 	sb.Select("msgId", "msgMsgId", "msgReply", "msgArea", "msgHash", "msgSubject", "msgViewCount", "msgFrom", "msgTo", "msgDate")
 	sb.From("message")
 	sb.Where(sb.Equal("msgArea", echoTag))
-	sb.OrderBy("msgDate ASC", "msgId ASC")
+	sb.OrderBy("msgDate DESC", "msgId ASC")
 
 	query1, args := sb.Build()
 
