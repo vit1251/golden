@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"database/sql"
+
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
 )
@@ -17,16 +18,14 @@ func NewTwitMapper(r *registry.Container) *TwitMapper {
 }
 
 func (self TwitMapper) GetTwitNames() ([]Twit, error) {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	var result []Twit
 
-	query1 := "SELECT `twitId`, `twitName` FROM `twit` ORDER BY `twitId` ASC"
+	query1 := "SELECT `twitId`, `twitName` FROM `twit` ORDER BY `twitId` DESC"
 	var params []interface{}
 
 	storageManager.Query(query1, params, func(rows *sql.Rows) error {
-
 		var twitId string
 		var twitName string
 
@@ -48,7 +47,6 @@ func (self TwitMapper) GetTwitNames() ([]Twit, error) {
 }
 
 func (self TwitMapper) RegisterTwitByName(twitName string) error {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query := "INSERT INTO `twit` (`twitName`) VALUES ( ? )"
@@ -64,7 +62,6 @@ func (self TwitMapper) RegisterTwitByName(twitName string) error {
 }
 
 func (self TwitMapper) RemoveById(twitId string) error {
-
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `twit` WHERE `twitId` = ?"
@@ -76,5 +73,4 @@ func (self TwitMapper) RemoveById(twitId string) error {
 	})
 
 	return err1
-
 }
