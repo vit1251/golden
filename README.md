@@ -61,7 +61,7 @@ Golang and Node MAY use network to download dependencies.
 
 Common steps are:
 
-    # go build ./cmd/golden
+    # ./scripts/make-build-${OSTYPE}.sh
     # ./golden --debug
 
 That's all.

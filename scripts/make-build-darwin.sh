@@ -13,7 +13,7 @@ echo "Arch: ${GOARCH}"
 # Step 1. Get Go modules
 #
 echo "==> Step 1. Get Go modules..."
-go get -v ./...
+go get -v ../...
 
 # Step 2. Generate assets
 #
@@ -23,9 +23,9 @@ go generate
 # Step 3. Run unittest
 #
 echo "==> Step 3. Run unittest..."
-go test ./...
+go test ../...
 
 # Step 4. Compile executable
 #
 echo "==> Step 4. Compile executable..."
-go build -o golden-${GOOS}-${GOARCH} ./cmd/golden
+go build -o ../golden-${GOOS}-${GOARCH} ../cmd/golden
