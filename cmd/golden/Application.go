@@ -10,7 +10,7 @@ import (
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/eventbus"
-	"github.com/vit1251/golden/pkg/installer"
+	"github.com/vit1251/golden/internal/installer"
 	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/queue"
