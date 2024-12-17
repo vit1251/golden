@@ -8,7 +8,7 @@ import (
 )
 
 type PacketReader struct {
-	sourceStream io.Reader
+	sourceStream       io.Reader
 	binaryStreamReader *BinaryReader
 }
 

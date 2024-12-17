@@ -3,14 +3,14 @@ package packet
 import "github.com/vit1251/golden/pkg/fidotime"
 
 type PackedMessage struct {
-	OrigAddr        NetAddr
-	DestAddr        NetAddr
-	Attributes      uint16
-	Time           *fidotime.FidoDate
-	ToUserName    []byte
-	FromUserName  []byte
-	Subject       []byte
-	Text          []byte
+	OrigAddr     NetAddr
+	DestAddr     NetAddr
+	Attributes   uint16
+	Time         *fidotime.FidoDate
+	ToUserName   []byte
+	FromUserName []byte
+	Subject      []byte
+	Text         []byte
 }
 
 func NewPackedMessage() *PackedMessage {

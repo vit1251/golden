@@ -1,8 +1,8 @@
 package stream
 
 import (
-	"context"
 	"bufio"
+	"context"
 	"log"
 	"net"
 	"sync"
@@ -10,8 +10,7 @@ import (
 )
 
 type MailerStream struct {
-
-	dialer net.Dialer
+	dialer       net.Dialer
 	dialerCancel context.CancelFunc
 
 	conn net.Conn
@@ -26,7 +25,6 @@ type MailerStream struct {
 
 	InFrame  chan Frame
 	OutFrame chan Frame
-
 }
 
 func NewMailerStream() *MailerStream {
@@ -77,7 +75,7 @@ func (self *MailerStream) WriteCommandPacket(commandID CommandID, msgBody []byte
 		Command: true,
 		CommandFrame: CommandFrame{
 			CommandID: commandID,
-			Body: msgBody,
+			Body:      msgBody,
 		},
 	}
 	self.OutFrame <- newFrame

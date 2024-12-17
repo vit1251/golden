@@ -10,7 +10,7 @@ func TestParseQuoteLineMessage1(t *testing.T) {
 
 	var origMsg string = "Hello, All!"
 
-	author, quoteLevel, msg :=  msgProc.ParseQuoteLine(origMsg)
+	author, quoteLevel, msg := msgProc.ParseQuoteLine(origMsg)
 	if author != "" {
 	}
 	if quoteLevel != "" {
@@ -42,7 +42,7 @@ func TestParseQuoteLineMessage6(t *testing.T) {
 
 	var origMsg string = "Line contain > in body"
 
-	author, quoteLevel, msg :=  msgProc.ParseQuoteLine(origMsg)
+	author, quoteLevel, msg := msgProc.ParseQuoteLine(origMsg)
 	if author != "" {
 	}
 	if quoteLevel != "" {
@@ -51,4 +51,3 @@ func TestParseQuoteLineMessage6(t *testing.T) {
 	}
 
 }
-

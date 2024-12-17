@@ -1,7 +1,7 @@
 package msg
 
 import (
-//	"log"
+	//	"log"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -53,10 +53,9 @@ func (self SubjectCompactor) Compact(subject string) string {
 	if level == 0 {
 		newSubject = fmt.Sprintf("RE: %s", newSubject)
 	} else {
-		newSubject = fmt.Sprintf("RE[%d]: %s", level + 1, newSubject)
+		newSubject = fmt.Sprintf("RE[%d]: %s", level+1, newSubject)
 	}
 
 	return newSubject
 
 }
-

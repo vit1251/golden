@@ -35,5 +35,3 @@ func init() {
 	fileEchoIndexActionTranslation.SetTranslation("action-button-create", "Creëren")
 
 }
-
-

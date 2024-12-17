@@ -1,13 +1,13 @@
 package uue
 
 import (
+	"bytes"
 	"io"
 	"log"
-	"bytes"
 )
 
 type Decoder struct {
-	writer		io.Writer        /* Decode data consumer    */
+	writer io.Writer /* Decode data consumer    */
 }
 
 func decodeByte(b byte) byte {
@@ -24,8 +24,8 @@ func NewDecoder(w io.Writer) *Decoder {
 }
 
 const (
-	UUE_DECODER_STATE_SIZE    = 1
-	UUE_DECODER_STATE_BLOCK   = 2
+	UUE_DECODER_STATE_SIZE  = 1
+	UUE_DECODER_STATE_BLOCK = 2
 )
 
 func (self *Decoder) Decode(row []byte) error {
@@ -57,19 +57,19 @@ func (self *Decoder) Decode(row []byte) error {
 				rawByte0, _ := stream.ReadByte()
 				rawByte1, _ := stream.ReadByte()
 
-				b1 := decodeByte(rawByte0) << 2 | decodeByte(rawByte1) >> 4
+				b1 := decodeByte(rawByte0)<<2 | decodeByte(rawByte1)>>4
 				self.writer.Write([]byte{b1})
 
 				if n >= 2 {
 					rawByte2, _ := stream.ReadByte()
 
-					b2 := decodeByte(rawByte1) << 4 | decodeByte(rawByte2) >> 2
+					b2 := decodeByte(rawByte1)<<4 | decodeByte(rawByte2)>>2
 					self.writer.Write([]byte{b2})
 
 					if n >= 3 {
 						rawByte3, _ := stream.ReadByte()
 
-						b3 := decodeByte(rawByte2) << 6 | decodeByte(rawByte3)
+						b3 := decodeByte(rawByte2)<<6 | decodeByte(rawByte3)
 						self.writer.Write([]byte{b3})
 
 						n = n - 1

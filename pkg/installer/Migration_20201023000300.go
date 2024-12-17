@@ -5,7 +5,7 @@ import (
 )
 
 func migration_000300_Up(conn *sql.DB) error {
-	query1 :=  "CREATE TABLE `message` (" +
+	query1 := "CREATE TABLE `message` (" +
 		"    `msgId` INTEGER NOT NULL PRIMARY KEY," +
 		"    `msgMsgId` CHAR(16) NOT NULL," +
 		"    `msgHash` CHAR(16) NOT NULL," +

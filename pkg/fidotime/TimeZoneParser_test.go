@@ -33,7 +33,7 @@ func TestTimeZoneParser2(t *testing.T) {
 }
 
 func TestTimeZoneParser3(t *testing.T) {
-    zp := NewTimeZoneParser()
+	zp := NewTimeZoneParser()
 	zone, err1 := zp.Parse(" ")
 	log.Printf("zone = %q", zone)
 	if err1 == nil {

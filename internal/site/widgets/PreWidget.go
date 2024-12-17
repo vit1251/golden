@@ -7,7 +7,7 @@ import (
 )
 
 type PreWidget struct {
-	content   string
+	content string
 }
 
 func (self *PreWidget) SetContent(content string) *PreWidget {

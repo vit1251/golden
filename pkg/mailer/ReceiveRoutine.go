@@ -5,9 +5,9 @@ import "log"
 type ReceiveRoutineResult string
 
 const (
-	RxOk         ReceiveRoutineResult = "RxOk"
-	RxFailure    ReceiveRoutineResult = "RxFailure"
-	RxContinue   ReceiveRoutineResult = "RxContinue"
+	RxOk       ReceiveRoutineResult = "RxOk"
+	RxFailure  ReceiveRoutineResult = "RxFailure"
+	RxContinue ReceiveRoutineResult = "RxContinue"
 )
 
 func ReceiveRoutine(mailer *Mailer) ReceiveRoutineResult {

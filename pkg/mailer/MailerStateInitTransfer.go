@@ -8,4 +8,3 @@ func mailerStateInitTransfer(mailer *Mailer) mailerStateFn {
 	return mailerStateSwitch
 
 }
-

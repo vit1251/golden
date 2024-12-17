@@ -23,4 +23,3 @@ func MakeTickName() string {
 	log.Printf("pktName: name = %s", pktName)
 	return pktName
 }
-

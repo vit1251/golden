@@ -6,7 +6,7 @@ import (
 )
 
 type AreaList struct {
-	Areas   []*Area
+	Areas []*Area
 }
 
 func (self *AreaList) Reset() {

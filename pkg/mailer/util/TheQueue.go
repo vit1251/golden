@@ -6,7 +6,7 @@ import (
 )
 
 type TheQueue struct {
-	frames   []stream.Frame
+	frames []stream.Frame
 }
 
 func NewTheQueue() *TheQueue {

@@ -14,7 +14,7 @@ type FormFileInputWidget struct {
 }
 
 func NewFormFileInputWidget() *FormFileInputWidget {
-	fi:= new(FormFileInputWidget)
+	fi := new(FormFileInputWidget)
 	return fi
 }
 
@@ -50,4 +50,3 @@ func (self *FormFileInputWidget) SetClass(class string) *FormFileInputWidget {
 	self.class = class
 	return self
 }
-

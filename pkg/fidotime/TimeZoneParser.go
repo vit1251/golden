@@ -96,7 +96,7 @@ func (self *TimeZoneParser) checkComplete() (bool, error) {
 	return size == pos, nil
 }
 
-/// Example: +0100, 0300, -0700
+// / Example: +0100, 0300, -0700
 func (self *TimeZoneParser) Parse(zone string) (*time.Location, error) {
 
 	log.Printf("TimeZoneParser: Parse: zone = %+v", zone)
@@ -119,7 +119,7 @@ func (self *TimeZoneParser) Parse(zone string) (*time.Location, error) {
 		return nil, fmt.Errorf("timezone parse error")
 	}
 	if digit, err := self.checkDigit(); digit != nil && err == nil {
-		hours = 10 * hours + *digit
+		hours = 10*hours + *digit
 	} else {
 		return nil, fmt.Errorf("timezone parse error")
 	}
@@ -132,7 +132,7 @@ func (self *TimeZoneParser) Parse(zone string) (*time.Location, error) {
 		return nil, fmt.Errorf("timezone parse error")
 	}
 	if digit, err := self.checkDigit(); digit != nil && err == nil {
-		minutes = 10 * minutes + *digit
+		minutes = 10*minutes + *digit
 	} else {
 		return nil, fmt.Errorf("timezone parse error")
 	}

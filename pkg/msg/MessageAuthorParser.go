@@ -12,7 +12,7 @@ func NewMessageAuthorParser() *MessageAuthorParser {
 
 type MessageAuthor struct {
 	FirstName string
-	LastName string
+	LastName  string
 	QuoteName string
 }
 

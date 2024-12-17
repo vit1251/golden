@@ -13,8 +13,8 @@ type NetmailMessage struct {
 }
 
 type MessageKludge struct {
-	Name   string
-	Value  string
+	Name  string
+	Value string
 }
 
 type MessageKludges []MessageKludge
@@ -26,7 +26,7 @@ func NewNetmailMessage() *NetmailMessage {
 
 func (self *NetmailMessage) AddKludge(name string, value string) {
 	kludge := MessageKludge{
-		Name: name,
+		Name:  name,
 		Value: value,
 	}
 	self.Kludges = append(self.Kludges, kludge)

@@ -5,29 +5,28 @@ import "time"
 type PacketHeader struct {
 
 	/* Origination */
-	OrigZone     uint16
-	OrigNet      uint16
-	OrigNode     uint16
-	OrigPoint    uint16
+	OrigZone  uint16
+	OrigNet   uint16
+	OrigNode  uint16
+	OrigPoint uint16
 
 	/* Destination */
-	DestZone     uint16
-	DestNet      uint16
-	DestNode     uint16
-	DestPoint    uint16
+	DestZone  uint16
+	DestNet   uint16
+	DestNode  uint16
+	DestPoint uint16
 
 	/* Date and time */
-	Year         uint16
-	Month        uint16
-	Day          uint16
+	Year  uint16
+	Month uint16
+	Day   uint16
 
-	Hour         uint16
-	Minute       uint16
-	Second       uint16
+	Hour   uint16
+	Minute uint16
+	Second uint16
 
 	/* Password */
-	PktPassword      []byte
-
+	PktPassword []byte
 }
 
 func NewPacketHeader() *PacketHeader {

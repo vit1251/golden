@@ -20,8 +20,8 @@ func NewMessageNode(msg *Message) *MessageNode {
 }
 
 type MessageTree struct {
-	index   map[string]*MessageNode
-	order   []*MessageNode
+	index map[string]*MessageNode
+	order []*MessageNode
 }
 
 func NewMessageTree() *MessageTree {
@@ -42,7 +42,7 @@ func (self MessageTree) GetRoot() *MessageNode {
 
 func (self *MessageNode) SearchById(msgid string) *MessageNode {
 	//for _, n := range self.GetItems() {
-		//n.SearchById()
+	//n.SearchById()
 	//}
 	return nil
 }

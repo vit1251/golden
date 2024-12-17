@@ -5,23 +5,23 @@ import (
 )
 
 type Message struct {
-	Area      string
-	From      string
-	FromAddr  string
-	To        string
-	ToAddr    string
-	Subject   string
-	Content   string
-	UnixTime  int64          /* Unit time stampe */
+	Area     string
+	From     string
+	FromAddr string
+	To       string
+	ToAddr   string
+	Subject  string
+	Content  string
+	UnixTime int64 /* Unit time stampe */
 	Time     *time.Time
 }
 
-func NewMessage() (*Message) {
+func NewMessage() *Message {
 	msg := new(Message)
 	return msg
 }
 
-func (self *Message) SetTime(msgTime *time.Time) (error) {
+func (self *Message) SetTime(msgTime *time.Time) error {
 
 	/* Set time */
 	self.Time = msgTime

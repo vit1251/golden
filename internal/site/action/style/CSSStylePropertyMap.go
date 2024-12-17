@@ -16,7 +16,7 @@ func NewCSSStylePropertyMap() *CSSStylePropertyMap {
 
 func (self *CSSStylePropertyMap) Set(name string, value string) {
 	property := CSSStyleProperty{
-		Name: name,
+		Name:  name,
 		Value: value,
 	}
 	self.propertyMap = append(self.propertyMap, property)

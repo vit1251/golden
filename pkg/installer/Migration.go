@@ -5,9 +5,9 @@ import (
 )
 
 type Migration struct {
-	ID    string
-	Up    func(conn *sql.DB) error
-	Down  func(conn *sql.DB) error
+	ID   string
+	Up   func(conn *sql.DB) error
+	Down func(conn *sql.DB) error
 }
 
 func NewMigration() *Migration {

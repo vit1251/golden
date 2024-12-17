@@ -42,4 +42,3 @@ func TestTicParserParse1(t *testing.T) {
 	t.Logf("t = %+v", ticFile)
 
 }
-

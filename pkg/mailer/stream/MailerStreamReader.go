@@ -12,7 +12,7 @@ const (
 )
 
 func (self *MailerStream) parseFrameHeader(frameHeader uint16) (bool, uint16) {
-	var frameCommand bool = frameHeader &FrameCommandMask == FrameCommandMask
+	var frameCommand bool = frameHeader&FrameCommandMask == FrameCommandMask
 	var frameSize uint16 = frameHeader & FrameSizeMask
 	return frameCommand, frameSize
 }
@@ -21,12 +21,12 @@ func (self *MailerStream) pushPacket(nextFrame Frame) {
 	for pending := true; pending; {
 		select {
 
-			case self.InFrameReady <- nil:
-				log.Printf("MailerStream: RX stream: marker read READY push")
+		case self.InFrameReady <- nil:
+			log.Printf("MailerStream: RX stream: marker read READY push")
 
-			case self.InFrame <- nextFrame:
-				log.Printf("MailerStream: RX stream: ask packet with content")
-				pending = false
+		case self.InFrame <- nextFrame:
+			log.Printf("MailerStream: RX stream: ask packet with content")
+			pending = false
 
 		}
 	}
@@ -65,7 +65,7 @@ func (self *MailerStream) processRX() {
 				Command: true,
 				CommandFrame: CommandFrame{
 					CommandID: commandID,
-					Body: frameBody[1:],
+					Body:      frameBody[1:],
 				},
 			}
 

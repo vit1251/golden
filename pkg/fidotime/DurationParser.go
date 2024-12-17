@@ -24,13 +24,13 @@ func (self *DurationParser) Parse(duration string) (time.Duration, error) {
 		} else {
 			if ch == 'm' {
 				var newDuration time.Duration = time.Minute * time.Duration(number)
-				result =  result + newDuration
+				result = result + newDuration
 			} else if ch == 'h' {
 				var newDuration time.Duration = time.Hour * time.Duration(number)
-				result =  result + newDuration
+				result = result + newDuration
 			} else if ch == 's' {
 				var newDuration time.Duration = time.Second * time.Duration(number)
-				result =  result + newDuration
+				result = result + newDuration
 			} else {
 				return result, errors.New("problem while parse")
 			}

@@ -12,9 +12,9 @@ func TestMessageBody_Bytes(t *testing.T) {
 	msgBody.SetContent([]byte("Hello, wrold!"))
 	var chrsKludge string = "CP866"
 	msgBody.AddKludge(Kludge{
-		Name: "CHRS",
+		Name:  "CHRS",
 		Value: chrsKludge,
-		Raw: []byte(fmt.Sprintf("\x01CHRS: %s", chrsKludge)),
+		Raw:   []byte(fmt.Sprintf("\x01CHRS: %s", chrsKludge)),
 	})
 
 	newBody := msgBody.Bytes()

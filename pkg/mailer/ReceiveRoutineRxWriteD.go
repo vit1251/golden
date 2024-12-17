@@ -9,7 +9,6 @@ import (
 	"path"
 )
 
-
 func makeFileGotPacket(mailer *Mailer, recvOffset int64) {
 
 	recvName := mailer.recvName.Name

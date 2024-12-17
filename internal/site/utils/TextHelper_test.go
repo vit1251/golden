@@ -1,14 +1,14 @@
 package utils
 
 import (
-    "testing"
+	"testing"
 )
 
 // Green path
 func Test1_TextHelper_makeNameTitle(t *testing.T) {
 
 	source := "Andrey Mundirov"
-	
+
 	actual := TextHelper_makeNameTitle(source)
 	expected := "AM"
 
@@ -22,7 +22,7 @@ func Test1_TextHelper_makeNameTitle(t *testing.T) {
 func Test2_TextHelper_makeNameTitle(t *testing.T) {
 
 	source := "Andrey Mundirov "
-	
+
 	actual := TextHelper_makeNameTitle(source)
 	expected := "AM"
 
@@ -36,7 +36,7 @@ func Test2_TextHelper_makeNameTitle(t *testing.T) {
 func Test3_TextHelper_makeNameTitle(t *testing.T) {
 
 	source := " Andrey Mundirov"
-	
+
 	actual := TextHelper_makeNameTitle(source)
 	expected := "AM"
 
@@ -50,7 +50,7 @@ func Test3_TextHelper_makeNameTitle(t *testing.T) {
 func Test4_TextHelper_makeNameTitle(t *testing.T) {
 
 	source := "    "
-	
+
 	actual := TextHelper_makeNameTitle(source)
 	expected := "?"
 

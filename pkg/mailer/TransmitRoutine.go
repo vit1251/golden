@@ -5,9 +5,9 @@ import "log"
 type TransmitRoutineResult string
 
 const (
-	TxOk         TransmitRoutineResult = "TxOk"
-	TxFailure    TransmitRoutineResult = "TxFailure"
-	TxContinue   TransmitRoutineResult = "TxContinue"
+	TxOk       TransmitRoutineResult = "TxOk"
+	TxFailure  TransmitRoutineResult = "TxFailure"
+	TxContinue TransmitRoutineResult = "TxContinue"
 )
 
 func TransmitRoutine(mailer *Mailer) TransmitRoutineResult {

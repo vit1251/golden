@@ -2,8 +2,8 @@ package utils
 
 import (
 	"fmt"
-	"image/color"
 	"hash/crc32"
+	"image/color"
 	"strings"
 )
 
@@ -30,7 +30,7 @@ func TextHelper_makeNameTitle(source string) string {
 	}
 
 	/* Stage 2. Construct short name */
-	
+
 	partCount := len(parts)
 	if partCount >= 2 {
 		firstName := parts[0]

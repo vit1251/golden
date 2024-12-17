@@ -1,7 +1,7 @@
 package site2
 
 import (
-        "embed"
+	"embed"
 )
 
 //go:embed static/*

@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	AcceptFromBegin   = 1
-	AcceptFromOffset  = 2
-	AcceptLater       = 3
+	AcceptFromBegin  = 1
+	AcceptFromOffset = 2
+	AcceptLater      = 3
 )
 
 func ReceiveRoutineRxAccF(mailer *Mailer) ReceiveRoutineResult {

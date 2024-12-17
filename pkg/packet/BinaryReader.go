@@ -2,7 +2,7 @@ package packet
 
 import (
 	"io"
-//	"log"
+	//	"log"
 	"encoding/binary"
 )
 

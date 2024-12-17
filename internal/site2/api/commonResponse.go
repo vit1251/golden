@@ -1,5 +1,5 @@
 package api
 
 type CommonResponse struct {
-	Type string   `json:"type"`
+	Type string `json:"type"`
 }

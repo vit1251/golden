@@ -28,7 +28,7 @@ func (self *FormWidget) SetWidget(w IWidget) *FormWidget {
 }
 
 func NewFormWidget() *FormWidget {
-	fw:= new(FormWidget)
+	fw := new(FormWidget)
 	fw.enctype = "application/x-www-form-urlencoded"
 	return fw
 }

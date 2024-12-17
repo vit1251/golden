@@ -29,11 +29,11 @@ var opad []byte = []byte{
 }
 
 type Authorizer struct {
-	challengeData []byte  /*  */
+	challengeData []byte /*  */
 	secret        []byte
 }
 
-func NewAuthorizer() (*Authorizer) {
+func NewAuthorizer() *Authorizer {
 	a := new(Authorizer)
 	return a
 }
@@ -85,7 +85,7 @@ func (self *Authorizer) CalculateDigest() ([]byte, error) {
 		A1[idx] = secretByte
 	}
 	for i := 0; i < 64; i++ {
-		A1[i] ^= '\x5C';
+		A1[i] ^= '\x5C'
 	}
 	log.Printf("A1 = %x", A1)
 
@@ -98,7 +98,7 @@ func (self *Authorizer) CalculateDigest() ([]byte, error) {
 		A2[idx] = secretByte
 	}
 	for i := 0; i < 64; i++ {
-		A2[i] ^= '\x36';
+		A2[i] ^= '\x36'
 	}
 	log.Printf("A2 = %x", A2)
 

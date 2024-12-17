@@ -6,12 +6,12 @@ import (
 )
 
 type FormSelectWidget struct {
-	name string
+	name    string
 	options []*FormSelectOptionWidget
 }
 
 type FormSelectOptionWidget struct {
-	name string
+	name  string
 	value string
 }
 

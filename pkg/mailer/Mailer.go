@@ -11,11 +11,11 @@ import (
 	"github.com/vit1251/golden/pkg/registry"
 	"log"
 	"os"
+	"reflect"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
-	"reflect"
-	"runtime"
 )
 
 type Mailer struct {
@@ -34,9 +34,9 @@ type Mailer struct {
 	connectionCount int            /* Active session count        */
 	wait            sync.WaitGroup /* Sync                        */
 
-	addr         string  /* Network address             */
-	secret       string  /* Secret password             */
-	ServerAddr   string  /* Server IPv4 or FQDN address */
+	addr       string /* Network address             */
+	secret     string /* Secret password             */
+	ServerAddr string /* Server IPv4 or FQDN address */
 
 	inboundDirectory  string /* ???                         */
 	outboundDirectory string /* ???                         */
@@ -142,7 +142,7 @@ func (self *Mailer) IsReceiving() bool {
 func makeFuncName(i interface{}) string {
 	wideName := runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 	parts := strings.Split(wideName, ".")
-	ourName := parts[len(parts) - 1]
+	ourName := parts[len(parts)-1]
 	return ourName
 }
 

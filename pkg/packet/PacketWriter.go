@@ -6,8 +6,8 @@ import (
 )
 
 type PacketWriter struct {
-	streamWriter             io.Writer
-	binaryStreamWriter       *BinaryWriter
+	streamWriter       io.Writer
+	binaryStreamWriter *BinaryWriter
 }
 
 func NewPacketWriter(stream io.Writer) (*PacketWriter, error) {
@@ -262,19 +262,19 @@ func (self *PacketWriter) WritePackedMessage(packedMessage *PackedMessage) error
 	}
 
 	/* FTS-0001: ToUserName: N*Bytes: Maximum 36 */
-	err9 := self.binaryStreamWriter.WriteZStringWithLimit([]byte(packedMessage.ToUserName), 36 - 1)
+	err9 := self.binaryStreamWriter.WriteZStringWithLimit([]byte(packedMessage.ToUserName), 36-1)
 	if err9 != nil {
 		return err9
 	}
 
 	/* FTS-0001: FromUserName: N*Bytes: Maximum 36 */
-	err10 := self.binaryStreamWriter.WriteZStringWithLimit([]byte(packedMessage.FromUserName), 36 - 1)
+	err10 := self.binaryStreamWriter.WriteZStringWithLimit([]byte(packedMessage.FromUserName), 36-1)
 	if err10 != nil {
 		return err10
 	}
 
 	/* FTS-0001: Subject: N*Bytes: Maximum 72 */
-	err11 := self.binaryStreamWriter.WriteZStringWithLimit([]byte(packedMessage.Subject), 72 - 1)
+	err11 := self.binaryStreamWriter.WriteZStringWithLimit([]byte(packedMessage.Subject), 72-1)
 	if err11 != nil {
 		return err11
 	}

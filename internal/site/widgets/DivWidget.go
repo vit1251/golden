@@ -23,7 +23,7 @@ func (self *DivWidget) AddWidget(w IWidget) *DivWidget {
 	return self
 }
 
-/// deprecate
+// / deprecate
 func (self *DivWidget) SetContent(content string) *DivWidget {
 	self.AddWidget(NewTextWidgetWithText(content))
 	return self

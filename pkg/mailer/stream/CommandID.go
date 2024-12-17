@@ -21,7 +21,7 @@ const (
 func (self CommandID) String() string {
 
 	type commandName struct {
-		id CommandID
+		id   CommandID
 		name string
 	}
 
@@ -33,7 +33,7 @@ func (self CommandID) String() string {
 		{M_OK, "M_OK"},
 		{M_EOB, "M_EOB"},
 		{M_GOT, "M_GOT"},
-		{M_GET,"M_GET"},
+		{M_GET, "M_GET"},
 	}
 
 	for _, commandName := range commandNames {

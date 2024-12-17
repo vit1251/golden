@@ -21,14 +21,13 @@ func parseGot(packet []byte) *GotStat {
 		// TODO - Size ..
 		// TODO - UnixTime ..
 		result := GotStat{
-			Name: string(name),      // TODO - unescape name here ...
+			Name: string(name), // TODO - unescape name here ...
 		}
 		return &result
 	} else {
 		return nil
 	}
 }
-
 
 func processGotPacket(mailer *Mailer, nextFrame stream.Frame) {
 

@@ -3,9 +3,9 @@ package packet
 import "bytes"
 
 type Kludge struct {
-	Name    string
-	Value   string
-	Raw     []byte
+	Name  string
+	Value string
+	Raw   []byte
 }
 
 func NewKludge() *Kludge {
@@ -15,8 +15,8 @@ func NewKludge() *Kludge {
 type KludgeState int8
 
 const (
-	KludgeStateName    KludgeState = 1
-	KludgeStateValue   KludgeState = 2
+	KludgeStateName  KludgeState = 1
+	KludgeStateValue KludgeState = 2
 )
 
 func (self *Kludge) parseKludge(kludge []byte) {

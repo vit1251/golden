@@ -8,7 +8,7 @@ import (
 type ByteBuilder struct {
 	io.Writer
 	chunks [][]byte
-	size int
+	size   int
 }
 
 func NewByteBuilder() *ByteBuilder {

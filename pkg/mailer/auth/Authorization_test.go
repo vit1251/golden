@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"log"
 	"bytes"
+	"log"
 	"testing"
 )
 

@@ -11,7 +11,7 @@ func NewTosserPacket() *TosserPacket {
 	return new(TosserPacket)
 }
 
-func (self *TosserPacket) SetHeader(header  *packet.PacketHeader) {
+func (self *TosserPacket) SetHeader(header *packet.PacketHeader) {
 	self.header = header
 }
 

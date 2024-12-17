@@ -7,7 +7,7 @@ import (
 )
 
 type MessageBodyParser struct {
-	decodeAttachments	bool	/* Process attachment */
+	decodeAttachments bool /* Process attachment */
 }
 
 func NewMessageBodyParser() *MessageBodyParser {
@@ -22,7 +22,7 @@ func (self *MessageBodyParser) SetDecodeAttachment(yesno bool) {
 }
 
 const (
-//	CR = "\x0D"
+	//	CR = "\x0D"
 	LF = "\x0A"
 )
 
@@ -46,9 +46,9 @@ func (self MessageBodyParser) parseArea(rows [][]byte) string {
 }
 
 const (
-	MSG_BODY_PARSE_BODY         = 1
-	MSG_BODY_PARSE_UUE          = 2
-	MSG_BODY_PARSE_ROUTE_INFO   = 3
+	MSG_BODY_PARSE_BODY       = 1
+	MSG_BODY_PARSE_UUE        = 2
+	MSG_BODY_PARSE_ROUTE_INFO = 3
 )
 
 func checkNumber(str []byte) bool {
@@ -105,7 +105,7 @@ func (self MessageBodyParser) Parse(content []byte) (*MessageBody, error) {
 				parts := bytes.Split(row, []byte{' '})
 				partCount := len(parts)
 				if partCount == 3 && checkNumber(parts[1]) {
-                                        //
+					//
 					attach = NewMessageBodyAttach()
 					attach.SetPermission(string(parts[1]))
 					attach.SetName(string(parts[2]))

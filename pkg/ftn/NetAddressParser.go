@@ -8,23 +8,21 @@ import (
 type NetAddressParserState int
 
 const (
+	UnknownState NetAddressParserState = 0
 
-	UnknownState  NetAddressParserState = 0
-
-	ZoneState     NetAddressParserState = 1
-	NetState      NetAddressParserState = 2
-	NodeState     NetAddressParserState = 3
-	PointState    NetAddressParserState = 4
-
+	ZoneState  NetAddressParserState = 1
+	NetState   NetAddressParserState = 2
+	NodeState  NetAddressParserState = 3
+	PointState NetAddressParserState = 4
 )
 
 type NetAddressParser struct {
-	state     NetAddressParserState   /* Parser state    */
-	addr      NetAddress              /* Result address  */
-	cache     bytes.Buffer            /* Cache           */
+	state NetAddressParserState /* Parser state    */
+	addr  NetAddress            /* Result address  */
+	cache bytes.Buffer          /* Cache           */
 }
 
-func NewNetAddressParser() (*NetAddressParser) {
+func NewNetAddressParser() *NetAddressParser {
 	ap := new(NetAddressParser)
 	ap.state = ZoneState
 	return ap

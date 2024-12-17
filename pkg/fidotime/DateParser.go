@@ -1,25 +1,25 @@
 package fidotime
 
 import (
-	"time"
-	"fmt"
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
+	"time"
 )
 
 type FidoDate struct {
-	year     int
-	month    time.Month
-	day      int
-	hour     int
-	minute   int
-	sec      int
-	msec     int
-//	tz
+	year   int
+	month  time.Month
+	day    int
+	hour   int
+	minute int
+	sec    int
+	msec   int
+	// tz
 }
 
-func NewFidoDate() (*FidoDate) {
+func NewFidoDate() *FidoDate {
 	fd := new(FidoDate)
 	return fd
 }
@@ -38,12 +38,12 @@ func (self *FidoDate) SetNow() {
 	//
 }
 
-func (self FidoDate) FTSC() ([]byte) {
+func (self FidoDate) FTSC() []byte {
 	// []byte("03 Jan 20  23:51:10\x00")
 	var result []byte
 	newMonth := self.month.String()
 	newMonth = newMonth[0:3]
-	newDate := fmt.Sprintf("%02d %s %02d  %02d:%02d:%02d", self.day, newMonth, self.year - 2000, self.hour, self.minute, self.sec)
+	newDate := fmt.Sprintf("%02d %s %02d  %02d:%02d:%02d", self.day, newMonth, self.year-2000, self.hour, self.minute, self.sec)
 	result = []byte(newDate)
 	return result
 }
@@ -54,8 +54,8 @@ func (self FidoDate) CreateTime(zone *time.Location) (*time.Time, error) {
 }
 
 type DateParser struct {
-	stream   *bytes.Buffer
-	date      FidoDate
+	stream *bytes.Buffer
+	date   FidoDate
 }
 
 func NewDateParser() *DateParser {
@@ -63,7 +63,7 @@ func NewDateParser() *DateParser {
 	return result
 }
 
-func (self *DateParser) parseSpace() (error) {
+func (self *DateParser) parseSpace() error {
 	value, err1 := self.stream.ReadByte()
 	if err1 != nil {
 		panic(err1)
@@ -76,7 +76,7 @@ func (self *DateParser) parseSpace() (error) {
 	return nil
 }
 
-func (self *DateParser) parseChar(ch byte) (error) {
+func (self *DateParser) parseChar(ch byte) error {
 	value, err1 := self.stream.ReadByte()
 	if err1 != nil {
 		panic(err1)
@@ -102,7 +102,7 @@ func (self *DateParser) parseNumber() (int, error) {
 				return result, err1
 			}
 		}
-//		log.Printf("byte = %c", value)
+		//		log.Printf("byte = %c", value)
 		if value == '0' {
 			result = result * 10
 			result = result + 0
@@ -142,13 +142,13 @@ func (self *DateParser) parseNumber() (int, error) {
 		}
 	}
 
-//	log.Printf("number = %d", result)
+	//	log.Printf("number = %d", result)
 
 	return result, nil
 }
 
 func isLetter(c byte) bool {
-    return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')
+	return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')
 }
 
 func (self *DateParser) parseString() ([]byte, error) {
@@ -164,7 +164,7 @@ func (self *DateParser) parseString() ([]byte, error) {
 				return cache, err1
 			}
 		}
-//		log.Printf("byte = %c", value)
+		//		log.Printf("byte = %c", value)
 		if isLetter(value) {
 			cache = append(cache, value)
 		} else {
@@ -176,7 +176,7 @@ func (self *DateParser) parseString() ([]byte, error) {
 		}
 	}
 
-//	log.Printf("string = %s", cache)
+	//	log.Printf("string = %s", cache)
 
 	return cache, nil
 
@@ -225,7 +225,7 @@ func (self *DateParser) Parse(date []byte) (*FidoDate, error) {
 	/* Parse example: 01 Dec 19  09:03:20 */
 
 	/* Parse date */
-	if value, err := self.parseNumber() ; err != nil {
+	if value, err := self.parseNumber(); err != nil {
 		return nil, errors.New("Unable parse day")
 	} else {
 		self.date.day = value
@@ -233,7 +233,7 @@ func (self *DateParser) Parse(date []byte) (*FidoDate, error) {
 	if err := self.parseSpace(); err != nil {
 		return nil, errors.New("Unable parse space after day")
 	}
-	if value, err := self.parseMonth() ; err != nil {
+	if value, err := self.parseMonth(); err != nil {
 		return nil, errors.New("Unable parse month")
 	} else {
 		self.date.month = *value
@@ -241,7 +241,7 @@ func (self *DateParser) Parse(date []byte) (*FidoDate, error) {
 	if err := self.parseSpace(); err != nil {
 		return nil, errors.New("Unable parse space after month")
 	}
-	if value, err := self.parseNumber() ; err != nil {
+	if value, err := self.parseNumber(); err != nil {
 		return nil, errors.New("Unable parse year")
 	} else {
 		self.date.year = 2000 + value
@@ -256,7 +256,7 @@ func (self *DateParser) Parse(date []byte) (*FidoDate, error) {
 	}
 
 	/* Parse time */
-	if value, err := self.parseNumber() ; err != nil {
+	if value, err := self.parseNumber(); err != nil {
 		return nil, errors.New("Unable parse hour")
 	} else {
 		self.date.hour = value
@@ -264,7 +264,7 @@ func (self *DateParser) Parse(date []byte) (*FidoDate, error) {
 	if err := self.parseChar(':'); err != nil {
 		return nil, errors.New("Unable parse space time separator")
 	}
-	if value, err := self.parseNumber() ; err != nil {
+	if value, err := self.parseNumber(); err != nil {
 		return nil, errors.New("Unable parse minute")
 	} else {
 		self.date.minute = value
@@ -272,7 +272,7 @@ func (self *DateParser) Parse(date []byte) (*FidoDate, error) {
 	if err := self.parseChar(':'); err != nil {
 		return nil, errors.New("Unable parse space time separator")
 	}
-	if value, err := self.parseNumber() ; err != nil {
+	if value, err := self.parseNumber(); err != nil {
 		return nil, errors.New("Unable parse seconds")
 	} else {
 		self.date.sec = value

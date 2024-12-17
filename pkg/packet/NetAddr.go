@@ -7,10 +7,10 @@ import (
 )
 
 type NetAddr struct {
-	Zone    uint16
-	Net     uint16
-	Node    uint16
-	Point   uint16
+	Zone  uint16
+	Net   uint16
+	Node  uint16
+	Point uint16
 }
 
 func NewNetAddr() *NetAddr {
@@ -49,4 +49,3 @@ func (self NetAddr) String() string {
 	}
 	return result
 }
-

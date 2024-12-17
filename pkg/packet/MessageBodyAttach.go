@@ -1,18 +1,18 @@
 package packet
 
 import (
-	"github.com/vit1251/golden/pkg/uue"
 	"bytes"
 	"fmt"
+	"github.com/vit1251/golden/pkg/uue"
 )
 
 type MessageBodyAttach struct {
-	permission	string            /* Permission          */
-	name		string            /* Name                */
-	uue		[]string          /* UUE rows            */
-	data		bytes.Buffer      /* Attachment data     */
-	decoder		*uue.Decoder      /* UUE decoder         */
-	encoder		*uue.Encoder      /* UUE encoder         */
+	permission string       /* Permission          */
+	name       string       /* Name                */
+	uue        []string     /* UUE rows            */
+	data       bytes.Buffer /* Attachment data     */
+	decoder    *uue.Decoder /* UUE decoder         */
+	encoder    *uue.Encoder /* UUE encoder         */
 }
 
 func NewMessageBodyAttach() *MessageBodyAttach {

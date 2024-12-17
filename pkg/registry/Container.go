@@ -1,7 +1,7 @@
 package registry
 
 type Registrant struct {
-	Name string
+	Name    string
 	Service interface{}
 }
 
@@ -15,7 +15,7 @@ func NewContainer() *Container {
 
 func (self *Container) Register(name string, service interface{}) {
 	registrant := Registrant{
-		Name: name,
+		Name:    name,
 		Service: service,
 	}
 	self.registrants = append(self.registrants, registrant)

@@ -5,13 +5,14 @@ import "unicode"
 type LineParserState int
 
 type MessageLineParser struct {
-	State      LineParserState
+	State LineParserState
 }
+
 const (
-	LineQuoteStart   LineParserState    = 0
-	LineQuoteAuthor  LineParserState    = 1
-	LineQuoteLevel   LineParserState    = 2
-	LineQuoteBody    LineParserState    = 3
+	LineQuoteStart  LineParserState = 0
+	LineQuoteAuthor LineParserState = 1
+	LineQuoteLevel  LineParserState = 2
+	LineQuoteBody   LineParserState = 3
 )
 
 func NewMessageLineParser() *MessageLineParser {

@@ -6,8 +6,8 @@ import (
 )
 
 type ListWidget struct {
-	Class   string
-	Items   []IWidget
+	Class string
+	Items []IWidget
 }
 
 func NewListWidget() *ListWidget {

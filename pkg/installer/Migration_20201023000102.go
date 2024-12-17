@@ -8,8 +8,8 @@ func migration_000102_Up(conn *sql.DB) error {
 
 	type param struct {
 		section string
-		name string
-		value string
+		name    string
+		value   string
 	}
 
 	var params []param

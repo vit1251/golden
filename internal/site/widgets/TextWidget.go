@@ -7,7 +7,7 @@ import (
 
 type TextWidget struct {
 	content string
-	class string
+	class   string
 }
 
 func NewTextWidget() *TextWidget {

@@ -1,7 +1,7 @@
 package checker
 
 import (
-    "testing"
+	"testing"
 )
 
 // Green path
@@ -11,7 +11,7 @@ func Test1_1_AreaName_Check(t *testing.T) {
 
 	actual := AreaName_Check(source)
 	expected := true
-	
+
 	if actual != expected {
 		t.Fatalf("Test1[1] is FAIL.\n\tACTUAL = %v\n\tEXPECTED = %v", actual, expected)
 	}
@@ -25,7 +25,7 @@ func Test1_2_AreaName_Check(t *testing.T) {
 
 	actual := AreaName_Check(source)
 	expected := true
-	
+
 	if actual != expected {
 		t.Fatalf("Test1[2] is FAIL.\n\tACTUAL = %v\n\tEXPECTED = %v", actual, expected)
 	}
@@ -39,7 +39,7 @@ func Test2_AreaName_Check(t *testing.T) {
 
 	actual := AreaName_Check(source)
 	expected := false
-	
+
 	if actual != expected {
 		t.Fatalf("Test2 is FAIL.\n\tACTUAL = %v\n\tEXPECTED = %v", actual, expected)
 	}
@@ -53,7 +53,7 @@ func Test3_AreaName_Check(t *testing.T) {
 
 	actual := AreaName_Check(source)
 	expected := false
-	
+
 	if actual != expected {
 		t.Fatalf("Test3 is FAIL.\n\tACTUAL = %v\n\tEXPECTED = %v", actual, expected)
 	}
@@ -67,7 +67,7 @@ func Test4_AreaName_Check(t *testing.T) {
 
 	actual := AreaName_Check(source)
 	expected := false
-	
+
 	if actual != expected {
 		t.Fatalf("Test4 is FAIL.\n\tACTUAL = %v\n\tEXPECTED = %v", actual, expected)
 	}

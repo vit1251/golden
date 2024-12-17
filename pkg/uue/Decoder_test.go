@@ -1,9 +1,9 @@
 package uue
 
 import (
-	"testing"
 	"bytes"
 	"log"
+	"testing"
 )
 
 func Test_Decoder_Decode(t *testing.T) {

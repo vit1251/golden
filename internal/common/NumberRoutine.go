@@ -7,4 +7,3 @@ func ParseSize(value []byte) (int, error) {
 	size, err1 := strconv.ParseUint(str, 10, 32)
 	return int(size), err1
 }
-

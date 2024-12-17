@@ -34,7 +34,6 @@ func (self *BinaryWriter) WriteUINT16(value uint16) error {
 	return err
 }
 
-
 func (self *BinaryWriter) WriteINT32(value int32) error {
 	err := binary.Write(self.writer, binary.LittleEndian, value)
 	self.offset += 4
@@ -99,7 +98,7 @@ func (self *BinaryWriter) WriteZStringWithLimit(msg []byte, maxSize int) error {
 func (self *BinaryWriter) WriteZString(msg []byte) error {
 
 	msgSize := len(msg)
-	newMsg := make([]byte, msgSize + 1)
+	newMsg := make([]byte, msgSize+1)
 	copy(newMsg, msg)
 
 	err1 := binary.Write(self.writer, binary.LittleEndian, &newMsg)
@@ -112,4 +111,3 @@ func (self *BinaryWriter) WriteZString(msg []byte) error {
 
 func (self *BinaryWriter) Close() {
 }
-

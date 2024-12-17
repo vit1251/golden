@@ -6,27 +6,27 @@ import (
 	"log"
 )
 
-func (self *MailerStream) writeCommentPacket(msg []byte) (error) {
+func (self *MailerStream) writeCommentPacket(msg []byte) error {
 	return self.WriteCommandPacket(M_NUL, msg)
 }
 
-func (self *MailerStream) WriteInfo(name string, value string) (error) {
+func (self *MailerStream) WriteInfo(name string, value string) error {
 	var row string = fmt.Sprintf("%s %s", name, value)
 	var commentPacket1 []byte = []byte(row)
 	return self.writeCommentPacket(commentPacket1)
 }
 
-func (self *MailerStream) WriteComment(comment string) (error) {
-    var commentPacket1 []byte = []byte(comment)
-    return self.writeCommentPacket(commentPacket1)
+func (self *MailerStream) WriteComment(comment string) error {
+	var commentPacket1 []byte = []byte(comment)
+	return self.writeCommentPacket(commentPacket1)
 }
 
-func (self *MailerStream) WriteAddress(addr string) (error) {
+func (self *MailerStream) WriteAddress(addr string) error {
 	var addrPacket []byte = []byte(addr)
 	return self.WriteCommandPacket(M_ADR, addrPacket)
 }
 
-func (self *MailerStream) WritePassword(password string) (error) {
+func (self *MailerStream) WritePassword(password string) error {
 	var passwordPacket []byte = []byte(password)
 	return self.WriteCommandPacket(M_PWD, passwordPacket)
 }
@@ -68,7 +68,7 @@ func (self *MailerStream) processTX() {
 	for alive := true; alive; {
 		select {
 
-		case <- self.OutFrameReady:
+		case <-self.OutFrameReady:
 			log.Printf("MailerStream: TX stream: marker write READY push")
 
 		case nextFrame, ok := <-self.OutFrame:

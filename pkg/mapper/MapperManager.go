@@ -28,7 +28,7 @@ func NewMapperManager(r *registry.Container) *MapperManager {
 	return newMapperManager
 }
 
-/// GetEchoMapper provide echo mapper
+// / GetEchoMapper provide echo mapper
 func (self MapperManager) GetEchoMapper() *EchoMapper {
 	return self.echoMapper
 }

@@ -68,14 +68,14 @@ func (self *TicBuilder) SetDesc(desc string) {
 	self.addLine(fmt.Sprintf("Desc %s", desc))
 }
 
-/// SetLDesc add long description
+// / SetLDesc add long description
 func (self *TicBuilder) SetLDesc(ldesc string) {
 	var CR string = "\x0D"
 	var LF string = "\x0A"
 	var rows []string
-	if strings.Contains(ldesc, CR + LF) {
+	if strings.Contains(ldesc, CR+LF) {
 		/*  MS-DOS, OS/2, Microsoft Windows, Symbian OS and etc. */
-		rows = strings.Split(ldesc, CR + LF)
+		rows = strings.Split(ldesc, CR+LF)
 	} else if strings.Contains(ldesc, LF) {
 		/* GNU/Linux, AIX, Xenix, Mac OS X, FreeBSD and etc. */
 		rows = strings.Split(ldesc, LF)
@@ -99,4 +99,3 @@ func (self *TicBuilder) SetDate(time time.Time) {
 func (self *TicBuilder) AddPath(path string) {
 	self.addLine(fmt.Sprintf("Path %s", path))
 }
-
