@@ -66,7 +66,7 @@ func (self *MessageTree) RegisterMessage(m Message) {
 
 func (self *MessageTree) Compact() {
 	var keys []string
-	for k, _ := range self.index {
+	for k := range self.index {
 		keys = append(keys, k)
 	}
 	log.Printf("keys = %+v", keys)
