@@ -13,7 +13,7 @@ import (
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/packet"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/tmpl"
+	"github.com/vit1251/golden/internal/tmpl"
 	"hash/crc32"
 	"io"
 	"io/ioutil"
