@@ -59,9 +59,9 @@ Golang and Node MAY use network to download dependencies.
 
 ### Building routine
 
-Common steps are:
+On Linux system with x86_64 architecture:
 
-    # ./scripts/make-build-${OSTYPE}.sh
-    # ./golden --debug
+    # ./scripts/make-build-linux-gnu.sh
+    # ./golden-linux-amd64 -P 8080 --debug
 
 That's all.
