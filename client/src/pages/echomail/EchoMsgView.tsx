@@ -1,21 +1,18 @@
 
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import Hotkeys from 'react-hot-keys';
-
 import { eventBus } from '../../EventBus.js';
-import { Header } from '../../common/Header';
+import { Header } from '../../common/Header.js';
 import { Message } from './Message';
 
-export const EchoMsgView = (props) => {
+export const EchoMsgView = () => {
 
     const navigate = useNavigate();
 
-    const messages = useSelector((state) => state.messages);
-    const { body } = useSelector((state) => state.message);
+    const messages = useSelector((state: any) => state.messages);
+    const { body } = useSelector((state: any) => state.message);
 
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
@@ -45,7 +42,7 @@ export const EchoMsgView = (props) => {
     };
 
     const handlePrevMessage = () => {
-        const msgIndex = messages.findIndex((msg) => msg.hash === msgId);
+        const msgIndex = messages.findIndex((msg: any) => msg.hash === msgId);
         console.log(`Your index ${msgIndex}`);
         if ((msgIndex - 1) >= 0) {
             const { hash: prevHash } = messages[msgIndex - 1];
@@ -55,7 +52,7 @@ export const EchoMsgView = (props) => {
         }
     };
     const handleNextMessage = () => {
-        const msgIndex = messages.findIndex((msg) => msg.hash === msgId);
+        const msgIndex = messages.findIndex((msg: any) => msg.hash === msgId);
         console.log(`Your index ${msgIndex}`);
         if ((msgIndex + 1) < messages.length) {
             const { hash: nextHash } = messages[msgIndex + 1];
@@ -75,11 +72,6 @@ export const EchoMsgView = (props) => {
                 <Message body={body} />
 
             </div>
-
-            <Hotkeys keyName="esc" onKeyDown={handleMsgIndex} />
-            <Hotkeys keyName="del" onKeyDown={handleMsgRemove} />
-            <Hotkeys keyName="left" onKeyDown={handlePrevMessage} />
-            <Hotkeys keyName="right" onKeyDown={handleNextMessage} />
 
         </>
     );

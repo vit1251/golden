@@ -1,9 +1,6 @@
 
-import Hotkeys from 'react-hot-keys';
-
-import { useSelector, useDispatch } from 'react-redux';
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 import { Header } from '../../common/Header';
 import { eventBus } from '../../EventBus';
@@ -11,9 +8,9 @@ import { Row } from './Row';
 
 import "./EchoIndex.css";
 
-export const EchoIndex = (props) => {
+export const EchoIndex = () => {
 
-    const areas = useSelector((state) => state.areas) ?? [];
+    const areas = useSelector((state: any) => state.areas) ?? [];
 
     useEffect(() => {
         /* Step 1. Ask echos */
@@ -34,25 +31,20 @@ export const EchoIndex = (props) => {
 
             <Header />
 
-            <Hotkeys
-                keyName="ctrl+left,pgup"
-                onKeyUp={handlePrevMessage}
-                />
-
             <div className="container">
                 <h1>Echomail</h1>
 
                 <Row 
-                     onRowLink={(row) => `/echomail/${row.area_index}`}
+                     onRowLink={(row: any) => `/echomail/${row.area_index}`}
                      columns={[
                         { className: "rowName", key: "name" },
-                        { className: "rowMarker", render: (row) => {
+                        { className: "rowMarker", render: (row: any) => {
                             const { new_message_count = 0 } = row;
                             const value = new_message_count > 0 ? '•' : null;
                             return value;
                         }},
                         { className: "rowSummary", key: "summary" },
-                        { className: "rowCounter", render: (row) => {
+                        { className: "rowCounter", render: (row: any) => {
                             const { new_message_count = 0 } = row;
                             const value = new_message_count > 0 ? new_message_count : null;
                             return value;

@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"github.com/vit1251/golden/internal/site2/api"
 	"io"
-	"log"
 	"net/http"
-	"path"
 )
 
 type IndexAction struct {
@@ -20,27 +18,31 @@ func NewIndexAction() *IndexAction {
 
 func (self *IndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	/* Read content */
-	resourcePath := path.Join("public", "index.html")
-	content, err1 := publicContent.ReadFile(resourcePath)
+    out := &bytes.Buffer{}
 
-	if err1 == nil {
+    fmt.Fprintf(out, "<!DOCTYPE html>")
+    fmt.Fprintf(out, "<html lang=\"en\">")
+    fmt.Fprintf(out, "<head>")
+    fmt.Fprintf(out, "<link rel=\"stylesheet\" href=\"/public/main.css\">")
+    fmt.Fprintf(out, "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">")
+    fmt.Fprintf(out, "<title>Golden Point</title>")
+    fmt.Fprintf(out, "</head>")
+    fmt.Fprintf(out, "<body class=\"dark\">")
+    fmt.Fprintf(out, "<div id=\"root\"></div>")
+    fmt.Fprintf(out, "<script src=\"/public/main.js\"></script>")
+    fmt.Fprintf(out, "</body>")
+    fmt.Fprintf(out, "</html>")
 
-		size := len(content)
+    content := out.Bytes()
 
-		w.Header().Set("Content-Length", fmt.Sprintf("%d", size))
-		w.Header().Set("Content-Type", "text/html")
+    size := len(content)
 
-		w.WriteHeader(200)
+    w.Header().Set("Content-Length", fmt.Sprintf("%d", size))
+    w.Header().Set("Content-Type", "text/html")
 
-		image := bytes.NewReader(content)
-		io.Copy(w, image)
+    w.WriteHeader(200)
 
-	} else {
-
-		log.Printf("Error: embed error %+v", err1)
-		w.WriteHeader(404)
-
-	}
+    image := bytes.NewReader(content)
+    io.Copy(w, image)
 
 }

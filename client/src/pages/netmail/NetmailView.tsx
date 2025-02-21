@@ -1,8 +1,8 @@
 
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { Header } from '../../common/Header';
 
-export const NetmailIndex = (props) => {
+export const NetmailView = () => {
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
     return (

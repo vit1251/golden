@@ -1,7 +1,7 @@
 
 import { Header } from '../common/Header';
 
-export const Welcome = (props) => {
+export const Welcome = () => {
 
     const contributors = [
         "Sergey Anohin",

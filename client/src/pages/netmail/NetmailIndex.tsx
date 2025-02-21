@@ -1,8 +1,8 @@
 
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { Header } from '../../common/Header';
 
-export const FileTicIndex = (props) => {
+export const NetmailIndex = () => {
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
     return (

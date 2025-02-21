@@ -1,7 +1,10 @@
 
-import { store } from './Storage.js';
+import { store } from './Storage';
 
 class EventBus {
+    protected active: boolean;
+    protected socket: WebSocket;
+    protected reqQueue: Object[];
 
     constructor() {
         this.active = false;
@@ -33,15 +36,18 @@ class EventBus {
         this.reqQueue = [];
     }
 
-    rawInvoke(req) {
+    rawInvoke(req: any) {
         console.log(`Use raw request`);
         const packet = JSON.stringify(req);
         this.socket.send(packet);
     }
 
-    queueInvoke(req) {
+    queueInvoke(req: any) {
         console.log(`Use queue request`);
         this.reqQueue.push(req);
+    }
+
+    emit(event: string, options: {}) {
     }
 
     /**
@@ -49,7 +55,7 @@ class EventBus {
      *
      * @param {Object} req
      */
-    invoke(req) {
+    invoke(req: any) {
         console.log(`Invoke ${req}`);
         if (this.active) {
             this.rawInvoke(req);

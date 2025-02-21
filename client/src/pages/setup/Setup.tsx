@@ -1,10 +1,12 @@
 
 import { Header } from '../../common/Header';
 
-export const EchoMsgCompose = (props) => {
+export const Setup = () => {
+
     return (
         <>
             <Header />
         </>
     );
+
 };

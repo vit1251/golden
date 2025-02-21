@@ -1,10 +1,8 @@
 
-import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from 'react-redux';
+import { useParams, useNavigate } from "react-router";
+import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-
-import Hotkeys from 'react-hot-keys';
+import {  } from 'react-router';
 
 import { Header } from '../../common/Header';
 import { eventBus } from '../../EventBus';
@@ -12,14 +10,12 @@ import { Row } from './Row';
 
 import "./EchoMsgIndex.css";
 
-export const EchoMsgIndex = (props) => {
+export const EchoMsgIndex = () => {
 
     const navigate = useNavigate();
 
-    const [activeIndex, setActiveIndex] = useState(0);
-
-    const areas = useSelector((state) => state.areas);
-    const messages = useSelector((state) => state.messages);
+    const areas = useSelector((state: any) => state.areas);
+    const messages = useSelector((state: any) => state.messages);
 
     useEffect(() => {
         eventBus.invoke({
@@ -30,7 +26,7 @@ export const EchoMsgIndex = (props) => {
     const { echoTag } = useParams();
     console.log(`echoTag = `, echoTag);
 
-    const area = areas.find((area) => area.area_index === echoTag);
+    const area = areas.find((area: any) => area.area_index === echoTag);
     console.log(`area = `, area);
 
     useEffect(() => {
@@ -62,18 +58,18 @@ export const EchoMsgIndex = (props) => {
 
             <Header />
 
-            <div class="container">
+            <div className="container">
                 <h1>Echoarea</h1>
 
                 <Row
-                    onRowLink={(row) => {
+                    onRowLink={(row: any) => {
                         const { hash = '' } = row;
                         return `/echomail/${echoTag}/${hash}/view`;
                     }}
                     columns={[
                        {className: 'rowUserpic', key: ''},
                        {className: 'rowFrom', key: 'from'},
-                       {className: 'rowMarker', render: (row) => {
+                       {className: 'rowMarker', render: (row: any) => {
                            const { view_count = 0 } = row;
                            const value = view_count === 0 ? '•' : null;
                            return value;
@@ -82,15 +78,9 @@ export const EchoMsgIndex = (props) => {
                        {className: 'rowDate', key: 'date'},
                     ]}
                     data={messages}
-                    activeIndex={activeIndex}
                     />
 
             </div>
-
-            <Hotkeys keyName="up" onKeyDown={handlePrevMessage} />
-            <Hotkeys keyName="down" onKeyDown={handleNextMessage} />
-            <Hotkeys keyName="esc" onKeyDown={handleAreaIndex} />
-            <Hotkeys keyName="ins" onKeyDown={handleCreateMessage} />
 
         </>
     );

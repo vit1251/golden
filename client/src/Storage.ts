@@ -10,7 +10,7 @@ const initialState = {
     },
 };
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: any) => {
     if (action.type === 'ECHO_INDEX') {
         const { areas = [] } = action;
         return {

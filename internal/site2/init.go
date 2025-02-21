@@ -4,8 +4,8 @@ import (
 	"embed"
 )
 
-//go:embed static/*
+//go:embed static
 var staticContent embed.FS
 
-//go:embed public/*
+//go:embed public
 var publicContent embed.FS
