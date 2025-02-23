@@ -1,7 +1,18 @@
 
+import { useEffect } from 'react';
 import { Header } from '../common/Header';
+import { useInput } from '../Hotkey';
 
 export const Welcome = () => {
+
+    useEffect(() => {
+        const removeHotkeys = useInput((event: KeyboardEvent) => {
+            console.log(`Welcome event: ${event.key}`);
+        });
+        return () => {
+            removeHotkeys();
+        }
+    }, []);
 
     const contributors = [
         "Sergey Anohin",

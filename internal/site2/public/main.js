@@ -1154,7 +1154,7 @@
           return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
         }
         "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-        var React14 = require_react(), objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore2 = React14.useSyncExternalStore, useRef7 = React14.useRef, useEffect10 = React14.useEffect, useMemo6 = React14.useMemo, useDebugValue2 = React14.useDebugValue;
+        var React14 = require_react(), objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore2 = React14.useSyncExternalStore, useRef7 = React14.useRef, useEffect12 = React14.useEffect, useMemo6 = React14.useMemo, useDebugValue2 = React14.useDebugValue;
         exports.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual) {
           var instRef = useRef7(null);
           if (null === instRef.current) {
@@ -1197,7 +1197,7 @@
             [getSnapshot, getServerSnapshot, selector, isEqual]
           );
           var value = useSyncExternalStore2(subscribe, instRef[0], instRef[1]);
-          useEffect10(
+          useEffect12(
             function() {
               inst.hasValue = true;
               inst.value = value;
@@ -22630,6 +22630,9 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   }
   var encoder = new TextEncoder();
 
+  // src/pages/Welcome.tsx
+  var import_react = __toESM(require_react(), 1);
+
   // src/common/Header.tsx
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
   var Settings = (props) => {
@@ -22687,9 +22690,43 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     ] });
   };
 
+  // src/Hotkey.tsx
+  var handlers = [];
+  var userHandler = (event) => {
+    for (const handler of handlers) {
+      handler(event);
+    }
+    if (event.code == "KeyZ" && (event.ctrlKey || event.metaKey)) {
+      console.log("\u041D\u0430\u0436\u0430\u0442 Ctrl+Z");
+    }
+  };
+  document.addEventListener("keydown", (event) => userHandler(event));
+  function useInput(handler) {
+    console.log(`--- \u041F\u0440\u0438\u0441\u043E\u0435\u0434\u0438\u043D\u0438\u043B\u0438 \u0433\u043E\u0440\u044F\u0447\u0438\u0435 \u043A\u043B\u0430\u0432\u0438\u0448\u0438 ---`);
+    handlers.push(handler);
+    return () => {
+      console.log(`--- \u041E\u0442\u0441\u043E\u0435\u0434\u0438\u043D\u0438\u043B\u0438 \u0433\u043E\u0440\u044F\u0447\u0438\u0435 \u043A\u043B\u0430\u0432\u0438\u0448\u0438 ---`);
+      const newHandlers = [];
+      for (const curHandler of handlers) {
+        if (curHandler !== handler) {
+          newHandlers.push(curHandler);
+        }
+      }
+      handlers = newHandlers;
+    };
+  }
+
   // src/pages/Welcome.tsx
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
   var Welcome = () => {
+    (0, import_react.useEffect)(() => {
+      const removeHotkeys = useInput((event) => {
+        console.log(`Welcome event: ${event.key}`);
+      });
+      return () => {
+        removeHotkeys();
+      };
+    }, []);
     const contributors = [
       "Sergey Anohin",
       "Andrey Mundirov",
@@ -22723,7 +22760,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   };
 
   // src/pages/echomail/EchoIndex.tsx
-  var import_react = __toESM(require_react(), 1);
+  var import_react2 = __toESM(require_react(), 1);
 
   // node_modules/redux/dist/redux.mjs
   var $$observable = /* @__PURE__ */ (() => typeof Symbol === "function" && Symbol.observable || "@@observable")();
@@ -23041,25 +23078,32 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
 
   // src/pages/echomail/Row.tsx
   var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
-  var Row = (props) => {
-    const {
-      data: data2 = [],
-      columns = [],
-      onRowLink = (row) => "#"
-    } = props;
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_jsx_runtime3.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "rowContainer", children: data2.map((row) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Link, { to: onRowLink(row), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "row", children: columns.map((column) => {
+  var Row = ({ record, columns, onRowLink }) => {
+    const navigate = useNavigate();
+    const handleDoubleClick = (row) => {
+      console.log(`\u041E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u043C \u043F\u043E\u043B\u043D\u043E\u044D\u043A\u0440\u0430\u043D\u043D\u044B\u0439 \u043F\u0440\u043E\u0441\u043C\u043E\u0442\u0440`);
+      const linkAddr = onRowLink(row);
+      navigate(linkAddr);
+    };
+    const handleClick = (row) => {
+      console.log(`\u041E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u043C \u043F\u0440\u0435\u0434\u0432\u0430\u0440\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u043F\u0440\u043E\u0441\u043C\u043E\u0442\u0440`);
+    };
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "row", onClick: () => handleClick(record), onDoubleClick: () => handleDoubleClick(record), children: columns.map((column) => {
       const { className = "", key, render } = column;
-      const { [key]: raw = "" } = row;
-      const value = render ? render(row) : raw;
+      const { [key]: raw = "" } = record;
+      const value = render ? render(record) : raw;
       return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className, children: value });
-    }) }) })) }) });
+    }) });
+  };
+  var Rows = ({ records, columns, onRowLink }) => {
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_jsx_runtime3.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "rowContainer", children: records.map((record) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Row, { record, columns, onRowLink })) }) });
   };
 
   // src/pages/echomail/EchoIndex.tsx
   var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
   var EchoIndex = () => {
     const areas = useSelector((state) => state.areas) ?? [];
-    (0, import_react.useEffect)(() => {
+    (0, import_react2.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_INDEX"
       });
@@ -23075,7 +23119,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "container", children: [
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("h1", { children: "Echomail" }),
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          Row,
+          Rows,
           {
             onRowLink: (row) => `/echomail/${row.area_index}`,
             columns: [
@@ -23092,7 +23136,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
                 return value;
               } }
             ],
-            data: areas
+            records: areas
           }
         )
       ] })
@@ -23100,13 +23144,13 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   };
 
   // src/pages/echomail/EchoMsgIndex.tsx
-  var import_react2 = __toESM(require_react(), 1);
+  var import_react3 = __toESM(require_react(), 1);
   var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
   var EchoMsgIndex = () => {
     const navigate = useNavigate();
     const areas = useSelector((state) => state.areas);
     const messages = useSelector((state) => state.messages);
-    (0, import_react2.useEffect)(() => {
+    (0, import_react3.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_INDEX"
       });
@@ -23115,7 +23159,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     console.log(`echoTag = `, echoTag);
     const area = areas.find((area2) => area2.area_index === echoTag);
     console.log(`area = `, area);
-    (0, import_react2.useEffect)(() => {
+    (0, import_react3.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_MSG_INDEX",
         echoTag
@@ -23141,7 +23185,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "container", children: [
         /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("h1", { children: "Echoarea" }),
         /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
-          Row,
+          Rows,
           {
             onRowLink: (row) => {
               const { hash = "" } = row;
@@ -23158,7 +23202,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
               { className: "rowSubject", key: "subject" },
               { className: "rowDate", key: "date" }
             ],
-            data: messages
+            records: messages
           }
         )
       ] })
@@ -23166,24 +23210,34 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   };
 
   // src/pages/echomail/EchoMsgView.tsx
-  var import_react4 = __toESM(require_react(), 1);
+  var import_react5 = __toESM(require_react(), 1);
 
   // src/pages/echomail/Message.tsx
-  var import_react3 = __toESM(require_react(), 1);
+  var import_react4 = __toESM(require_react(), 1);
   var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
-  var parseLines = (content) => {
-    const result = [];
-    let row = "";
-    for (const ch of content) {
-      if (ch === "\r") {
-        result.push(row);
-        row = "";
-      } else {
-        row += ch;
-      }
+  function detectLineEnding(content) {
+    if (/\r\n/.test(content)) {
+      return "win";
+    } else if (/\n/.test(content)) {
+      return "unix";
+    } else if (/\r/.test(content)) {
+      return "mac";
     }
-    return result;
-  };
+    return void 0;
+  }
+  function parseLines(content) {
+    const lineEnding = detectLineEnding(content);
+    console.log(`\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D \u0440\u0435\u0436\u0438\u043C ${lineEnding} \u043F\u0435\u0440\u0435\u0432\u043E\u0434\u0430 \u0441\u0442\u0440\u043E\u043A`);
+    if (lineEnding === "win") {
+      return content.split(/\r\n/);
+    } else if (lineEnding === "unix") {
+      return content.split(/\n/);
+    } else if (lineEnding === "mac") {
+      return content.split(/\r/);
+    } else {
+      return [content];
+    }
+  }
   var STATE_START = 0;
   var STATE_QUOTE = 1;
   var STATE_BODY = 2;
@@ -23262,33 +23316,96 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       return "rowGreen";
     }
   };
-  var Message = (props) => {
-    const [line, setLine] = (0, import_react3.useState)(0);
-    const { body } = props;
-    const rows = parseLines(body);
-    const msgLineCount = rows.length;
+  var Quoting = ({ who, qp, msg }) => {
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "rowQuote", children: [
+      who.value,
+      qp,
+      " ",
+      msg === "" ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("br", {}) : msg
+    ] });
+  };
+  var Line = ({ value, index, active }) => {
+    const quote = parseQuote(value);
+    const { who, count, msg } = quote;
+    const qp = makeQuoteChar(count);
+    const is_quote = !who.empty();
+    const colorClass = [
+      "messageLine",
+      makeClassNameByCounter(quote.count)
+    ];
+    if (active) {
+      colorClass.push("rowActive");
+    }
+    const lineLngth = value.length;
+    const numberLine = Math.floor(lineLngth / 80) + 1;
+    const rowHeight = 14 * numberLine;
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: colorClass.join(" "), style: { height: `${rowHeight}pt` }, children: is_quote ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Quoting, { who, qp, msg }) : value });
+  };
+  var Message = ({ body }) => {
+    const [state, setState] = (0, import_react4.useState)({
+      records: [],
+      maxLine: 0,
+      line: 0
+    });
+    const handlePreviousMessage = () => {
+      console.log(`\u041F\u0435\u0440\u0435\u0445\u043E\u0434 \u043D\u0430 \u043F\u0440\u0435\u0434\u044B\u0434\u0443\u0449\u0435\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435.`);
+    };
+    const handleNextMessage = () => {
+      console.log(`\u041F\u0435\u0440\u0435\u0445\u043E\u0434 \u043D\u0430 \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435.`);
+    };
+    (0, import_react4.useEffect)(() => {
+      const removeHandler = useInput((event) => {
+        if (event.key === "ArrowLeft") {
+          handlePreviousMessage();
+          event.stopPropagation();
+        }
+        if (event.key === "ArrowRight") {
+          handleNextMessage();
+          event.stopPropagation();
+        }
+      });
+      return () => {
+        removeHandler();
+      };
+    }, []);
+    (0, import_react4.useEffect)(() => {
+      const records = parseLines(body);
+      setState((prev) => ({
+        ...prev,
+        records,
+        maxLine: records.length,
+        line: 0
+      }));
+    }, [body]);
+    console.log(`[A] \u0422\u0435\u043A\u0443\u0449\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 ${state.line} \u0432\u0441\u0435\u0433\u043E \u0441\u0442\u0440\u043E\u043A \u0432 \u0442\u0435\u043A\u0441\u0442\u0435 ${state.maxLine}`);
     const handlePrevLine = () => {
-      if (line > 0) {
-        setLine(line - 1);
-      }
+      console.log(`[B] \u0422\u0435\u043A\u0443\u0449\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 ${state.line} \u0432\u0441\u0435\u0433\u043E \u0441\u0442\u0440\u043E\u043A \u0432 \u0442\u0435\u043A\u0441\u0442\u0435 ${state.maxLine}`);
+      setState((prev) => ({
+        ...prev,
+        line: prev.line > 0 ? prev.line - 1 : prev.line
+      }));
     };
     const handleNextLine = () => {
-      if (line + 1 < msgLineCount) {
-        setLine(line + 1);
-      }
+      console.log(`[B] \u0422\u0435\u043A\u0443\u0449\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 ${state.line} \u0432\u0441\u0435\u0433\u043E \u0441\u0442\u0440\u043E\u043A \u0432 \u0442\u0435\u043A\u0441\u0442\u0435 ${state.maxLine}`);
+      setState((prev) => ({
+        ...prev,
+        line: prev.line < prev.maxLine ? prev.line + 1 : prev.line
+      }));
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_jsx_runtime6.Fragment, { children: rows.map((row, index) => {
-      const quote = parseQuote(row);
-      const { who, count, msg } = quote;
-      const qp = makeQuoteChar(count);
-      const is_quote = !who.empty();
-      return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: index === line ? "rowActive" : "", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: makeClassNameByCounter(quote.count), "data-tooltip": JSON.stringify(quote), children: is_quote ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_jsx_runtime6.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "rowQuote", children: [
-        who.value,
-        qp,
-        " ",
-        msg === "" ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("br", {}) : msg
-      ] }) }) : /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_jsx_runtime6.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { children: row === "" ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("br", {}) : row }) }) }) }, `msg-line-${index}`);
-    }) });
+    (0, import_react4.useEffect)(() => {
+      const removeHotkeys = useInput((event) => {
+        if (event.key === "ArrowUp") {
+          handlePrevLine();
+        }
+        if (event.key === "ArrowDown") {
+          handleNextLine();
+        }
+      });
+      return () => {
+        removeHotkeys();
+      };
+    }, []);
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_jsx_runtime6.Fragment, { children: state.records.map((row, index) => /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Line, { active: index === state.line, index, value: row }, index)) });
   };
 
   // src/pages/echomail/EchoMsgView.tsx
@@ -23299,7 +23416,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     const { body } = useSelector((state) => state.message);
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
-    (0, import_react4.useEffect)(() => {
+    (0, import_react5.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_MSG_VIEW",
         echoTag,

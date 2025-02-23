@@ -1,20 +1,38 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import './Message.css';
+import { useInput } from '../../Hotkey';
 
-const parseLines = (content: string) => {
-    const result = [];
-    let row = '';
-    for (const ch of content) {
-        if (ch === '\r') {
-            result.push(row);
-            row = '';
-        } else {
-            row += ch;
-        }
+function detectLineEnding(content: string): "win" | "unix" | "mac" | undefined {
+    if (/\r\n/.test(content)) {
+      return 'win';
+    } else if (/\n/.test(content)) {
+      return 'unix';
+    } else if (/\r/.test(content)) {
+      return 'mac';
     }
-    return result;
+    return undefined;
+  }
+
+/**
+ * Разбираем содержимое сообщения на строки
+ * 
+ * @param content Содержимое сообщения
+ * @returns Строки сообщения
+ */
+function parseLines(content: string): string[] {
+    const lineEnding = detectLineEnding(content);
+    console.log(`Использован режим ${lineEnding} перевода строк`);
+    if (lineEnding === 'win') {
+        return content.split(/\r\n/);
+    } else if (lineEnding === 'unix') {
+        return content.split(/\n/);
+    } else if (lineEnding === 'mac') {
+        return content.split(/\r/);
+    } else {
+        return [content];
+    }
 };
 
 const STATE_START = 0;
@@ -114,49 +132,117 @@ const makeClassNameByCounter = (counter: number) => {
 
 };
 
-export const Message = (props: { body: string }) => {
+const Quoting = ({ who, qp, msg }: { who: any, qp: any, msg: any }) => {
+    return (
+        <div className="rowQuote">
+            {who.value}{qp} {msg === '' ? <br /> : msg}
+        </div>
+    );
+}
 
-    const [line, setLine] = useState(0);
+const Line = ({ value, index, active }: { value: string, index: number, active: boolean }) => {
 
-    const { body } = props;
-    const rows = parseLines(body);
-    const msgLineCount = rows.length;
+    const quote = parseQuote(value);
+    const { who, count, msg } = quote;
+
+    const qp = makeQuoteChar(count);
+    const is_quote = !who.empty();
+
+    const colorClass: string[] = [
+        'messageLine',
+        makeClassNameByCounter(quote.count),
+    ];
+    if (active) {
+        colorClass.push('rowActive');
+    }
+
+    const lineLngth: number = value.length;
+    const numberLine: number = Math.floor(lineLngth / 80) + 1; // Предполагаем 80 символов в строке
+    const rowHeight: number = 14 * numberLine;
+
+    return (
+        <div className={colorClass.join(' ')} style={{ height: `${rowHeight}pt` }}>
+            { is_quote ? <Quoting who={who} qp={qp} msg={msg} /> : value }
+        </div>
+    );
+};
+
+export const Message = ({ body }: { body: string }) => {
+
+    const [state, setState] = useState<{ records: string[], maxLine: number, line: number }>({
+        records: [],
+        maxLine: 0,
+        line: 0,
+    });
+
+    const handlePreviousMessage = () => {
+        console.log(`Переход на предыдущее сообщение.`);
+    }
+    const handleNextMessage = () => {
+        console.log(`Переход на следующее сообщение.`);
+    }
+
+    useEffect(() => {
+        const removeHandler = useInput((event: KeyboardEvent) => {
+            if (event.key === 'ArrowLeft') {
+                handlePreviousMessage();
+                event.stopPropagation(); 
+            }
+            if (event.key === 'ArrowRight') {
+                handleNextMessage();
+                event.stopPropagation(); 
+            }
+        });
+        return () => {
+            removeHandler();
+        }
+    }, []);
+
+    useEffect(() => {
+        const records: string[] = parseLines(body);
+        setState((prev) => ({
+            ...prev,
+            records,
+            maxLine: records.length,
+            line: 0,
+        }));
+    }, [body]);
+
+    console.log(`[A] Текущая строка ${state.line} всего строк в тексте ${state.maxLine}`);
 
     const handlePrevLine = () => {
-        if (line > 0) {
-            setLine(line - 1);
-        }
+        console.log(`[B] Текущая строка ${state.line} всего строк в тексте ${state.maxLine}`);
+        setState((prev) => ({
+            ...prev,
+            line: prev.line > 0 ? prev.line - 1 : prev.line,
+        }));
     };
+
     const handleNextLine = () => {
-        if ((line + 1) < msgLineCount) {
-            setLine(line + 1);
-        }
+        console.log(`[B] Текущая строка ${state.line} всего строк в тексте ${state.maxLine}`);
+        setState((prev) => ({
+            ...prev,
+            line: prev.line < prev.maxLine ? prev.line + 1 : prev.line,
+        }));
     };
+
+    useEffect(() => {
+        const removeHotkeys = useInput((event: KeyboardEvent) => {
+            if (event.key === 'ArrowUp') {
+                handlePrevLine();
+            }
+            if (event.key === 'ArrowDown') {
+                handleNextLine();
+            }
+        });
+        return () => {
+            removeHotkeys();
+        }
+    }, []);
 
     return (
         <>
-
-            {rows.map((row, index) => {
-                const quote = parseQuote(row);
-                const { who, count, msg } = quote;
-                const qp = makeQuoteChar(count);
-                const is_quote = !who.empty();
-                return (
-                    <div key={`msg-line-${index}`} className={index === line ? 'rowActive' : ''}>
-                        <div className={makeClassNameByCounter(quote.count)} data-tooltip={JSON.stringify(quote)}>{is_quote ? (
-                            <>
-                                <div className="rowQuote">
-                                    {who.value}{qp} {msg === '' ? <br /> : msg}
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <div>{row === '' ? <br /> : row}</div>
-                            </>
-                        )}</div>
-                    </div>
-                );
-            })}
+            {state.records.map((row, index) => (<Line key={index} active={index === state.line} index={index} value={row} />))}
         </>
     );
 }

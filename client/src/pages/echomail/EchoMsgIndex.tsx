@@ -1,12 +1,11 @@
 
 import { useParams, useNavigate } from "react-router";
 import { useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
-import {  } from 'react-router';
+import { useEffect } from 'react';
 
 import { Header } from '../../common/Header';
 import { eventBus } from '../../EventBus';
-import { Row } from './Row';
+import { Rows } from './Row';
 
 import "./EchoMsgIndex.css";
 
@@ -61,7 +60,7 @@ export const EchoMsgIndex = () => {
             <div className="container">
                 <h1>Echoarea</h1>
 
-                <Row
+                <Rows
                     onRowLink={(row: any) => {
                         const { hash = '' } = row;
                         return `/echomail/${echoTag}/${hash}/view`;
@@ -77,7 +76,7 @@ export const EchoMsgIndex = () => {
                        {className: 'rowSubject', key: 'subject'},
                        {className: 'rowDate', key: 'date'},
                     ]}
-                    data={messages}
+                    records={messages}
                     />
 
             </div>

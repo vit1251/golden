@@ -31,6 +31,7 @@
 
 /* src/pages/echomail/Row.css */
 .rowContainer {
+  cursor: pointer;
 }
 .row {
   display: flex;
@@ -153,13 +154,14 @@
 }
 
 /* src/pages/echomail/Message.css */
+.messageLine {
+  min-height: 14pt;
+}
 .rowActive {
   background-color: #000080;
 }
 .rowQuote {
   padding-left: 16px;
-  padding-top: 8px;
-  padding-bottom: 8px;
 }
 .rowRed {
   color: red;

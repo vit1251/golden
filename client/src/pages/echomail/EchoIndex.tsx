@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 import { Header } from '../../common/Header';
 import { eventBus } from '../../EventBus';
-import { Row } from './Row';
+import { Rows } from './Row';
 
 import "./EchoIndex.css";
 
@@ -34,7 +34,7 @@ export const EchoIndex = () => {
             <div className="container">
                 <h1>Echomail</h1>
 
-                <Row 
+                <Rows
                      onRowLink={(row: any) => `/echomail/${row.area_index}`}
                      columns={[
                         { className: "rowName", key: "name" },
@@ -50,7 +50,8 @@ export const EchoIndex = () => {
                             return value;
                         }},
                      ]}
-                     data={areas} />
+                     records={areas} />
+                     
             </div>
         </>
     );
