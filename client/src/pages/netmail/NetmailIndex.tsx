@@ -1,13 +1,12 @@
 
 import { useParams } from "react-router";
-import { Header } from '../../common/Header';
 
 export const NetmailIndex = () => {
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
     return (
         <>
-            <Header />
+            <h1>Not yet implemented.</h1>
         </>
     );
 };

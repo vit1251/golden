@@ -17,22 +17,23 @@ import { Setup } from './setup/Setup';
 
 import '../themes/custom.css';
 import '../themes/theme_black.css';
+import { BaseLayout } from "./layout/BaseLayout";
 
 export const App = () => {
     return (
         <HashRouter>
             <Routes>
                 
-                <Route index element={<Welcome />} />
+                <Route index element={<BaseLayout content={<Welcome />} />} />
                 
                 <Route path="netmail">
-                    <Route index element={<NetmailIndex />} />
+                    <Route index element={<BaseLayout content={<NetmailIndex />} />} />
                     <Route path=":msgId">
                         <Route path="view" element={<NetmailView />} />
                     </Route>
                 </Route>
 
-                <Route path="echomail">
+                <Route path="echo">
                     <Route index element={<EchoIndex />} />
                     <Route path=":echoTag">
                         <Route index element={<EchoMsgIndex />} />

@@ -22633,63 +22633,6 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   // src/pages/Welcome.tsx
   var import_react = __toESM(require_react(), 1);
 
-  // src/common/Header.tsx
-  var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
-  var Settings = (props) => {
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { version: "1.1", id: "Capa_1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 478.703 478.703", xmlSpace: "preserve", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("g", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("g", { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M454.2,189.101l-33.6-5.7c-3.5-11.3-8-22.2-13.5-32.6l19.8-27.7c8.4-11.8,7.1-27.9-3.2-38.1l-29.8-29.8 c-5.6-5.6-13-8.7-20.9-8.7c-6.2,0-12.1,1.9-17.1,5.5l-27.8,19.8c-10.8-5.7-22.1-10.4-33.8-13.9l-5.6-33.2 c-2.4-14.3-14.7-24.7-29.2-24.7h-42.1c-14.5,0-26.8,10.4-29.2,24.7l-5.8,34c-11.2,3.5-22.1,8.1-32.5,13.7l-27.5-19.8 c-5-3.6-11-5.5-17.2-5.5c-7.9,0-15.4,3.1-20.9,8.7l-29.9,29.8c-10.2,10.2-11.6,26.3-3.2,38.1l20,28.1 c-5.5,10.5-9.9,21.4-13.3,32.7l-33.2,5.6c-14.3,2.4-24.7,14.7-24.7,29.2v42.1c0,14.5,10.4,26.8,24.7,29.2l34,5.8 c3.5,11.2,8.1,22.1,13.7,32.5l-19.7,27.4c-8.4,11.8-7.1,27.9,3.2,38.1l29.8,29.8c5.6,5.6,13,8.7,20.9,8.7c6.2,0,12.1-1.9,17.1-5.5 l28.1-20c10.1,5.3,20.7,9.6,31.6,13l5.6,33.6c2.4,14.3,14.7,24.7,29.2,24.7h42.2c14.5,0,26.8-10.4,29.2-24.7l5.7-33.6 c11.3-3.5,22.2-8,32.6-13.5l27.7,19.8c5,3.6,11,5.5,17.2,5.5l0,0c7.9,0,15.3-3.1,20.9-8.7l29.8-29.8c10.2-10.2,11.6-26.3,3.2-38.1 l-19.8-27.8c5.5-10.5,10.1-21.4,13.5-32.6l33.6-5.6c14.3-2.4,24.7-14.7,24.7-29.2v-42.1 C478.9,203.801,468.5,191.501,454.2,189.101z M451.9,260.401c0,1.3-0.9,2.4-2.2,2.6l-42,7c-5.3,0.9-9.5,4.8-10.8,9.9 c-3.8,14.7-9.6,28.8-17.4,41.9c-2.7,4.6-2.5,10.3,0.6,14.7l24.7,34.8c0.7,1,0.6,2.5-0.3,3.4l-29.8,29.8c-0.7,0.7-1.4,0.8-1.9,0.8 c-0.6,0-1.1-0.2-1.5-0.5l-34.7-24.7c-4.3-3.1-10.1-3.3-14.7-0.6c-13.1,7.8-27.2,13.6-41.9,17.4c-5.2,1.3-9.1,5.6-9.9,10.8l-7.1,42 c-0.2,1.3-1.3,2.2-2.6,2.2h-42.1c-1.3,0-2.4-0.9-2.6-2.2l-7-42c-0.9-5.3-4.8-9.5-9.9-10.8c-14.3-3.7-28.1-9.4-41-16.8 c-2.1-1.2-4.5-1.8-6.8-1.8c-2.7,0-5.5,0.8-7.8,2.5l-35,24.9c-0.5,0.3-1,0.5-1.5,0.5c-0.4,0-1.2-0.1-1.9-0.8l-29.8-29.8 c-0.9-0.9-1-2.3-0.3-3.4l24.6-34.5c3.1-4.4,3.3-10.2,0.6-14.8c-7.8-13-13.8-27.1-17.6-41.8c-1.4-5.1-5.6-9-10.8-9.9l-42.3-7.2 c-1.3-0.2-2.2-1.3-2.2-2.6v-42.1c0-1.3,0.9-2.4,2.2-2.6l41.7-7c5.3-0.9,9.6-4.8,10.9-10c3.7-14.7,9.4-28.9,17.1-42 c2.7-4.6,2.4-10.3-0.7-14.6l-24.9-35c-0.7-1-0.6-2.5,0.3-3.4l29.8-29.8c0.7-0.7,1.4-0.8,1.9-0.8c0.6,0,1.1,0.2,1.5,0.5l34.5,24.6 c4.4,3.1,10.2,3.3,14.8,0.6c13-7.8,27.1-13.8,41.8-17.6c5.1-1.4,9-5.6,9.9-10.8l7.2-42.3c0.2-1.3,1.3-2.2,2.6-2.2h42.1 c1.3,0,2.4,0.9,2.6,2.2l7,41.7c0.9,5.3,4.8,9.6,10,10.9c15.1,3.8,29.5,9.7,42.9,17.6c4.6,2.7,10.3,2.5,14.7-0.6l34.5-24.8 c0.5-0.3,1-0.5,1.5-0.5c0.4,0,1.2,0.1,1.9,0.8l29.8,29.8c0.9,0.9,1,2.3,0.3,3.4l-24.7,34.7c-3.1,4.3-3.3,10.1-0.6,14.7 c7.8,13.1,13.6,27.2,17.4,41.9c1.3,5.2,5.6,9.1,10.8,9.9l42,7.1c1.3,0.2,2.2,1.3,2.2,2.6v42.1H451.9z" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M239.4,136.001c-57,0-103.3,46.3-103.3,103.3s46.3,103.3,103.3,103.3s103.3-46.3,103.3-103.3S296.4,136.001,239.4,136.001 z M239.4,315.601c-42.1,0-76.3-34.2-76.3-76.3s34.2-76.3,76.3-76.3s76.3,34.2,76.3,76.3S281.5,315.601,239.4,315.601z" })
-    ] }) }) });
-  };
-  var Header = (props) => {
-    const {
-      NetMessageCount = 0,
-      EchoMessageCount = 0,
-      FileCount = 0
-    } = useSelector((state) => state.summary);
-    const items = [
-      {
-        name: "Home",
-        path: "/"
-      },
-      //        {
-      //            name: 'Netmail',
-      //            path: '/netmail',
-      //            itemCount: NetMessageCount,
-      //        },
-      {
-        name: "Echomail",
-        path: "/echomail",
-        itemCount: EchoMessageCount
-      }
-      //        {
-      //            name: 'Files',
-      //            path: '/files',
-      //            itemCount: FileCount,
-      //        },
-      //        {
-      //            name: 'Service',
-      //            path: '/service',
-      //        },
-      //        {
-      //            name: 'People',
-      //        },
-      //        {
-      //            name: 'Draft',
-      //        }
-    ];
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "Header", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "HeaderGroup", children: items.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "HeaderItem", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "HeaderLabel", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, { to: item.path, children: item.name }) }),
-        item.itemCount ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-          " ",
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "badge", children: item.itemCount })
-        ] }) : null
-      ] }, index)) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "HeaderGroup", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "HeaderItem HeaderIcon", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, { to: "/setup", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Settings, { size: 20 }) }) }) })
-    ] });
-  };
-
   // src/Hotkey.tsx
   var handlers = [];
   var userHandler = (event) => {
@@ -22717,11 +22660,16 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   }
 
   // src/pages/Welcome.tsx
-  var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
   var Welcome = () => {
+    const navigate = useNavigate();
     (0, import_react.useEffect)(() => {
       const removeHotkeys = useInput((event) => {
-        console.log(`Welcome event: ${event.key}`);
+        if (event.key === "Escape") {
+          event.preventDefault();
+          event.stopPropagation();
+          navigate("/echo");
+        }
       });
       return () => {
         removeHotkeys();
@@ -22735,32 +22683,80 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       "Tommi Koivula",
       "Rudi Timmermans"
     ];
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Header, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "container", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("img", { src: "/static/Dog_1_2_19.png", className: "welcome-img" }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { style: { paddingBottom: "32px" }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { style: { paddingBottom: "8px" }, className: "welcome-header", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "Golden point" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { style: { textAlign: "center" }, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "Version 1.2.19" }) })
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { style: { paddingBottom: "32px" }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { style: { paddingBottom: "8px" }, className: "welcome-community", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "User Group Community" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { style: { textAlign: "center" }, className: "welcome-community-list", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "https://t.me/golden_point_community", className: "welcome-community-link", children: "https://t.me/golden_point_community" }) })
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { style: { paddingBottom: "32px" }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { style: { paddingBottom: "8px" }, className: "welcome-source", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "Source code and developing" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "https://github.com/vit1251/golden", className: "welcome-source-link", children: "https://github.com/vit1251/golden" })
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { style: { paddingBottom: "32px" }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { style: { paddingBottom: "8px" }, className: "welcome-contributor-header", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: "Contributors" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { style: { textAlign: "center" }, className: "welcome-contributor-list", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: contributors.join(", ") }) })
-        ] })
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "container", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { src: "/static/Dog_1_2_19.png", className: "welcome-img" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { paddingBottom: "32px" }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { paddingBottom: "8px" }, className: "welcome-header", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Golden point" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { textAlign: "center" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Version 1.2.19" }) })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { paddingBottom: "32px" }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { paddingBottom: "8px" }, className: "welcome-community", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "User Group Community" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { textAlign: "center" }, className: "welcome-community-list", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", { href: "https://t.me/golden_point_community", className: "welcome-community-link", children: "https://t.me/golden_point_community" }) })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { paddingBottom: "32px" }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { paddingBottom: "8px" }, className: "welcome-source", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Source code and developing" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", { href: "https://github.com/vit1251/golden", className: "welcome-source-link", children: "https://github.com/vit1251/golden" })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { style: { paddingBottom: "32px" }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { paddingBottom: "8px" }, className: "welcome-contributor-header", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Contributors" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { textAlign: "center" }, className: "welcome-contributor-list", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: contributors.join(", ") }) })
       ] })
-    ] });
+    ] }) });
   };
 
   // src/pages/echomail/EchoIndex.tsx
   var import_react2 = __toESM(require_react(), 1);
+
+  // src/common/Header.tsx
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
+  var Header = () => {
+    const {
+      NetMessageCount = 0,
+      EchoMessageCount = 0,
+      FileCount = 0
+    } = useSelector((state) => state.summary);
+    const items = [
+      {
+        name: "\u0413\u043B\u0430\u0432\u043D\u0430\u044F",
+        path: "/"
+      },
+      {
+        name: "\u041B\u0438\u0447\u043D\u044B\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F",
+        path: "/netmail",
+        itemCount: NetMessageCount
+      },
+      {
+        name: "\u0422\u0435\u043B\u0435\u043A\u043E\u043D\u0444\u0435\u0440\u0435\u043D\u0446\u0438\u0438",
+        path: "/echo",
+        itemCount: EchoMessageCount
+      },
+      {
+        name: "\u0424\u0430\u0439\u043B\u044B",
+        path: "/files",
+        itemCount: FileCount
+      },
+      {
+        name: "\u041E\u0431\u0441\u043B\u0443\u0436\u0438\u0432\u0430\u043D\u0438\u0435",
+        path: "/service"
+      },
+      {
+        name: "\u041B\u044E\u0434\u0438"
+      },
+      {
+        name: "\u0427\u0435\u0440\u043D\u043E\u0432\u0438\u043A\u0438"
+      }
+    ];
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "Header", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "HeaderGroup", children: items.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "HeaderItem", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "HeaderLabel", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Link, { to: item.path ?? "#", children: item.name }) }),
+        item.itemCount ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
+          " ",
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "badge", children: item.itemCount })
+        ] }) : null
+      ] }, index)) }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "HeaderGroup", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "HeaderItem HeaderIcon", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Link, { to: "/setup", children: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438" }) }) })
+    ] });
+  };
 
   // node_modules/redux/dist/redux.mjs
   var $$observable = /* @__PURE__ */ (() => typeof Symbol === "function" && Symbol.observable || "@@observable")();
@@ -22995,10 +22991,14 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         messages: headers
       };
     } else if (action.type === "ECHO_MSG_VIEW") {
-      const { message = {} } = action;
+      const { area = {}, echo = {}, body = "" } = action;
       return {
         ...state,
-        message
+        view: {
+          area,
+          echo,
+          body
+        }
       };
     } else if (action.type === "SUMMARY") {
       const {
@@ -23089,10 +23089,11 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       console.log(`\u041E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u043C \u043F\u0440\u0435\u0434\u0432\u0430\u0440\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u043F\u0440\u043E\u0441\u043C\u043E\u0442\u0440`);
     };
     return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "row", onClick: () => handleClick(record), onDoubleClick: () => handleDoubleClick(record), children: columns.map((column) => {
-      const { className = "", key, render } = column;
+      const { className = "", key, styles, render } = column;
       const { [key]: raw = "" } = record;
-      const value = render ? render(record) : raw;
-      return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className, children: value });
+      const value = render ? render(record) : `${raw}`;
+      const userStyle = styles ? styles(record) : {};
+      return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { style: userStyle, className, children: value });
     }) });
   };
   var Rows = ({ records, columns, onRowLink }) => {
@@ -23121,18 +23122,18 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
           Rows,
           {
-            onRowLink: (row) => `/echomail/${row.area_index}`,
+            onRowLink: (row) => `/echo/${row.area_index}`,
             columns: [
               { className: "rowName", key: "name" },
               { className: "rowMarker", render: (row) => {
                 const { new_message_count = 0 } = row;
-                const value = new_message_count > 0 ? "\u2022" : null;
+                const value = new_message_count > 0 ? "\u2022" : "";
                 return value;
               } },
               { className: "rowSummary", key: "summary" },
               { className: "rowCounter", render: (row) => {
                 const { new_message_count = 0 } = row;
-                const value = new_message_count > 0 ? new_message_count : null;
+                const value = new_message_count > 0 ? `${new_message_count}` : "";
                 return value;
               } }
             ],
@@ -23145,6 +23146,37 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
 
   // src/pages/echomail/EchoMsgIndex.tsx
   var import_react3 = __toESM(require_react(), 1);
+
+  // src/usils.ts
+  function stringUpper(str) {
+    return str.toUpperCase();
+  }
+  function makeShort(str) {
+    const parts = str.split(" ");
+    const chars = [];
+    for (const part of parts) {
+      if (part.length > 0) {
+        chars.push(stringUpper(part[0]));
+      }
+    }
+    return chars.join("");
+  }
+  function stringToHexColor(input) {
+    let hash = 0;
+    for (let i = 0; i < input.length; i++) {
+      hash = input.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const r = (hash & 16711680) >> 16;
+    const g = (hash & 65280) >> 8;
+    const b = hash & 255;
+    const toHex = (value) => {
+      const hex = value.toString(16);
+      return hex.length === 1 ? "0" + hex : hex;
+    };
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  }
+
+  // src/pages/echomail/EchoMsgIndex.tsx
   var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
   var EchoMsgIndex = () => {
     const navigate = useNavigate();
@@ -23175,10 +23207,10 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       console.log(`handlePrevMessage...`);
     };
     const handleAreaIndex = () => {
-      navigate(`/echomail`);
+      navigate(`/echo`);
     };
     const handleCreateMessage = () => {
-      navigate(`/echomail/${echoTag}/create`);
+      navigate(`/echo/${echoTag}/create`);
     };
     return /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_jsx_runtime5.Fragment, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Header, {}),
@@ -23188,15 +23220,23 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
           Rows,
           {
             onRowLink: (row) => {
-              const { hash = "" } = row;
-              return `/echomail/${echoTag}/${hash}/view`;
+              const { hash } = row;
+              if (hash) {
+                return `/echo/${echoTag}/${hash}/view`;
+              } else {
+                return `#`;
+              }
             },
             columns: [
-              { className: "rowUserpic", key: "" },
+              { className: "rowUserpic", styles: (row) => {
+                return {
+                  backgroundColor: stringToHexColor(`${row.from}`)
+                };
+              }, render: (row) => makeShort(row.from) },
               { className: "rowFrom", key: "from" },
               { className: "rowMarker", render: (row) => {
                 const { view_count = 0 } = row;
-                const value = view_count === 0 ? "\u2022" : null;
+                const value = view_count === 0 ? "\u2022" : "";
                 return value;
               } },
               { className: "rowSubject", key: "subject" },
@@ -23235,7 +23275,8 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     } else if (lineEnding === "mac") {
       return content.split(/\r/);
     } else {
-      return [content];
+      console.log(`\u041F\u043E\u0434\u043E\u0437\u0440\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0435 \u0441\u043E\u0434\u0435\u0440\u0436\u0438\u043C\u043E\u0435 "${JSON.stringify(content)}"`);
+      return [content ?? ""];
     }
   }
   var STATE_START = 0;
@@ -23341,7 +23382,11 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     const rowHeight = 14 * numberLine;
     return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: colorClass.join(" "), style: { height: `${rowHeight}pt` }, children: is_quote ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Quoting, { who, qp, msg }) : value });
   };
-  var Message = ({ body }) => {
+  var Message = () => {
+    const view = useSelector((state2) => state2.view) ?? {};
+    const { body, area, echo } = view;
+    const { echoTag, msgId } = useParams();
+    console.log(`echoTag = ${echoTag} msgId = ${msgId}`);
     const [state, setState] = (0, import_react4.useState)({
       records: [],
       maxLine: 0,
@@ -23405,7 +23450,31 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         removeHotkeys();
       };
     }, []);
-    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_jsx_runtime6.Fragment, { children: state.records.map((row, index) => /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Line, { active: index === state.line, index, value: row }, index)) });
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_jsx_runtime6.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "echo-msg-view-header-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("table", { className: "echo-msg-view-header", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tbody", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tr", { className: "", title: "", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: "Area:" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: area?.name ?? "-" }) })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tr", { className: "", title: "", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: "From:" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: echo?.from ?? "-" }) })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tr", { className: "", title: "", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: "To:" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: echo?.to ?? "-" }) })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tr", { className: "", title: "", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: "Subject:" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: echo?.subject ?? "-" }) })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tr", { className: "", title: "", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: "Date:" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: echo?.date ?? "-" }) })
+        ] })
+      ] }) }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "echo-msg-view-body", children: state.records.map((row, index) => /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Line, { active: index === state.line, index, value: row }, index)) })
+    ] });
   };
 
   // src/pages/echomail/EchoMsgView.tsx
@@ -23413,7 +23482,6 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   var EchoMsgView = () => {
     const navigate = useNavigate();
     const messages = useSelector((state) => state.messages);
-    const { body } = useSelector((state) => state.message);
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
     (0, import_react5.useEffect)(() => {
@@ -23425,7 +23493,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     }, [echoTag, msgId]);
     const handleMsgIndex = () => {
       console.log(`Back on message index..`);
-      navigate(`/echomail/${echoTag}`);
+      navigate(`/echo/${echoTag}`);
     };
     const handleMsgRemove = () => {
       eventBus.invoke({
@@ -23433,14 +23501,14 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         echoTag,
         msgId
       });
-      navigate(`/echomail/${echoTag}`);
+      navigate(`/echo/${echoTag}`);
     };
     const handlePrevMessage = () => {
       const msgIndex = messages.findIndex((msg) => msg.hash === msgId);
       console.log(`Your index ${msgIndex}`);
       if (msgIndex - 1 >= 0) {
         const { hash: prevHash } = messages[msgIndex - 1];
-        navigate(`/echomail/${echoTag}/${prevHash}/view`);
+        navigate(`/echo/${echoTag}/${prevHash}/view`);
       } else {
       }
     };
@@ -23449,7 +23517,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       console.log(`Your index ${msgIndex}`);
       if (msgIndex + 1 < messages.length) {
         const { hash: nextHash } = messages[msgIndex + 1];
-        navigate(`/echomail/${echoTag}/${nextHash}/view`);
+        navigate(`/echo/${echoTag}/${nextHash}/view`);
       } else {
       }
     };
@@ -23457,7 +23525,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Header, {}),
       /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "container", children: [
         /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("h1", { children: "EchoMailView" }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Message, { body })
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Message, {})
       ] })
     ] });
   };
@@ -23497,7 +23565,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   var NetmailIndex = () => {
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
-    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_jsx_runtime12.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Header, {}) });
+    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_jsx_runtime12.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("h1", { children: "Not yet implemented." }) });
   };
 
   // src/pages/netmail/NetmailView.tsx
@@ -23514,42 +23582,51 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_jsx_runtime14.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Header, {}) });
   };
 
-  // src/pages/App.tsx
+  // src/pages/layout/BaseLayout.tsx
   var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
+  var BaseLayout = ({ content }) => {
+    return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Header, {}),
+      content
+    ] });
+  };
+
+  // src/pages/App.tsx
+  var import_jsx_runtime16 = __toESM(require_jsx_runtime(), 1);
   var App = () => {
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(HashRouter, { children: /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(Routes, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Welcome, {}) }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(Route, { path: "netmail", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(NetmailIndex, {}) }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { path: ":msgId", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(NetmailView, {}) }) })
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(HashRouter, { children: /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Routes, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(BaseLayout, { content: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Welcome, {}) }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Route, { path: "netmail", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(BaseLayout, { content: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(NetmailIndex, {}) }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: ":msgId", children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(NetmailView, {}) }) })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(Route, { path: "echomail", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(EchoIndex, {}) }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(Route, { path: ":echoTag", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(EchoMsgIndex, {}) }),
-          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { path: "create", element: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(EchoMsgCompose, {}) }),
-          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { path: ":msgId", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(EchoMsgView, {}) }) })
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Route, { path: "echo", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(EchoIndex, {}) }),
+        /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Route, { path: ":echoTag", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(EchoMsgIndex, {}) }),
+          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "create", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(EchoMsgCompose, {}) }),
+          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: ":msgId", children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(EchoMsgView, {}) }) })
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(Route, { path: "files", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(FileIndex, {}) }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(Route, { path: ":echoTag", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { path: "tics", element: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(FileTicIndex, {}) }),
-          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { path: ":fileId", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(FileTicView, {}) }) })
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Route, { path: "files", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(FileIndex, {}) }),
+        /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Route, { path: ":echoTag", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "tics", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(FileTicIndex, {}) }),
+          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: ":fileId", children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(FileTicView, {}) }) })
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Route, { path: "setup", element: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Setup, {}) })
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "setup", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Setup, {}) })
     ] }) });
   };
 
   // src/main.tsx
-  var import_jsx_runtime16 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime17 = __toESM(require_jsx_runtime(), 1);
   var rootElement = "root";
   var container = document.getElementById(rootElement);
   if (container) {
     const root = (0, import_client.createRoot)(container);
     root.render(
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Provider_default, { store, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(App, {}) })
+      /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Provider_default, { store, children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(App, {}) })
     );
   } else {
     console.log(`\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043D\u0430\u0439\u0442\u0438 \u043A\u043E\u0440\u043D\u0435\u0432\u043E\u0439 \u044D\u043B\u0435\u043C\u0435\u043D\u0442 "${rootElement}".`);

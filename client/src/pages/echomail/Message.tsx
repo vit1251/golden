@@ -3,17 +3,20 @@ import { useEffect, useState } from 'react';
 
 import './Message.css';
 import { useInput } from '../../Hotkey';
+import { useParams } from 'react-router';
+import { Area, Message as MessageModel } from './EchoMsgIndex';
+import { useSelector } from 'react-redux';
 
 function detectLineEnding(content: string): "win" | "unix" | "mac" | undefined {
     if (/\r\n/.test(content)) {
-      return 'win';
+        return 'win';
     } else if (/\n/.test(content)) {
-      return 'unix';
+        return 'unix';
     } else if (/\r/.test(content)) {
-      return 'mac';
+        return 'mac';
     }
     return undefined;
-  }
+}
 
 /**
  * Разбираем содержимое сообщения на строки
@@ -31,7 +34,8 @@ function parseLines(content: string): string[] {
     } else if (lineEnding === 'mac') {
         return content.split(/\r/);
     } else {
-        return [content];
+        console.log(`Подозрительное содержимое "${JSON.stringify(content)}"`);
+        return [content ?? ''];
     }
 };
 
@@ -162,12 +166,31 @@ const Line = ({ value, index, active }: { value: string, index: number, active: 
 
     return (
         <div className={colorClass.join(' ')} style={{ height: `${rowHeight}pt` }}>
-            { is_quote ? <Quoting who={who} qp={qp} msg={msg} /> : value }
+            {is_quote ? <Quoting who={who} qp={qp} msg={msg} /> : value}
         </div>
     );
 };
 
-export const Message = ({ body }: { body: string }) => {
+export interface MsgView {
+    area: {
+        name: string,
+    },
+    echo: {
+        from: string, /* Пользователь отправивший сообщение */
+        to: string,   /* Пользователь получивший сообщение */
+        subject: string, /* Тема сообщения */
+        date: string,   /* Дата сообщения */
+    },
+    body: string,
+}
+
+export const Message = () => {
+
+    const view: MsgView = useSelector((state: any) => state.view) ?? {};
+    const { body, area, echo } = view;
+
+    const { echoTag, msgId } = useParams();
+    console.log(`echoTag = ${echoTag} msgId = ${msgId}`);
 
     const [state, setState] = useState<{ records: string[], maxLine: number, line: number }>({
         records: [],
@@ -186,11 +209,11 @@ export const Message = ({ body }: { body: string }) => {
         const removeHandler = useInput((event: KeyboardEvent) => {
             if (event.key === 'ArrowLeft') {
                 handlePreviousMessage();
-                event.stopPropagation(); 
+                event.stopPropagation();
             }
             if (event.key === 'ArrowRight') {
                 handleNextMessage();
-                event.stopPropagation(); 
+                event.stopPropagation();
             }
         });
         return () => {
@@ -242,7 +265,45 @@ export const Message = ({ body }: { body: string }) => {
 
     return (
         <>
-            {state.records.map((row, index) => (<Line key={index} active={index === state.line} index={index} value={row} />))}
+            <div className="echo-msg-view-header-wrapper">
+                <table className="echo-msg-view-header">
+                    <tbody><tr className="" title="">
+                        <td className="echo-msg-view-header-name">
+                            <span className="">Area:</span>
+                        </td>
+                        <td className="echo-msg-view-header-value">
+                            <span className="">{ area?.name ?? '-' }</span>
+                        </td>
+                    </tr>
+                        <tr className="" title="">
+                            <td className="echo-msg-view-header-name">
+                                <span className="">From:</span></td>
+                            <td className="echo-msg-view-header-value">
+                                <span className="">{ echo?.from ?? '-' }</span></td>
+                        </tr>
+                        <tr className="" title="">
+                            <td className="echo-msg-view-header-name">
+                                <span className="">To:</span></td>
+                            <td className="echo-msg-view-header-value">
+                                <span className="">{ echo?.to ?? '-' }</span></td>
+                        </tr>
+                        <tr className="" title="">
+                            <td className="echo-msg-view-header-name">
+                                <span className="">Subject:</span></td>
+                            <td className="echo-msg-view-header-value">
+                                <span className="">{ echo?.subject ?? '-' }</span></td>
+                        </tr>
+                        <tr className="" title="">
+                            <td className="echo-msg-view-header-name">
+                                <span className="">Date:</span></td>
+                            <td className="echo-msg-view-header-value">
+                                <span className="">{ echo?.date ?? '-' }</span></td>
+                        </tr>
+                    </tbody></table>
+            </div>
+            <div className="echo-msg-view-body">
+                {state.records.map((row, index) => (<Line key={index} active={index === state.line} index={index} value={row} />))}
+            </div>
         </>
     );
 }

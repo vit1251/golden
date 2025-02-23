@@ -8,6 +8,25 @@ import { eventBus } from '../../EventBus';
 import { Rows } from './Row';
 
 import "./EchoMsgIndex.css";
+import { makeShort, stringToHexColor } from "../../usils";
+
+export interface Area {
+    name: string                   /* Имя конференции. Пример "RU.ANEKDOT" */
+    summary: string; 
+    message_count: number;
+    new_message_count: number;
+    order: number;
+    area_index: string;
+}
+
+export interface Message {
+    from: string;
+    to: string;
+    view_count: number;
+    subject: string;
+    date: string;
+    hash: string;
+}
 
 export const EchoMsgIndex = () => {
 
@@ -25,7 +44,7 @@ export const EchoMsgIndex = () => {
     const { echoTag } = useParams();
     console.log(`echoTag = `, echoTag);
 
-    const area = areas.find((area: any) => area.area_index === echoTag);
+    const area: Area = areas.find((area: Area) => area.area_index === echoTag);
     console.log(`area = `, area);
 
     useEffect(() => {
@@ -46,10 +65,10 @@ export const EchoMsgIndex = () => {
         console.log(`handlePrevMessage...`);
     };
     const handleAreaIndex = () => {
-        navigate(`/echomail`);
+        navigate(`/echo`);
     };
     const handleCreateMessage = () => {
-        navigate(`/echomail/${echoTag}/create`);
+        navigate(`/echo/${echoTag}/create`);
     };
 
     return (
@@ -60,17 +79,25 @@ export const EchoMsgIndex = () => {
             <div className="container">
                 <h1>Echoarea</h1>
 
-                <Rows
-                    onRowLink={(row: any) => {
-                        const { hash = '' } = row;
-                        return `/echomail/${echoTag}/${hash}/view`;
+                <Rows<Message>
+                    onRowLink={(row: Message): string => {
+                        const { hash } = row;
+                        if (hash) {
+                            return `/echo/${echoTag}/${hash}/view`;
+                        } else {
+                            return `#`;
+                        }
                     }}
                     columns={[
-                       {className: 'rowUserpic', key: ''},
+                       {className: 'rowUserpic', styles: (row: Message) => {
+                            return {
+                                backgroundColor: stringToHexColor(`${row.from}`),
+                            }
+                       }, render: (row: Message): string => makeShort(row.from)},
                        {className: 'rowFrom', key: 'from'},
-                       {className: 'rowMarker', render: (row: any) => {
+                       {className: 'rowMarker', render: (row: Message): string => {
                            const { view_count = 0 } = row;
-                           const value = view_count === 0 ? '•' : null;
+                           const value = view_count === 0 ? '•' : '';
                            return value;
                        }},
                        {className: 'rowSubject', key: 'subject'},

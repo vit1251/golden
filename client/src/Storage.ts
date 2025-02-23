@@ -24,10 +24,14 @@ const reducer = (state = initialState, action: any) => {
             messages: headers,
         };
     } else if (action.type === 'ECHO_MSG_VIEW') {
-        const { message = {} } = action;
+        const { area = {}, echo = {}, body = '' } = action;
         return {
             ...state,
-            message,
+            view: {
+                area,
+                echo,
+                body,
+            },
         };
     } else if (action.type === 'SUMMARY') {
         const {

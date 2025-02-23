@@ -12,7 +12,6 @@ export const EchoMsgView = () => {
     const navigate = useNavigate();
 
     const messages = useSelector((state: any) => state.messages);
-    const { body } = useSelector((state: any) => state.message);
 
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
@@ -27,7 +26,7 @@ export const EchoMsgView = () => {
 
     const handleMsgIndex = () => {
         console.log(`Back on message index..`);
-        navigate(`/echomail/${echoTag}`);
+        navigate(`/echo/${echoTag}`);
     };
 
     const handleMsgRemove = () => {
@@ -38,7 +37,7 @@ export const EchoMsgView = () => {
             msgId,
         });
         /* Step 2. Message index */
-        navigate(`/echomail/${echoTag}`);
+        navigate(`/echo/${echoTag}`);
     };
 
     const handlePrevMessage = () => {
@@ -46,7 +45,7 @@ export const EchoMsgView = () => {
         console.log(`Your index ${msgIndex}`);
         if ((msgIndex - 1) >= 0) {
             const { hash: prevHash } = messages[msgIndex - 1];
-            navigate(`/echomail/${echoTag}/${prevHash}/view`);
+            navigate(`/echo/${echoTag}/${prevHash}/view`);
         } else {
             // TODO - play blump...
         }
@@ -56,7 +55,7 @@ export const EchoMsgView = () => {
         console.log(`Your index ${msgIndex}`);
         if ((msgIndex + 1) < messages.length) {
             const { hash: nextHash } = messages[msgIndex + 1];
-            navigate(`/echomail/${echoTag}/${nextHash}/view`);
+            navigate(`/echo/${echoTag}/${nextHash}/view`);
         } else {
             // TODO - play blump...
         }
@@ -69,7 +68,7 @@ export const EchoMsgView = () => {
             <div className="container">
                 <h1>EchoMailView</h1>
 
-                <Message body={body} />
+                <Message />
 
             </div>
 

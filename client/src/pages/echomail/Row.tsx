@@ -2,40 +2,51 @@
 import { useNavigate } from "react-router";
 
 import "./Row.css";
+import { Area } from "./EchoMsgIndex";
+import { ReactElement } from "react";
+import { stringToHexColor } from "../../usils";
 
-export const Row = ({ record, columns, onRowLink }: { record: any, columns: any, onRowLink: any } ) => {
+export interface Column<T> {
+    className: string,
+    key?: keyof T,
+    styles?: (row: T) => {} | undefined,
+    render?: (row: T) => number | string | ReactElement,
+}
+
+export const Row = <T extends object>({ record, columns, onRowLink }: { record: T, columns: Column<T>[], onRowLink: any } ) => {
 
     const navigate = useNavigate();
 
-    const handleDoubleClick = (row: any) => {
+    const handleDoubleClick = (row: T) => {
         console.log(`Открываем полноэкранный просмотр`);
         const linkAddr: string = onRowLink(row);
         navigate(linkAddr);
     };
 
-    const handleClick = (row: any) => {
+    const handleClick = (row: T) => {
         console.log(`Открываем предварительный просмотр`);
     };
 
     return (
         <div className="row" onClick={() => handleClick(record)} onDoubleClick={() => handleDoubleClick(record)}>
-            {columns.map((column: { className: string, key: string, render: any }) => {
-                const { className = '', key, render } = column;
+            {columns.map((column: Column<T>) => {
+                const { className = '', key, styles, render } = column;
                 const { [key]: raw = '' } = record;
-                const value = render ? render(record) : raw;
+                const value = render ? render(record) : `${raw}`;
+                const userStyle = styles ? styles(record) : {};
                 return (
-                    <div className={className}>{value}</div>
+                    <div style={userStyle} className={className}>{value}</div>
                 );
             })}
         </div>
     );
 };
 
-export const Rows = ({ records, columns, onRowLink }: { records: any[], columns: any[], onRowLink: any } ) => {
+export const Rows = <T extends object>({ records, columns, onRowLink }: { records: T[], columns: Column<T>[], onRowLink: any } ) => {
     return (
         <>
             <div className="rowContainer">
-               {records.map((record: any) => (<Row record={record} columns={columns} onRowLink={onRowLink} />))}
+               {records.map((record: T) => (<Row record={record} columns={columns} onRowLink={onRowLink} />))}
             </div>
         </>
     );

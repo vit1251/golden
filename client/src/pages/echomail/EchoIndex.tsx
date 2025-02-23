@@ -7,10 +7,11 @@ import { eventBus } from '../../EventBus';
 import { Rows } from './Row';
 
 import "./EchoIndex.css";
+import { Area } from './EchoMsgIndex';
 
 export const EchoIndex = () => {
 
-    const areas = useSelector((state: any) => state.areas) ?? [];
+    const areas: Area[] = useSelector((state: any) => state.areas) ?? [];
 
     useEffect(() => {
         /* Step 1. Ask echos */
@@ -34,19 +35,19 @@ export const EchoIndex = () => {
             <div className="container">
                 <h1>Echomail</h1>
 
-                <Rows
-                     onRowLink={(row: any) => `/echomail/${row.area_index}`}
+                <Rows<Area>
+                     onRowLink={(row: Area) => `/echo/${row.area_index}`}
                      columns={[
                         { className: "rowName", key: "name" },
-                        { className: "rowMarker", render: (row: any) => {
+                        { className: "rowMarker", render: (row: any): string => {
                             const { new_message_count = 0 } = row;
-                            const value = new_message_count > 0 ? '•' : null;
+                            const value = new_message_count > 0 ? '•' : '';
                             return value;
                         }},
                         { className: "rowSummary", key: "summary" },
-                        { className: "rowCounter", render: (row: any) => {
+                        { className: "rowCounter", render: (row: Area): string => {
                             const { new_message_count = 0 } = row;
-                            const value = new_message_count > 0 ? new_message_count : null;
+                            const value = new_message_count > 0 ? `${new_message_count}` : '';
                             return value;
                         }},
                      ]}
