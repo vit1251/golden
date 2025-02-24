@@ -178,11 +178,11 @@
 .rowQuote {
   padding-left: 16px;
 }
-.rowRed {
-  color: red;
+.rowEven {
+  color: rgb(0, 128, 0);
 }
-.rowGreen {
-  color: green;
+.rowOdd {
+  color: rgb(0, 128, 128);
 }
 
 /* src/themes/custom.css */

@@ -23714,9 +23714,9 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       return "";
     }
     if (counter % 2 === 0) {
-      return "rowRed";
+      return "rowOdd";
     } else {
-      return "rowGreen";
+      return "rowEven";
     }
   };
   var Quoting = ({ who, qp, msg }) => {

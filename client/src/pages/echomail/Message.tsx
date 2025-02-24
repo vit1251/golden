@@ -129,9 +129,9 @@ const makeClassNameByCounter = (counter: number) => {
         return '';
     }
     if (counter % 2 === 0) {
-        return 'rowRed';
+        return 'rowOdd';
     } else {
-        return 'rowGreen';
+        return 'rowEven';
     }
 
 };
