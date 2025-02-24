@@ -1,16 +1,4 @@
 
-.rowName {
-    width: 190px;
-    height: 38px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    flex-shrink: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
 
 .rowMarker {
     width: 20px;
@@ -39,7 +27,7 @@
     text-overflow: ellipsis;
 }
 
-.rowCounter {
+.rowMessageCount {
     height: 38px;
     width: 160px;
     flex-shrink: 0;
@@ -47,4 +35,28 @@
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
+}
+
+.rowMessageNewCount {
+    height: 38px;
+    width: 160px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.rowName {
+    margin-left: 16px;
+    width: 190px;
+    height: 38px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

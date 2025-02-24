@@ -31,22 +31,28 @@ export const EchoIndex = () => {
             <Rows<Area>
                 onRowLink={(row: Area) => `/echo/${row.area_index}`}
                 columns={[
-                    { className: "rowName", key: "name" },
                     {
                         className: "rowMarker", render: (row: any): string => {
                             const { new_message_count = 0 } = row;
-                            const value = new_message_count > 0 ? '•' : '';
+                            //const value = new_message_count > 0 ? '•' : '';
+                            const value = new_message_count > 0 ? '+' : '';
                             return value;
                         }
                     },
                     { className: "rowSummary", key: "summary" },
                     {
-                        className: "rowCounter", render: (row: Area): string => {
-                            const { new_message_count = 0 } = row;
-                            const value = new_message_count > 0 ? `${new_message_count}` : '';
-                            return value;
+                        className: "rowMessageCount", render: (row: Area): string => {
+                            const { message_count = 0 } = row;
+                            return `${message_count}`;
                         }
                     },
+                    {
+                        className: "rowMessageNewCount", render: (row: Area): string => {
+                            const { new_message_count = 0 } = row;
+                            return `${new_message_count}`;
+                        }
+                    },
+                    { className: "rowName", key: "name" },
                 ]}
                 records={areas} />
 

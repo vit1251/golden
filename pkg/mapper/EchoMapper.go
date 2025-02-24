@@ -375,7 +375,7 @@ func (self *EchoMapper) UpdateAreaMessageCounters(areas []Area) ([]Area, error) 
 			var area2Name string = area2.GetName()
 			if strings.EqualFold(areaName, area2Name) {
 				//log.Printf("area = '%+v' area2 = '%+v'", areaName, area2Name)
-				area.MessageCount = area2.MessageCount
+				area.SetMessageCount(area2.GetMessageCount())
 			}
 		}
 

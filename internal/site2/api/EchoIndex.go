@@ -52,7 +52,7 @@ func (self *EchoIndexAction) processRequest(req []byte) []byte {
 		na := echoIndexArea{}
 		na.Name = a.GetName()
 		na.Summary = a.GetSummary()
-		//    	    na.MessageCount = a.GetMessageCount()
+		na.MessageCount = a.GetMessageCount()
 		na.NewMessageCount = a.GetNewMessageCount()
 		na.Order = a.GetOrder()
 		na.AreaIndex = a.GetAreaIndex()

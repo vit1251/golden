@@ -23119,24 +23119,30 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         {
           onRowLink: (row) => `/echo/${row.area_index}`,
           columns: [
-            { className: "rowName", key: "name" },
             {
               className: "rowMarker",
               render: (row) => {
                 const { new_message_count = 0 } = row;
-                const value = new_message_count > 0 ? "\u2022" : "";
+                const value = new_message_count > 0 ? "+" : "";
                 return value;
               }
             },
             { className: "rowSummary", key: "summary" },
             {
-              className: "rowCounter",
+              className: "rowMessageCount",
+              render: (row) => {
+                const { message_count = 0 } = row;
+                return `${message_count}`;
+              }
+            },
+            {
+              className: "rowMessageNewCount",
               render: (row) => {
                 const { new_message_count = 0 } = row;
-                const value = new_message_count > 0 ? `${new_message_count}` : "";
-                return value;
+                return `${new_message_count}`;
               }
-            }
+            },
+            { className: "rowName", key: "name" }
           ],
           records: areas
         }
@@ -23897,7 +23903,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   var FileIndex = () => {
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
-    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_jsx_runtime10.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Header, {}) });
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("div", { children: "\u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C \u0441\u043F\u0438\u0441\u043E\u043A \u0444\u0430\u0439\u043B\u043E\u0432" });
   };
 
   // src/pages/files/FileTicIndex.tsx
@@ -26232,7 +26238,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(Route, { path: "files", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(FileIndex, {}) }),
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(BaseLayout, { content: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(FileIndex, {}) }) }),
         /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(Route, { path: ":echoTag", children: [
           /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: "tics", element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(FileTicIndex, {}) }),
           /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: ":fileId", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(FileTicView, {}) }) })

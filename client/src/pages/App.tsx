@@ -63,7 +63,7 @@ export const App = () => {
                 </Route>
                 
                 <Route path="files">
-                    <Route index element={<FileIndex />} />
+                    <Route index element={<BaseLayout content={<FileIndex />} />} />
                     <Route path=":echoTag">
                         <Route path="tics" element={<FileTicIndex />} />
                         <Route path=":fileId">

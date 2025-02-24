@@ -2,7 +2,6 @@
 .Header {
     background-color: var(--color-header-bg);
     color: var(--color-header-text);
-    padding: 16px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

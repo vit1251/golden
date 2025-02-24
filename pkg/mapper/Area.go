@@ -15,6 +15,14 @@ type Area struct {
 	areaIndex       string /* Area index             */
 }
 
+func (self *Area) GetMessageCount() int {
+	return self.MessageCount
+}
+
+func (self *Area) SetMessageCount(MessageCount int) {
+	self.MessageCount = MessageCount
+}
+
 func (self *Area) GetNewMessageCount() int {
 	return self.newMessageCount
 }
