@@ -1,5 +1,7 @@
 # Golden Point 1.x
 
+[![Go](https://github.com/vit1251/golden/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/vit1251/golden/actions/workflows/go.yml)
+
 ![Golden Point](/docs/images/GoldenPointMessage.png)
 
 Golden Point is a FidoNet (FTN) point package written with in Golang to provide a mailer, tosser and other related utilities.
