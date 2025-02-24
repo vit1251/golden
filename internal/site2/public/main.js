@@ -78,7 +78,7 @@
           try {
             testStringCoercion(value);
             var JSCompiler_inline_result = false;
-          } catch (e) {
+          } catch (e2) {
             JSCompiler_inline_result = true;
           }
           if (JSCompiler_inline_result) {
@@ -412,16 +412,16 @@
             if (isArrayImpl(node))
               for (var i = 0; i < node.length; i++) {
                 var child = node[i];
-                isValidElement2(child) && validateExplicitKey(child, parentType);
+                isValidElement3(child) && validateExplicitKey(child, parentType);
               }
-            else if (isValidElement2(node))
+            else if (isValidElement3(node))
               node._store && (node._store.validated = 1);
             else if (i = getIteratorFn(node), "function" === typeof i && i !== node.entries && (i = i.call(node), i !== node))
               for (; !(node = i.next()).done; )
-                isValidElement2(node.value) && validateExplicitKey(node.value, parentType);
+                isValidElement3(node.value) && validateExplicitKey(node.value, parentType);
           }
         }
-        function isValidElement2(object) {
+        function isValidElement3(object) {
           return "object" === typeof object && null !== object && object.$$typeof === REACT_ELEMENT_TYPE;
         }
         function validateExplicitKey(element, parentType) {
@@ -449,14 +449,14 @@
           info || (parentType = getComponentNameFromType(parentType)) && (info = "\n\nCheck the top-level render call using <" + parentType + ">.");
           return info;
         }
-        function escape(key) {
+        function escape2(key) {
           var escaperLookup = { "=": "=0", ":": "=2" };
           return "$" + key.replace(/[=:]/g, function(match) {
             return escaperLookup[match];
           });
         }
         function getElementKey(element, index) {
-          return "object" === typeof element && null !== element && null != element.key ? (checkKeyStringCoercion(element.key), escape("" + element.key)) : index.toString(36);
+          return "object" === typeof element && null !== element && null != element.key ? (checkKeyStringCoercion(element.key), escape2("" + element.key)) : index.toString(36);
         }
         function noop$1() {
         }
@@ -517,13 +517,13 @@
             var childKey = "" === nameSoFar ? "." + getElementKey(invokeCallback, 0) : nameSoFar;
             isArrayImpl(callback) ? (escapedPrefix = "", null != childKey && (escapedPrefix = childKey.replace(userProvidedKeyEscapeRegex, "$&/") + "/"), mapIntoArray(callback, array, escapedPrefix, "", function(c) {
               return c;
-            })) : null != callback && (isValidElement2(callback) && (null != callback.key && (invokeCallback && invokeCallback.key === callback.key || checkKeyStringCoercion(callback.key)), escapedPrefix = cloneAndReplaceKey(
+            })) : null != callback && (isValidElement3(callback) && (null != callback.key && (invokeCallback && invokeCallback.key === callback.key || checkKeyStringCoercion(callback.key)), escapedPrefix = cloneAndReplaceKey(
               callback,
               escapedPrefix + (null == callback.key || invokeCallback && invokeCallback.key === callback.key ? "" : ("" + callback.key).replace(
                 userProvidedKeyEscapeRegex,
                 "$&/"
               ) + "/") + childKey
-            ), "" !== nameSoFar && null != invokeCallback && isValidElement2(invokeCallback) && null == invokeCallback.key && invokeCallback._store && !invokeCallback._store.validated && (escapedPrefix._store.validated = 2), callback = escapedPrefix), array.push(callback));
+            ), "" !== nameSoFar && null != invokeCallback && isValidElement3(invokeCallback) && null == invokeCallback.key && invokeCallback._store && !invokeCallback._store.validated && (escapedPrefix._store.validated = 2), callback = escapedPrefix), array.push(callback));
             return 1;
           }
           invokeCallback = 0;
@@ -605,7 +605,7 @@
           );
           return dispatcher;
         }
-        function noop() {
+        function noop2() {
         }
         function enqueueTask(task) {
           if (null === enqueueTaskImpl)
@@ -786,7 +786,7 @@
             }) || [];
           },
           only: function(children) {
-            if (!isValidElement2(children))
+            if (!isValidElement3(children))
               throw Error(
                 "React.Children.only expected to receive a single React element child."
               );
@@ -1010,7 +1010,7 @@
           });
           return elementType;
         };
-        exports.isValidElement = isValidElement2;
+        exports.isValidElement = isValidElement3;
         exports.lazy = function(ctor) {
           return {
             $$typeof: REACT_LAZY_TYPE,
@@ -1049,7 +1049,7 @@
           try {
             var returnValue = scope(), onStartTransitionFinish = ReactSharedInternals.S;
             null !== onStartTransitionFinish && onStartTransitionFinish(currentTransition, returnValue);
-            "object" === typeof returnValue && null !== returnValue && "function" === typeof returnValue.then && returnValue.then(noop, reportGlobalError);
+            "object" === typeof returnValue && null !== returnValue && "function" === typeof returnValue.then && returnValue.then(noop2, reportGlobalError);
           } catch (error) {
             reportGlobalError(error);
           } finally {
@@ -1108,8 +1108,8 @@
         exports.useOptimistic = function(passthrough, reducer2) {
           return resolveDispatcher().useOptimistic(passthrough, reducer2);
         };
-        exports.useReducer = function(reducer2, initialArg, init) {
-          return resolveDispatcher().useReducer(reducer2, initialArg, init);
+        exports.useReducer = function(reducer2, initialArg, init2) {
+          return resolveDispatcher().useReducer(reducer2, initialArg, init2);
         };
         exports.useRef = function(initialValue) {
           return resolveDispatcher().useRef(initialValue);
@@ -1154,14 +1154,14 @@
           return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
         }
         "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-        var React14 = require_react(), objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore2 = React14.useSyncExternalStore, useRef7 = React14.useRef, useEffect12 = React14.useEffect, useMemo6 = React14.useMemo, useDebugValue2 = React14.useDebugValue;
+        var React14 = require_react(), objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore2 = React14.useSyncExternalStore, useRef8 = React14.useRef, useEffect13 = React14.useEffect, useMemo7 = React14.useMemo, useDebugValue2 = React14.useDebugValue;
         exports.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual) {
-          var instRef = useRef7(null);
+          var instRef = useRef8(null);
           if (null === instRef.current) {
             var inst = { hasValue: false, value: null };
             instRef.current = inst;
           } else inst = instRef.current;
-          instRef = useMemo6(
+          instRef = useMemo7(
             function() {
               function memoizedSelector(nextSnapshot) {
                 if (!hasMemo) {
@@ -1197,7 +1197,7 @@
             [getSnapshot, getServerSnapshot, selector, isEqual]
           );
           var value = useSyncExternalStore2(subscribe, instRef[0], instRef[1]);
-          useEffect12(
+          useEffect13(
             function() {
               inst.hasValue = true;
               inst.value = value;
@@ -1509,7 +1509,7 @@
     "node_modules/react-dom/cjs/react-dom.development.js"(exports) {
       "use strict";
       (function() {
-        function noop() {
+        function noop2() {
         }
         function testStringCoercion(value) {
           return "" + value;
@@ -1519,7 +1519,7 @@
           try {
             testStringCoercion(key);
             var JSCompiler_inline_result = false;
-          } catch (e) {
+          } catch (e2) {
             JSCompiler_inline_result = true;
           }
           JSCompiler_inline_result && (console.error(
@@ -1555,19 +1555,19 @@
         "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
         var React14 = require_react(), Internals = {
           d: {
-            f: noop,
+            f: noop2,
             r: function() {
               throw Error(
                 "Invalid form element. requestFormReset must be passed a form that was rendered by React."
               );
             },
-            D: noop,
-            C: noop,
-            L: noop,
-            m: noop,
-            X: noop,
-            S: noop,
-            M: noop
+            D: noop2,
+            C: noop2,
+            L: noop2,
+            m: noop2,
+            X: noop2,
+            S: noop2,
+            M: noop2
           },
           p: 0,
           findDOMNode: null
@@ -2396,7 +2396,7 @@
         function willCoercionThrow(value) {
           try {
             return testStringCoercion(value), false;
-          } catch (e) {
+          } catch (e2) {
             return true;
           }
         }
@@ -2778,9 +2778,9 @@
           throw Error("getNodeFromInstance: Invalid argument.");
         }
         function getResourcesFromRoot(root2) {
-          var resources = root2[internalRootNodeResourcesKey];
-          resources || (resources = root2[internalRootNodeResourcesKey] = { hoistableStyles: /* @__PURE__ */ new Map(), hoistableScripts: /* @__PURE__ */ new Map() });
-          return resources;
+          var resources2 = root2[internalRootNodeResourcesKey];
+          resources2 || (resources2 = root2[internalRootNodeResourcesKey] = { hoistableStyles: /* @__PURE__ */ new Map(), hoistableScripts: /* @__PURE__ */ new Map() });
+          return resources2;
         }
         function markNodeAsHoistable(node) {
           node[internalHoistableMarker] = true;
@@ -2919,11 +2919,11 @@
           checkFormFieldValueStringCoercion(node[valueField]);
           var currentValue = "" + node[valueField];
           if (!node.hasOwnProperty(valueField) && "undefined" !== typeof descriptor && "function" === typeof descriptor.get && "function" === typeof descriptor.set) {
-            var get = descriptor.get, set = descriptor.set;
+            var get2 = descriptor.get, set = descriptor.set;
             Object.defineProperty(node, valueField, {
               configurable: true,
               get: function() {
-                return get.call(this);
+                return get2.call(this);
               },
               set: function(value) {
                 checkFormFieldValueStringCoercion(value);
@@ -2967,7 +2967,7 @@
           if ("undefined" === typeof doc) return null;
           try {
             return doc.activeElement || doc.body;
-          } catch (e) {
+          } catch (e2) {
             return doc.body;
           }
         }
@@ -5937,7 +5937,7 @@
           null === (null === workInProgressHook ? index.memoizedState : workInProgressHook.next) && (index = index.alternate, ReactSharedInternals.H = null !== index && null !== index.memoizedState ? HooksDispatcherOnUpdateInDEV : HooksDispatcherOnMountInDEV);
           return thenable;
         }
-        function use(usable) {
+        function use2(usable) {
           if (null !== usable && "object" === typeof usable) {
             if ("function" === typeof usable.then) return useThenable(usable);
             if (usable.$$typeof === REACT_CONTEXT_TYPE) return readContext(usable);
@@ -5975,14 +5975,14 @@
         function basicStateReducer(state, action) {
           return "function" === typeof action ? action(state) : action;
         }
-        function mountReducer(reducer2, initialArg, init) {
+        function mountReducer(reducer2, initialArg, init2) {
           var hook = mountWorkInProgressHook();
-          if (void 0 !== init) {
-            var initialState2 = init(initialArg);
+          if (void 0 !== init2) {
+            var initialState2 = init2(initialArg);
             if (shouldDoubleInvokeUserFnsInHooksDEV) {
               setIsStrictModeForDevtools(true);
               try {
-                init(initialArg);
+                init2(initialArg);
               } finally {
                 setIsStrictModeForDevtools(false);
               }
@@ -6997,9 +6997,9 @@
           0 === workInProgress2.lanes && (workInProgress2.updateQueue.baseState = prevState);
         }
         function checkShouldComponentUpdate(workInProgress2, ctor, oldProps, newProps, oldState, newState, nextContext) {
-          var instance = workInProgress2.stateNode;
-          if ("function" === typeof instance.shouldComponentUpdate) {
-            oldProps = instance.shouldComponentUpdate(
+          var instance2 = workInProgress2.stateNode;
+          if ("function" === typeof instance2.shouldComponentUpdate) {
+            oldProps = instance2.shouldComponentUpdate(
               newProps,
               newState,
               nextContext
@@ -7007,7 +7007,7 @@
             if (workInProgress2.mode & StrictLegacyMode) {
               setIsStrictModeForDevtools(true);
               try {
-                oldProps = instance.shouldComponentUpdate(
+                oldProps = instance2.shouldComponentUpdate(
                   newProps,
                   newState,
                   nextContext
@@ -7024,16 +7024,16 @@
           }
           return ctor.prototype && ctor.prototype.isPureReactComponent ? !shallowEqual(oldProps, newProps) || !shallowEqual(oldState, newState) : true;
         }
-        function callComponentWillReceiveProps(workInProgress2, instance, newProps, nextContext) {
-          var oldState = instance.state;
-          "function" === typeof instance.componentWillReceiveProps && instance.componentWillReceiveProps(newProps, nextContext);
-          "function" === typeof instance.UNSAFE_componentWillReceiveProps && instance.UNSAFE_componentWillReceiveProps(newProps, nextContext);
-          instance.state !== oldState && (workInProgress2 = getComponentNameFromFiber(workInProgress2) || "Component", didWarnAboutStateAssignmentForComponent.has(workInProgress2) || (didWarnAboutStateAssignmentForComponent.add(workInProgress2), console.error(
+        function callComponentWillReceiveProps(workInProgress2, instance2, newProps, nextContext) {
+          var oldState = instance2.state;
+          "function" === typeof instance2.componentWillReceiveProps && instance2.componentWillReceiveProps(newProps, nextContext);
+          "function" === typeof instance2.UNSAFE_componentWillReceiveProps && instance2.UNSAFE_componentWillReceiveProps(newProps, nextContext);
+          instance2.state !== oldState && (workInProgress2 = getComponentNameFromFiber(workInProgress2) || "Component", didWarnAboutStateAssignmentForComponent.has(workInProgress2) || (didWarnAboutStateAssignmentForComponent.add(workInProgress2), console.error(
             "%s.componentWillReceiveProps(): Assigning directly to this.state is deprecated (except inside a component's constructor). Use setState instead.",
             workInProgress2
           )), classComponentUpdater.enqueueReplaceState(
-            instance,
-            instance.state,
+            instance2,
+            instance2.state,
             null
           ));
         }
@@ -7862,25 +7862,25 @@
                 var JSCompiler_temp;
                 if (!(JSCompiler_temp = !JSCompiler_object_inline_message_2316)) {
                   c: {
-                    var instance = JSCompiler_object_inline_message_2316;
-                    for (JSCompiler_temp = rootOrSingletonContext; 8 !== instance.nodeType; ) {
+                    var instance2 = JSCompiler_object_inline_message_2316;
+                    for (JSCompiler_temp = rootOrSingletonContext; 8 !== instance2.nodeType; ) {
                       if (!JSCompiler_temp) {
                         JSCompiler_temp = null;
                         break c;
                       }
-                      instance = getNextHydratable(instance.nextSibling);
-                      if (null === instance) {
+                      instance2 = getNextHydratable(instance2.nextSibling);
+                      if (null === instance2) {
                         JSCompiler_temp = null;
                         break c;
                       }
                     }
-                    JSCompiler_temp = instance;
+                    JSCompiler_temp = instance2;
                   }
                   null !== JSCompiler_temp ? (warnIfNotHydrating(), workInProgress2.memoizedState = {
                     dehydrated: JSCompiler_temp,
                     treeContext: null !== treeContextProvider ? { id: treeContextId, overflow: treeContextOverflow } : null,
                     retryLane: 536870912
-                  }, instance = createFiber(18, null, null, NoMode), instance.stateNode = JSCompiler_temp, instance.return = workInProgress2, workInProgress2.child = instance, hydrationParentFiber = workInProgress2, nextHydratableInstance = null, JSCompiler_temp = true) : JSCompiler_temp = false;
+                  }, instance2 = createFiber(18, null, null, NoMode), instance2.stateNode = JSCompiler_temp, instance2.return = workInProgress2, workInProgress2.child = instance2, hydrationParentFiber = workInProgress2, nextHydratableInstance = null, JSCompiler_temp = true) : JSCompiler_temp = false;
                   JSCompiler_temp = !JSCompiler_temp;
                 }
                 JSCompiler_temp && (warnNonHydratedInstance(
@@ -7953,12 +7953,12 @@
               if (JSCompiler_object_inline_digest_2317) {
                 JSCompiler_temp = JSCompiler_object_inline_digest_2317.dgst;
                 var message = JSCompiler_object_inline_digest_2317.msg;
-                instance = JSCompiler_object_inline_digest_2317.stck;
+                instance2 = JSCompiler_object_inline_digest_2317.stck;
                 var componentStack = JSCompiler_object_inline_digest_2317.cstck;
               }
               JSCompiler_object_inline_message_2316 = message;
               JSCompiler_object_inline_digest_2317 = JSCompiler_temp;
-              JSCompiler_object_inline_stack_2318 = instance;
+              JSCompiler_object_inline_stack_2318 = instance2;
               JSCompiler_temp = JSCompiler_object_inline_componentStack_2319 = componentStack;
               JSCompiler_object_inline_componentStack_2319 = JSCompiler_object_inline_message_2316 ? Error(JSCompiler_object_inline_message_2316) : Error(
                 "The server could not finish this Suspense boundary, likely due to an error during server rendering. Switched to client rendering."
@@ -8060,21 +8060,21 @@
             return workInProgress2;
           }
           if (JSCompiler_object_inline_componentStack_2319)
-            return reuseSuspenseHandlerOnStack(workInProgress2), JSCompiler_object_inline_componentStack_2319 = JSCompiler_object_inline_stack_2318.fallback, JSCompiler_object_inline_message_2316 = workInProgress2.mode, JSCompiler_temp = current2.child, instance = JSCompiler_temp.sibling, JSCompiler_object_inline_stack_2318 = createWorkInProgress(
+            return reuseSuspenseHandlerOnStack(workInProgress2), JSCompiler_object_inline_componentStack_2319 = JSCompiler_object_inline_stack_2318.fallback, JSCompiler_object_inline_message_2316 = workInProgress2.mode, JSCompiler_temp = current2.child, instance2 = JSCompiler_temp.sibling, JSCompiler_object_inline_stack_2318 = createWorkInProgress(
               JSCompiler_temp,
               {
                 mode: "hidden",
                 children: JSCompiler_object_inline_stack_2318.children
               }
-            ), JSCompiler_object_inline_stack_2318.subtreeFlags = JSCompiler_temp.subtreeFlags & 31457280, null !== instance ? JSCompiler_object_inline_componentStack_2319 = createWorkInProgress(
-              instance,
+            ), JSCompiler_object_inline_stack_2318.subtreeFlags = JSCompiler_temp.subtreeFlags & 31457280, null !== instance2 ? JSCompiler_object_inline_componentStack_2319 = createWorkInProgress(
+              instance2,
               JSCompiler_object_inline_componentStack_2319
             ) : (JSCompiler_object_inline_componentStack_2319 = createFiberFromFragment(
               JSCompiler_object_inline_componentStack_2319,
               JSCompiler_object_inline_message_2316,
               renderLanes2,
               null
-            ), JSCompiler_object_inline_componentStack_2319.flags |= 2), JSCompiler_object_inline_componentStack_2319.return = workInProgress2, JSCompiler_object_inline_stack_2318.return = workInProgress2, JSCompiler_object_inline_stack_2318.sibling = JSCompiler_object_inline_componentStack_2319, workInProgress2.child = JSCompiler_object_inline_stack_2318, JSCompiler_object_inline_stack_2318 = JSCompiler_object_inline_componentStack_2319, JSCompiler_object_inline_componentStack_2319 = workInProgress2.child, JSCompiler_object_inline_message_2316 = current2.child.memoizedState, null === JSCompiler_object_inline_message_2316 ? JSCompiler_object_inline_message_2316 = mountSuspenseOffscreenState(renderLanes2) : (JSCompiler_temp = JSCompiler_object_inline_message_2316.cachePool, null !== JSCompiler_temp ? (instance = CacheContext._currentValue, JSCompiler_temp = JSCompiler_temp.parent !== instance ? { parent: instance, pool: instance } : JSCompiler_temp) : JSCompiler_temp = getSuspendedCache(), JSCompiler_object_inline_message_2316 = {
+            ), JSCompiler_object_inline_componentStack_2319.flags |= 2), JSCompiler_object_inline_componentStack_2319.return = workInProgress2, JSCompiler_object_inline_stack_2318.return = workInProgress2, JSCompiler_object_inline_stack_2318.sibling = JSCompiler_object_inline_componentStack_2319, workInProgress2.child = JSCompiler_object_inline_stack_2318, JSCompiler_object_inline_stack_2318 = JSCompiler_object_inline_componentStack_2319, JSCompiler_object_inline_componentStack_2319 = workInProgress2.child, JSCompiler_object_inline_message_2316 = current2.child.memoizedState, null === JSCompiler_object_inline_message_2316 ? JSCompiler_object_inline_message_2316 = mountSuspenseOffscreenState(renderLanes2) : (JSCompiler_temp = JSCompiler_object_inline_message_2316.cachePool, null !== JSCompiler_temp ? (instance2 = CacheContext._currentValue, JSCompiler_temp = JSCompiler_temp.parent !== instance2 ? { parent: instance2, pool: instance2 } : JSCompiler_temp) : JSCompiler_temp = getSuspendedCache(), JSCompiler_object_inline_message_2316 = {
               baseLanes: JSCompiler_object_inline_message_2316.baseLanes | renderLanes2,
               cachePool: JSCompiler_temp
             }), JSCompiler_object_inline_componentStack_2319.memoizedState = JSCompiler_object_inline_message_2316, JSCompiler_object_inline_componentStack_2319.childLanes = getRemainingWorkInPrimaryTree(
@@ -9109,21 +9109,21 @@
                 a: {
                   updateLane = workInProgress2;
                   var partialState = pendingQueue;
-                  var nextProps = props, instance = instance$jscomp$0;
+                  var nextProps = props, instance2 = instance$jscomp$0;
                   switch (partialState.tag) {
                     case ReplaceState:
                       partialState = partialState.payload;
                       if ("function" === typeof partialState) {
                         isDisallowedContextReadInDEV = true;
                         var nextState = partialState.call(
-                          instance,
+                          instance2,
                           newState,
                           nextProps
                         );
                         if (updateLane.mode & StrictLegacyMode) {
                           setIsStrictModeForDevtools(true);
                           try {
-                            partialState.call(instance, newState, nextProps);
+                            partialState.call(instance2, newState, nextProps);
                           } finally {
                             setIsStrictModeForDevtools(false);
                           }
@@ -9141,14 +9141,14 @@
                       if ("function" === typeof nextState) {
                         isDisallowedContextReadInDEV = true;
                         partialState = nextState.call(
-                          instance,
+                          instance2,
                           newState,
                           nextProps
                         );
                         if (updateLane.mode & StrictLegacyMode) {
                           setIsStrictModeForDevtools(true);
                           try {
-                            nextState.call(instance, newState, nextProps);
+                            nextState.call(instance2, newState, nextProps);
                           } finally {
                             setIsStrictModeForDevtools(false);
                           }
@@ -9311,11 +9311,11 @@
         function commitClassCallbacks(finishedWork) {
           var updateQueue = finishedWork.updateQueue;
           if (null !== updateQueue) {
-            var instance = finishedWork.stateNode;
-            finishedWork.type.defaultProps || "ref" in finishedWork.memoizedProps || didWarnAboutReassigningProps || (instance.props !== finishedWork.memoizedProps && console.error(
+            var instance2 = finishedWork.stateNode;
+            finishedWork.type.defaultProps || "ref" in finishedWork.memoizedProps || didWarnAboutReassigningProps || (instance2.props !== finishedWork.memoizedProps && console.error(
               "Expected %s props to match memoized props before processing the update queue. This might either be because of a bug in React, or because a component reassigns its own `this.props`. Please file an issue.",
               getComponentNameFromFiber(finishedWork) || "instance"
-            ), instance.state !== finishedWork.memoizedState && console.error(
+            ), instance2.state !== finishedWork.memoizedState && console.error(
               "Expected %s state to match memoized state before processing the update queue. This might either be because of a bug in React, or because a component reassigns its own `this.state`. Please file an issue.",
               getComponentNameFromFiber(finishedWork) || "instance"
             ));
@@ -9324,15 +9324,15 @@
                 finishedWork,
                 commitCallbacks,
                 updateQueue,
-                instance
+                instance2
               );
             } catch (error) {
               captureCommitPhaseError(finishedWork, finishedWork.return, error);
             }
           }
         }
-        function callGetSnapshotBeforeUpdates(instance, prevProps, prevState) {
-          return instance.getSnapshotBeforeUpdate(prevProps, prevState);
+        function callGetSnapshotBeforeUpdates(instance2, prevProps, prevState) {
+          return instance2.getSnapshotBeforeUpdate(prevProps, prevState);
         }
         function commitClassSnapshot(finishedWork, current2) {
           var prevProps = current2.memoizedProps, prevState = current2.memoizedState;
@@ -9369,43 +9369,43 @@
             captureCommitPhaseError(finishedWork, finishedWork.return, error);
           }
         }
-        function safelyCallComponentWillUnmount(current2, nearestMountedAncestor, instance) {
-          instance.props = resolveClassComponentProps(
+        function safelyCallComponentWillUnmount(current2, nearestMountedAncestor, instance2) {
+          instance2.props = resolveClassComponentProps(
             current2.type,
             current2.memoizedProps
           );
-          instance.state = current2.memoizedState;
+          instance2.state = current2.memoizedState;
           shouldProfile(current2) ? (startEffectTimer(), runWithFiberInDEV(
             current2,
             callComponentWillUnmountInDEV,
             current2,
             nearestMountedAncestor,
-            instance
+            instance2
           ), recordEffectDuration()) : runWithFiberInDEV(
             current2,
             callComponentWillUnmountInDEV,
             current2,
             nearestMountedAncestor,
-            instance
+            instance2
           );
         }
         function commitAttachRef(finishedWork) {
           var ref = finishedWork.ref;
           if (null !== ref) {
-            var instance = finishedWork.stateNode;
+            var instance2 = finishedWork.stateNode;
             if ("function" === typeof ref)
               if (shouldProfile(finishedWork))
                 try {
-                  startEffectTimer(), finishedWork.refCleanup = ref(instance);
+                  startEffectTimer(), finishedWork.refCleanup = ref(instance2);
                 } finally {
                   recordEffectDuration();
                 }
-              else finishedWork.refCleanup = ref(instance);
+              else finishedWork.refCleanup = ref(instance2);
             else
               "string" === typeof ref ? console.error("String refs are no longer supported.") : ref.hasOwnProperty("current") || console.error(
                 "Unexpected ref object provided for %s. Use either a ref-setter function or React.createRef().",
                 getComponentNameFromFiber(finishedWork)
-              ), ref.current = instance;
+              ), ref.current = instance2;
           }
         }
         function safelyAttachRef(current2, nearestMountedAncestor) {
@@ -9480,12 +9480,12 @@
           );
         }
         function commitHostMount(finishedWork) {
-          var type = finishedWork.type, props = finishedWork.memoizedProps, instance = finishedWork.stateNode;
+          var type = finishedWork.type, props = finishedWork.memoizedProps, instance2 = finishedWork.stateNode;
           try {
             runWithFiberInDEV(
               finishedWork,
               commitMount,
-              instance,
+              instance2,
               type,
               props,
               finishedWork
@@ -10474,11 +10474,11 @@
               break;
             case 1:
               safelyDetachRef(finishedWork, finishedWork.return);
-              var instance = finishedWork.stateNode;
-              "function" === typeof instance.componentWillUnmount && safelyCallComponentWillUnmount(
+              var instance2 = finishedWork.stateNode;
+              "function" === typeof instance2.componentWillUnmount && safelyCallComponentWillUnmount(
                 finishedWork,
                 finishedWork.return,
-                instance
+                instance2
               );
               recursivelyTraverseDisappearLayoutEffects(finishedWork);
               break;
@@ -10969,8 +10969,8 @@
               recursivelyTraverseDisconnectPassiveEffects(finishedWork);
               break;
             case 22:
-              var instance = finishedWork.stateNode;
-              instance._visibility & OffscreenPassiveEffectsConnected && (instance._visibility &= ~OffscreenPassiveEffectsConnected, recursivelyTraverseDisconnectPassiveEffects(finishedWork));
+              var instance2 = finishedWork.stateNode;
+              instance2._visibility & OffscreenPassiveEffectsConnected && (instance2._visibility &= ~OffscreenPassiveEffectsConnected, recursivelyTraverseDisconnectPassiveEffects(finishedWork));
               break;
             default:
               recursivelyTraverseDisconnectPassiveEffects(finishedWork);
@@ -11193,25 +11193,25 @@
             _transitions: null,
             _current: null,
             detach: function() {
-              var instance = primaryChildInstance, fiber = instance._current;
+              var instance2 = primaryChildInstance, fiber = instance2._current;
               if (null === fiber)
                 throw Error(
                   "Calling Offscreen.detach before instance handle has been set."
                 );
-              if (0 === (instance._pendingVisibility & OffscreenDetached)) {
+              if (0 === (instance2._pendingVisibility & OffscreenDetached)) {
                 var root2 = enqueueConcurrentRenderForLane(fiber, 2);
-                null !== root2 && (instance._pendingVisibility |= OffscreenDetached, scheduleUpdateOnFiber(root2, fiber, 2));
+                null !== root2 && (instance2._pendingVisibility |= OffscreenDetached, scheduleUpdateOnFiber(root2, fiber, 2));
               }
             },
             attach: function() {
-              var instance = primaryChildInstance, fiber = instance._current;
+              var instance2 = primaryChildInstance, fiber = instance2._current;
               if (null === fiber)
                 throw Error(
                   "Calling Offscreen.detach before instance handle has been set."
                 );
-              if (0 !== (instance._pendingVisibility & OffscreenDetached)) {
+              if (0 !== (instance2._pendingVisibility & OffscreenDetached)) {
                 var root2 = enqueueConcurrentRenderForLane(fiber, 2);
-                null !== root2 && (instance._pendingVisibility &= ~OffscreenDetached, scheduleUpdateOnFiber(root2, fiber, 2));
+                null !== root2 && (instance2._pendingVisibility &= ~OffscreenDetached, scheduleUpdateOnFiber(root2, fiber, 2));
               }
             }
           };
@@ -11922,7 +11922,7 @@
         function commitRootWhenReady(root2, finishedWork, recoverableErrors, transitions, didIncludeRenderPhaseUpdate, lanes, spawnedLane, updatedLanes, suspendedRetryLanes, didSkipSuspendedSiblings, suspendedCommitReason, completedRenderStartTime, completedRenderEndTime) {
           var subtreeFlags = finishedWork.subtreeFlags;
           if (subtreeFlags & 8192 || 16785408 === (subtreeFlags & 16785408)) {
-            if (suspendedState = { stylesheets: null, count: 0, unsuspend: noop }, accumulateSuspenseyCommitOnFiber(finishedWork), finishedWork = waitForCommitToBeReady(), null !== finishedWork) {
+            if (suspendedState = { stylesheets: null, count: 0, unsuspend: noop2 }, accumulateSuspenseyCommitOnFiber(finishedWork), finishedWork = waitForCommitToBeReady(), null !== finishedWork) {
               root2.cancelPendingCommit = finishedWork(
                 commitRoot.bind(
                   null,
@@ -12643,17 +12643,17 @@
                 return;
               }
               if (1 === nearestMountedAncestor.tag) {
-                var instance = nearestMountedAncestor.stateNode;
-                if ("function" === typeof nearestMountedAncestor.type.getDerivedStateFromError || "function" === typeof instance.componentDidCatch && (null === legacyErrorBoundariesThatAlreadyFailed || !legacyErrorBoundariesThatAlreadyFailed.has(instance))) {
+                var instance2 = nearestMountedAncestor.stateNode;
+                if ("function" === typeof nearestMountedAncestor.type.getDerivedStateFromError || "function" === typeof instance2.componentDidCatch && (null === legacyErrorBoundariesThatAlreadyFailed || !legacyErrorBoundariesThatAlreadyFailed.has(instance2))) {
                   sourceFiber = createCapturedValueAtFiber(error, sourceFiber);
                   error = createClassErrorUpdate(2);
-                  instance = enqueueUpdate(nearestMountedAncestor, error, 2);
-                  null !== instance && (initializeClassErrorUpdate(
+                  instance2 = enqueueUpdate(nearestMountedAncestor, error, 2);
+                  null !== instance2 && (initializeClassErrorUpdate(
                     error,
-                    instance,
+                    instance2,
                     nearestMountedAncestor,
                     sourceFiber
-                  ), markRootUpdated$1(instance, 2), ensureRootIsScheduled(instance));
+                  ), markRootUpdated$1(instance2, 2), ensureRootIsScheduled(instance2));
                   return;
                 }
               }
@@ -13022,9 +13022,9 @@
               _dispatchQueue$i = _dispatchQueue$i.listeners;
               if (eventSystemFlags)
                 for (var i$jscomp$0 = _dispatchQueue$i.length - 1; 0 <= i$jscomp$0; i$jscomp$0--) {
-                  var _dispatchListeners$i = _dispatchQueue$i[i$jscomp$0], instance = _dispatchListeners$i.instance, currentTarget = _dispatchListeners$i.currentTarget;
+                  var _dispatchListeners$i = _dispatchQueue$i[i$jscomp$0], instance2 = _dispatchListeners$i.instance, currentTarget = _dispatchListeners$i.currentTarget;
                   _dispatchListeners$i = _dispatchListeners$i.listener;
-                  if (instance !== previousInstance && event.isPropagationStopped())
+                  if (instance2 !== previousInstance && event.isPropagationStopped())
                     break a;
                   previousInstance = event;
                   previousInstance.currentTarget = currentTarget;
@@ -13034,15 +13034,15 @@
                     reportGlobalError(error);
                   }
                   previousInstance.currentTarget = null;
-                  previousInstance = instance;
+                  previousInstance = instance2;
                 }
               else
                 for (i$jscomp$0 = 0; i$jscomp$0 < _dispatchQueue$i.length; i$jscomp$0++) {
                   _dispatchListeners$i = _dispatchQueue$i[i$jscomp$0];
-                  instance = _dispatchListeners$i.instance;
+                  instance2 = _dispatchListeners$i.instance;
                   currentTarget = _dispatchListeners$i.currentTarget;
                   _dispatchListeners$i = _dispatchListeners$i.listener;
-                  if (instance !== previousInstance && event.isPropagationStopped())
+                  if (instance2 !== previousInstance && event.isPropagationStopped())
                     break a;
                   previousInstance = event;
                   previousInstance.currentTarget = currentTarget;
@@ -13052,7 +13052,7 @@
                     reportGlobalError(error);
                   }
                   previousInstance.currentTarget = null;
-                  previousInstance = instance;
+                  previousInstance = instance2;
                 }
             }
           }
@@ -13242,19 +13242,19 @@
                 }
                 var inCapturePhase = 0 !== (eventSystemFlags & 4), accumulateTargetOnly = !inCapturePhase && ("scroll" === domEventName || "scrollend" === domEventName), reactEventName = inCapturePhase ? null !== reactName ? reactName + "Capture" : null : reactName;
                 inCapturePhase = [];
-                for (var instance = targetInst, lastHostComponent; null !== instance; ) {
-                  var _instance2 = instance;
+                for (var instance2 = targetInst, lastHostComponent; null !== instance2; ) {
+                  var _instance2 = instance2;
                   lastHostComponent = _instance2.stateNode;
                   _instance2 = _instance2.tag;
-                  5 !== _instance2 && 26 !== _instance2 && 27 !== _instance2 || null === lastHostComponent || null === reactEventName || (_instance2 = getListener(instance, reactEventName), null != _instance2 && inCapturePhase.push(
+                  5 !== _instance2 && 26 !== _instance2 && 27 !== _instance2 || null === lastHostComponent || null === reactEventName || (_instance2 = getListener(instance2, reactEventName), null != _instance2 && inCapturePhase.push(
                     createDispatchListener(
-                      instance,
+                      instance2,
                       _instance2,
                       lastHostComponent
                     )
                   ));
                   if (accumulateTargetOnly) break;
-                  instance = instance.return;
+                  instance2 = instance2.return;
                 }
                 0 < inCapturePhase.length && (reactName = new SyntheticEventCtor(
                   reactName,
@@ -13284,14 +13284,14 @@
                     inCapturePhase = SyntheticMouseEvent;
                     _instance2 = "onMouseLeave";
                     reactEventName = "onMouseEnter";
-                    instance = "mouse";
+                    instance2 = "mouse";
                     if ("pointerout" === domEventName || "pointerover" === domEventName)
-                      inCapturePhase = SyntheticPointerEvent, _instance2 = "onPointerLeave", reactEventName = "onPointerEnter", instance = "pointer";
+                      inCapturePhase = SyntheticPointerEvent, _instance2 = "onPointerLeave", reactEventName = "onPointerEnter", instance2 = "pointer";
                     accumulateTargetOnly = null == SyntheticEventCtor ? reactName : getNodeFromInstance(SyntheticEventCtor);
                     lastHostComponent = null == reactEventType ? reactName : getNodeFromInstance(reactEventType);
                     reactName = new inCapturePhase(
                       _instance2,
-                      instance + "leave",
+                      instance2 + "leave",
                       SyntheticEventCtor,
                       nativeEvent,
                       nativeEventTarget
@@ -13301,7 +13301,7 @@
                     _instance2 = null;
                     getClosestInstanceFromNode(nativeEventTarget) === targetInst && (inCapturePhase = new inCapturePhase(
                       reactEventName,
-                      instance + "enter",
+                      instance2 + "enter",
                       reactEventType,
                       nativeEvent,
                       nativeEventTarget
@@ -13311,17 +13311,17 @@
                       b: {
                         inCapturePhase = SyntheticEventCtor;
                         reactEventName = reactEventType;
-                        instance = 0;
+                        instance2 = 0;
                         for (lastHostComponent = inCapturePhase; lastHostComponent; lastHostComponent = getParent(lastHostComponent))
-                          instance++;
+                          instance2++;
                         lastHostComponent = 0;
                         for (_instance2 = reactEventName; _instance2; _instance2 = getParent(_instance2))
                           lastHostComponent++;
-                        for (; 0 < instance - lastHostComponent; )
-                          inCapturePhase = getParent(inCapturePhase), instance--;
-                        for (; 0 < lastHostComponent - instance; )
+                        for (; 0 < instance2 - lastHostComponent; )
+                          inCapturePhase = getParent(inCapturePhase), instance2--;
+                        for (; 0 < lastHostComponent - instance2; )
                           reactEventName = getParent(reactEventName), lastHostComponent--;
-                        for (; instance--; ) {
+                        for (; instance2--; ) {
                           if (inCapturePhase === reactEventName || null !== reactEventName && inCapturePhase === reactEventName.alternate)
                             break b;
                           inCapturePhase = getParent(inCapturePhase);
@@ -13461,9 +13461,9 @@
             processDispatchQueue(dispatchQueue, eventSystemFlags);
           });
         }
-        function createDispatchListener(instance, listener, currentTarget) {
+        function createDispatchListener(instance2, listener, currentTarget) {
           return {
-            instance,
+            instance: instance2,
             listener,
             currentTarget
           };
@@ -15271,17 +15271,17 @@
           } while (node);
           retryIfBlockedOn(suspenseInstance);
         }
-        function hideInstance(instance) {
-          instance = instance.style;
-          "function" === typeof instance.setProperty ? instance.setProperty("display", "none", "important") : instance.display = "none";
+        function hideInstance(instance2) {
+          instance2 = instance2.style;
+          "function" === typeof instance2.setProperty ? instance2.setProperty("display", "none", "important") : instance2.display = "none";
         }
         function hideTextInstance(textInstance) {
           textInstance.nodeValue = "";
         }
-        function unhideInstance(instance, props) {
+        function unhideInstance(instance2, props) {
           props = props[STYLE];
           props = void 0 !== props && null !== props && props.hasOwnProperty("display") ? props.display : null;
-          instance.style.display = null == props || "boolean" === typeof props ? "" : ("" + props).trim();
+          instance2.style.display = null == props || "boolean" === typeof props ? "" : ("" + props).trim();
         }
         function unhideTextInstance(textInstance, text) {
           textInstance.nodeValue = text;
@@ -15308,56 +15308,56 @@
             container2.removeChild(node);
           }
         }
-        function canHydrateInstance(instance, type, props, inRootOrSingleton) {
-          for (; 1 === instance.nodeType; ) {
+        function canHydrateInstance(instance2, type, props, inRootOrSingleton) {
+          for (; 1 === instance2.nodeType; ) {
             var anyProps = props;
-            if (instance.nodeName.toLowerCase() !== type.toLowerCase()) {
-              if (!inRootOrSingleton && ("INPUT" !== instance.nodeName || "hidden" !== instance.type))
+            if (instance2.nodeName.toLowerCase() !== type.toLowerCase()) {
+              if (!inRootOrSingleton && ("INPUT" !== instance2.nodeName || "hidden" !== instance2.type))
                 break;
             } else if (!inRootOrSingleton)
-              if ("input" === type && "hidden" === instance.type) {
+              if ("input" === type && "hidden" === instance2.type) {
                 checkAttributeStringCoercion(anyProps.name, "name");
                 var name = null == anyProps.name ? null : "" + anyProps.name;
-                if ("hidden" === anyProps.type && instance.getAttribute("name") === name)
-                  return instance;
-              } else return instance;
-            else if (!instance[internalHoistableMarker])
+                if ("hidden" === anyProps.type && instance2.getAttribute("name") === name)
+                  return instance2;
+              } else return instance2;
+            else if (!instance2[internalHoistableMarker])
               switch (type) {
                 case "meta":
-                  if (!instance.hasAttribute("itemprop")) break;
-                  return instance;
+                  if (!instance2.hasAttribute("itemprop")) break;
+                  return instance2;
                 case "link":
-                  name = instance.getAttribute("rel");
-                  if ("stylesheet" === name && instance.hasAttribute("data-precedence"))
+                  name = instance2.getAttribute("rel");
+                  if ("stylesheet" === name && instance2.hasAttribute("data-precedence"))
                     break;
-                  else if (name !== anyProps.rel || instance.getAttribute("href") !== (null == anyProps.href ? null : anyProps.href) || instance.getAttribute("crossorigin") !== (null == anyProps.crossOrigin ? null : anyProps.crossOrigin) || instance.getAttribute("title") !== (null == anyProps.title ? null : anyProps.title))
+                  else if (name !== anyProps.rel || instance2.getAttribute("href") !== (null == anyProps.href ? null : anyProps.href) || instance2.getAttribute("crossorigin") !== (null == anyProps.crossOrigin ? null : anyProps.crossOrigin) || instance2.getAttribute("title") !== (null == anyProps.title ? null : anyProps.title))
                     break;
-                  return instance;
+                  return instance2;
                 case "style":
-                  if (instance.hasAttribute("data-precedence")) break;
-                  return instance;
+                  if (instance2.hasAttribute("data-precedence")) break;
+                  return instance2;
                 case "script":
-                  name = instance.getAttribute("src");
-                  if ((name !== (null == anyProps.src ? null : anyProps.src) || instance.getAttribute("type") !== (null == anyProps.type ? null : anyProps.type) || instance.getAttribute("crossorigin") !== (null == anyProps.crossOrigin ? null : anyProps.crossOrigin)) && name && instance.hasAttribute("async") && !instance.hasAttribute("itemprop"))
+                  name = instance2.getAttribute("src");
+                  if ((name !== (null == anyProps.src ? null : anyProps.src) || instance2.getAttribute("type") !== (null == anyProps.type ? null : anyProps.type) || instance2.getAttribute("crossorigin") !== (null == anyProps.crossOrigin ? null : anyProps.crossOrigin)) && name && instance2.hasAttribute("async") && !instance2.hasAttribute("itemprop"))
                     break;
-                  return instance;
+                  return instance2;
                 default:
-                  return instance;
+                  return instance2;
               }
-            instance = getNextHydratable(instance.nextSibling);
-            if (null === instance) break;
+            instance2 = getNextHydratable(instance2.nextSibling);
+            if (null === instance2) break;
           }
           return null;
         }
-        function canHydrateTextInstance(instance, text, inRootOrSingleton) {
+        function canHydrateTextInstance(instance2, text, inRootOrSingleton) {
           if ("" === text) return null;
-          for (; 3 !== instance.nodeType; ) {
-            if ((1 !== instance.nodeType || "INPUT" !== instance.nodeName || "hidden" !== instance.type) && !inRootOrSingleton)
+          for (; 3 !== instance2.nodeType; ) {
+            if ((1 !== instance2.nodeType || "INPUT" !== instance2.nodeName || "hidden" !== instance2.type) && !inRootOrSingleton)
               return null;
-            instance = getNextHydratable(instance.nextSibling);
-            if (null === instance) return null;
+            instance2 = getNextHydratable(instance2.nextSibling);
+            if (null === instance2) return null;
           }
-          return instance;
+          return instance2;
         }
         function getNextHydratable(node) {
           for (; null != node; node = node.nextSibling) {
@@ -15372,15 +15372,15 @@
           }
           return node;
         }
-        function describeHydratableInstanceForDevWarnings(instance) {
-          if (1 === instance.nodeType) {
-            for (var JSCompiler_temp_const = instance.nodeName.toLowerCase(), serverDifferences = {}, attributes = instance.attributes, i = 0; i < attributes.length; i++) {
+        function describeHydratableInstanceForDevWarnings(instance2) {
+          if (1 === instance2.nodeType) {
+            for (var JSCompiler_temp_const = instance2.nodeName.toLowerCase(), serverDifferences = {}, attributes = instance2.attributes, i = 0; i < attributes.length; i++) {
               var attr = attributes[i];
-              serverDifferences[getPropNameFromAttributeName(attr.name)] = "style" === attr.name.toLowerCase() ? getStylesObjectFromElement(instance) : attr.value;
+              serverDifferences[getPropNameFromAttributeName(attr.name)] = "style" === attr.name.toLowerCase() ? getStylesObjectFromElement(instance2) : attr.value;
             }
             return { type: JSCompiler_temp_const, props: serverDifferences };
           }
-          return 8 === instance.nodeType ? { type: "Suspense", props: {} } : instance.nodeValue;
+          return 8 === instance2.nodeType ? { type: "Suspense", props: {} } : instance2.nodeValue;
         }
         function diffHydratedTextForDevWarnings(textInstance, text, parentProps) {
           return null === parentProps || true !== parentProps[SUPPRESS_HYDRATION_WARNING] ? (textInstance.nodeValue === text ? textInstance = null : (text = normalizeMarkupForTextOrAttribute(text), textInstance = normalizeMarkupForTextOrAttribute(textInstance.nodeValue) === text ? null : textInstance.nodeValue), textInstance) : null;
@@ -15452,9 +15452,9 @@
               );
           }
         }
-        function acquireSingletonInstance(type, props, instance, internalInstanceHandle) {
-          if (getInstanceFromNode(instance)) {
-            var tagName = instance.tagName.toLowerCase();
+        function acquireSingletonInstance(type, props, instance2, internalInstanceHandle) {
+          if (getInstanceFromNode(instance2)) {
+            var tagName = instance2.tagName.toLowerCase();
             console.error(
               "You are mounting a new %s component when a previous one has not first unmounted. It is an error to render more than one %s component at a time and attributes and children of these components will likely fail in unpredictable ways. Please only render a single instance of <%s> and if you need to mount a new one, ensure any previous ones have unmounted first.",
               tagName,
@@ -15472,11 +15472,11 @@
                 "acquireSingletonInstance was called with an element type that is not supported. This is a bug in React."
               );
           }
-          for (tagName = instance.attributes; tagName.length; )
-            instance.removeAttributeNode(tagName[0]);
-          setInitialProperties(instance, type, props);
-          instance[internalInstanceKey] = internalInstanceHandle;
-          instance[internalPropsKey] = props;
+          for (tagName = instance2.attributes; tagName.length; )
+            instance2.removeAttributeNode(tagName[0]);
+          setInitialProperties(instance2, type, props);
+          instance2[internalInstanceKey] = internalInstanceHandle;
+          instance2[internalPropsKey] = props;
         }
         function getHoistableRoot(container2) {
           return "function" === typeof container2.getRootNode ? container2.getRootNode() : container2.ownerDocument;
@@ -15601,22 +15601,22 @@
           if (null === resource.instance)
             switch (resource.type) {
               case "style":
-                var instance = hoistableRoot.querySelector(
+                var instance2 = hoistableRoot.querySelector(
                   'style[data-href~="' + escapeSelectorAttributeValueInsideDoubleQuotes(props.href) + '"]'
                 );
-                if (instance)
-                  return resource.instance = instance, markNodeAsHoistable(instance), instance;
+                if (instance2)
+                  return resource.instance = instance2, markNodeAsHoistable(instance2), instance2;
                 var styleProps = assign({}, props, {
                   "data-href": props.href,
                   "data-precedence": props.precedence,
                   href: null,
                   precedence: null
                 });
-                instance = (hoistableRoot.ownerDocument || hoistableRoot).createElement("style");
-                markNodeAsHoistable(instance);
-                setInitialProperties(instance, "style", styleProps);
-                insertStylesheet(instance, props.precedence, hoistableRoot);
-                return resource.instance = instance;
+                instance2 = (hoistableRoot.ownerDocument || hoistableRoot).createElement("style");
+                markNodeAsHoistable(instance2);
+                setInitialProperties(instance2, "style", styleProps);
+                insertStylesheet(instance2, props.precedence, hoistableRoot);
+                return resource.instance = instance2;
               case "stylesheet":
                 styleProps = getStyleKey(props.href);
                 var _instance = hoistableRoot.querySelector(
@@ -15624,8 +15624,8 @@
                 );
                 if (_instance)
                   return resource.state.loading |= Inserted, resource.instance = _instance, markNodeAsHoistable(_instance), _instance;
-                instance = stylesheetPropsFromRawProps(props);
-                (styleProps = preloadPropsMap.get(styleProps)) && adoptPreloadPropsForStylesheet(instance, styleProps);
+                instance2 = stylesheetPropsFromRawProps(props);
+                (styleProps = preloadPropsMap.get(styleProps)) && adoptPreloadPropsForStylesheet(instance2, styleProps);
                 _instance = (hoistableRoot.ownerDocument || hoistableRoot).createElement("link");
                 markNodeAsHoistable(_instance);
                 var linkInstance = _instance;
@@ -15633,7 +15633,7 @@
                   linkInstance.onload = resolve;
                   linkInstance.onerror = reject;
                 });
-                setInitialProperties(_instance, "link", instance);
+                setInitialProperties(_instance, "link", instance2);
                 resource.state.loading |= Inserted;
                 insertStylesheet(_instance, props.precedence, hoistableRoot);
                 return resource.instance = _instance;
@@ -15643,13 +15643,13 @@
                   getScriptSelectorFromKey(_instance)
                 ))
                   return resource.instance = styleProps, markNodeAsHoistable(styleProps), styleProps;
-                instance = props;
+                instance2 = props;
                 if (styleProps = preloadPropsMap.get(_instance))
-                  instance = assign({}, props), adoptPreloadPropsForScript(instance, styleProps);
+                  instance2 = assign({}, props), adoptPreloadPropsForScript(instance2, styleProps);
                 hoistableRoot = hoistableRoot.ownerDocument || hoistableRoot;
                 styleProps = hoistableRoot.createElement("script");
                 markNodeAsHoistable(styleProps);
-                setInitialProperties(styleProps, "link", instance);
+                setInitialProperties(styleProps, "link", instance2);
                 hoistableRoot.head.appendChild(styleProps);
                 return resource.instance = styleProps;
               case "void":
@@ -15660,10 +15660,10 @@
                 );
             }
           else
-            "stylesheet" === resource.type && (resource.state.loading & Inserted) === NotLoaded && (instance = resource.instance, resource.state.loading |= Inserted, insertStylesheet(instance, props.precedence, hoistableRoot));
+            "stylesheet" === resource.type && (resource.state.loading & Inserted) === NotLoaded && (instance2 = resource.instance, resource.state.loading |= Inserted, insertStylesheet(instance2, props.precedence, hoistableRoot));
           return resource.instance;
         }
-        function insertStylesheet(instance, precedence, root2) {
+        function insertStylesheet(instance2, precedence, root2) {
           for (var nodes = root2.querySelectorAll(
             'link[rel="stylesheet"][data-precedence],style[data-precedence]'
           ), last = nodes.length ? nodes[nodes.length - 1] : null, prior = last, i = 0; i < nodes.length; i++) {
@@ -15671,7 +15671,7 @@
             if (node.dataset.precedence === precedence) prior = node;
             else if (prior !== last) break;
           }
-          prior ? prior.parentNode.insertBefore(instance, prior.nextSibling) : (precedence = 9 === root2.nodeType ? root2.head : root2, precedence.insertBefore(instance, precedence.firstChild));
+          prior ? prior.parentNode.insertBefore(instance2, prior.nextSibling) : (precedence = 9 === root2.nodeType ? root2.head : root2, precedence.insertBefore(instance2, precedence.firstChild));
         }
         function adoptPreloadPropsForStylesheet(stylesheetProps, preloadProps) {
           null == stylesheetProps.crossOrigin && (stylesheetProps.crossOrigin = preloadProps.crossOrigin);
@@ -15704,10 +15704,10 @@
           }
           return cache;
         }
-        function mountHoistable(hoistableRoot, type, instance) {
+        function mountHoistable(hoistableRoot, type, instance2) {
           hoistableRoot = hoistableRoot.ownerDocument || hoistableRoot;
           hoistableRoot.head.insertBefore(
-            instance,
+            instance2,
             "title" === type ? hoistableRoot.querySelector("head > title") : null
           );
         }
@@ -15790,7 +15790,7 @@
         function preloadResource(resource) {
           return "stylesheet" === resource.type && (resource.state.loading & Settled) === NotLoaded ? false : true;
         }
-        function noop() {
+        function noop2() {
         }
         function suspendResource(hoistableRoot, resource, props) {
           if (null === suspendedState)
@@ -15800,29 +15800,29 @@
           var state = suspendedState;
           if ("stylesheet" === resource.type && ("string" !== typeof props.media || false !== matchMedia(props.media).matches) && (resource.state.loading & Inserted) === NotLoaded) {
             if (null === resource.instance) {
-              var key = getStyleKey(props.href), instance = hoistableRoot.querySelector(
+              var key = getStyleKey(props.href), instance2 = hoistableRoot.querySelector(
                 getStylesheetSelectorFromKey(key)
               );
-              if (instance) {
-                hoistableRoot = instance._p;
+              if (instance2) {
+                hoistableRoot = instance2._p;
                 null !== hoistableRoot && "object" === typeof hoistableRoot && "function" === typeof hoistableRoot.then && (state.count++, state = onUnsuspend.bind(state), hoistableRoot.then(state, state));
                 resource.state.loading |= Inserted;
-                resource.instance = instance;
-                markNodeAsHoistable(instance);
+                resource.instance = instance2;
+                markNodeAsHoistable(instance2);
                 return;
               }
-              instance = hoistableRoot.ownerDocument || hoistableRoot;
+              instance2 = hoistableRoot.ownerDocument || hoistableRoot;
               props = stylesheetPropsFromRawProps(props);
               (key = preloadPropsMap.get(key)) && adoptPreloadPropsForStylesheet(props, key);
-              instance = instance.createElement("link");
-              markNodeAsHoistable(instance);
-              var linkInstance = instance;
+              instance2 = instance2.createElement("link");
+              markNodeAsHoistable(instance2);
+              var linkInstance = instance2;
               linkInstance._p = new Promise(function(resolve, reject) {
                 linkInstance.onload = resolve;
                 linkInstance.onerror = reject;
               });
-              setInitialProperties(instance, "link", props);
-              resource.instance = instance;
+              setInitialProperties(instance2, "link", props);
+              resource.instance = instance2;
             }
             null === state.stylesheets && (state.stylesheets = /* @__PURE__ */ new Map());
             state.stylesheets.set(resource, hoistableRoot);
@@ -15864,9 +15864,9 @@
             }
           }
         }
-        function insertSuspendedStylesheets(state, resources) {
+        function insertSuspendedStylesheets(state, resources2) {
           state.stylesheets = null;
-          null !== state.unsuspend && (state.count++, precedencesByRoot = /* @__PURE__ */ new Map(), resources.forEach(insertStylesheetIntoRoot, state), precedencesByRoot = null, onUnsuspend.call(state));
+          null !== state.unsuspend && (state.count++, precedencesByRoot = /* @__PURE__ */ new Map(), resources2.forEach(insertStylesheetIntoRoot, state), precedencesByRoot = null, onUnsuspend.call(state));
         }
         function insertStylesheetIntoRoot(root2, resource) {
           if (!(resource.state.loading & Inserted)) {
@@ -17315,7 +17315,7 @@
             });
             window.addEventListener("test", options$jscomp$0, options$jscomp$0);
             window.removeEventListener("test", options$jscomp$0, options$jscomp$0);
-          } catch (e) {
+          } catch (e2) {
             passiveBrowserEventsSupported = false;
           }
         var root = null, startText = null, fallbackText = null, EventInterface = {
@@ -17525,8 +17525,8 @@
           discardPendingWarnings: function() {
           }
         }, pendingComponentWillMountWarnings = [], pendingUNSAFE_ComponentWillMountWarnings = [], pendingComponentWillReceivePropsWarnings = [], pendingUNSAFE_ComponentWillReceivePropsWarnings = [], pendingComponentWillUpdateWarnings = [], pendingUNSAFE_ComponentWillUpdateWarnings = [], didWarnAboutUnsafeLifecycles = /* @__PURE__ */ new Set();
-        ReactStrictModeWarnings.recordUnsafeLifecycleWarnings = function(fiber, instance) {
-          didWarnAboutUnsafeLifecycles.has(fiber.type) || ("function" === typeof instance.componentWillMount && true !== instance.componentWillMount.__suppressDeprecationWarning && pendingComponentWillMountWarnings.push(fiber), fiber.mode & StrictLegacyMode && "function" === typeof instance.UNSAFE_componentWillMount && pendingUNSAFE_ComponentWillMountWarnings.push(fiber), "function" === typeof instance.componentWillReceiveProps && true !== instance.componentWillReceiveProps.__suppressDeprecationWarning && pendingComponentWillReceivePropsWarnings.push(fiber), fiber.mode & StrictLegacyMode && "function" === typeof instance.UNSAFE_componentWillReceiveProps && pendingUNSAFE_ComponentWillReceivePropsWarnings.push(fiber), "function" === typeof instance.componentWillUpdate && true !== instance.componentWillUpdate.__suppressDeprecationWarning && pendingComponentWillUpdateWarnings.push(fiber), fiber.mode & StrictLegacyMode && "function" === typeof instance.UNSAFE_componentWillUpdate && pendingUNSAFE_ComponentWillUpdateWarnings.push(fiber));
+        ReactStrictModeWarnings.recordUnsafeLifecycleWarnings = function(fiber, instance2) {
+          didWarnAboutUnsafeLifecycles.has(fiber.type) || ("function" === typeof instance2.componentWillMount && true !== instance2.componentWillMount.__suppressDeprecationWarning && pendingComponentWillMountWarnings.push(fiber), fiber.mode & StrictLegacyMode && "function" === typeof instance2.UNSAFE_componentWillMount && pendingUNSAFE_ComponentWillMountWarnings.push(fiber), "function" === typeof instance2.componentWillReceiveProps && true !== instance2.componentWillReceiveProps.__suppressDeprecationWarning && pendingComponentWillReceivePropsWarnings.push(fiber), fiber.mode & StrictLegacyMode && "function" === typeof instance2.UNSAFE_componentWillReceiveProps && pendingUNSAFE_ComponentWillReceivePropsWarnings.push(fiber), "function" === typeof instance2.componentWillUpdate && true !== instance2.componentWillUpdate.__suppressDeprecationWarning && pendingComponentWillUpdateWarnings.push(fiber), fiber.mode & StrictLegacyMode && "function" === typeof instance2.UNSAFE_componentWillUpdate && pendingUNSAFE_ComponentWillUpdateWarnings.push(fiber));
         };
         ReactStrictModeWarnings.flushPendingUnsafeLifecycleWarnings = function() {
           var componentWillMountUniqueNames = /* @__PURE__ */ new Set();
@@ -17610,13 +17610,13 @@
           ));
         };
         var pendingLegacyContextWarning = /* @__PURE__ */ new Map(), didWarnAboutLegacyContext = /* @__PURE__ */ new Set();
-        ReactStrictModeWarnings.recordLegacyContextWarning = function(fiber, instance) {
+        ReactStrictModeWarnings.recordLegacyContextWarning = function(fiber, instance2) {
           var strictRoot = null;
           for (var node = fiber; null !== node; )
             node.mode & StrictLegacyMode && (strictRoot = node), node = node.return;
           null === strictRoot ? console.error(
             "Expected to find a StrictMode component in a strict mode tree. This error is likely caused by a bug in React. Please file an issue."
-          ) : !didWarnAboutLegacyContext.has(fiber.type) && (node = pendingLegacyContextWarning.get(strictRoot), null != fiber.type.contextTypes || null != fiber.type.childContextTypes || null !== instance && "function" === typeof instance.getChildContext) && (void 0 === node && (node = [], pendingLegacyContextWarning.set(strictRoot, node)), node.push(fiber));
+          ) : !didWarnAboutLegacyContext.has(fiber.type) && (node = pendingLegacyContextWarning.get(strictRoot), null != fiber.type.contextTypes || null != fiber.type.childContextTypes || null !== instance2 && "function" === typeof instance2.getChildContext) && (void 0 === node && (node = [], pendingLegacyContextWarning.set(strictRoot, node)), node.push(fiber));
         };
         ReactStrictModeWarnings.flushLegacyContextWarning = function() {
           pendingLegacyContextWarning.forEach(function(fiberArray) {
@@ -17668,42 +17668,42 @@
             }
           }
         }, callComponentInDEV = callComponent["react-stack-bottom-frame"].bind(callComponent), callRender = {
-          "react-stack-bottom-frame": function(instance) {
+          "react-stack-bottom-frame": function(instance2) {
             var wasRendering = isRendering;
             isRendering = true;
             try {
-              return instance.render();
+              return instance2.render();
             } finally {
               isRendering = wasRendering;
             }
           }
         }, callRenderInDEV = callRender["react-stack-bottom-frame"].bind(callRender), callComponentDidMount = {
-          "react-stack-bottom-frame": function(finishedWork, instance) {
+          "react-stack-bottom-frame": function(finishedWork, instance2) {
             try {
-              instance.componentDidMount();
+              instance2.componentDidMount();
             } catch (error) {
               captureCommitPhaseError(finishedWork, finishedWork.return, error);
             }
           }
         }, callComponentDidMountInDEV = callComponentDidMount["react-stack-bottom-frame"].bind(callComponentDidMount), callComponentDidUpdate = {
-          "react-stack-bottom-frame": function(finishedWork, instance, prevProps, prevState, snapshot) {
+          "react-stack-bottom-frame": function(finishedWork, instance2, prevProps, prevState, snapshot) {
             try {
-              instance.componentDidUpdate(prevProps, prevState, snapshot);
+              instance2.componentDidUpdate(prevProps, prevState, snapshot);
             } catch (error) {
               captureCommitPhaseError(finishedWork, finishedWork.return, error);
             }
           }
         }, callComponentDidUpdateInDEV = callComponentDidUpdate["react-stack-bottom-frame"].bind(callComponentDidUpdate), callComponentDidCatch = {
-          "react-stack-bottom-frame": function(instance, errorInfo) {
+          "react-stack-bottom-frame": function(instance2, errorInfo) {
             var stack = errorInfo.stack;
-            instance.componentDidCatch(errorInfo.value, {
+            instance2.componentDidCatch(errorInfo.value, {
               componentStack: null !== stack ? stack : ""
             });
           }
         }, callComponentDidCatchInDEV = callComponentDidCatch["react-stack-bottom-frame"].bind(callComponentDidCatch), callComponentWillUnmount = {
-          "react-stack-bottom-frame": function(current2, nearestMountedAncestor, instance) {
+          "react-stack-bottom-frame": function(current2, nearestMountedAncestor, instance2) {
             try {
-              instance.componentWillUnmount();
+              instance2.componentWillUnmount();
             } catch (error) {
               captureCommitPhaseError(current2, nearestMountedAncestor, error);
             }
@@ -17725,8 +17725,8 @@
           }
         }, callDestroyInDEV = callDestroy["react-stack-bottom-frame"].bind(callDestroy), callLazyInit = {
           "react-stack-bottom-frame": function(lazy) {
-            var init = lazy._init;
-            return init(lazy._payload);
+            var init2 = lazy._init;
+            return init2(lazy._payload);
           }
         }, callLazyInitInDEV = callLazyInit["react-stack-bottom-frame"].bind(callLazyInit), thenableState$1 = null, thenableIndexCounter$1 = 0, currentDebugInfo = null, didWarnAboutMaps;
         var didWarnAboutGenerators = didWarnAboutMaps = false;
@@ -17798,7 +17798,7 @@
         };
         var ContextOnlyDispatcher = {
           readContext,
-          use,
+          use: use2,
           useCallback: throwInvalidHookError,
           useContext: throwInvalidHookError,
           useEffect: throwInvalidHookError,
@@ -17826,7 +17826,7 @@
           readContext: function(context) {
             return readContext(context);
           },
-          use,
+          use: use2,
           useCallback: function(callback, deps) {
             currentHookNameInDev = "useCallback";
             mountHookTypesDev();
@@ -17874,13 +17874,13 @@
               ReactSharedInternals.H = prevDispatcher;
             }
           },
-          useReducer: function(reducer2, initialArg, init) {
+          useReducer: function(reducer2, initialArg, init2) {
             currentHookNameInDev = "useReducer";
             mountHookTypesDev();
             var prevDispatcher = ReactSharedInternals.H;
             ReactSharedInternals.H = InvalidNestedHooksDispatcherOnMountInDEV;
             try {
-              return mountReducer(reducer2, initialArg, init);
+              return mountReducer(reducer2, initialArg, init2);
             } finally {
               ReactSharedInternals.H = prevDispatcher;
             }
@@ -17957,7 +17957,7 @@
           readContext: function(context) {
             return readContext(context);
           },
-          use,
+          use: use2,
           useCallback: function(callback, deps) {
             currentHookNameInDev = "useCallback";
             updateHookTypesDev();
@@ -17999,13 +17999,13 @@
               ReactSharedInternals.H = prevDispatcher;
             }
           },
-          useReducer: function(reducer2, initialArg, init) {
+          useReducer: function(reducer2, initialArg, init2) {
             currentHookNameInDev = "useReducer";
             updateHookTypesDev();
             var prevDispatcher = ReactSharedInternals.H;
             ReactSharedInternals.H = InvalidNestedHooksDispatcherOnMountInDEV;
             try {
-              return mountReducer(reducer2, initialArg, init);
+              return mountReducer(reducer2, initialArg, init2);
             } finally {
               ReactSharedInternals.H = prevDispatcher;
             }
@@ -18082,7 +18082,7 @@
           readContext: function(context) {
             return readContext(context);
           },
-          use,
+          use: use2,
           useCallback: function(callback, deps) {
             currentHookNameInDev = "useCallback";
             updateHookTypesDev();
@@ -18124,13 +18124,13 @@
               ReactSharedInternals.H = prevDispatcher;
             }
           },
-          useReducer: function(reducer2, initialArg, init) {
+          useReducer: function(reducer2, initialArg, init2) {
             currentHookNameInDev = "useReducer";
             updateHookTypesDev();
             var prevDispatcher = ReactSharedInternals.H;
             ReactSharedInternals.H = InvalidNestedHooksDispatcherOnUpdateInDEV;
             try {
-              return updateReducer(reducer2, initialArg, init);
+              return updateReducer(reducer2, initialArg, init2);
             } finally {
               ReactSharedInternals.H = prevDispatcher;
             }
@@ -18207,7 +18207,7 @@
           readContext: function(context) {
             return readContext(context);
           },
-          use,
+          use: use2,
           useCallback: function(callback, deps) {
             currentHookNameInDev = "useCallback";
             updateHookTypesDev();
@@ -18249,13 +18249,13 @@
               ReactSharedInternals.H = prevDispatcher;
             }
           },
-          useReducer: function(reducer2, initialArg, init) {
+          useReducer: function(reducer2, initialArg, init2) {
             currentHookNameInDev = "useReducer";
             updateHookTypesDev();
             var prevDispatcher = ReactSharedInternals.H;
             ReactSharedInternals.H = InvalidNestedHooksDispatcherOnRerenderInDEV;
             try {
-              return rerenderReducer(reducer2, initialArg, init);
+              return rerenderReducer(reducer2, initialArg, init2);
             } finally {
               ReactSharedInternals.H = prevDispatcher;
             }
@@ -18335,7 +18335,7 @@
           },
           use: function(usable) {
             warnInvalidHookAccess();
-            return use(usable);
+            return use2(usable);
           },
           useCallback: function(callback, deps) {
             currentHookNameInDev = "useCallback";
@@ -18385,14 +18385,14 @@
               ReactSharedInternals.H = prevDispatcher;
             }
           },
-          useReducer: function(reducer2, initialArg, init) {
+          useReducer: function(reducer2, initialArg, init2) {
             currentHookNameInDev = "useReducer";
             warnInvalidHookAccess();
             mountHookTypesDev();
             var prevDispatcher = ReactSharedInternals.H;
             ReactSharedInternals.H = InvalidNestedHooksDispatcherOnMountInDEV;
             try {
-              return mountReducer(reducer2, initialArg, init);
+              return mountReducer(reducer2, initialArg, init2);
             } finally {
               ReactSharedInternals.H = prevDispatcher;
             }
@@ -18484,7 +18484,7 @@
           },
           use: function(usable) {
             warnInvalidHookAccess();
-            return use(usable);
+            return use2(usable);
           },
           useCallback: function(callback, deps) {
             currentHookNameInDev = "useCallback";
@@ -18534,14 +18534,14 @@
               ReactSharedInternals.H = prevDispatcher;
             }
           },
-          useReducer: function(reducer2, initialArg, init) {
+          useReducer: function(reducer2, initialArg, init2) {
             currentHookNameInDev = "useReducer";
             warnInvalidHookAccess();
             updateHookTypesDev();
             var prevDispatcher = ReactSharedInternals.H;
             ReactSharedInternals.H = InvalidNestedHooksDispatcherOnUpdateInDEV;
             try {
-              return updateReducer(reducer2, initialArg, init);
+              return updateReducer(reducer2, initialArg, init2);
             } finally {
               ReactSharedInternals.H = prevDispatcher;
             }
@@ -18633,7 +18633,7 @@
           },
           use: function(usable) {
             warnInvalidHookAccess();
-            return use(usable);
+            return use2(usable);
           },
           useCallback: function(callback, deps) {
             currentHookNameInDev = "useCallback";
@@ -18683,14 +18683,14 @@
               ReactSharedInternals.H = prevDispatcher;
             }
           },
-          useReducer: function(reducer2, initialArg, init) {
+          useReducer: function(reducer2, initialArg, init2) {
             currentHookNameInDev = "useReducer";
             warnInvalidHookAccess();
             updateHookTypesDev();
             var prevDispatcher = ReactSharedInternals.H;
             ReactSharedInternals.H = InvalidNestedHooksDispatcherOnUpdateInDEV;
             try {
-              return rerenderReducer(reducer2, initialArg, init);
+              return rerenderReducer(reducer2, initialArg, init2);
             } finally {
               ReactSharedInternals.H = prevDispatcher;
             }
@@ -18791,12 +18791,12 @@
           isMounted: function(component) {
             var owner = current;
             if (null !== owner && isRendering && 1 === owner.tag) {
-              var instance = owner.stateNode;
-              instance._warnedAboutRefsInRender || console.error(
+              var instance2 = owner.stateNode;
+              instance2._warnedAboutRefsInRender || console.error(
                 "%s is accessing isMounted inside its render() function. render() should be a pure function of props and state. It should never access something that requires stale data from the previous render, such as refs. Move this logic to componentDidMount and componentDidUpdate instead.",
                 getComponentNameFromFiber(owner) || "A component"
               );
-              instance._warnedAboutRefsInRender = true;
+              instance2._warnedAboutRefsInRender = true;
             }
             return (component = component._reactInternals) ? getNearestMountedFiber(component) === component : false;
           },
@@ -19513,7 +19513,7 @@
           return str;
         try {
           return decodeURIComponent(str);
-        } catch (e) {
+        } catch (e2) {
           return str;
         }
       }
@@ -19579,7 +19579,7 @@
           try {
             testStringCoercion(value);
             var JSCompiler_inline_result = false;
-          } catch (e) {
+          } catch (e2) {
             JSCompiler_inline_result = true;
           }
           if (JSCompiler_inline_result) {
@@ -19907,16 +19907,16 @@
             if (isArrayImpl(node))
               for (var i = 0; i < node.length; i++) {
                 var child = node[i];
-                isValidElement2(child) && validateExplicitKey(child, parentType);
+                isValidElement3(child) && validateExplicitKey(child, parentType);
               }
-            else if (isValidElement2(node))
+            else if (isValidElement3(node))
               node._store && (node._store.validated = 1);
             else if (null === node || "object" !== typeof node ? i = null : (i = MAYBE_ITERATOR_SYMBOL && node[MAYBE_ITERATOR_SYMBOL] || node["@@iterator"], i = "function" === typeof i ? i : null), "function" === typeof i && i !== node.entries && (i = i.call(node), i !== node))
               for (; !(node = i.next()).done; )
-                isValidElement2(node.value) && validateExplicitKey(node.value, parentType);
+                isValidElement3(node.value) && validateExplicitKey(node.value, parentType);
           }
         }
-        function isValidElement2(object) {
+        function isValidElement3(object) {
           return "object" === typeof object && null !== object && object.$$typeof === REACT_ELEMENT_TYPE;
         }
         function validateExplicitKey(element, parentType) {
@@ -19973,6 +19973,28 @@
       } else {
         module.exports = require_react_jsx_runtime_development();
       }
+    }
+  });
+
+  // node_modules/void-elements/index.js
+  var require_void_elements = __commonJS({
+    "node_modules/void-elements/index.js"(exports, module) {
+      module.exports = {
+        "area": true,
+        "base": true,
+        "br": true,
+        "col": true,
+        "embed": true,
+        "hr": true,
+        "img": true,
+        "input": true,
+        "link": true,
+        "meta": true,
+        "param": true,
+        "source": true,
+        "track": true,
+        "wbr": true
+      };
     }
   });
 
@@ -20250,9 +20272,9 @@
                   let stack = void 0;
                   try {
                     throw new Error();
-                  } catch (e) {
+                  } catch (e2) {
                     ;
-                    ({ stack } = e);
+                    ({ stack } = e2);
                   }
                   console.warn(
                     "Selector " + (selector.name || "unknown") + " returned a different result when called with the same parameters. This can lead to unnecessary rerenders.\nSelectors that return a new reference (such as an object or an array) should be memoized: https://redux.js.org/usage/deriving-data-selectors#optimizing-selectors-with-memoization",
@@ -20270,9 +20292,9 @@
                   let stack = void 0;
                   try {
                     throw new Error();
-                  } catch (e) {
+                  } catch (e2) {
                     ;
-                    ({ stack } = e);
+                    ({ stack } = e2);
                   }
                   console.warn(
                     "Selector " + (selector.name || "unknown") + " returned the root state when called. This can lead to unnecessary rerenders.\nSelectors that return the entire state are almost certainly a mistake, as they will cause a rerender whenever *anything* in state changes.",
@@ -20377,7 +20399,7 @@
       if (typeof console !== "undefined") console.warn(message);
       try {
         throw new Error(message);
-      } catch (e) {
+      } catch (e2) {
       }
     }
   }
@@ -21596,7 +21618,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
           0
         );
         _formDataSupportsSubmitter = false;
-      } catch (e) {
+      } catch (e2) {
         _formDataSupportsSubmitter = true;
       }
     }
@@ -22058,7 +22080,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     if (isBrowser) {
       window.__reactRouterVersion = "7.2.0";
     }
-  } catch (e) {
+  } catch (e2) {
   }
   function HashRouter({ basename, children, window: window2 }) {
     let historyRef = React10.useRef();
@@ -22148,7 +22170,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
             } else {
               isExternal = true;
             }
-          } catch (e) {
+          } catch (e2) {
             warning(
               false,
               `<Link to="${to}"> contains an invalid URL which will probably break when clicked - please update to a valid URL path.`
@@ -22565,7 +22587,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
           if (sessionPositions) {
             savedScrollPositions = JSON.parse(sessionPositions);
           }
-        } catch (e) {
+        } catch (e2) {
         }
       }, [storageKey]);
       React10.useLayoutEffect(() => {
@@ -22705,11 +22727,284 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   };
 
   // src/pages/echomail/EchoIndex.tsx
+  var import_react10 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/Trans.js
+  var import_react4 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/TransWithoutContext.js
   var import_react2 = __toESM(require_react(), 1);
+
+  // node_modules/html-parse-stringify/dist/html-parse-stringify.module.js
+  var import_void_elements = __toESM(require_void_elements());
+
+  // node_modules/react-i18next/dist/es/utils.js
+  var warn = (i18n, code, msg, rest) => {
+    const args = [msg, {
+      code,
+      ...rest || {}
+    }];
+    if (i18n?.services?.logger?.forward) {
+      return i18n.services.logger.forward(args, "warn", "react-i18next::", true);
+    }
+    if (isString(args[0])) args[0] = `react-i18next:: ${args[0]}`;
+    if (i18n?.services?.logger?.warn) {
+      i18n.services.logger.warn(...args);
+    } else if (console?.warn) {
+      console.warn(...args);
+    }
+  };
+  var alreadyWarned2 = {};
+  var warnOnce = (i18n, code, msg, rest) => {
+    if (isString(msg) && alreadyWarned2[msg]) return;
+    if (isString(msg)) alreadyWarned2[msg] = /* @__PURE__ */ new Date();
+    warn(i18n, code, msg, rest);
+  };
+  var loadedClb = (i18n, cb) => () => {
+    if (i18n.isInitialized) {
+      cb();
+    } else {
+      const initialized = () => {
+        setTimeout(() => {
+          i18n.off("initialized", initialized);
+        }, 0);
+        cb();
+      };
+      i18n.on("initialized", initialized);
+    }
+  };
+  var loadNamespaces = (i18n, ns, cb) => {
+    i18n.loadNamespaces(ns, loadedClb(i18n, cb));
+  };
+  var loadLanguages = (i18n, lng, ns, cb) => {
+    if (isString(ns)) ns = [ns];
+    if (i18n.options.preload && i18n.options.preload.indexOf(lng) > -1) return loadNamespaces(i18n, ns, cb);
+    ns.forEach((n) => {
+      if (i18n.options.ns.indexOf(n) < 0) i18n.options.ns.push(n);
+    });
+    i18n.loadLanguages(lng, loadedClb(i18n, cb));
+  };
+  var hasLoadedNamespace = (ns, i18n, options = {}) => {
+    if (!i18n.languages || !i18n.languages.length) {
+      warnOnce(i18n, "NO_LANGUAGES", "i18n.languages were undefined or empty", {
+        languages: i18n.languages
+      });
+      return true;
+    }
+    return i18n.hasLoadedNamespace(ns, {
+      lng: options.lng,
+      precheck: (i18nInstance2, loadNotPending) => {
+        if (options.bindI18n?.indexOf("languageChanging") > -1 && i18nInstance2.services.backendConnector.backend && i18nInstance2.isLanguageChangingTo && !loadNotPending(i18nInstance2.isLanguageChangingTo, ns)) return false;
+      }
+    });
+  };
+  var isString = (obj) => typeof obj === "string";
+  var isObject = (obj) => typeof obj === "object" && obj !== null;
+
+  // node_modules/react-i18next/dist/es/unescape.js
+  var matchHtmlEntity = /&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34|nbsp|#160|copy|#169|reg|#174|hellip|#8230|#x2F|#47);/g;
+  var htmlEntities = {
+    "&amp;": "&",
+    "&#38;": "&",
+    "&lt;": "<",
+    "&#60;": "<",
+    "&gt;": ">",
+    "&#62;": ">",
+    "&apos;": "'",
+    "&#39;": "'",
+    "&quot;": '"',
+    "&#34;": '"',
+    "&nbsp;": " ",
+    "&#160;": " ",
+    "&copy;": "\xA9",
+    "&#169;": "\xA9",
+    "&reg;": "\xAE",
+    "&#174;": "\xAE",
+    "&hellip;": "\u2026",
+    "&#8230;": "\u2026",
+    "&#x2F;": "/",
+    "&#47;": "/"
+  };
+  var unescapeHtmlEntity = (m) => htmlEntities[m];
+  var unescape = (text) => text.replace(matchHtmlEntity, unescapeHtmlEntity);
+
+  // node_modules/react-i18next/dist/es/defaults.js
+  var defaultOptions = {
+    bindI18n: "languageChanged",
+    bindI18nStore: "",
+    transEmptyNodeValue: "",
+    transSupportBasicHtmlNodes: true,
+    transWrapTextNodes: "",
+    transKeepBasicHtmlNodesFor: ["br", "strong", "i", "p"],
+    useSuspense: true,
+    unescape
+  };
+  var setDefaults = (options = {}) => {
+    defaultOptions = {
+      ...defaultOptions,
+      ...options
+    };
+  };
+  var getDefaults = () => defaultOptions;
+
+  // node_modules/react-i18next/dist/es/i18nInstance.js
+  var i18nInstance;
+  var setI18n = (instance2) => {
+    i18nInstance = instance2;
+  };
+  var getI18n = () => i18nInstance;
+
+  // node_modules/react-i18next/dist/es/context.js
+  var import_react3 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/initReactI18next.js
+  var initReactI18next = {
+    type: "3rdParty",
+    init(instance2) {
+      setDefaults(instance2.options.react);
+      setI18n(instance2);
+    }
+  };
+
+  // node_modules/react-i18next/dist/es/context.js
+  var I18nContext = (0, import_react3.createContext)();
+  var ReportNamespaces = class {
+    constructor() {
+      this.usedNamespaces = {};
+    }
+    addUsedNamespaces(namespaces) {
+      namespaces.forEach((ns) => {
+        if (!this.usedNamespaces[ns]) this.usedNamespaces[ns] = true;
+      });
+    }
+    getUsedNamespaces() {
+      return Object.keys(this.usedNamespaces);
+    }
+  };
+
+  // node_modules/react-i18next/dist/es/useTranslation.js
+  var import_react5 = __toESM(require_react(), 1);
+  var usePrevious = (value, ignore) => {
+    const ref = (0, import_react5.useRef)();
+    (0, import_react5.useEffect)(() => {
+      ref.current = ignore ? ref.current : value;
+    }, [value, ignore]);
+    return ref.current;
+  };
+  var alwaysNewT = (i18n, language, namespace, keyPrefix) => i18n.getFixedT(language, namespace, keyPrefix);
+  var useMemoizedT = (i18n, language, namespace, keyPrefix) => (0, import_react5.useCallback)(alwaysNewT(i18n, language, namespace, keyPrefix), [i18n, language, namespace, keyPrefix]);
+  var useTranslation = (ns, props = {}) => {
+    const {
+      i18n: i18nFromProps
+    } = props;
+    const {
+      i18n: i18nFromContext,
+      defaultNS: defaultNSFromContext
+    } = (0, import_react5.useContext)(I18nContext) || {};
+    const i18n = i18nFromProps || i18nFromContext || getI18n();
+    if (i18n && !i18n.reportNamespaces) i18n.reportNamespaces = new ReportNamespaces();
+    if (!i18n) {
+      warnOnce(i18n, "NO_I18NEXT_INSTANCE", "useTranslation: You will need to pass in an i18next instance by using initReactI18next");
+      const notReadyT = (k, optsOrDefaultValue) => {
+        if (isString(optsOrDefaultValue)) return optsOrDefaultValue;
+        if (isObject(optsOrDefaultValue) && isString(optsOrDefaultValue.defaultValue)) return optsOrDefaultValue.defaultValue;
+        return Array.isArray(k) ? k[k.length - 1] : k;
+      };
+      const retNotReady = [notReadyT, {}, false];
+      retNotReady.t = notReadyT;
+      retNotReady.i18n = {};
+      retNotReady.ready = false;
+      return retNotReady;
+    }
+    if (i18n.options.react?.wait) warnOnce(i18n, "DEPRECATED_OPTION", "useTranslation: It seems you are still using the old wait option, you may migrate to the new useSuspense behaviour.");
+    const i18nOptions = {
+      ...getDefaults(),
+      ...i18n.options.react,
+      ...props
+    };
+    const {
+      useSuspense,
+      keyPrefix
+    } = i18nOptions;
+    let namespaces = ns || defaultNSFromContext || i18n.options?.defaultNS;
+    namespaces = isString(namespaces) ? [namespaces] : namespaces || ["translation"];
+    i18n.reportNamespaces.addUsedNamespaces?.(namespaces);
+    const ready = (i18n.isInitialized || i18n.initializedStoreOnce) && namespaces.every((n) => hasLoadedNamespace(n, i18n, i18nOptions));
+    const memoGetT = useMemoizedT(i18n, props.lng || null, i18nOptions.nsMode === "fallback" ? namespaces : namespaces[0], keyPrefix);
+    const getT = () => memoGetT;
+    const getNewT = () => alwaysNewT(i18n, props.lng || null, i18nOptions.nsMode === "fallback" ? namespaces : namespaces[0], keyPrefix);
+    const [t2, setT] = (0, import_react5.useState)(getT);
+    let joinedNS = namespaces.join();
+    if (props.lng) joinedNS = `${props.lng}${joinedNS}`;
+    const previousJoinedNS = usePrevious(joinedNS);
+    const isMounted = (0, import_react5.useRef)(true);
+    (0, import_react5.useEffect)(() => {
+      const {
+        bindI18n,
+        bindI18nStore
+      } = i18nOptions;
+      isMounted.current = true;
+      if (!ready && !useSuspense) {
+        if (props.lng) {
+          loadLanguages(i18n, props.lng, namespaces, () => {
+            if (isMounted.current) setT(getNewT);
+          });
+        } else {
+          loadNamespaces(i18n, namespaces, () => {
+            if (isMounted.current) setT(getNewT);
+          });
+        }
+      }
+      if (ready && previousJoinedNS && previousJoinedNS !== joinedNS && isMounted.current) {
+        setT(getNewT);
+      }
+      const boundReset = () => {
+        if (isMounted.current) setT(getNewT);
+      };
+      if (bindI18n) i18n?.on(bindI18n, boundReset);
+      if (bindI18nStore) i18n?.store.on(bindI18nStore, boundReset);
+      return () => {
+        isMounted.current = false;
+        if (i18n) bindI18n?.split(" ").forEach((e2) => i18n.off(e2, boundReset));
+        if (bindI18nStore && i18n) bindI18nStore.split(" ").forEach((e2) => i18n.store.off(e2, boundReset));
+      };
+    }, [i18n, joinedNS]);
+    (0, import_react5.useEffect)(() => {
+      if (isMounted.current && ready) {
+        setT(getT);
+      }
+    }, [i18n, keyPrefix, ready]);
+    const ret = [t2, i18n, ready];
+    ret.t = t2;
+    ret.i18n = i18n;
+    ret.ready = ready;
+    if (ready) return ret;
+    if (!ready && !useSuspense) return ret;
+    throw new Promise((resolve) => {
+      if (props.lng) {
+        loadLanguages(i18n, props.lng, namespaces, () => resolve());
+      } else {
+        loadNamespaces(i18n, namespaces, () => resolve());
+      }
+    });
+  };
+
+  // node_modules/react-i18next/dist/es/withTranslation.js
+  var import_react6 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/I18nextProvider.js
+  var import_react7 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/withSSR.js
+  var import_react9 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/useSSR.js
+  var import_react8 = __toESM(require_react(), 1);
 
   // src/common/Header.tsx
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
   var Header = () => {
+    const { t: t2, i18n } = useTranslation();
     const {
       NetMessageCount = 0,
       EchoMessageCount = 0,
@@ -22717,11 +23012,11 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     } = useSelector((state) => state.summary);
     const items = [
       {
-        name: "\u0413\u043B\u0430\u0432\u043D\u0430\u044F",
+        name: t2("Home"),
         path: "/"
       },
       {
-        name: "\u041B\u0438\u0447\u043D\u044B\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F",
+        name: t2("Netmail"),
         path: "/netmail",
         itemCount: NetMessageCount
       },
@@ -23104,7 +23399,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
   var EchoIndex = () => {
     const areas = useSelector((state) => state.areas) ?? [];
-    (0, import_react2.useEffect)(() => {
+    (0, import_react10.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_INDEX"
       });
@@ -23145,7 +23440,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   };
 
   // src/pages/echomail/EchoMsgIndex.tsx
-  var import_react3 = __toESM(require_react(), 1);
+  var import_react11 = __toESM(require_react(), 1);
 
   // src/usils.ts
   function stringUpper(str) {
@@ -23153,13 +23448,17 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   }
   function makeShort(str) {
     const parts = str.split(" ");
-    const chars = [];
+    const chars2 = [];
     for (const part of parts) {
       if (part.length > 0) {
-        chars.push(stringUpper(part[0]));
+        chars2.push(stringUpper(part[0]));
       }
     }
-    return chars.join("");
+    const charLength = chars2.length;
+    if (charLength > 2) {
+      return `${chars2[0]}${chars2[charLength - 1]}`;
+    }
+    return chars2.join("");
   }
   function stringToHexColor(input) {
     let hash = 0;
@@ -23175,6 +23474,26 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     };
     return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
   }
+  function adjustBrightness(hexColor, factor) {
+    if (!/^#[0-9A-Fa-f]{6}$/.test(hexColor)) {
+      throw new Error("\u041D\u0435\u043A\u043E\u0440\u0440\u0435\u043A\u0442\u043D\u044B\u0439 \u0444\u043E\u0440\u043C\u0430\u0442 \u0446\u0432\u0435\u0442\u0430. \u041E\u0436\u0438\u0434\u0430\u0435\u0442\u0441\u044F #rrggbb.");
+    }
+    const r = parseInt(hexColor.slice(1, 3), 16);
+    const g = parseInt(hexColor.slice(3, 5), 16);
+    const b = parseInt(hexColor.slice(5, 7), 16);
+    const adjustComponent = (value) => {
+      const newValue = value * factor;
+      return Math.min(255, Math.max(0, Math.round(newValue)));
+    };
+    const newR = adjustComponent(r);
+    const newG = adjustComponent(g);
+    const newB = adjustComponent(b);
+    const toHex = (value) => {
+      const hex = value.toString(16);
+      return hex.length === 1 ? "0" + hex : hex;
+    };
+    return `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`;
+  }
 
   // src/pages/echomail/EchoMsgIndex.tsx
   var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
@@ -23182,7 +23501,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     const navigate = useNavigate();
     const areas = useSelector((state) => state.areas);
     const messages = useSelector((state) => state.messages);
-    (0, import_react3.useEffect)(() => {
+    (0, import_react11.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_INDEX"
       });
@@ -23191,7 +23510,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     console.log(`echoTag = `, echoTag);
     const area = areas.find((area2) => area2.area_index === echoTag);
     console.log(`area = `, area);
-    (0, import_react3.useEffect)(() => {
+    (0, import_react11.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_MSG_INDEX",
         echoTag
@@ -23229,8 +23548,10 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
             },
             columns: [
               { className: "rowUserpic", styles: (row) => {
+                const color = stringToHexColor(`${row.from}`);
+                const darkColor = adjustBrightness(color, 0.5);
                 return {
-                  backgroundColor: stringToHexColor(`${row.from}`)
+                  backgroundColor: darkColor
                 };
               }, render: (row) => makeShort(row.from) },
               { className: "rowFrom", key: "from" },
@@ -23250,10 +23571,10 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   };
 
   // src/pages/echomail/EchoMsgView.tsx
-  var import_react5 = __toESM(require_react(), 1);
+  var import_react13 = __toESM(require_react(), 1);
 
   // src/pages/echomail/Message.tsx
-  var import_react4 = __toESM(require_react(), 1);
+  var import_react12 = __toESM(require_react(), 1);
   var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
   function detectLineEnding(content) {
     if (/\r\n/.test(content)) {
@@ -23387,7 +23708,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     const { body, area, echo } = view;
     const { echoTag, msgId } = useParams();
     console.log(`echoTag = ${echoTag} msgId = ${msgId}`);
-    const [state, setState] = (0, import_react4.useState)({
+    const [state, setState] = (0, import_react12.useState)({
       records: [],
       maxLine: 0,
       line: 0
@@ -23398,7 +23719,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     const handleNextMessage = () => {
       console.log(`\u041F\u0435\u0440\u0435\u0445\u043E\u0434 \u043D\u0430 \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435.`);
     };
-    (0, import_react4.useEffect)(() => {
+    (0, import_react12.useEffect)(() => {
       const removeHandler = useInput((event) => {
         if (event.key === "ArrowLeft") {
           handlePreviousMessage();
@@ -23413,7 +23734,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         removeHandler();
       };
     }, []);
-    (0, import_react4.useEffect)(() => {
+    (0, import_react12.useEffect)(() => {
       const records = parseLines(body);
       setState((prev) => ({
         ...prev,
@@ -23437,7 +23758,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         line: prev.line < prev.maxLine ? prev.line + 1 : prev.line
       }));
     };
-    (0, import_react4.useEffect)(() => {
+    (0, import_react12.useEffect)(() => {
       const removeHotkeys = useInput((event) => {
         if (event.key === "ArrowUp") {
           handlePrevLine();
@@ -23484,7 +23805,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     const messages = useSelector((state) => state.messages);
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
-    (0, import_react5.useEffect)(() => {
+    (0, import_react13.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_MSG_VIEW",
         echoTag,
@@ -23576,10 +23897,2264 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_jsx_runtime13.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Header, {}) });
   };
 
+  // node_modules/i18next/dist/esm/i18next.js
+  var isString2 = (obj) => typeof obj === "string";
+  var defer = () => {
+    let res;
+    let rej;
+    const promise = new Promise((resolve, reject) => {
+      res = resolve;
+      rej = reject;
+    });
+    promise.resolve = res;
+    promise.reject = rej;
+    return promise;
+  };
+  var makeString = (object) => {
+    if (object == null) return "";
+    return "" + object;
+  };
+  var copy = (a, s, t2) => {
+    a.forEach((m) => {
+      if (s[m]) t2[m] = s[m];
+    });
+  };
+  var lastOfPathSeparatorRegExp = /###/g;
+  var cleanKey = (key) => key && key.indexOf("###") > -1 ? key.replace(lastOfPathSeparatorRegExp, ".") : key;
+  var canNotTraverseDeeper = (object) => !object || isString2(object);
+  var getLastOfPath = (object, path, Empty) => {
+    const stack = !isString2(path) ? path : path.split(".");
+    let stackIndex = 0;
+    while (stackIndex < stack.length - 1) {
+      if (canNotTraverseDeeper(object)) return {};
+      const key = cleanKey(stack[stackIndex]);
+      if (!object[key] && Empty) object[key] = new Empty();
+      if (Object.prototype.hasOwnProperty.call(object, key)) {
+        object = object[key];
+      } else {
+        object = {};
+      }
+      ++stackIndex;
+    }
+    if (canNotTraverseDeeper(object)) return {};
+    return {
+      obj: object,
+      k: cleanKey(stack[stackIndex])
+    };
+  };
+  var setPath = (object, path, newValue) => {
+    const {
+      obj,
+      k
+    } = getLastOfPath(object, path, Object);
+    if (obj !== void 0 || path.length === 1) {
+      obj[k] = newValue;
+      return;
+    }
+    let e2 = path[path.length - 1];
+    let p = path.slice(0, path.length - 1);
+    let last = getLastOfPath(object, p, Object);
+    while (last.obj === void 0 && p.length) {
+      e2 = `${p[p.length - 1]}.${e2}`;
+      p = p.slice(0, p.length - 1);
+      last = getLastOfPath(object, p, Object);
+      if (last?.obj && typeof last.obj[`${last.k}.${e2}`] !== "undefined") {
+        last.obj = void 0;
+      }
+    }
+    last.obj[`${last.k}.${e2}`] = newValue;
+  };
+  var pushPath = (object, path, newValue, concat) => {
+    const {
+      obj,
+      k
+    } = getLastOfPath(object, path, Object);
+    obj[k] = obj[k] || [];
+    obj[k].push(newValue);
+  };
+  var getPath = (object, path) => {
+    const {
+      obj,
+      k
+    } = getLastOfPath(object, path);
+    if (!obj) return void 0;
+    if (!Object.prototype.hasOwnProperty.call(obj, k)) return void 0;
+    return obj[k];
+  };
+  var getPathWithDefaults = (data2, defaultData, key) => {
+    const value = getPath(data2, key);
+    if (value !== void 0) {
+      return value;
+    }
+    return getPath(defaultData, key);
+  };
+  var deepExtend = (target, source, overwrite) => {
+    for (const prop in source) {
+      if (prop !== "__proto__" && prop !== "constructor") {
+        if (prop in target) {
+          if (isString2(target[prop]) || target[prop] instanceof String || isString2(source[prop]) || source[prop] instanceof String) {
+            if (overwrite) target[prop] = source[prop];
+          } else {
+            deepExtend(target[prop], source[prop], overwrite);
+          }
+        } else {
+          target[prop] = source[prop];
+        }
+      }
+    }
+    return target;
+  };
+  var regexEscape = (str) => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+  var _entityMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+    "/": "&#x2F;"
+  };
+  var escape = (data2) => {
+    if (isString2(data2)) {
+      return data2.replace(/[&<>"'\/]/g, (s) => _entityMap[s]);
+    }
+    return data2;
+  };
+  var RegExpCache = class {
+    constructor(capacity) {
+      this.capacity = capacity;
+      this.regExpMap = /* @__PURE__ */ new Map();
+      this.regExpQueue = [];
+    }
+    getRegExp(pattern) {
+      const regExpFromCache = this.regExpMap.get(pattern);
+      if (regExpFromCache !== void 0) {
+        return regExpFromCache;
+      }
+      const regExpNew = new RegExp(pattern);
+      if (this.regExpQueue.length === this.capacity) {
+        this.regExpMap.delete(this.regExpQueue.shift());
+      }
+      this.regExpMap.set(pattern, regExpNew);
+      this.regExpQueue.push(pattern);
+      return regExpNew;
+    }
+  };
+  var chars = [" ", ",", "?", "!", ";"];
+  var looksLikeObjectPathRegExpCache = new RegExpCache(20);
+  var looksLikeObjectPath = (key, nsSeparator, keySeparator) => {
+    nsSeparator = nsSeparator || "";
+    keySeparator = keySeparator || "";
+    const possibleChars = chars.filter((c) => nsSeparator.indexOf(c) < 0 && keySeparator.indexOf(c) < 0);
+    if (possibleChars.length === 0) return true;
+    const r = looksLikeObjectPathRegExpCache.getRegExp(`(${possibleChars.map((c) => c === "?" ? "\\?" : c).join("|")})`);
+    let matched = !r.test(key);
+    if (!matched) {
+      const ki = key.indexOf(keySeparator);
+      if (ki > 0 && !r.test(key.substring(0, ki))) {
+        matched = true;
+      }
+    }
+    return matched;
+  };
+  var deepFind = function(obj, path) {
+    let keySeparator = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : ".";
+    if (!obj) return void 0;
+    if (obj[path]) {
+      if (!Object.prototype.hasOwnProperty.call(obj, path)) return void 0;
+      return obj[path];
+    }
+    const tokens = path.split(keySeparator);
+    let current = obj;
+    for (let i = 0; i < tokens.length; ) {
+      if (!current || typeof current !== "object") {
+        return void 0;
+      }
+      let next;
+      let nextPath = "";
+      for (let j = i; j < tokens.length; ++j) {
+        if (j !== i) {
+          nextPath += keySeparator;
+        }
+        nextPath += tokens[j];
+        next = current[nextPath];
+        if (next !== void 0) {
+          if (["string", "number", "boolean"].indexOf(typeof next) > -1 && j < tokens.length - 1) {
+            continue;
+          }
+          i += j - i + 1;
+          break;
+        }
+      }
+      current = next;
+    }
+    return current;
+  };
+  var getCleanedCode = (code) => code?.replace("_", "-");
+  var consoleLogger = {
+    type: "logger",
+    log(args) {
+      this.output("log", args);
+    },
+    warn(args) {
+      this.output("warn", args);
+    },
+    error(args) {
+      this.output("error", args);
+    },
+    output(type, args) {
+      console?.[type]?.apply?.(console, args);
+    }
+  };
+  var Logger = class _Logger {
+    constructor(concreteLogger) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+      this.init(concreteLogger, options);
+    }
+    init(concreteLogger) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+      this.prefix = options.prefix || "i18next:";
+      this.logger = concreteLogger || consoleLogger;
+      this.options = options;
+      this.debug = options.debug;
+    }
+    log() {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+      return this.forward(args, "log", "", true);
+    }
+    warn() {
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+      return this.forward(args, "warn", "", true);
+    }
+    error() {
+      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        args[_key3] = arguments[_key3];
+      }
+      return this.forward(args, "error", "");
+    }
+    deprecate() {
+      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        args[_key4] = arguments[_key4];
+      }
+      return this.forward(args, "warn", "WARNING DEPRECATED: ", true);
+    }
+    forward(args, lvl, prefix, debugOnly) {
+      if (debugOnly && !this.debug) return null;
+      if (isString2(args[0])) args[0] = `${prefix}${this.prefix} ${args[0]}`;
+      return this.logger[lvl](args);
+    }
+    create(moduleName) {
+      return new _Logger(this.logger, {
+        ...{
+          prefix: `${this.prefix}:${moduleName}:`
+        },
+        ...this.options
+      });
+    }
+    clone(options) {
+      options = options || this.options;
+      options.prefix = options.prefix || this.prefix;
+      return new _Logger(this.logger, options);
+    }
+  };
+  var baseLogger = new Logger();
+  var EventEmitter = class {
+    constructor() {
+      this.observers = {};
+    }
+    on(events, listener) {
+      events.split(" ").forEach((event) => {
+        if (!this.observers[event]) this.observers[event] = /* @__PURE__ */ new Map();
+        const numListeners = this.observers[event].get(listener) || 0;
+        this.observers[event].set(listener, numListeners + 1);
+      });
+      return this;
+    }
+    off(event, listener) {
+      if (!this.observers[event]) return;
+      if (!listener) {
+        delete this.observers[event];
+        return;
+      }
+      this.observers[event].delete(listener);
+    }
+    emit(event) {
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+      if (this.observers[event]) {
+        const cloned = Array.from(this.observers[event].entries());
+        cloned.forEach((_ref) => {
+          let [observer, numTimesAdded] = _ref;
+          for (let i = 0; i < numTimesAdded; i++) {
+            observer(...args);
+          }
+        });
+      }
+      if (this.observers["*"]) {
+        const cloned = Array.from(this.observers["*"].entries());
+        cloned.forEach((_ref2) => {
+          let [observer, numTimesAdded] = _ref2;
+          for (let i = 0; i < numTimesAdded; i++) {
+            observer.apply(observer, [event, ...args]);
+          }
+        });
+      }
+    }
+  };
+  var ResourceStore = class extends EventEmitter {
+    constructor(data2) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {
+        ns: ["translation"],
+        defaultNS: "translation"
+      };
+      super();
+      this.data = data2 || {};
+      this.options = options;
+      if (this.options.keySeparator === void 0) {
+        this.options.keySeparator = ".";
+      }
+      if (this.options.ignoreJSONStructure === void 0) {
+        this.options.ignoreJSONStructure = true;
+      }
+    }
+    addNamespaces(ns) {
+      if (this.options.ns.indexOf(ns) < 0) {
+        this.options.ns.push(ns);
+      }
+    }
+    removeNamespaces(ns) {
+      const index = this.options.ns.indexOf(ns);
+      if (index > -1) {
+        this.options.ns.splice(index, 1);
+      }
+    }
+    getResource(lng, ns, key) {
+      let options = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
+      const keySeparator = options.keySeparator !== void 0 ? options.keySeparator : this.options.keySeparator;
+      const ignoreJSONStructure = options.ignoreJSONStructure !== void 0 ? options.ignoreJSONStructure : this.options.ignoreJSONStructure;
+      let path;
+      if (lng.indexOf(".") > -1) {
+        path = lng.split(".");
+      } else {
+        path = [lng, ns];
+        if (key) {
+          if (Array.isArray(key)) {
+            path.push(...key);
+          } else if (isString2(key) && keySeparator) {
+            path.push(...key.split(keySeparator));
+          } else {
+            path.push(key);
+          }
+        }
+      }
+      const result = getPath(this.data, path);
+      if (!result && !ns && !key && lng.indexOf(".") > -1) {
+        lng = path[0];
+        ns = path[1];
+        key = path.slice(2).join(".");
+      }
+      if (result || !ignoreJSONStructure || !isString2(key)) return result;
+      return deepFind(this.data?.[lng]?.[ns], key, keySeparator);
+    }
+    addResource(lng, ns, key, value) {
+      let options = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : {
+        silent: false
+      };
+      const keySeparator = options.keySeparator !== void 0 ? options.keySeparator : this.options.keySeparator;
+      let path = [lng, ns];
+      if (key) path = path.concat(keySeparator ? key.split(keySeparator) : key);
+      if (lng.indexOf(".") > -1) {
+        path = lng.split(".");
+        value = ns;
+        ns = path[1];
+      }
+      this.addNamespaces(ns);
+      setPath(this.data, path, value);
+      if (!options.silent) this.emit("added", lng, ns, key, value);
+    }
+    addResources(lng, ns, resources2) {
+      let options = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {
+        silent: false
+      };
+      for (const m in resources2) {
+        if (isString2(resources2[m]) || Array.isArray(resources2[m])) this.addResource(lng, ns, m, resources2[m], {
+          silent: true
+        });
+      }
+      if (!options.silent) this.emit("added", lng, ns, resources2);
+    }
+    addResourceBundle(lng, ns, resources2, deep, overwrite) {
+      let options = arguments.length > 5 && arguments[5] !== void 0 ? arguments[5] : {
+        silent: false,
+        skipCopy: false
+      };
+      let path = [lng, ns];
+      if (lng.indexOf(".") > -1) {
+        path = lng.split(".");
+        deep = resources2;
+        resources2 = ns;
+        ns = path[1];
+      }
+      this.addNamespaces(ns);
+      let pack = getPath(this.data, path) || {};
+      if (!options.skipCopy) resources2 = JSON.parse(JSON.stringify(resources2));
+      if (deep) {
+        deepExtend(pack, resources2, overwrite);
+      } else {
+        pack = {
+          ...pack,
+          ...resources2
+        };
+      }
+      setPath(this.data, path, pack);
+      if (!options.silent) this.emit("added", lng, ns, resources2);
+    }
+    removeResourceBundle(lng, ns) {
+      if (this.hasResourceBundle(lng, ns)) {
+        delete this.data[lng][ns];
+      }
+      this.removeNamespaces(ns);
+      this.emit("removed", lng, ns);
+    }
+    hasResourceBundle(lng, ns) {
+      return this.getResource(lng, ns) !== void 0;
+    }
+    getResourceBundle(lng, ns) {
+      if (!ns) ns = this.options.defaultNS;
+      return this.getResource(lng, ns);
+    }
+    getDataByLanguage(lng) {
+      return this.data[lng];
+    }
+    hasLanguageSomeTranslations(lng) {
+      const data2 = this.getDataByLanguage(lng);
+      const n = data2 && Object.keys(data2) || [];
+      return !!n.find((v) => data2[v] && Object.keys(data2[v]).length > 0);
+    }
+    toJSON() {
+      return this.data;
+    }
+  };
+  var postProcessor = {
+    processors: {},
+    addPostProcessor(module) {
+      this.processors[module.name] = module;
+    },
+    handle(processors, value, key, options, translator) {
+      processors.forEach((processor) => {
+        value = this.processors[processor]?.process(value, key, options, translator) ?? value;
+      });
+      return value;
+    }
+  };
+  var checkedLoadedFor = {};
+  var shouldHandleAsObject = (res) => !isString2(res) && typeof res !== "boolean" && typeof res !== "number";
+  var Translator = class _Translator extends EventEmitter {
+    constructor(services) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+      super();
+      copy(["resourceStore", "languageUtils", "pluralResolver", "interpolator", "backendConnector", "i18nFormat", "utils"], services, this);
+      this.options = options;
+      if (this.options.keySeparator === void 0) {
+        this.options.keySeparator = ".";
+      }
+      this.logger = baseLogger.create("translator");
+    }
+    changeLanguage(lng) {
+      if (lng) this.language = lng;
+    }
+    exists(key) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {
+        interpolation: {}
+      };
+      if (key == null) {
+        return false;
+      }
+      const resolved = this.resolve(key, options);
+      return resolved?.res !== void 0;
+    }
+    extractFromKey(key, options) {
+      let nsSeparator = options.nsSeparator !== void 0 ? options.nsSeparator : this.options.nsSeparator;
+      if (nsSeparator === void 0) nsSeparator = ":";
+      const keySeparator = options.keySeparator !== void 0 ? options.keySeparator : this.options.keySeparator;
+      let namespaces = options.ns || this.options.defaultNS || [];
+      const wouldCheckForNsInKey = nsSeparator && key.indexOf(nsSeparator) > -1;
+      const seemsNaturalLanguage = !this.options.userDefinedKeySeparator && !options.keySeparator && !this.options.userDefinedNsSeparator && !options.nsSeparator && !looksLikeObjectPath(key, nsSeparator, keySeparator);
+      if (wouldCheckForNsInKey && !seemsNaturalLanguage) {
+        const m = key.match(this.interpolator.nestingRegexp);
+        if (m && m.length > 0) {
+          return {
+            key,
+            namespaces: isString2(namespaces) ? [namespaces] : namespaces
+          };
+        }
+        const parts = key.split(nsSeparator);
+        if (nsSeparator !== keySeparator || nsSeparator === keySeparator && this.options.ns.indexOf(parts[0]) > -1) namespaces = parts.shift();
+        key = parts.join(keySeparator);
+      }
+      return {
+        key,
+        namespaces: isString2(namespaces) ? [namespaces] : namespaces
+      };
+    }
+    translate(keys, options, lastKey) {
+      if (typeof options !== "object" && this.options.overloadTranslationOptionHandler) {
+        options = this.options.overloadTranslationOptionHandler(arguments);
+      }
+      if (typeof options === "object") options = {
+        ...options
+      };
+      if (!options) options = {};
+      if (keys == null) return "";
+      if (!Array.isArray(keys)) keys = [String(keys)];
+      const returnDetails = options.returnDetails !== void 0 ? options.returnDetails : this.options.returnDetails;
+      const keySeparator = options.keySeparator !== void 0 ? options.keySeparator : this.options.keySeparator;
+      const {
+        key,
+        namespaces
+      } = this.extractFromKey(keys[keys.length - 1], options);
+      const namespace = namespaces[namespaces.length - 1];
+      const lng = options.lng || this.language;
+      const appendNamespaceToCIMode = options.appendNamespaceToCIMode || this.options.appendNamespaceToCIMode;
+      if (lng?.toLowerCase() === "cimode") {
+        if (appendNamespaceToCIMode) {
+          const nsSeparator = options.nsSeparator || this.options.nsSeparator;
+          if (returnDetails) {
+            return {
+              res: `${namespace}${nsSeparator}${key}`,
+              usedKey: key,
+              exactUsedKey: key,
+              usedLng: lng,
+              usedNS: namespace,
+              usedParams: this.getUsedParamsDetails(options)
+            };
+          }
+          return `${namespace}${nsSeparator}${key}`;
+        }
+        if (returnDetails) {
+          return {
+            res: key,
+            usedKey: key,
+            exactUsedKey: key,
+            usedLng: lng,
+            usedNS: namespace,
+            usedParams: this.getUsedParamsDetails(options)
+          };
+        }
+        return key;
+      }
+      const resolved = this.resolve(keys, options);
+      let res = resolved?.res;
+      const resUsedKey = resolved?.usedKey || key;
+      const resExactUsedKey = resolved?.exactUsedKey || key;
+      const noObject = ["[object Number]", "[object Function]", "[object RegExp]"];
+      const joinArrays = options.joinArrays !== void 0 ? options.joinArrays : this.options.joinArrays;
+      const handleAsObjectInI18nFormat = !this.i18nFormat || this.i18nFormat.handleAsObject;
+      const needsPluralHandling = options.count !== void 0 && !isString2(options.count);
+      const hasDefaultValue = _Translator.hasDefaultValue(options);
+      const defaultValueSuffix = needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count, options) : "";
+      const defaultValueSuffixOrdinalFallback = options.ordinal && needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count, {
+        ordinal: false
+      }) : "";
+      const needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0;
+      const defaultValue = needsZeroSuffixLookup && options[`defaultValue${this.options.pluralSeparator}zero`] || options[`defaultValue${defaultValueSuffix}`] || options[`defaultValue${defaultValueSuffixOrdinalFallback}`] || options.defaultValue;
+      let resForObjHndl = res;
+      if (handleAsObjectInI18nFormat && !res && hasDefaultValue) {
+        resForObjHndl = defaultValue;
+      }
+      const handleAsObject = shouldHandleAsObject(resForObjHndl);
+      const resType = Object.prototype.toString.apply(resForObjHndl);
+      if (handleAsObjectInI18nFormat && resForObjHndl && handleAsObject && noObject.indexOf(resType) < 0 && !(isString2(joinArrays) && Array.isArray(resForObjHndl))) {
+        if (!options.returnObjects && !this.options.returnObjects) {
+          if (!this.options.returnedObjectHandler) {
+            this.logger.warn("accessing an object - but returnObjects options is not enabled!");
+          }
+          const r = this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, resForObjHndl, {
+            ...options,
+            ns: namespaces
+          }) : `key '${key} (${this.language})' returned an object instead of string.`;
+          if (returnDetails) {
+            resolved.res = r;
+            resolved.usedParams = this.getUsedParamsDetails(options);
+            return resolved;
+          }
+          return r;
+        }
+        if (keySeparator) {
+          const resTypeIsArray = Array.isArray(resForObjHndl);
+          const copy2 = resTypeIsArray ? [] : {};
+          const newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
+          for (const m in resForObjHndl) {
+            if (Object.prototype.hasOwnProperty.call(resForObjHndl, m)) {
+              const deepKey = `${newKeyToUse}${keySeparator}${m}`;
+              if (hasDefaultValue && !res) {
+                copy2[m] = this.translate(deepKey, {
+                  ...options,
+                  defaultValue: shouldHandleAsObject(defaultValue) ? defaultValue[m] : void 0,
+                  ...{
+                    joinArrays: false,
+                    ns: namespaces
+                  }
+                });
+              } else {
+                copy2[m] = this.translate(deepKey, {
+                  ...options,
+                  ...{
+                    joinArrays: false,
+                    ns: namespaces
+                  }
+                });
+              }
+              if (copy2[m] === deepKey) copy2[m] = resForObjHndl[m];
+            }
+          }
+          res = copy2;
+        }
+      } else if (handleAsObjectInI18nFormat && isString2(joinArrays) && Array.isArray(res)) {
+        res = res.join(joinArrays);
+        if (res) res = this.extendTranslation(res, keys, options, lastKey);
+      } else {
+        let usedDefault = false;
+        let usedKey = false;
+        if (!this.isValidLookup(res) && hasDefaultValue) {
+          usedDefault = true;
+          res = defaultValue;
+        }
+        if (!this.isValidLookup(res)) {
+          usedKey = true;
+          res = key;
+        }
+        const missingKeyNoValueFallbackToKey = options.missingKeyNoValueFallbackToKey || this.options.missingKeyNoValueFallbackToKey;
+        const resForMissing = missingKeyNoValueFallbackToKey && usedKey ? void 0 : res;
+        const updateMissing = hasDefaultValue && defaultValue !== res && this.options.updateMissing;
+        if (usedKey || usedDefault || updateMissing) {
+          this.logger.log(updateMissing ? "updateKey" : "missingKey", lng, namespace, key, updateMissing ? defaultValue : res);
+          if (keySeparator) {
+            const fk = this.resolve(key, {
+              ...options,
+              keySeparator: false
+            });
+            if (fk && fk.res) this.logger.warn("Seems the loaded translations were in flat JSON format instead of nested. Either set keySeparator: false on init or make sure your translations are published in nested format.");
+          }
+          let lngs = [];
+          const fallbackLngs = this.languageUtils.getFallbackCodes(this.options.fallbackLng, options.lng || this.language);
+          if (this.options.saveMissingTo === "fallback" && fallbackLngs && fallbackLngs[0]) {
+            for (let i = 0; i < fallbackLngs.length; i++) {
+              lngs.push(fallbackLngs[i]);
+            }
+          } else if (this.options.saveMissingTo === "all") {
+            lngs = this.languageUtils.toResolveHierarchy(options.lng || this.language);
+          } else {
+            lngs.push(options.lng || this.language);
+          }
+          const send = (l, k, specificDefaultValue) => {
+            const defaultForMissing = hasDefaultValue && specificDefaultValue !== res ? specificDefaultValue : resForMissing;
+            if (this.options.missingKeyHandler) {
+              this.options.missingKeyHandler(l, namespace, k, defaultForMissing, updateMissing, options);
+            } else if (this.backendConnector?.saveMissing) {
+              this.backendConnector.saveMissing(l, namespace, k, defaultForMissing, updateMissing, options);
+            }
+            this.emit("missingKey", l, namespace, k, res);
+          };
+          if (this.options.saveMissing) {
+            if (this.options.saveMissingPlurals && needsPluralHandling) {
+              lngs.forEach((language) => {
+                const suffixes = this.pluralResolver.getSuffixes(language, options);
+                if (needsZeroSuffixLookup && options[`defaultValue${this.options.pluralSeparator}zero`] && suffixes.indexOf(`${this.options.pluralSeparator}zero`) < 0) {
+                  suffixes.push(`${this.options.pluralSeparator}zero`);
+                }
+                suffixes.forEach((suffix) => {
+                  send([language], key + suffix, options[`defaultValue${suffix}`] || defaultValue);
+                });
+              });
+            } else {
+              send(lngs, key, defaultValue);
+            }
+          }
+        }
+        res = this.extendTranslation(res, keys, options, resolved, lastKey);
+        if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = `${namespace}:${key}`;
+        if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
+          res = this.options.parseMissingKeyHandler(this.options.appendNamespaceToMissingKey ? `${namespace}:${key}` : key, usedDefault ? res : void 0);
+        }
+      }
+      if (returnDetails) {
+        resolved.res = res;
+        resolved.usedParams = this.getUsedParamsDetails(options);
+        return resolved;
+      }
+      return res;
+    }
+    extendTranslation(res, key, options, resolved, lastKey) {
+      var _this = this;
+      if (this.i18nFormat?.parse) {
+        res = this.i18nFormat.parse(res, {
+          ...this.options.interpolation.defaultVariables,
+          ...options
+        }, options.lng || this.language || resolved.usedLng, resolved.usedNS, resolved.usedKey, {
+          resolved
+        });
+      } else if (!options.skipInterpolation) {
+        if (options.interpolation) this.interpolator.init({
+          ...options,
+          ...{
+            interpolation: {
+              ...this.options.interpolation,
+              ...options.interpolation
+            }
+          }
+        });
+        const skipOnVariables = isString2(res) && (options?.interpolation?.skipOnVariables !== void 0 ? options.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables);
+        let nestBef;
+        if (skipOnVariables) {
+          const nb = res.match(this.interpolator.nestingRegexp);
+          nestBef = nb && nb.length;
+        }
+        let data2 = options.replace && !isString2(options.replace) ? options.replace : options;
+        if (this.options.interpolation.defaultVariables) data2 = {
+          ...this.options.interpolation.defaultVariables,
+          ...data2
+        };
+        res = this.interpolator.interpolate(res, data2, options.lng || this.language || resolved.usedLng, options);
+        if (skipOnVariables) {
+          const na = res.match(this.interpolator.nestingRegexp);
+          const nestAft = na && na.length;
+          if (nestBef < nestAft) options.nest = false;
+        }
+        if (!options.lng && resolved && resolved.res) options.lng = this.language || resolved.usedLng;
+        if (options.nest !== false) res = this.interpolator.nest(res, function() {
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+          if (lastKey?.[0] === args[0] && !options.context) {
+            _this.logger.warn(`It seems you are nesting recursively key: ${args[0]} in key: ${key[0]}`);
+            return null;
+          }
+          return _this.translate(...args, key);
+        }, options);
+        if (options.interpolation) this.interpolator.reset();
+      }
+      const postProcess = options.postProcess || this.options.postProcess;
+      const postProcessorNames = isString2(postProcess) ? [postProcess] : postProcess;
+      if (res != null && postProcessorNames?.length && options.applyPostProcessor !== false) {
+        res = postProcessor.handle(postProcessorNames, res, key, this.options && this.options.postProcessPassResolved ? {
+          i18nResolved: {
+            ...resolved,
+            usedParams: this.getUsedParamsDetails(options)
+          },
+          ...options
+        } : options, this);
+      }
+      return res;
+    }
+    resolve(keys) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+      let found;
+      let usedKey;
+      let exactUsedKey;
+      let usedLng;
+      let usedNS;
+      if (isString2(keys)) keys = [keys];
+      keys.forEach((k) => {
+        if (this.isValidLookup(found)) return;
+        const extracted = this.extractFromKey(k, options);
+        const key = extracted.key;
+        usedKey = key;
+        let namespaces = extracted.namespaces;
+        if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
+        const needsPluralHandling = options.count !== void 0 && !isString2(options.count);
+        const needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0;
+        const needsContextHandling = options.context !== void 0 && (isString2(options.context) || typeof options.context === "number") && options.context !== "";
+        const codes = options.lngs ? options.lngs : this.languageUtils.toResolveHierarchy(options.lng || this.language, options.fallbackLng);
+        namespaces.forEach((ns) => {
+          if (this.isValidLookup(found)) return;
+          usedNS = ns;
+          if (!checkedLoadedFor[`${codes[0]}-${ns}`] && this.utils?.hasLoadedNamespace && !this.utils?.hasLoadedNamespace(usedNS)) {
+            checkedLoadedFor[`${codes[0]}-${ns}`] = true;
+            this.logger.warn(`key "${usedKey}" for languages "${codes.join(", ")}" won't get resolved as namespace "${usedNS}" was not yet loaded`, "This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!");
+          }
+          codes.forEach((code) => {
+            if (this.isValidLookup(found)) return;
+            usedLng = code;
+            const finalKeys = [key];
+            if (this.i18nFormat?.addLookupKeys) {
+              this.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
+            } else {
+              let pluralSuffix;
+              if (needsPluralHandling) pluralSuffix = this.pluralResolver.getSuffix(code, options.count, options);
+              const zeroSuffix = `${this.options.pluralSeparator}zero`;
+              const ordinalPrefix = `${this.options.pluralSeparator}ordinal${this.options.pluralSeparator}`;
+              if (needsPluralHandling) {
+                finalKeys.push(key + pluralSuffix);
+                if (options.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
+                  finalKeys.push(key + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator));
+                }
+                if (needsZeroSuffixLookup) {
+                  finalKeys.push(key + zeroSuffix);
+                }
+              }
+              if (needsContextHandling) {
+                const contextKey = `${key}${this.options.contextSeparator}${options.context}`;
+                finalKeys.push(contextKey);
+                if (needsPluralHandling) {
+                  finalKeys.push(contextKey + pluralSuffix);
+                  if (options.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
+                    finalKeys.push(contextKey + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator));
+                  }
+                  if (needsZeroSuffixLookup) {
+                    finalKeys.push(contextKey + zeroSuffix);
+                  }
+                }
+              }
+            }
+            let possibleKey;
+            while (possibleKey = finalKeys.pop()) {
+              if (!this.isValidLookup(found)) {
+                exactUsedKey = possibleKey;
+                found = this.getResource(code, ns, possibleKey, options);
+              }
+            }
+          });
+        });
+      });
+      return {
+        res: found,
+        usedKey,
+        exactUsedKey,
+        usedLng,
+        usedNS
+      };
+    }
+    isValidLookup(res) {
+      return res !== void 0 && !(!this.options.returnNull && res === null) && !(!this.options.returnEmptyString && res === "");
+    }
+    getResource(code, ns, key) {
+      let options = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
+      if (this.i18nFormat?.getResource) return this.i18nFormat.getResource(code, ns, key, options);
+      return this.resourceStore.getResource(code, ns, key, options);
+    }
+    getUsedParamsDetails() {
+      let options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+      const optionsKeys = ["defaultValue", "ordinal", "context", "replace", "lng", "lngs", "fallbackLng", "ns", "keySeparator", "nsSeparator", "returnObjects", "returnDetails", "joinArrays", "postProcess", "interpolation"];
+      const useOptionsReplaceForData = options.replace && !isString2(options.replace);
+      let data2 = useOptionsReplaceForData ? options.replace : options;
+      if (useOptionsReplaceForData && typeof options.count !== "undefined") {
+        data2.count = options.count;
+      }
+      if (this.options.interpolation.defaultVariables) {
+        data2 = {
+          ...this.options.interpolation.defaultVariables,
+          ...data2
+        };
+      }
+      if (!useOptionsReplaceForData) {
+        data2 = {
+          ...data2
+        };
+        for (const key of optionsKeys) {
+          delete data2[key];
+        }
+      }
+      return data2;
+    }
+    static hasDefaultValue(options) {
+      const prefix = "defaultValue";
+      for (const option in options) {
+        if (Object.prototype.hasOwnProperty.call(options, option) && prefix === option.substring(0, prefix.length) && void 0 !== options[option]) {
+          return true;
+        }
+      }
+      return false;
+    }
+  };
+  var LanguageUtil = class {
+    constructor(options) {
+      this.options = options;
+      this.supportedLngs = this.options.supportedLngs || false;
+      this.logger = baseLogger.create("languageUtils");
+    }
+    getScriptPartFromCode(code) {
+      code = getCleanedCode(code);
+      if (!code || code.indexOf("-") < 0) return null;
+      const p = code.split("-");
+      if (p.length === 2) return null;
+      p.pop();
+      if (p[p.length - 1].toLowerCase() === "x") return null;
+      return this.formatLanguageCode(p.join("-"));
+    }
+    getLanguagePartFromCode(code) {
+      code = getCleanedCode(code);
+      if (!code || code.indexOf("-") < 0) return code;
+      const p = code.split("-");
+      return this.formatLanguageCode(p[0]);
+    }
+    formatLanguageCode(code) {
+      if (isString2(code) && code.indexOf("-") > -1) {
+        let formattedCode;
+        try {
+          formattedCode = Intl.getCanonicalLocales(code)[0];
+        } catch (e2) {
+        }
+        if (formattedCode && this.options.lowerCaseLng) {
+          formattedCode = formattedCode.toLowerCase();
+        }
+        if (formattedCode) return formattedCode;
+        if (this.options.lowerCaseLng) {
+          return code.toLowerCase();
+        }
+        return code;
+      }
+      return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
+    }
+    isSupportedCode(code) {
+      if (this.options.load === "languageOnly" || this.options.nonExplicitSupportedLngs) {
+        code = this.getLanguagePartFromCode(code);
+      }
+      return !this.supportedLngs || !this.supportedLngs.length || this.supportedLngs.indexOf(code) > -1;
+    }
+    getBestMatchFromCodes(codes) {
+      if (!codes) return null;
+      let found;
+      codes.forEach((code) => {
+        if (found) return;
+        const cleanedLng = this.formatLanguageCode(code);
+        if (!this.options.supportedLngs || this.isSupportedCode(cleanedLng)) found = cleanedLng;
+      });
+      if (!found && this.options.supportedLngs) {
+        codes.forEach((code) => {
+          if (found) return;
+          const lngOnly = this.getLanguagePartFromCode(code);
+          if (this.isSupportedCode(lngOnly)) return found = lngOnly;
+          found = this.options.supportedLngs.find((supportedLng) => {
+            if (supportedLng === lngOnly) return supportedLng;
+            if (supportedLng.indexOf("-") < 0 && lngOnly.indexOf("-") < 0) return;
+            if (supportedLng.indexOf("-") > 0 && lngOnly.indexOf("-") < 0 && supportedLng.substring(0, supportedLng.indexOf("-")) === lngOnly) return supportedLng;
+            if (supportedLng.indexOf(lngOnly) === 0 && lngOnly.length > 1) return supportedLng;
+          });
+        });
+      }
+      if (!found) found = this.getFallbackCodes(this.options.fallbackLng)[0];
+      return found;
+    }
+    getFallbackCodes(fallbacks, code) {
+      if (!fallbacks) return [];
+      if (typeof fallbacks === "function") fallbacks = fallbacks(code);
+      if (isString2(fallbacks)) fallbacks = [fallbacks];
+      if (Array.isArray(fallbacks)) return fallbacks;
+      if (!code) return fallbacks.default || [];
+      let found = fallbacks[code];
+      if (!found) found = fallbacks[this.getScriptPartFromCode(code)];
+      if (!found) found = fallbacks[this.formatLanguageCode(code)];
+      if (!found) found = fallbacks[this.getLanguagePartFromCode(code)];
+      if (!found) found = fallbacks.default;
+      return found || [];
+    }
+    toResolveHierarchy(code, fallbackCode) {
+      const fallbackCodes = this.getFallbackCodes(fallbackCode || this.options.fallbackLng || [], code);
+      const codes = [];
+      const addCode = (c) => {
+        if (!c) return;
+        if (this.isSupportedCode(c)) {
+          codes.push(c);
+        } else {
+          this.logger.warn(`rejecting language code not found in supportedLngs: ${c}`);
+        }
+      };
+      if (isString2(code) && (code.indexOf("-") > -1 || code.indexOf("_") > -1)) {
+        if (this.options.load !== "languageOnly") addCode(this.formatLanguageCode(code));
+        if (this.options.load !== "languageOnly" && this.options.load !== "currentOnly") addCode(this.getScriptPartFromCode(code));
+        if (this.options.load !== "currentOnly") addCode(this.getLanguagePartFromCode(code));
+      } else if (isString2(code)) {
+        addCode(this.formatLanguageCode(code));
+      }
+      fallbackCodes.forEach((fc) => {
+        if (codes.indexOf(fc) < 0) addCode(this.formatLanguageCode(fc));
+      });
+      return codes;
+    }
+  };
+  var suffixesOrder = {
+    zero: 0,
+    one: 1,
+    two: 2,
+    few: 3,
+    many: 4,
+    other: 5
+  };
+  var dummyRule = {
+    select: (count) => count === 1 ? "one" : "other",
+    resolvedOptions: () => ({
+      pluralCategories: ["one", "other"]
+    })
+  };
+  var PluralResolver = class {
+    constructor(languageUtils) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+      this.languageUtils = languageUtils;
+      this.options = options;
+      this.logger = baseLogger.create("pluralResolver");
+      this.pluralRulesCache = {};
+    }
+    addRule(lng, obj) {
+      this.rules[lng] = obj;
+    }
+    clearCache() {
+      this.pluralRulesCache = {};
+    }
+    getRule(code) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+      const cleanedCode = getCleanedCode(code === "dev" ? "en" : code);
+      const type = options.ordinal ? "ordinal" : "cardinal";
+      const cacheKey = JSON.stringify({
+        cleanedCode,
+        type
+      });
+      if (cacheKey in this.pluralRulesCache) {
+        return this.pluralRulesCache[cacheKey];
+      }
+      let rule;
+      try {
+        rule = new Intl.PluralRules(cleanedCode, {
+          type
+        });
+      } catch (err) {
+        if (!Intl) {
+          this.logger.error("No Intl support, please use an Intl polyfill!");
+          return dummyRule;
+        }
+        if (!code.match(/-|_/)) return dummyRule;
+        const lngPart = this.languageUtils.getLanguagePartFromCode(code);
+        rule = this.getRule(lngPart, options);
+      }
+      this.pluralRulesCache[cacheKey] = rule;
+      return rule;
+    }
+    needsPlural(code) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+      let rule = this.getRule(code, options);
+      if (!rule) rule = this.getRule("dev", options);
+      return rule?.resolvedOptions().pluralCategories.length > 1;
+    }
+    getPluralFormsOfKey(code, key) {
+      let options = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
+      return this.getSuffixes(code, options).map((suffix) => `${key}${suffix}`);
+    }
+    getSuffixes(code) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+      let rule = this.getRule(code, options);
+      if (!rule) rule = this.getRule("dev", options);
+      if (!rule) return [];
+      return rule.resolvedOptions().pluralCategories.sort((pluralCategory1, pluralCategory2) => suffixesOrder[pluralCategory1] - suffixesOrder[pluralCategory2]).map((pluralCategory) => `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ""}${pluralCategory}`);
+    }
+    getSuffix(code, count) {
+      let options = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
+      const rule = this.getRule(code, options);
+      if (rule) {
+        return `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ""}${rule.select(count)}`;
+      }
+      this.logger.warn(`no plural rule found for: ${code}`);
+      return this.getSuffix("dev", count, options);
+    }
+  };
+  var deepFindWithDefaults = function(data2, defaultData, key) {
+    let keySeparator = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : ".";
+    let ignoreJSONStructure = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : true;
+    let path = getPathWithDefaults(data2, defaultData, key);
+    if (!path && ignoreJSONStructure && isString2(key)) {
+      path = deepFind(data2, key, keySeparator);
+      if (path === void 0) path = deepFind(defaultData, key, keySeparator);
+    }
+    return path;
+  };
+  var regexSafe = (val) => val.replace(/\$/g, "$$$$");
+  var Interpolator = class {
+    constructor() {
+      let options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+      this.logger = baseLogger.create("interpolator");
+      this.options = options;
+      this.format = options?.interpolation?.format || ((value) => value);
+      this.init(options);
+    }
+    init() {
+      let options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+      if (!options.interpolation) options.interpolation = {
+        escapeValue: true
+      };
+      const {
+        escape: escape$1,
+        escapeValue,
+        useRawValueToEscape,
+        prefix,
+        prefixEscaped,
+        suffix,
+        suffixEscaped,
+        formatSeparator,
+        unescapeSuffix,
+        unescapePrefix,
+        nestingPrefix,
+        nestingPrefixEscaped,
+        nestingSuffix,
+        nestingSuffixEscaped,
+        nestingOptionsSeparator,
+        maxReplaces,
+        alwaysFormat
+      } = options.interpolation;
+      this.escape = escape$1 !== void 0 ? escape$1 : escape;
+      this.escapeValue = escapeValue !== void 0 ? escapeValue : true;
+      this.useRawValueToEscape = useRawValueToEscape !== void 0 ? useRawValueToEscape : false;
+      this.prefix = prefix ? regexEscape(prefix) : prefixEscaped || "{{";
+      this.suffix = suffix ? regexEscape(suffix) : suffixEscaped || "}}";
+      this.formatSeparator = formatSeparator || ",";
+      this.unescapePrefix = unescapeSuffix ? "" : unescapePrefix || "-";
+      this.unescapeSuffix = this.unescapePrefix ? "" : unescapeSuffix || "";
+      this.nestingPrefix = nestingPrefix ? regexEscape(nestingPrefix) : nestingPrefixEscaped || regexEscape("$t(");
+      this.nestingSuffix = nestingSuffix ? regexEscape(nestingSuffix) : nestingSuffixEscaped || regexEscape(")");
+      this.nestingOptionsSeparator = nestingOptionsSeparator || ",";
+      this.maxReplaces = maxReplaces || 1e3;
+      this.alwaysFormat = alwaysFormat !== void 0 ? alwaysFormat : false;
+      this.resetRegExp();
+    }
+    reset() {
+      if (this.options) this.init(this.options);
+    }
+    resetRegExp() {
+      const getOrResetRegExp = (existingRegExp, pattern) => {
+        if (existingRegExp?.source === pattern) {
+          existingRegExp.lastIndex = 0;
+          return existingRegExp;
+        }
+        return new RegExp(pattern, "g");
+      };
+      this.regexp = getOrResetRegExp(this.regexp, `${this.prefix}(.+?)${this.suffix}`);
+      this.regexpUnescape = getOrResetRegExp(this.regexpUnescape, `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`);
+      this.nestingRegexp = getOrResetRegExp(this.nestingRegexp, `${this.nestingPrefix}(.+?)${this.nestingSuffix}`);
+    }
+    interpolate(str, data2, lng, options) {
+      let match;
+      let value;
+      let replaces;
+      const defaultData = this.options && this.options.interpolation && this.options.interpolation.defaultVariables || {};
+      const handleFormat = (key) => {
+        if (key.indexOf(this.formatSeparator) < 0) {
+          const path = deepFindWithDefaults(data2, defaultData, key, this.options.keySeparator, this.options.ignoreJSONStructure);
+          return this.alwaysFormat ? this.format(path, void 0, lng, {
+            ...options,
+            ...data2,
+            interpolationkey: key
+          }) : path;
+        }
+        const p = key.split(this.formatSeparator);
+        const k = p.shift().trim();
+        const f = p.join(this.formatSeparator).trim();
+        return this.format(deepFindWithDefaults(data2, defaultData, k, this.options.keySeparator, this.options.ignoreJSONStructure), f, lng, {
+          ...options,
+          ...data2,
+          interpolationkey: k
+        });
+      };
+      this.resetRegExp();
+      const missingInterpolationHandler = options?.missingInterpolationHandler || this.options.missingInterpolationHandler;
+      const skipOnVariables = options?.interpolation?.skipOnVariables !== void 0 ? options.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables;
+      const todos = [{
+        regex: this.regexpUnescape,
+        safeValue: (val) => regexSafe(val)
+      }, {
+        regex: this.regexp,
+        safeValue: (val) => this.escapeValue ? regexSafe(this.escape(val)) : regexSafe(val)
+      }];
+      todos.forEach((todo) => {
+        replaces = 0;
+        while (match = todo.regex.exec(str)) {
+          const matchedVar = match[1].trim();
+          value = handleFormat(matchedVar);
+          if (value === void 0) {
+            if (typeof missingInterpolationHandler === "function") {
+              const temp = missingInterpolationHandler(str, match, options);
+              value = isString2(temp) ? temp : "";
+            } else if (options && Object.prototype.hasOwnProperty.call(options, matchedVar)) {
+              value = "";
+            } else if (skipOnVariables) {
+              value = match[0];
+              continue;
+            } else {
+              this.logger.warn(`missed to pass in variable ${matchedVar} for interpolating ${str}`);
+              value = "";
+            }
+          } else if (!isString2(value) && !this.useRawValueToEscape) {
+            value = makeString(value);
+          }
+          const safeValue = todo.safeValue(value);
+          str = str.replace(match[0], safeValue);
+          if (skipOnVariables) {
+            todo.regex.lastIndex += value.length;
+            todo.regex.lastIndex -= match[0].length;
+          } else {
+            todo.regex.lastIndex = 0;
+          }
+          replaces++;
+          if (replaces >= this.maxReplaces) {
+            break;
+          }
+        }
+      });
+      return str;
+    }
+    nest(str, fc) {
+      let options = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
+      let match;
+      let value;
+      let clonedOptions;
+      const handleHasOptions = (key, inheritedOptions) => {
+        const sep = this.nestingOptionsSeparator;
+        if (key.indexOf(sep) < 0) return key;
+        const c = key.split(new RegExp(`${sep}[ ]*{`));
+        let optionsString = `{${c[1]}`;
+        key = c[0];
+        optionsString = this.interpolate(optionsString, clonedOptions);
+        const matchedSingleQuotes = optionsString.match(/'/g);
+        const matchedDoubleQuotes = optionsString.match(/"/g);
+        if ((matchedSingleQuotes?.length ?? 0) % 2 === 0 && !matchedDoubleQuotes || matchedDoubleQuotes.length % 2 !== 0) {
+          optionsString = optionsString.replace(/'/g, '"');
+        }
+        try {
+          clonedOptions = JSON.parse(optionsString);
+          if (inheritedOptions) clonedOptions = {
+            ...inheritedOptions,
+            ...clonedOptions
+          };
+        } catch (e2) {
+          this.logger.warn(`failed parsing options string in nesting for key ${key}`, e2);
+          return `${key}${sep}${optionsString}`;
+        }
+        if (clonedOptions.defaultValue && clonedOptions.defaultValue.indexOf(this.prefix) > -1) delete clonedOptions.defaultValue;
+        return key;
+      };
+      while (match = this.nestingRegexp.exec(str)) {
+        let formatters = [];
+        clonedOptions = {
+          ...options
+        };
+        clonedOptions = clonedOptions.replace && !isString2(clonedOptions.replace) ? clonedOptions.replace : clonedOptions;
+        clonedOptions.applyPostProcessor = false;
+        delete clonedOptions.defaultValue;
+        let doReduce = false;
+        if (match[0].indexOf(this.formatSeparator) !== -1 && !/{.*}/.test(match[1])) {
+          const r = match[1].split(this.formatSeparator).map((elem) => elem.trim());
+          match[1] = r.shift();
+          formatters = r;
+          doReduce = true;
+        }
+        value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions);
+        if (value && match[0] === str && !isString2(value)) return value;
+        if (!isString2(value)) value = makeString(value);
+        if (!value) {
+          this.logger.warn(`missed to resolve ${match[1]} for nesting ${str}`);
+          value = "";
+        }
+        if (doReduce) {
+          value = formatters.reduce((v, f) => this.format(v, f, options.lng, {
+            ...options,
+            interpolationkey: match[1].trim()
+          }), value.trim());
+        }
+        str = str.replace(match[0], value);
+        this.regexp.lastIndex = 0;
+      }
+      return str;
+    }
+  };
+  var parseFormatStr = (formatStr) => {
+    let formatName = formatStr.toLowerCase().trim();
+    const formatOptions = {};
+    if (formatStr.indexOf("(") > -1) {
+      const p = formatStr.split("(");
+      formatName = p[0].toLowerCase().trim();
+      const optStr = p[1].substring(0, p[1].length - 1);
+      if (formatName === "currency" && optStr.indexOf(":") < 0) {
+        if (!formatOptions.currency) formatOptions.currency = optStr.trim();
+      } else if (formatName === "relativetime" && optStr.indexOf(":") < 0) {
+        if (!formatOptions.range) formatOptions.range = optStr.trim();
+      } else {
+        const opts = optStr.split(";");
+        opts.forEach((opt) => {
+          if (opt) {
+            const [key, ...rest] = opt.split(":");
+            const val = rest.join(":").trim().replace(/^'+|'+$/g, "");
+            const trimmedKey = key.trim();
+            if (!formatOptions[trimmedKey]) formatOptions[trimmedKey] = val;
+            if (val === "false") formatOptions[trimmedKey] = false;
+            if (val === "true") formatOptions[trimmedKey] = true;
+            if (!isNaN(val)) formatOptions[trimmedKey] = parseInt(val, 10);
+          }
+        });
+      }
+    }
+    return {
+      formatName,
+      formatOptions
+    };
+  };
+  var createCachedFormatter = (fn) => {
+    const cache = {};
+    return (val, lng, options) => {
+      let optForCache = options;
+      if (options && options.interpolationkey && options.formatParams && options.formatParams[options.interpolationkey] && options[options.interpolationkey]) {
+        optForCache = {
+          ...optForCache,
+          [options.interpolationkey]: void 0
+        };
+      }
+      const key = lng + JSON.stringify(optForCache);
+      let formatter = cache[key];
+      if (!formatter) {
+        formatter = fn(getCleanedCode(lng), options);
+        cache[key] = formatter;
+      }
+      return formatter(val);
+    };
+  };
+  var Formatter = class {
+    constructor() {
+      let options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+      this.logger = baseLogger.create("formatter");
+      this.options = options;
+      this.formats = {
+        number: createCachedFormatter((lng, opt) => {
+          const formatter = new Intl.NumberFormat(lng, {
+            ...opt
+          });
+          return (val) => formatter.format(val);
+        }),
+        currency: createCachedFormatter((lng, opt) => {
+          const formatter = new Intl.NumberFormat(lng, {
+            ...opt,
+            style: "currency"
+          });
+          return (val) => formatter.format(val);
+        }),
+        datetime: createCachedFormatter((lng, opt) => {
+          const formatter = new Intl.DateTimeFormat(lng, {
+            ...opt
+          });
+          return (val) => formatter.format(val);
+        }),
+        relativetime: createCachedFormatter((lng, opt) => {
+          const formatter = new Intl.RelativeTimeFormat(lng, {
+            ...opt
+          });
+          return (val) => formatter.format(val, opt.range || "day");
+        }),
+        list: createCachedFormatter((lng, opt) => {
+          const formatter = new Intl.ListFormat(lng, {
+            ...opt
+          });
+          return (val) => formatter.format(val);
+        })
+      };
+      this.init(options);
+    }
+    init(services) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {
+        interpolation: {}
+      };
+      this.formatSeparator = options.interpolation.formatSeparator || ",";
+    }
+    add(name, fc) {
+      this.formats[name.toLowerCase().trim()] = fc;
+    }
+    addCached(name, fc) {
+      this.formats[name.toLowerCase().trim()] = createCachedFormatter(fc);
+    }
+    format(value, format, lng) {
+      let options = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
+      const formats = format.split(this.formatSeparator);
+      if (formats.length > 1 && formats[0].indexOf("(") > 1 && formats[0].indexOf(")") < 0 && formats.find((f) => f.indexOf(")") > -1)) {
+        const lastIndex = formats.findIndex((f) => f.indexOf(")") > -1);
+        formats[0] = [formats[0], ...formats.splice(1, lastIndex)].join(this.formatSeparator);
+      }
+      const result = formats.reduce((mem, f) => {
+        const {
+          formatName,
+          formatOptions
+        } = parseFormatStr(f);
+        if (this.formats[formatName]) {
+          let formatted = mem;
+          try {
+            const valOptions = options?.formatParams?.[options.interpolationkey] || {};
+            const l = valOptions.locale || valOptions.lng || options.locale || options.lng || lng;
+            formatted = this.formats[formatName](mem, l, {
+              ...formatOptions,
+              ...options,
+              ...valOptions
+            });
+          } catch (error) {
+            this.logger.warn(error);
+          }
+          return formatted;
+        } else {
+          this.logger.warn(`there was no format function for ${formatName}`);
+        }
+        return mem;
+      }, value);
+      return result;
+    }
+  };
+  var removePending = (q, name) => {
+    if (q.pending[name] !== void 0) {
+      delete q.pending[name];
+      q.pendingCount--;
+    }
+  };
+  var Connector = class extends EventEmitter {
+    constructor(backend, store2, services) {
+      let options = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
+      super();
+      this.backend = backend;
+      this.store = store2;
+      this.services = services;
+      this.languageUtils = services.languageUtils;
+      this.options = options;
+      this.logger = baseLogger.create("backendConnector");
+      this.waitingReads = [];
+      this.maxParallelReads = options.maxParallelReads || 10;
+      this.readingCalls = 0;
+      this.maxRetries = options.maxRetries >= 0 ? options.maxRetries : 5;
+      this.retryTimeout = options.retryTimeout >= 1 ? options.retryTimeout : 350;
+      this.state = {};
+      this.queue = [];
+      this.backend?.init?.(services, options.backend, options);
+    }
+    queueLoad(languages, namespaces, options, callback) {
+      const toLoad = {};
+      const pending = {};
+      const toLoadLanguages = {};
+      const toLoadNamespaces = {};
+      languages.forEach((lng) => {
+        let hasAllNamespaces = true;
+        namespaces.forEach((ns) => {
+          const name = `${lng}|${ns}`;
+          if (!options.reload && this.store.hasResourceBundle(lng, ns)) {
+            this.state[name] = 2;
+          } else if (this.state[name] < 0) ;
+          else if (this.state[name] === 1) {
+            if (pending[name] === void 0) pending[name] = true;
+          } else {
+            this.state[name] = 1;
+            hasAllNamespaces = false;
+            if (pending[name] === void 0) pending[name] = true;
+            if (toLoad[name] === void 0) toLoad[name] = true;
+            if (toLoadNamespaces[ns] === void 0) toLoadNamespaces[ns] = true;
+          }
+        });
+        if (!hasAllNamespaces) toLoadLanguages[lng] = true;
+      });
+      if (Object.keys(toLoad).length || Object.keys(pending).length) {
+        this.queue.push({
+          pending,
+          pendingCount: Object.keys(pending).length,
+          loaded: {},
+          errors: [],
+          callback
+        });
+      }
+      return {
+        toLoad: Object.keys(toLoad),
+        pending: Object.keys(pending),
+        toLoadLanguages: Object.keys(toLoadLanguages),
+        toLoadNamespaces: Object.keys(toLoadNamespaces)
+      };
+    }
+    loaded(name, err, data2) {
+      const s = name.split("|");
+      const lng = s[0];
+      const ns = s[1];
+      if (err) this.emit("failedLoading", lng, ns, err);
+      if (!err && data2) {
+        this.store.addResourceBundle(lng, ns, data2, void 0, void 0, {
+          skipCopy: true
+        });
+      }
+      this.state[name] = err ? -1 : 2;
+      if (err && data2) this.state[name] = 0;
+      const loaded = {};
+      this.queue.forEach((q) => {
+        pushPath(q.loaded, [lng], ns);
+        removePending(q, name);
+        if (err) q.errors.push(err);
+        if (q.pendingCount === 0 && !q.done) {
+          Object.keys(q.loaded).forEach((l) => {
+            if (!loaded[l]) loaded[l] = {};
+            const loadedKeys = q.loaded[l];
+            if (loadedKeys.length) {
+              loadedKeys.forEach((n) => {
+                if (loaded[l][n] === void 0) loaded[l][n] = true;
+              });
+            }
+          });
+          q.done = true;
+          if (q.errors.length) {
+            q.callback(q.errors);
+          } else {
+            q.callback();
+          }
+        }
+      });
+      this.emit("loaded", loaded);
+      this.queue = this.queue.filter((q) => !q.done);
+    }
+    read(lng, ns, fcName) {
+      let tried = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
+      let wait = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : this.retryTimeout;
+      let callback = arguments.length > 5 ? arguments[5] : void 0;
+      if (!lng.length) return callback(null, {});
+      if (this.readingCalls >= this.maxParallelReads) {
+        this.waitingReads.push({
+          lng,
+          ns,
+          fcName,
+          tried,
+          wait,
+          callback
+        });
+        return;
+      }
+      this.readingCalls++;
+      const resolver = (err, data2) => {
+        this.readingCalls--;
+        if (this.waitingReads.length > 0) {
+          const next = this.waitingReads.shift();
+          this.read(next.lng, next.ns, next.fcName, next.tried, next.wait, next.callback);
+        }
+        if (err && data2 && tried < this.maxRetries) {
+          setTimeout(() => {
+            this.read.call(this, lng, ns, fcName, tried + 1, wait * 2, callback);
+          }, wait);
+          return;
+        }
+        callback(err, data2);
+      };
+      const fc = this.backend[fcName].bind(this.backend);
+      if (fc.length === 2) {
+        try {
+          const r = fc(lng, ns);
+          if (r && typeof r.then === "function") {
+            r.then((data2) => resolver(null, data2)).catch(resolver);
+          } else {
+            resolver(null, r);
+          }
+        } catch (err) {
+          resolver(err);
+        }
+        return;
+      }
+      return fc(lng, ns, resolver);
+    }
+    prepareLoading(languages, namespaces) {
+      let options = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
+      let callback = arguments.length > 3 ? arguments[3] : void 0;
+      if (!this.backend) {
+        this.logger.warn("No backend was added via i18next.use. Will not load resources.");
+        return callback && callback();
+      }
+      if (isString2(languages)) languages = this.languageUtils.toResolveHierarchy(languages);
+      if (isString2(namespaces)) namespaces = [namespaces];
+      const toLoad = this.queueLoad(languages, namespaces, options, callback);
+      if (!toLoad.toLoad.length) {
+        if (!toLoad.pending.length) callback();
+        return null;
+      }
+      toLoad.toLoad.forEach((name) => {
+        this.loadOne(name);
+      });
+    }
+    load(languages, namespaces, callback) {
+      this.prepareLoading(languages, namespaces, {}, callback);
+    }
+    reload(languages, namespaces, callback) {
+      this.prepareLoading(languages, namespaces, {
+        reload: true
+      }, callback);
+    }
+    loadOne(name) {
+      let prefix = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "";
+      const s = name.split("|");
+      const lng = s[0];
+      const ns = s[1];
+      this.read(lng, ns, "read", void 0, void 0, (err, data2) => {
+        if (err) this.logger.warn(`${prefix}loading namespace ${ns} for language ${lng} failed`, err);
+        if (!err && data2) this.logger.log(`${prefix}loaded namespace ${ns} for language ${lng}`, data2);
+        this.loaded(name, err, data2);
+      });
+    }
+    saveMissing(languages, namespace, key, fallbackValue, isUpdate) {
+      let options = arguments.length > 5 && arguments[5] !== void 0 ? arguments[5] : {};
+      let clb = arguments.length > 6 && arguments[6] !== void 0 ? arguments[6] : () => {
+      };
+      if (this.services?.utils?.hasLoadedNamespace && !this.services?.utils?.hasLoadedNamespace(namespace)) {
+        this.logger.warn(`did not save key "${key}" as the namespace "${namespace}" was not yet loaded`, "This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!");
+        return;
+      }
+      if (key === void 0 || key === null || key === "") return;
+      if (this.backend?.create) {
+        const opts = {
+          ...options,
+          isUpdate
+        };
+        const fc = this.backend.create.bind(this.backend);
+        if (fc.length < 6) {
+          try {
+            let r;
+            if (fc.length === 5) {
+              r = fc(languages, namespace, key, fallbackValue, opts);
+            } else {
+              r = fc(languages, namespace, key, fallbackValue);
+            }
+            if (r && typeof r.then === "function") {
+              r.then((data2) => clb(null, data2)).catch(clb);
+            } else {
+              clb(null, r);
+            }
+          } catch (err) {
+            clb(err);
+          }
+        } else {
+          fc(languages, namespace, key, fallbackValue, clb, opts);
+        }
+      }
+      if (!languages || !languages[0]) return;
+      this.store.addResource(languages[0], namespace, key, fallbackValue);
+    }
+  };
+  var get = () => ({
+    debug: false,
+    initAsync: true,
+    ns: ["translation"],
+    defaultNS: ["translation"],
+    fallbackLng: ["dev"],
+    fallbackNS: false,
+    supportedLngs: false,
+    nonExplicitSupportedLngs: false,
+    load: "all",
+    preload: false,
+    simplifyPluralSuffix: true,
+    keySeparator: ".",
+    nsSeparator: ":",
+    pluralSeparator: "_",
+    contextSeparator: "_",
+    partialBundledLanguages: false,
+    saveMissing: false,
+    updateMissing: false,
+    saveMissingTo: "fallback",
+    saveMissingPlurals: true,
+    missingKeyHandler: false,
+    missingInterpolationHandler: false,
+    postProcess: false,
+    postProcessPassResolved: false,
+    returnNull: false,
+    returnEmptyString: true,
+    returnObjects: false,
+    joinArrays: false,
+    returnedObjectHandler: false,
+    parseMissingKeyHandler: false,
+    appendNamespaceToMissingKey: false,
+    appendNamespaceToCIMode: false,
+    overloadTranslationOptionHandler: (args) => {
+      let ret = {};
+      if (typeof args[1] === "object") ret = args[1];
+      if (isString2(args[1])) ret.defaultValue = args[1];
+      if (isString2(args[2])) ret.tDescription = args[2];
+      if (typeof args[2] === "object" || typeof args[3] === "object") {
+        const options = args[3] || args[2];
+        Object.keys(options).forEach((key) => {
+          ret[key] = options[key];
+        });
+      }
+      return ret;
+    },
+    interpolation: {
+      escapeValue: true,
+      format: (value) => value,
+      prefix: "{{",
+      suffix: "}}",
+      formatSeparator: ",",
+      unescapePrefix: "-",
+      nestingPrefix: "$t(",
+      nestingSuffix: ")",
+      nestingOptionsSeparator: ",",
+      maxReplaces: 1e3,
+      skipOnVariables: true
+    }
+  });
+  var transformOptions = (options) => {
+    if (isString2(options.ns)) options.ns = [options.ns];
+    if (isString2(options.fallbackLng)) options.fallbackLng = [options.fallbackLng];
+    if (isString2(options.fallbackNS)) options.fallbackNS = [options.fallbackNS];
+    if (options.supportedLngs?.indexOf?.("cimode") < 0) {
+      options.supportedLngs = options.supportedLngs.concat(["cimode"]);
+    }
+    if (typeof options.initImmediate === "boolean") options.initAsync = options.initImmediate;
+    return options;
+  };
+  var noop = () => {
+  };
+  var bindMemberFunctions = (inst) => {
+    const mems = Object.getOwnPropertyNames(Object.getPrototypeOf(inst));
+    mems.forEach((mem) => {
+      if (typeof inst[mem] === "function") {
+        inst[mem] = inst[mem].bind(inst);
+      }
+    });
+  };
+  var I18n = class _I18n extends EventEmitter {
+    constructor() {
+      let options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+      let callback = arguments.length > 1 ? arguments[1] : void 0;
+      super();
+      this.options = transformOptions(options);
+      this.services = {};
+      this.logger = baseLogger;
+      this.modules = {
+        external: []
+      };
+      bindMemberFunctions(this);
+      if (callback && !this.isInitialized && !options.isClone) {
+        if (!this.options.initAsync) {
+          this.init(options, callback);
+          return this;
+        }
+        setTimeout(() => {
+          this.init(options, callback);
+        }, 0);
+      }
+    }
+    init() {
+      var _this = this;
+      let options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+      let callback = arguments.length > 1 ? arguments[1] : void 0;
+      this.isInitializing = true;
+      if (typeof options === "function") {
+        callback = options;
+        options = {};
+      }
+      if (options.defaultNS == null && options.ns) {
+        if (isString2(options.ns)) {
+          options.defaultNS = options.ns;
+        } else if (options.ns.indexOf("translation") < 0) {
+          options.defaultNS = options.ns[0];
+        }
+      }
+      const defOpts = get();
+      this.options = {
+        ...defOpts,
+        ...this.options,
+        ...transformOptions(options)
+      };
+      this.options.interpolation = {
+        ...defOpts.interpolation,
+        ...this.options.interpolation
+      };
+      if (options.keySeparator !== void 0) {
+        this.options.userDefinedKeySeparator = options.keySeparator;
+      }
+      if (options.nsSeparator !== void 0) {
+        this.options.userDefinedNsSeparator = options.nsSeparator;
+      }
+      const createClassOnDemand = (ClassOrObject) => {
+        if (!ClassOrObject) return null;
+        if (typeof ClassOrObject === "function") return new ClassOrObject();
+        return ClassOrObject;
+      };
+      if (!this.options.isClone) {
+        if (this.modules.logger) {
+          baseLogger.init(createClassOnDemand(this.modules.logger), this.options);
+        } else {
+          baseLogger.init(null, this.options);
+        }
+        let formatter;
+        if (this.modules.formatter) {
+          formatter = this.modules.formatter;
+        } else {
+          formatter = Formatter;
+        }
+        const lu = new LanguageUtil(this.options);
+        this.store = new ResourceStore(this.options.resources, this.options);
+        const s = this.services;
+        s.logger = baseLogger;
+        s.resourceStore = this.store;
+        s.languageUtils = lu;
+        s.pluralResolver = new PluralResolver(lu, {
+          prepend: this.options.pluralSeparator,
+          simplifyPluralSuffix: this.options.simplifyPluralSuffix
+        });
+        if (formatter && (!this.options.interpolation.format || this.options.interpolation.format === defOpts.interpolation.format)) {
+          s.formatter = createClassOnDemand(formatter);
+          s.formatter.init(s, this.options);
+          this.options.interpolation.format = s.formatter.format.bind(s.formatter);
+        }
+        s.interpolator = new Interpolator(this.options);
+        s.utils = {
+          hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
+        };
+        s.backendConnector = new Connector(createClassOnDemand(this.modules.backend), s.resourceStore, s, this.options);
+        s.backendConnector.on("*", function(event) {
+          for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            args[_key - 1] = arguments[_key];
+          }
+          _this.emit(event, ...args);
+        });
+        if (this.modules.languageDetector) {
+          s.languageDetector = createClassOnDemand(this.modules.languageDetector);
+          if (s.languageDetector.init) s.languageDetector.init(s, this.options.detection, this.options);
+        }
+        if (this.modules.i18nFormat) {
+          s.i18nFormat = createClassOnDemand(this.modules.i18nFormat);
+          if (s.i18nFormat.init) s.i18nFormat.init(this);
+        }
+        this.translator = new Translator(this.services, this.options);
+        this.translator.on("*", function(event) {
+          for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+            args[_key2 - 1] = arguments[_key2];
+          }
+          _this.emit(event, ...args);
+        });
+        this.modules.external.forEach((m) => {
+          if (m.init) m.init(this);
+        });
+      }
+      this.format = this.options.interpolation.format;
+      if (!callback) callback = noop;
+      if (this.options.fallbackLng && !this.services.languageDetector && !this.options.lng) {
+        const codes = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
+        if (codes.length > 0 && codes[0] !== "dev") this.options.lng = codes[0];
+      }
+      if (!this.services.languageDetector && !this.options.lng) {
+        this.logger.warn("init: no languageDetector is used and no lng is defined");
+      }
+      const storeApi = ["getResource", "hasResourceBundle", "getResourceBundle", "getDataByLanguage"];
+      storeApi.forEach((fcName) => {
+        this[fcName] = function() {
+          return _this.store[fcName](...arguments);
+        };
+      });
+      const storeApiChained = ["addResource", "addResources", "addResourceBundle", "removeResourceBundle"];
+      storeApiChained.forEach((fcName) => {
+        this[fcName] = function() {
+          _this.store[fcName](...arguments);
+          return _this;
+        };
+      });
+      const deferred = defer();
+      const load = () => {
+        const finish = (err, t2) => {
+          this.isInitializing = false;
+          if (this.isInitialized && !this.initializedStoreOnce) this.logger.warn("init: i18next is already initialized. You should call init just once!");
+          this.isInitialized = true;
+          if (!this.options.isClone) this.logger.log("initialized", this.options);
+          this.emit("initialized", this.options);
+          deferred.resolve(t2);
+          callback(err, t2);
+        };
+        if (this.languages && !this.isInitialized) return finish(null, this.t.bind(this));
+        this.changeLanguage(this.options.lng, finish);
+      };
+      if (this.options.resources || !this.options.initAsync) {
+        load();
+      } else {
+        setTimeout(load, 0);
+      }
+      return deferred;
+    }
+    loadResources(language) {
+      let callback = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : noop;
+      let usedCallback = callback;
+      const usedLng = isString2(language) ? language : this.language;
+      if (typeof language === "function") usedCallback = language;
+      if (!this.options.resources || this.options.partialBundledLanguages) {
+        if (usedLng?.toLowerCase() === "cimode" && (!this.options.preload || this.options.preload.length === 0)) return usedCallback();
+        const toLoad = [];
+        const append = (lng) => {
+          if (!lng) return;
+          if (lng === "cimode") return;
+          const lngs = this.services.languageUtils.toResolveHierarchy(lng);
+          lngs.forEach((l) => {
+            if (l === "cimode") return;
+            if (toLoad.indexOf(l) < 0) toLoad.push(l);
+          });
+        };
+        if (!usedLng) {
+          const fallbacks = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
+          fallbacks.forEach((l) => append(l));
+        } else {
+          append(usedLng);
+        }
+        this.options.preload?.forEach?.((l) => append(l));
+        this.services.backendConnector.load(toLoad, this.options.ns, (e2) => {
+          if (!e2 && !this.resolvedLanguage && this.language) this.setResolvedLanguage(this.language);
+          usedCallback(e2);
+        });
+      } else {
+        usedCallback(null);
+      }
+    }
+    reloadResources(lngs, ns, callback) {
+      const deferred = defer();
+      if (typeof lngs === "function") {
+        callback = lngs;
+        lngs = void 0;
+      }
+      if (typeof ns === "function") {
+        callback = ns;
+        ns = void 0;
+      }
+      if (!lngs) lngs = this.languages;
+      if (!ns) ns = this.options.ns;
+      if (!callback) callback = noop;
+      this.services.backendConnector.reload(lngs, ns, (err) => {
+        deferred.resolve();
+        callback(err);
+      });
+      return deferred;
+    }
+    use(module) {
+      if (!module) throw new Error("You are passing an undefined module! Please check the object you are passing to i18next.use()");
+      if (!module.type) throw new Error("You are passing a wrong module! Please check the object you are passing to i18next.use()");
+      if (module.type === "backend") {
+        this.modules.backend = module;
+      }
+      if (module.type === "logger" || module.log && module.warn && module.error) {
+        this.modules.logger = module;
+      }
+      if (module.type === "languageDetector") {
+        this.modules.languageDetector = module;
+      }
+      if (module.type === "i18nFormat") {
+        this.modules.i18nFormat = module;
+      }
+      if (module.type === "postProcessor") {
+        postProcessor.addPostProcessor(module);
+      }
+      if (module.type === "formatter") {
+        this.modules.formatter = module;
+      }
+      if (module.type === "3rdParty") {
+        this.modules.external.push(module);
+      }
+      return this;
+    }
+    setResolvedLanguage(l) {
+      if (!l || !this.languages) return;
+      if (["cimode", "dev"].indexOf(l) > -1) return;
+      for (let li = 0; li < this.languages.length; li++) {
+        const lngInLngs = this.languages[li];
+        if (["cimode", "dev"].indexOf(lngInLngs) > -1) continue;
+        if (this.store.hasLanguageSomeTranslations(lngInLngs)) {
+          this.resolvedLanguage = lngInLngs;
+          break;
+        }
+      }
+    }
+    changeLanguage(lng, callback) {
+      var _this2 = this;
+      this.isLanguageChangingTo = lng;
+      const deferred = defer();
+      this.emit("languageChanging", lng);
+      const setLngProps = (l) => {
+        this.language = l;
+        this.languages = this.services.languageUtils.toResolveHierarchy(l);
+        this.resolvedLanguage = void 0;
+        this.setResolvedLanguage(l);
+      };
+      const done = (err, l) => {
+        if (l) {
+          setLngProps(l);
+          this.translator.changeLanguage(l);
+          this.isLanguageChangingTo = void 0;
+          this.emit("languageChanged", l);
+          this.logger.log("languageChanged", l);
+        } else {
+          this.isLanguageChangingTo = void 0;
+        }
+        deferred.resolve(function() {
+          return _this2.t(...arguments);
+        });
+        if (callback) callback(err, function() {
+          return _this2.t(...arguments);
+        });
+      };
+      const setLng = (lngs) => {
+        if (!lng && !lngs && this.services.languageDetector) lngs = [];
+        const l = isString2(lngs) ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
+        if (l) {
+          if (!this.language) {
+            setLngProps(l);
+          }
+          if (!this.translator.language) this.translator.changeLanguage(l);
+          this.services.languageDetector?.cacheUserLanguage?.(l);
+        }
+        this.loadResources(l, (err) => {
+          done(err, l);
+        });
+      };
+      if (!lng && this.services.languageDetector && !this.services.languageDetector.async) {
+        setLng(this.services.languageDetector.detect());
+      } else if (!lng && this.services.languageDetector && this.services.languageDetector.async) {
+        if (this.services.languageDetector.detect.length === 0) {
+          this.services.languageDetector.detect().then(setLng);
+        } else {
+          this.services.languageDetector.detect(setLng);
+        }
+      } else {
+        setLng(lng);
+      }
+      return deferred;
+    }
+    getFixedT(lng, ns, keyPrefix) {
+      var _this3 = this;
+      const fixedT = function(key, opts) {
+        let options;
+        if (typeof opts !== "object") {
+          for (var _len3 = arguments.length, rest = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+            rest[_key3 - 2] = arguments[_key3];
+          }
+          options = _this3.options.overloadTranslationOptionHandler([key, opts].concat(rest));
+        } else {
+          options = {
+            ...opts
+          };
+        }
+        options.lng = options.lng || fixedT.lng;
+        options.lngs = options.lngs || fixedT.lngs;
+        options.ns = options.ns || fixedT.ns;
+        if (options.keyPrefix !== "") options.keyPrefix = options.keyPrefix || keyPrefix || fixedT.keyPrefix;
+        const keySeparator = _this3.options.keySeparator || ".";
+        let resultKey;
+        if (options.keyPrefix && Array.isArray(key)) {
+          resultKey = key.map((k) => `${options.keyPrefix}${keySeparator}${k}`);
+        } else {
+          resultKey = options.keyPrefix ? `${options.keyPrefix}${keySeparator}${key}` : key;
+        }
+        return _this3.t(resultKey, options);
+      };
+      if (isString2(lng)) {
+        fixedT.lng = lng;
+      } else {
+        fixedT.lngs = lng;
+      }
+      fixedT.ns = ns;
+      fixedT.keyPrefix = keyPrefix;
+      return fixedT;
+    }
+    t() {
+      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        args[_key4] = arguments[_key4];
+      }
+      return this.translator?.translate(...args);
+    }
+    exists() {
+      for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+        args[_key5] = arguments[_key5];
+      }
+      return this.translator?.exists(...args);
+    }
+    setDefaultNamespace(ns) {
+      this.options.defaultNS = ns;
+    }
+    hasLoadedNamespace(ns) {
+      let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+      if (!this.isInitialized) {
+        this.logger.warn("hasLoadedNamespace: i18next was not initialized", this.languages);
+        return false;
+      }
+      if (!this.languages || !this.languages.length) {
+        this.logger.warn("hasLoadedNamespace: i18n.languages were undefined or empty", this.languages);
+        return false;
+      }
+      const lng = options.lng || this.resolvedLanguage || this.languages[0];
+      const fallbackLng = this.options ? this.options.fallbackLng : false;
+      const lastLng = this.languages[this.languages.length - 1];
+      if (lng.toLowerCase() === "cimode") return true;
+      const loadNotPending = (l, n) => {
+        const loadState = this.services.backendConnector.state[`${l}|${n}`];
+        return loadState === -1 || loadState === 0 || loadState === 2;
+      };
+      if (options.precheck) {
+        const preResult = options.precheck(this, loadNotPending);
+        if (preResult !== void 0) return preResult;
+      }
+      if (this.hasResourceBundle(lng, ns)) return true;
+      if (!this.services.backendConnector.backend || this.options.resources && !this.options.partialBundledLanguages) return true;
+      if (loadNotPending(lng, ns) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
+      return false;
+    }
+    loadNamespaces(ns, callback) {
+      const deferred = defer();
+      if (!this.options.ns) {
+        if (callback) callback();
+        return Promise.resolve();
+      }
+      if (isString2(ns)) ns = [ns];
+      ns.forEach((n) => {
+        if (this.options.ns.indexOf(n) < 0) this.options.ns.push(n);
+      });
+      this.loadResources((err) => {
+        deferred.resolve();
+        if (callback) callback(err);
+      });
+      return deferred;
+    }
+    loadLanguages(lngs, callback) {
+      const deferred = defer();
+      if (isString2(lngs)) lngs = [lngs];
+      const preloaded = this.options.preload || [];
+      const newLngs = lngs.filter((lng) => preloaded.indexOf(lng) < 0 && this.services.languageUtils.isSupportedCode(lng));
+      if (!newLngs.length) {
+        if (callback) callback();
+        return Promise.resolve();
+      }
+      this.options.preload = preloaded.concat(newLngs);
+      this.loadResources((err) => {
+        deferred.resolve();
+        if (callback) callback(err);
+      });
+      return deferred;
+    }
+    dir(lng) {
+      if (!lng) lng = this.resolvedLanguage || (this.languages?.length > 0 ? this.languages[0] : this.language);
+      if (!lng) return "rtl";
+      const rtlLngs = ["ar", "shu", "sqr", "ssh", "xaa", "yhd", "yud", "aao", "abh", "abv", "acm", "acq", "acw", "acx", "acy", "adf", "ads", "aeb", "aec", "afb", "ajp", "apc", "apd", "arb", "arq", "ars", "ary", "arz", "auz", "avl", "ayh", "ayl", "ayn", "ayp", "bbz", "pga", "he", "iw", "ps", "pbt", "pbu", "pst", "prp", "prd", "ug", "ur", "ydd", "yds", "yih", "ji", "yi", "hbo", "men", "xmn", "fa", "jpr", "peo", "pes", "prs", "dv", "sam", "ckb"];
+      const languageUtils = this.services?.languageUtils || new LanguageUtil(get());
+      return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf("-arab") > 1 ? "rtl" : "ltr";
+    }
+    static createInstance() {
+      let options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+      let callback = arguments.length > 1 ? arguments[1] : void 0;
+      return new _I18n(options, callback);
+    }
+    cloneInstance() {
+      let options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+      let callback = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : noop;
+      const forkResourceStore = options.forkResourceStore;
+      if (forkResourceStore) delete options.forkResourceStore;
+      const mergedOptions = {
+        ...this.options,
+        ...options,
+        ...{
+          isClone: true
+        }
+      };
+      const clone = new _I18n(mergedOptions);
+      if (options.debug !== void 0 || options.prefix !== void 0) {
+        clone.logger = clone.logger.clone(options);
+      }
+      const membersToCopy = ["store", "services", "language"];
+      membersToCopy.forEach((m) => {
+        clone[m] = this[m];
+      });
+      clone.services = {
+        ...this.services
+      };
+      clone.services.utils = {
+        hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
+      };
+      if (forkResourceStore) {
+        const clonedData = Object.keys(this.store.data).reduce((prev, l) => {
+          prev[l] = {
+            ...this.store.data[l]
+          };
+          return Object.keys(prev[l]).reduce((acc, n) => {
+            acc[n] = {
+              ...prev[l][n]
+            };
+            return acc;
+          }, {});
+        }, {});
+        clone.store = new ResourceStore(clonedData, mergedOptions);
+        clone.services.resourceStore = clone.store;
+      }
+      clone.translator = new Translator(clone.services, mergedOptions);
+      clone.translator.on("*", function(event) {
+        for (var _len6 = arguments.length, args = new Array(_len6 > 1 ? _len6 - 1 : 0), _key6 = 1; _key6 < _len6; _key6++) {
+          args[_key6 - 1] = arguments[_key6];
+        }
+        clone.emit(event, ...args);
+      });
+      clone.init(mergedOptions, callback);
+      clone.translator.options = mergedOptions;
+      clone.translator.backendConnector.services.utils = {
+        hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
+      };
+      return clone;
+    }
+    toJSON() {
+      return {
+        options: this.options,
+        store: this.store,
+        language: this.language,
+        languages: this.languages,
+        resolvedLanguage: this.resolvedLanguage
+      };
+    }
+  };
+  var instance = I18n.createInstance();
+  instance.createInstance = I18n.createInstance;
+  var createInstance = instance.createInstance;
+  var dir = instance.dir;
+  var init = instance.init;
+  var loadResources = instance.loadResources;
+  var reloadResources = instance.reloadResources;
+  var use = instance.use;
+  var changeLanguage = instance.changeLanguage;
+  var getFixedT = instance.getFixedT;
+  var t = instance.t;
+  var exists = instance.exists;
+  var setDefaultNamespace = instance.setDefaultNamespace;
+  var hasLoadedNamespace2 = instance.hasLoadedNamespace;
+  var loadNamespaces2 = instance.loadNamespaces;
+  var loadLanguages2 = instance.loadLanguages;
+
+  // src/i18n.ts
+  var resources = {
+    en: {
+      translation: {
+        "Home": "Home",
+        "Netmail": "Netmail"
+      }
+    },
+    ru: {
+      translation: {
+        "Home": "\u0413\u043B\u0430\u0432\u043D\u0430\u044F",
+        "Netmail": "\u041B\u0438\u0447\u043D\u044B\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F"
+      }
+    }
+  };
+  instance.use(initReactI18next).init({
+    resources,
+    lng: "en",
+    interpolation: {
+      escapeValue: false
+    }
+  });
+  var i18n_default = instance;
+
   // src/pages/setup/Setup.tsx
   var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
   var Setup = () => {
-    return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_jsx_runtime14.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Header, {}) });
+    const handleRussian = () => {
+      i18n_default.changeLanguage("ru-RU");
+    };
+    const handleEnglish = () => {
+      i18n_default.changeLanguage("en-US");
+    };
+    return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_jsx_runtime14.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Header, {}),
+      "\u042F\u0437\u044B\u043A",
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { onClick: handleRussian, children: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439" }),
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { onClick: handleEnglish, children: "English" })
+    ] });
   };
 
   // src/pages/layout/BaseLayout.tsx

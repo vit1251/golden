@@ -6,6 +6,8 @@ import { App } from "./pages/App";
 
 import { store } from './Storage';
 
+import './i18n';
+
 const rootElement: string = 'root';
 const container: Element | null = document.getElementById(rootElement);
 if (container) {

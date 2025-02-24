@@ -1,12 +1,15 @@
 
-import React from 'react';
+
 import { Link } from "react-router";
 import { useSelector } from 'react-redux';
-import { eventBus } from '../EventBus';
+
+import { useTranslation } from 'react-i18next';
 
 import './Header.css';
 
 export const Header = () => {
+
+    const { t, i18n } = useTranslation();
 
     const {
         NetMessageCount = 0,
@@ -16,11 +19,11 @@ export const Header = () => {
 
     const items = [
         {
-            name: 'Главная',
+            name: t('Home'),
             path: '/',
         },
         {
-            name: 'Личные сообщения',
+            name: t('Netmail'),
             path: '/netmail',
             itemCount: NetMessageCount,
         },

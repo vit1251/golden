@@ -8,7 +8,7 @@ import { eventBus } from '../../EventBus';
 import { Rows } from './Row';
 
 import "./EchoMsgIndex.css";
-import { makeShort, stringToHexColor } from "../../usils";
+import { adjustBrightness, makeShort, stringToHexColor } from "../../usils";
 
 export interface Area {
     name: string                   /* Имя конференции. Пример "RU.ANEKDOT" */
@@ -90,8 +90,10 @@ export const EchoMsgIndex = () => {
                     }}
                     columns={[
                        {className: 'rowUserpic', styles: (row: Message) => {
+                            const color: string = stringToHexColor(`${row.from}`);
+                            const darkColor: string = adjustBrightness(color, 0.5);
                             return {
-                                backgroundColor: stringToHexColor(`${row.from}`),
+                                backgroundColor: darkColor,
                             }
                        }, render: (row: Message): string => makeShort(row.from)},
                        {className: 'rowFrom', key: 'from'},
