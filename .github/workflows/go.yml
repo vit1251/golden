@@ -7,37 +7,17 @@ jobs:
     name: "Build on Ubuntu"
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.19
+      - name: Set up Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.19
+          go-version: 1.23
         id: go
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Make build
         run: /bin/sh ./build-linux.sh
       - name: Upload Debian pacakge
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           name: golden-linux-amd64
           path: golden-linux-amd64
-
-
-  build-macos:
-    name: "Build on macOS X"
-    runs-on: macos-latest
-    steps:
-      - name: Set up Go 1.19
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.19
-        id: go
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
-      - name: Make build
-        run: /bin/sh ./build-darwin.sh
-      - name: Upload macOS disk image
-        uses: actions/upload-artifact@v1
-        with:
-          name: golden-darwin-amd64
-          path: golden-darwin-amd64
