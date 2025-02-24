@@ -1,11 +1,11 @@
 package site2
 
 import (
-	"fmt"
 	"github.com/gorilla/mux"
 	api2 "github.com/vit1251/golden/internal/site2/api"
 	"github.com/vit1251/golden/pkg/registry"
 	"log"
+        "fmt"
 	"net/http"
 )
 
@@ -48,10 +48,13 @@ func (self *Site2Manager) createRouter() *mux.Router {
 
 	router := mux.NewRouter()
 
+        /* Section 1. Describe API patterns */
 	Register(router, "/api/v1", self.ContainerMiddleware(api2.NewCommandStream()))
-	Register(router, "/static/{name:[A-Za-z0-9\\.\\_\\-]+}", self.ContainerMiddleware(NewStaticAction()))
 	Register(router, "/", self.ContainerMiddleware(NewIndexAction()))
-	Register(router, "/public/{name:[A-Za-z0-9\\.\\_\\-]+}", self.ContainerMiddleware(NewPublicAction()))
+
+        /* Section 2. Static directories */
+	router.PathPrefix("/static").Handler(http.StripPrefix("/static/", http.FileServer(staticFileSystem())))
+	router.PathPrefix("/public").Handler(http.StripPrefix("/public/", http.FileServer(publicFileSystem())))
 
 	return router
 

@@ -7,6 +7,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    height: 50px;
 }
 
 .HeaderGroup {
@@ -32,4 +33,9 @@
 .Header a:hover {
     color: var(--color-header-text);
     opacity: 0.75;
+}
+
+.Icon {
+    height: 48px;
+    width: 48px;
 }

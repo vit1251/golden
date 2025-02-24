@@ -366,7 +366,7 @@
           componentName = this.props.ref;
           return void 0 !== componentName ? componentName : null;
         }
-        function ReactElement(type, key, self, source, owner, props) {
+        function ReactElement2(type, key, self, source, owner, props) {
           self = props.ref;
           type = {
             $$typeof: REACT_ELEMENT_TYPE,
@@ -396,7 +396,7 @@
           return type;
         }
         function cloneAndReplaceKey(oldElement, newKey) {
-          newKey = ReactElement(
+          newKey = ReactElement2(
             oldElement.type,
             newKey,
             void 0,
@@ -913,7 +913,7 @@
               JSCompiler_inline_result[i] = arguments[i + 2];
             props.children = JSCompiler_inline_result;
           }
-          props = ReactElement(element.type, key, void 0, void 0, owner, props);
+          props = ReactElement2(element.type, key, void 0, void 0, owner, props);
           for (key = 2; key < arguments.length; key++)
             validateChildKeys(arguments[key], props.type);
           return props;
@@ -976,7 +976,7 @@
             i,
             "function" === typeof type ? type.displayName || type.name || "Unknown" : type
           );
-          return ReactElement(type, typeString, void 0, void 0, getOwner(), i);
+          return ReactElement2(type, typeString, void 0, void 0, getOwner(), i);
         };
         exports.createRef = function() {
           var refObject = { current: null };
@@ -1154,7 +1154,7 @@
           return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
         }
         "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-        var React14 = require_react(), objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore2 = React14.useSyncExternalStore, useRef8 = React14.useRef, useEffect13 = React14.useEffect, useMemo7 = React14.useMemo, useDebugValue2 = React14.useDebugValue;
+        var React15 = require_react(), objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore2 = React15.useSyncExternalStore, useRef8 = React15.useRef, useEffect15 = React15.useEffect, useMemo7 = React15.useMemo, useDebugValue2 = React15.useDebugValue;
         exports.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual) {
           var instRef = useRef8(null);
           if (null === instRef.current) {
@@ -1197,7 +1197,7 @@
             [getSnapshot, getServerSnapshot, selector, isEqual]
           );
           var value = useSyncExternalStore2(subscribe, instRef[0], instRef[1]);
-          useEffect13(
+          useEffect15(
             function() {
               inst.hasValue = true;
               inst.value = value;
@@ -1553,7 +1553,7 @@
           return dispatcher;
         }
         "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-        var React14 = require_react(), Internals = {
+        var React15 = require_react(), Internals = {
           d: {
             f: noop2,
             r: function() {
@@ -1571,7 +1571,7 @@
           },
           p: 0,
           findDOMNode: null
-        }, REACT_PORTAL_TYPE = Symbol.for("react.portal"), ReactSharedInternals = React14.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+        }, REACT_PORTAL_TYPE = Symbol.for("react.portal"), ReactSharedInternals = React15.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
         "function" === typeof Map && null != Map.prototype && "function" === typeof Map.prototype.forEach && "function" === typeof Set && null != Set.prototype && "function" === typeof Set.prototype.clear && "function" === typeof Set.prototype.forEach || console.error(
           "React depends on Map and Set built-in types. Make sure that you load a polyfill in older browsers. https://reactjs.org/link/react-polyfills"
         );
@@ -3027,7 +3027,7 @@
           "number" === type && getActiveElement(node.ownerDocument) === node || node.defaultValue === "" + value || (node.defaultValue = "" + value);
         }
         function validateOptionProps(element, props) {
-          null == props.value && ("object" === typeof props.children && null !== props.children ? React14.Children.forEach(props.children, function(child) {
+          null == props.value && ("object" === typeof props.children && null !== props.children ? React15.Children.forEach(props.children, function(child) {
             null == child || "string" === typeof child || "number" === typeof child || "bigint" === typeof child || didWarnInvalidChild || (didWarnInvalidChild = true, console.error(
               "Cannot infer the option value of complex children. Pass a `value` prop or use a plain string as children to <option>."
             ));
@@ -16497,13 +16497,13 @@
           ));
         }
         "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-        var Scheduler = require_scheduler(), React14 = require_react(), ReactDOM = require_react_dom(), REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_PROVIDER_TYPE = Symbol.for("react.provider"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE2 = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE2 = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy");
+        var Scheduler = require_scheduler(), React15 = require_react(), ReactDOM = require_react_dom(), REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_PROVIDER_TYPE = Symbol.for("react.provider"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE2 = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE2 = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy");
         Symbol.for("react.scope");
         Symbol.for("react.debug_trace_mode");
         var REACT_OFFSCREEN_TYPE = Symbol.for("react.offscreen");
         Symbol.for("react.legacy_hidden");
         Symbol.for("react.tracing_marker");
-        var REACT_MEMO_CACHE_SENTINEL = Symbol.for("react.memo_cache_sentinel"), MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), ReactSharedInternals = React14.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, assign = Object.assign, disabledDepth = 0, prevLog, prevInfo, prevWarn, prevError, prevGroup, prevGroupCollapsed, prevGroupEnd;
+        var REACT_MEMO_CACHE_SENTINEL = Symbol.for("react.memo_cache_sentinel"), MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), ReactSharedInternals = React15.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, assign = Object.assign, disabledDepth = 0, prevLog, prevInfo, prevWarn, prevError, prevGroup, prevGroupCollapsed, prevGroupEnd;
         disabledLog.__reactDisabledLog = true;
         var prefix, suffix, reentry = false;
         var componentFrameCache = new ("function" === typeof WeakMap ? WeakMap : Map)();
@@ -19223,7 +19223,7 @@
           }
         };
         (function() {
-          var isomorphicReactPackageVersion = React14.version;
+          var isomorphicReactPackageVersion = React15.version;
           if ("19.0.0" !== isomorphicReactPackageVersion)
             throw Error(
               'Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:\n  - react:      ' + (isomorphicReactPackageVersion + "\n  - react-dom:  19.0.0\nLearn more: https://react.dev/warnings/version-mismatch")
@@ -19820,7 +19820,7 @@
           componentName = this.props.ref;
           return void 0 !== componentName ? componentName : null;
         }
-        function ReactElement(type, key, self, source, owner, props) {
+        function ReactElement2(type, key, self, source, owner, props) {
           self = props.ref;
           type = {
             $$typeof: REACT_ELEMENT_TYPE,
@@ -19900,7 +19900,7 @@
             maybeKey,
             "function" === typeof type ? type.displayName || type.name || "Unknown" : type
           );
-          return ReactElement(type, children, self, source, getOwner(), maybeKey);
+          return ReactElement2(type, children, self, source, getOwner(), maybeKey);
         }
         function validateChildKeys(node, parentType) {
           if ("object" === typeof node && node && node.$$typeof !== REACT_CLIENT_REFERENCE) {
@@ -19944,9 +19944,9 @@
           info || (parentType = getComponentNameFromType(parentType)) && (info = "\n\nCheck the top-level render call using <" + parentType + ">.");
           return info;
         }
-        var React14 = require_react(), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler");
+        var React15 = require_react(), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler");
         Symbol.for("react.provider");
-        var REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE2 = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE2 = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_OFFSCREEN_TYPE = Symbol.for("react.offscreen"), MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE$2 = Symbol.for("react.client.reference"), ReactSharedInternals = React14.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, assign = Object.assign, REACT_CLIENT_REFERENCE$1 = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, disabledDepth = 0, prevLog, prevInfo, prevWarn, prevError, prevGroup, prevGroupCollapsed, prevGroupEnd;
+        var REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE2 = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE2 = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_OFFSCREEN_TYPE = Symbol.for("react.offscreen"), MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE$2 = Symbol.for("react.client.reference"), ReactSharedInternals = React15.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, assign = Object.assign, REACT_CLIENT_REFERENCE$1 = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, disabledDepth = 0, prevLog, prevInfo, prevWarn, prevError, prevGroup, prevGroupCollapsed, prevGroupEnd;
         disabledLog.__reactDisabledLog = true;
         var prefix, suffix, reentry = false;
         var componentFrameCache = new ("function" === typeof WeakMap ? WeakMap : Map)();
@@ -20328,6 +20328,9 @@
 
   // src/main.tsx
   var import_client = __toESM(require_client(), 1);
+
+  // src/pages/App.tsx
+  var import_react15 = __toESM(require_react(), 1);
 
   // node_modules/react-router/dist/development/chunk-HA7DTUK3.mjs
   var React3 = __toESM(require_react(), 1);
@@ -22727,331 +22730,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   };
 
   // src/pages/echomail/EchoIndex.tsx
-  var import_react10 = __toESM(require_react(), 1);
-
-  // node_modules/react-i18next/dist/es/Trans.js
-  var import_react4 = __toESM(require_react(), 1);
-
-  // node_modules/react-i18next/dist/es/TransWithoutContext.js
-  var import_react2 = __toESM(require_react(), 1);
-
-  // node_modules/html-parse-stringify/dist/html-parse-stringify.module.js
-  var import_void_elements = __toESM(require_void_elements());
-
-  // node_modules/react-i18next/dist/es/utils.js
-  var warn = (i18n, code, msg, rest) => {
-    const args = [msg, {
-      code,
-      ...rest || {}
-    }];
-    if (i18n?.services?.logger?.forward) {
-      return i18n.services.logger.forward(args, "warn", "react-i18next::", true);
-    }
-    if (isString(args[0])) args[0] = `react-i18next:: ${args[0]}`;
-    if (i18n?.services?.logger?.warn) {
-      i18n.services.logger.warn(...args);
-    } else if (console?.warn) {
-      console.warn(...args);
-    }
-  };
-  var alreadyWarned2 = {};
-  var warnOnce = (i18n, code, msg, rest) => {
-    if (isString(msg) && alreadyWarned2[msg]) return;
-    if (isString(msg)) alreadyWarned2[msg] = /* @__PURE__ */ new Date();
-    warn(i18n, code, msg, rest);
-  };
-  var loadedClb = (i18n, cb) => () => {
-    if (i18n.isInitialized) {
-      cb();
-    } else {
-      const initialized = () => {
-        setTimeout(() => {
-          i18n.off("initialized", initialized);
-        }, 0);
-        cb();
-      };
-      i18n.on("initialized", initialized);
-    }
-  };
-  var loadNamespaces = (i18n, ns, cb) => {
-    i18n.loadNamespaces(ns, loadedClb(i18n, cb));
-  };
-  var loadLanguages = (i18n, lng, ns, cb) => {
-    if (isString(ns)) ns = [ns];
-    if (i18n.options.preload && i18n.options.preload.indexOf(lng) > -1) return loadNamespaces(i18n, ns, cb);
-    ns.forEach((n) => {
-      if (i18n.options.ns.indexOf(n) < 0) i18n.options.ns.push(n);
-    });
-    i18n.loadLanguages(lng, loadedClb(i18n, cb));
-  };
-  var hasLoadedNamespace = (ns, i18n, options = {}) => {
-    if (!i18n.languages || !i18n.languages.length) {
-      warnOnce(i18n, "NO_LANGUAGES", "i18n.languages were undefined or empty", {
-        languages: i18n.languages
-      });
-      return true;
-    }
-    return i18n.hasLoadedNamespace(ns, {
-      lng: options.lng,
-      precheck: (i18nInstance2, loadNotPending) => {
-        if (options.bindI18n?.indexOf("languageChanging") > -1 && i18nInstance2.services.backendConnector.backend && i18nInstance2.isLanguageChangingTo && !loadNotPending(i18nInstance2.isLanguageChangingTo, ns)) return false;
-      }
-    });
-  };
-  var isString = (obj) => typeof obj === "string";
-  var isObject = (obj) => typeof obj === "object" && obj !== null;
-
-  // node_modules/react-i18next/dist/es/unescape.js
-  var matchHtmlEntity = /&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34|nbsp|#160|copy|#169|reg|#174|hellip|#8230|#x2F|#47);/g;
-  var htmlEntities = {
-    "&amp;": "&",
-    "&#38;": "&",
-    "&lt;": "<",
-    "&#60;": "<",
-    "&gt;": ">",
-    "&#62;": ">",
-    "&apos;": "'",
-    "&#39;": "'",
-    "&quot;": '"',
-    "&#34;": '"',
-    "&nbsp;": " ",
-    "&#160;": " ",
-    "&copy;": "\xA9",
-    "&#169;": "\xA9",
-    "&reg;": "\xAE",
-    "&#174;": "\xAE",
-    "&hellip;": "\u2026",
-    "&#8230;": "\u2026",
-    "&#x2F;": "/",
-    "&#47;": "/"
-  };
-  var unescapeHtmlEntity = (m) => htmlEntities[m];
-  var unescape = (text) => text.replace(matchHtmlEntity, unescapeHtmlEntity);
-
-  // node_modules/react-i18next/dist/es/defaults.js
-  var defaultOptions = {
-    bindI18n: "languageChanged",
-    bindI18nStore: "",
-    transEmptyNodeValue: "",
-    transSupportBasicHtmlNodes: true,
-    transWrapTextNodes: "",
-    transKeepBasicHtmlNodesFor: ["br", "strong", "i", "p"],
-    useSuspense: true,
-    unescape
-  };
-  var setDefaults = (options = {}) => {
-    defaultOptions = {
-      ...defaultOptions,
-      ...options
-    };
-  };
-  var getDefaults = () => defaultOptions;
-
-  // node_modules/react-i18next/dist/es/i18nInstance.js
-  var i18nInstance;
-  var setI18n = (instance2) => {
-    i18nInstance = instance2;
-  };
-  var getI18n = () => i18nInstance;
-
-  // node_modules/react-i18next/dist/es/context.js
   var import_react3 = __toESM(require_react(), 1);
-
-  // node_modules/react-i18next/dist/es/initReactI18next.js
-  var initReactI18next = {
-    type: "3rdParty",
-    init(instance2) {
-      setDefaults(instance2.options.react);
-      setI18n(instance2);
-    }
-  };
-
-  // node_modules/react-i18next/dist/es/context.js
-  var I18nContext = (0, import_react3.createContext)();
-  var ReportNamespaces = class {
-    constructor() {
-      this.usedNamespaces = {};
-    }
-    addUsedNamespaces(namespaces) {
-      namespaces.forEach((ns) => {
-        if (!this.usedNamespaces[ns]) this.usedNamespaces[ns] = true;
-      });
-    }
-    getUsedNamespaces() {
-      return Object.keys(this.usedNamespaces);
-    }
-  };
-
-  // node_modules/react-i18next/dist/es/useTranslation.js
-  var import_react5 = __toESM(require_react(), 1);
-  var usePrevious = (value, ignore) => {
-    const ref = (0, import_react5.useRef)();
-    (0, import_react5.useEffect)(() => {
-      ref.current = ignore ? ref.current : value;
-    }, [value, ignore]);
-    return ref.current;
-  };
-  var alwaysNewT = (i18n, language, namespace, keyPrefix) => i18n.getFixedT(language, namespace, keyPrefix);
-  var useMemoizedT = (i18n, language, namespace, keyPrefix) => (0, import_react5.useCallback)(alwaysNewT(i18n, language, namespace, keyPrefix), [i18n, language, namespace, keyPrefix]);
-  var useTranslation = (ns, props = {}) => {
-    const {
-      i18n: i18nFromProps
-    } = props;
-    const {
-      i18n: i18nFromContext,
-      defaultNS: defaultNSFromContext
-    } = (0, import_react5.useContext)(I18nContext) || {};
-    const i18n = i18nFromProps || i18nFromContext || getI18n();
-    if (i18n && !i18n.reportNamespaces) i18n.reportNamespaces = new ReportNamespaces();
-    if (!i18n) {
-      warnOnce(i18n, "NO_I18NEXT_INSTANCE", "useTranslation: You will need to pass in an i18next instance by using initReactI18next");
-      const notReadyT = (k, optsOrDefaultValue) => {
-        if (isString(optsOrDefaultValue)) return optsOrDefaultValue;
-        if (isObject(optsOrDefaultValue) && isString(optsOrDefaultValue.defaultValue)) return optsOrDefaultValue.defaultValue;
-        return Array.isArray(k) ? k[k.length - 1] : k;
-      };
-      const retNotReady = [notReadyT, {}, false];
-      retNotReady.t = notReadyT;
-      retNotReady.i18n = {};
-      retNotReady.ready = false;
-      return retNotReady;
-    }
-    if (i18n.options.react?.wait) warnOnce(i18n, "DEPRECATED_OPTION", "useTranslation: It seems you are still using the old wait option, you may migrate to the new useSuspense behaviour.");
-    const i18nOptions = {
-      ...getDefaults(),
-      ...i18n.options.react,
-      ...props
-    };
-    const {
-      useSuspense,
-      keyPrefix
-    } = i18nOptions;
-    let namespaces = ns || defaultNSFromContext || i18n.options?.defaultNS;
-    namespaces = isString(namespaces) ? [namespaces] : namespaces || ["translation"];
-    i18n.reportNamespaces.addUsedNamespaces?.(namespaces);
-    const ready = (i18n.isInitialized || i18n.initializedStoreOnce) && namespaces.every((n) => hasLoadedNamespace(n, i18n, i18nOptions));
-    const memoGetT = useMemoizedT(i18n, props.lng || null, i18nOptions.nsMode === "fallback" ? namespaces : namespaces[0], keyPrefix);
-    const getT = () => memoGetT;
-    const getNewT = () => alwaysNewT(i18n, props.lng || null, i18nOptions.nsMode === "fallback" ? namespaces : namespaces[0], keyPrefix);
-    const [t2, setT] = (0, import_react5.useState)(getT);
-    let joinedNS = namespaces.join();
-    if (props.lng) joinedNS = `${props.lng}${joinedNS}`;
-    const previousJoinedNS = usePrevious(joinedNS);
-    const isMounted = (0, import_react5.useRef)(true);
-    (0, import_react5.useEffect)(() => {
-      const {
-        bindI18n,
-        bindI18nStore
-      } = i18nOptions;
-      isMounted.current = true;
-      if (!ready && !useSuspense) {
-        if (props.lng) {
-          loadLanguages(i18n, props.lng, namespaces, () => {
-            if (isMounted.current) setT(getNewT);
-          });
-        } else {
-          loadNamespaces(i18n, namespaces, () => {
-            if (isMounted.current) setT(getNewT);
-          });
-        }
-      }
-      if (ready && previousJoinedNS && previousJoinedNS !== joinedNS && isMounted.current) {
-        setT(getNewT);
-      }
-      const boundReset = () => {
-        if (isMounted.current) setT(getNewT);
-      };
-      if (bindI18n) i18n?.on(bindI18n, boundReset);
-      if (bindI18nStore) i18n?.store.on(bindI18nStore, boundReset);
-      return () => {
-        isMounted.current = false;
-        if (i18n) bindI18n?.split(" ").forEach((e2) => i18n.off(e2, boundReset));
-        if (bindI18nStore && i18n) bindI18nStore.split(" ").forEach((e2) => i18n.store.off(e2, boundReset));
-      };
-    }, [i18n, joinedNS]);
-    (0, import_react5.useEffect)(() => {
-      if (isMounted.current && ready) {
-        setT(getT);
-      }
-    }, [i18n, keyPrefix, ready]);
-    const ret = [t2, i18n, ready];
-    ret.t = t2;
-    ret.i18n = i18n;
-    ret.ready = ready;
-    if (ready) return ret;
-    if (!ready && !useSuspense) return ret;
-    throw new Promise((resolve) => {
-      if (props.lng) {
-        loadLanguages(i18n, props.lng, namespaces, () => resolve());
-      } else {
-        loadNamespaces(i18n, namespaces, () => resolve());
-      }
-    });
-  };
-
-  // node_modules/react-i18next/dist/es/withTranslation.js
-  var import_react6 = __toESM(require_react(), 1);
-
-  // node_modules/react-i18next/dist/es/I18nextProvider.js
-  var import_react7 = __toESM(require_react(), 1);
-
-  // node_modules/react-i18next/dist/es/withSSR.js
-  var import_react9 = __toESM(require_react(), 1);
-
-  // node_modules/react-i18next/dist/es/useSSR.js
-  var import_react8 = __toESM(require_react(), 1);
-
-  // src/common/Header.tsx
-  var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
-  var Header = () => {
-    const { t: t2, i18n } = useTranslation();
-    const {
-      NetMessageCount = 0,
-      EchoMessageCount = 0,
-      FileCount = 0
-    } = useSelector((state) => state.summary);
-    const items = [
-      {
-        name: t2("Home"),
-        path: "/"
-      },
-      {
-        name: t2("Netmail"),
-        path: "/netmail",
-        itemCount: NetMessageCount
-      },
-      {
-        name: "\u0422\u0435\u043B\u0435\u043A\u043E\u043D\u0444\u0435\u0440\u0435\u043D\u0446\u0438\u0438",
-        path: "/echo",
-        itemCount: EchoMessageCount
-      },
-      {
-        name: "\u0424\u0430\u0439\u043B\u044B",
-        path: "/files",
-        itemCount: FileCount
-      },
-      {
-        name: "\u041E\u0431\u0441\u043B\u0443\u0436\u0438\u0432\u0430\u043D\u0438\u0435",
-        path: "/service"
-      },
-      {
-        name: "\u041B\u044E\u0434\u0438"
-      },
-      {
-        name: "\u0427\u0435\u0440\u043D\u043E\u0432\u0438\u043A\u0438"
-      }
-    ];
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "Header", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "HeaderGroup", children: items.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "HeaderItem", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "HeaderLabel", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Link, { to: item.path ?? "#", children: item.name }) }),
-        item.itemCount ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
-          " ",
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "badge", children: item.itemCount })
-        ] }) : null
-      ] }, index)) }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "HeaderGroup", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "HeaderItem HeaderIcon", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Link, { to: "/setup", children: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438" }) }) })
-    ] });
-  };
 
   // node_modules/redux/dist/redux.mjs
   var $$observable = /* @__PURE__ */ (() => typeof Symbol === "function" && Symbol.observable || "@@observable")();
@@ -23372,9 +23051,30 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   var eventBus = new EventBus();
 
   // src/pages/echomail/Row.tsx
-  var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
-  var Row = ({ record, columns, onRowLink }) => {
+  var import_react2 = __toESM(require_react(), 1);
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
+  var Row = ({ index, record, columns, onRowLink }) => {
+    const [state, setState] = (0, import_react2.useState)({
+      activeIndex: 0
+    });
     const navigate = useNavigate();
+    (0, import_react2.useEffect)(() => {
+      const removeHotkeys = useInput((event) => {
+        if (event.key === "ArrowUp") {
+          setState((prev) => ({
+            ...prev,
+            activeIndex: prev.activeIndex > 0 ? prev.activeIndex - 1 : prev.activeIndex
+          }));
+        }
+        if (event.key === "ArrowDown") {
+          setState((prev) => ({
+            ...prev,
+            activeIndex: prev.activeIndex + 1
+          }));
+        }
+      });
+      return () => removeHotkeys();
+    }, []);
     const handleDoubleClick = (row) => {
       console.log(`\u041E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u043C \u043F\u043E\u043B\u043D\u043E\u044D\u043A\u0440\u0430\u043D\u043D\u044B\u0439 \u043F\u0440\u043E\u0441\u043C\u043E\u0442\u0440`);
       const linkAddr = onRowLink(row);
@@ -23383,64 +23083,399 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     const handleClick = (row) => {
       console.log(`\u041E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u043C \u043F\u0440\u0435\u0434\u0432\u0430\u0440\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u043F\u0440\u043E\u0441\u043C\u043E\u0442\u0440`);
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "row", onClick: () => handleClick(record), onDoubleClick: () => handleDoubleClick(record), children: columns.map((column) => {
+    const classes = ["row"];
+    if (index === state.activeIndex) {
+      classes.push("rowActive");
+    }
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: classes.join(" "), onClick: () => handleClick(record), onDoubleClick: () => handleDoubleClick(record), children: columns.map((column) => {
       const { className = "", key, styles, render } = column;
       const { [key]: raw = "" } = record;
       const value = render ? render(record) : `${raw}`;
       const userStyle = styles ? styles(record) : {};
-      return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { style: userStyle, className, children: value });
+      return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { style: userStyle, className, children: value });
     }) });
   };
   var Rows = ({ records, columns, onRowLink }) => {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_jsx_runtime3.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "rowContainer", children: records.map((record) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Row, { record, columns, onRowLink })) }) });
+    const classes = ["rowContainer"];
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: classes.join(" "), children: records.map((record, index) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Row, { index, record, columns, onRowLink })) });
   };
 
   // src/pages/echomail/EchoIndex.tsx
-  var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
   var EchoIndex = () => {
     const areas = useSelector((state) => state.areas) ?? [];
-    (0, import_react10.useEffect)(() => {
+    (0, import_react3.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_INDEX"
-      });
-      eventBus.invoke({
-        type: "SUMMARY"
       });
     }, []);
     const handlePrevMessage = () => {
       console.log(`handlePrevMessage...`);
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_jsx_runtime4.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Header, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "container", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("h1", { children: "Echomail" }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          Rows,
-          {
-            onRowLink: (row) => `/echo/${row.area_index}`,
-            columns: [
-              { className: "rowName", key: "name" },
-              { className: "rowMarker", render: (row) => {
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "container", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("h1", { children: "Echomail" }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        Rows,
+        {
+          onRowLink: (row) => `/echo/${row.area_index}`,
+          columns: [
+            { className: "rowName", key: "name" },
+            {
+              className: "rowMarker",
+              render: (row) => {
                 const { new_message_count = 0 } = row;
                 const value = new_message_count > 0 ? "\u2022" : "";
                 return value;
-              } },
-              { className: "rowSummary", key: "summary" },
-              { className: "rowCounter", render: (row) => {
+              }
+            },
+            { className: "rowSummary", key: "summary" },
+            {
+              className: "rowCounter",
+              render: (row) => {
                 const { new_message_count = 0 } = row;
                 const value = new_message_count > 0 ? `${new_message_count}` : "";
                 return value;
-              } }
-            ],
-            records: areas
-          }
-        )
-      ] })
+              }
+            }
+          ],
+          records: areas
+        }
+      )
     ] });
   };
 
   // src/pages/echomail/EchoMsgIndex.tsx
+  var import_react12 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/Trans.js
+  var import_react6 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/TransWithoutContext.js
+  var import_react4 = __toESM(require_react(), 1);
+
+  // node_modules/html-parse-stringify/dist/html-parse-stringify.module.js
+  var import_void_elements = __toESM(require_void_elements());
+
+  // node_modules/react-i18next/dist/es/utils.js
+  var warn = (i18n, code, msg, rest) => {
+    const args = [msg, {
+      code,
+      ...rest || {}
+    }];
+    if (i18n?.services?.logger?.forward) {
+      return i18n.services.logger.forward(args, "warn", "react-i18next::", true);
+    }
+    if (isString(args[0])) args[0] = `react-i18next:: ${args[0]}`;
+    if (i18n?.services?.logger?.warn) {
+      i18n.services.logger.warn(...args);
+    } else if (console?.warn) {
+      console.warn(...args);
+    }
+  };
+  var alreadyWarned2 = {};
+  var warnOnce = (i18n, code, msg, rest) => {
+    if (isString(msg) && alreadyWarned2[msg]) return;
+    if (isString(msg)) alreadyWarned2[msg] = /* @__PURE__ */ new Date();
+    warn(i18n, code, msg, rest);
+  };
+  var loadedClb = (i18n, cb) => () => {
+    if (i18n.isInitialized) {
+      cb();
+    } else {
+      const initialized = () => {
+        setTimeout(() => {
+          i18n.off("initialized", initialized);
+        }, 0);
+        cb();
+      };
+      i18n.on("initialized", initialized);
+    }
+  };
+  var loadNamespaces = (i18n, ns, cb) => {
+    i18n.loadNamespaces(ns, loadedClb(i18n, cb));
+  };
+  var loadLanguages = (i18n, lng, ns, cb) => {
+    if (isString(ns)) ns = [ns];
+    if (i18n.options.preload && i18n.options.preload.indexOf(lng) > -1) return loadNamespaces(i18n, ns, cb);
+    ns.forEach((n) => {
+      if (i18n.options.ns.indexOf(n) < 0) i18n.options.ns.push(n);
+    });
+    i18n.loadLanguages(lng, loadedClb(i18n, cb));
+  };
+  var hasLoadedNamespace = (ns, i18n, options = {}) => {
+    if (!i18n.languages || !i18n.languages.length) {
+      warnOnce(i18n, "NO_LANGUAGES", "i18n.languages were undefined or empty", {
+        languages: i18n.languages
+      });
+      return true;
+    }
+    return i18n.hasLoadedNamespace(ns, {
+      lng: options.lng,
+      precheck: (i18nInstance2, loadNotPending) => {
+        if (options.bindI18n?.indexOf("languageChanging") > -1 && i18nInstance2.services.backendConnector.backend && i18nInstance2.isLanguageChangingTo && !loadNotPending(i18nInstance2.isLanguageChangingTo, ns)) return false;
+      }
+    });
+  };
+  var isString = (obj) => typeof obj === "string";
+  var isObject = (obj) => typeof obj === "object" && obj !== null;
+
+  // node_modules/react-i18next/dist/es/unescape.js
+  var matchHtmlEntity = /&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34|nbsp|#160|copy|#169|reg|#174|hellip|#8230|#x2F|#47);/g;
+  var htmlEntities = {
+    "&amp;": "&",
+    "&#38;": "&",
+    "&lt;": "<",
+    "&#60;": "<",
+    "&gt;": ">",
+    "&#62;": ">",
+    "&apos;": "'",
+    "&#39;": "'",
+    "&quot;": '"',
+    "&#34;": '"',
+    "&nbsp;": " ",
+    "&#160;": " ",
+    "&copy;": "\xA9",
+    "&#169;": "\xA9",
+    "&reg;": "\xAE",
+    "&#174;": "\xAE",
+    "&hellip;": "\u2026",
+    "&#8230;": "\u2026",
+    "&#x2F;": "/",
+    "&#47;": "/"
+  };
+  var unescapeHtmlEntity = (m) => htmlEntities[m];
+  var unescape = (text) => text.replace(matchHtmlEntity, unescapeHtmlEntity);
+
+  // node_modules/react-i18next/dist/es/defaults.js
+  var defaultOptions = {
+    bindI18n: "languageChanged",
+    bindI18nStore: "",
+    transEmptyNodeValue: "",
+    transSupportBasicHtmlNodes: true,
+    transWrapTextNodes: "",
+    transKeepBasicHtmlNodesFor: ["br", "strong", "i", "p"],
+    useSuspense: true,
+    unescape
+  };
+  var setDefaults = (options = {}) => {
+    defaultOptions = {
+      ...defaultOptions,
+      ...options
+    };
+  };
+  var getDefaults = () => defaultOptions;
+
+  // node_modules/react-i18next/dist/es/i18nInstance.js
+  var i18nInstance;
+  var setI18n = (instance2) => {
+    i18nInstance = instance2;
+  };
+  var getI18n = () => i18nInstance;
+
+  // node_modules/react-i18next/dist/es/context.js
+  var import_react5 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/initReactI18next.js
+  var initReactI18next = {
+    type: "3rdParty",
+    init(instance2) {
+      setDefaults(instance2.options.react);
+      setI18n(instance2);
+    }
+  };
+
+  // node_modules/react-i18next/dist/es/context.js
+  var I18nContext = (0, import_react5.createContext)();
+  var ReportNamespaces = class {
+    constructor() {
+      this.usedNamespaces = {};
+    }
+    addUsedNamespaces(namespaces) {
+      namespaces.forEach((ns) => {
+        if (!this.usedNamespaces[ns]) this.usedNamespaces[ns] = true;
+      });
+    }
+    getUsedNamespaces() {
+      return Object.keys(this.usedNamespaces);
+    }
+  };
+
+  // node_modules/react-i18next/dist/es/useTranslation.js
+  var import_react7 = __toESM(require_react(), 1);
+  var usePrevious = (value, ignore) => {
+    const ref = (0, import_react7.useRef)();
+    (0, import_react7.useEffect)(() => {
+      ref.current = ignore ? ref.current : value;
+    }, [value, ignore]);
+    return ref.current;
+  };
+  var alwaysNewT = (i18n, language, namespace, keyPrefix) => i18n.getFixedT(language, namespace, keyPrefix);
+  var useMemoizedT = (i18n, language, namespace, keyPrefix) => (0, import_react7.useCallback)(alwaysNewT(i18n, language, namespace, keyPrefix), [i18n, language, namespace, keyPrefix]);
+  var useTranslation = (ns, props = {}) => {
+    const {
+      i18n: i18nFromProps
+    } = props;
+    const {
+      i18n: i18nFromContext,
+      defaultNS: defaultNSFromContext
+    } = (0, import_react7.useContext)(I18nContext) || {};
+    const i18n = i18nFromProps || i18nFromContext || getI18n();
+    if (i18n && !i18n.reportNamespaces) i18n.reportNamespaces = new ReportNamespaces();
+    if (!i18n) {
+      warnOnce(i18n, "NO_I18NEXT_INSTANCE", "useTranslation: You will need to pass in an i18next instance by using initReactI18next");
+      const notReadyT = (k, optsOrDefaultValue) => {
+        if (isString(optsOrDefaultValue)) return optsOrDefaultValue;
+        if (isObject(optsOrDefaultValue) && isString(optsOrDefaultValue.defaultValue)) return optsOrDefaultValue.defaultValue;
+        return Array.isArray(k) ? k[k.length - 1] : k;
+      };
+      const retNotReady = [notReadyT, {}, false];
+      retNotReady.t = notReadyT;
+      retNotReady.i18n = {};
+      retNotReady.ready = false;
+      return retNotReady;
+    }
+    if (i18n.options.react?.wait) warnOnce(i18n, "DEPRECATED_OPTION", "useTranslation: It seems you are still using the old wait option, you may migrate to the new useSuspense behaviour.");
+    const i18nOptions = {
+      ...getDefaults(),
+      ...i18n.options.react,
+      ...props
+    };
+    const {
+      useSuspense,
+      keyPrefix
+    } = i18nOptions;
+    let namespaces = ns || defaultNSFromContext || i18n.options?.defaultNS;
+    namespaces = isString(namespaces) ? [namespaces] : namespaces || ["translation"];
+    i18n.reportNamespaces.addUsedNamespaces?.(namespaces);
+    const ready = (i18n.isInitialized || i18n.initializedStoreOnce) && namespaces.every((n) => hasLoadedNamespace(n, i18n, i18nOptions));
+    const memoGetT = useMemoizedT(i18n, props.lng || null, i18nOptions.nsMode === "fallback" ? namespaces : namespaces[0], keyPrefix);
+    const getT = () => memoGetT;
+    const getNewT = () => alwaysNewT(i18n, props.lng || null, i18nOptions.nsMode === "fallback" ? namespaces : namespaces[0], keyPrefix);
+    const [t2, setT] = (0, import_react7.useState)(getT);
+    let joinedNS = namespaces.join();
+    if (props.lng) joinedNS = `${props.lng}${joinedNS}`;
+    const previousJoinedNS = usePrevious(joinedNS);
+    const isMounted = (0, import_react7.useRef)(true);
+    (0, import_react7.useEffect)(() => {
+      const {
+        bindI18n,
+        bindI18nStore
+      } = i18nOptions;
+      isMounted.current = true;
+      if (!ready && !useSuspense) {
+        if (props.lng) {
+          loadLanguages(i18n, props.lng, namespaces, () => {
+            if (isMounted.current) setT(getNewT);
+          });
+        } else {
+          loadNamespaces(i18n, namespaces, () => {
+            if (isMounted.current) setT(getNewT);
+          });
+        }
+      }
+      if (ready && previousJoinedNS && previousJoinedNS !== joinedNS && isMounted.current) {
+        setT(getNewT);
+      }
+      const boundReset = () => {
+        if (isMounted.current) setT(getNewT);
+      };
+      if (bindI18n) i18n?.on(bindI18n, boundReset);
+      if (bindI18nStore) i18n?.store.on(bindI18nStore, boundReset);
+      return () => {
+        isMounted.current = false;
+        if (i18n) bindI18n?.split(" ").forEach((e2) => i18n.off(e2, boundReset));
+        if (bindI18nStore && i18n) bindI18nStore.split(" ").forEach((e2) => i18n.store.off(e2, boundReset));
+      };
+    }, [i18n, joinedNS]);
+    (0, import_react7.useEffect)(() => {
+      if (isMounted.current && ready) {
+        setT(getT);
+      }
+    }, [i18n, keyPrefix, ready]);
+    const ret = [t2, i18n, ready];
+    ret.t = t2;
+    ret.i18n = i18n;
+    ret.ready = ready;
+    if (ready) return ret;
+    if (!ready && !useSuspense) return ret;
+    throw new Promise((resolve) => {
+      if (props.lng) {
+        loadLanguages(i18n, props.lng, namespaces, () => resolve());
+      } else {
+        loadNamespaces(i18n, namespaces, () => resolve());
+      }
+    });
+  };
+
+  // node_modules/react-i18next/dist/es/withTranslation.js
+  var import_react8 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/I18nextProvider.js
+  var import_react9 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/withSSR.js
   var import_react11 = __toESM(require_react(), 1);
+
+  // node_modules/react-i18next/dist/es/useSSR.js
+  var import_react10 = __toESM(require_react(), 1);
+
+  // src/IconTune.tsx
+  var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
+  var IconTune = () => {
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("svg", { xmlns: "http://www.w3.org/2000/svg", height: "24px", viewBox: "0 -960 960 960", width: "24px", fill: "#e8eaed", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("path", { d: "M440-120v-240h80v80h320v80H520v80h-80Zm-320-80v-80h240v80H120Zm160-160v-80H120v-80h160v-80h80v240h-80Zm160-80v-80h400v80H440Zm160-160v-240h80v80h160v80H680v80h-80Zm-480-80v-80h400v80H120Z" }) });
+  };
+
+  // src/common/Header.tsx
+  var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
+  var Header = () => {
+    const { t: t2, i18n } = useTranslation();
+    const {
+      NetMessageCount = 0,
+      EchoMessageCount = 0,
+      FileCount = 0
+    } = useSelector((state) => state.summary);
+    const items = [
+      {
+        name: t2("Home"),
+        path: "/"
+      },
+      {
+        name: t2("Netmail"),
+        path: "/netmail",
+        itemCount: NetMessageCount
+      },
+      {
+        name: t2("Echomail"),
+        path: "/echo",
+        itemCount: EchoMessageCount
+      },
+      {
+        name: t2("Files"),
+        path: "/files",
+        itemCount: FileCount
+      },
+      {
+        name: "\u041E\u0431\u0441\u043B\u0443\u0436\u0438\u0432\u0430\u043D\u0438\u0435",
+        path: "/service"
+      },
+      {
+        name: "\u041B\u044E\u0434\u0438"
+      },
+      {
+        name: "\u0427\u0435\u0440\u043D\u043E\u0432\u0438\u043A\u0438"
+      }
+    ];
+    return /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "Header", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "HeaderGroup", children: items.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "HeaderItem", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { className: "HeaderLabel", children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Link, { to: item.path ?? "#", children: item.name }) }),
+        item.itemCount ? /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_jsx_runtime5.Fragment, { children: [
+          " ",
+          /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { className: "badge", children: item.itemCount })
+        ] }) : null
+      ] }, index)) }),
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "HeaderGroup", children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "HeaderItem HeaderIcon", children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Link, { to: "/setup", children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(IconTune, {}) }) }) })
+    ] });
+  };
 
   // src/usils.ts
   function stringUpper(str) {
@@ -23496,12 +23531,12 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   }
 
   // src/pages/echomail/EchoMsgIndex.tsx
-  var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
   var EchoMsgIndex = () => {
     const navigate = useNavigate();
     const areas = useSelector((state) => state.areas);
     const messages = useSelector((state) => state.messages);
-    (0, import_react11.useEffect)(() => {
+    (0, import_react12.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_INDEX"
       });
@@ -23510,7 +23545,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     console.log(`echoTag = `, echoTag);
     const area = areas.find((area2) => area2.area_index === echoTag);
     console.log(`area = `, area);
-    (0, import_react11.useEffect)(() => {
+    (0, import_react12.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_MSG_INDEX",
         echoTag
@@ -23531,11 +23566,11 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     const handleCreateMessage = () => {
       navigate(`/echo/${echoTag}/create`);
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_jsx_runtime5.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Header, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { className: "container", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("h1", { children: "Echoarea" }),
-        /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_jsx_runtime6.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Header, {}),
+      /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "container", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("h1", { children: "Echoarea" }),
+        /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
           Rows,
           {
             onRowLink: (row) => {
@@ -23571,11 +23606,11 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   };
 
   // src/pages/echomail/EchoMsgView.tsx
-  var import_react13 = __toESM(require_react(), 1);
+  var import_react14 = __toESM(require_react(), 1);
 
   // src/pages/echomail/Message.tsx
-  var import_react12 = __toESM(require_react(), 1);
-  var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
+  var import_react13 = __toESM(require_react(), 1);
+  var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
   function detectLineEnding(content) {
     if (/\r\n/.test(content)) {
       return "win";
@@ -23679,11 +23714,11 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     }
   };
   var Quoting = ({ who, qp, msg }) => {
-    return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "rowQuote", children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "rowQuote", children: [
       who.value,
       qp,
       " ",
-      msg === "" ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("br", {}) : msg
+      msg === "" ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("br", {}) : msg
     ] });
   };
   var Line = ({ value, index, active }) => {
@@ -23701,14 +23736,14 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     const lineLngth = value.length;
     const numberLine = Math.floor(lineLngth / 80) + 1;
     const rowHeight = 14 * numberLine;
-    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: colorClass.join(" "), style: { height: `${rowHeight}pt` }, children: is_quote ? /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Quoting, { who, qp, msg }) : value });
+    return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: colorClass.join(" "), style: { height: `${rowHeight}pt` }, children: is_quote ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Quoting, { who, qp, msg }) : value });
   };
   var Message = () => {
     const view = useSelector((state2) => state2.view) ?? {};
     const { body, area, echo } = view;
     const { echoTag, msgId } = useParams();
     console.log(`echoTag = ${echoTag} msgId = ${msgId}`);
-    const [state, setState] = (0, import_react12.useState)({
+    const [state, setState] = (0, import_react13.useState)({
       records: [],
       maxLine: 0,
       line: 0
@@ -23719,7 +23754,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     const handleNextMessage = () => {
       console.log(`\u041F\u0435\u0440\u0435\u0445\u043E\u0434 \u043D\u0430 \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435.`);
     };
-    (0, import_react12.useEffect)(() => {
+    (0, import_react13.useEffect)(() => {
       const removeHandler = useInput((event) => {
         if (event.key === "ArrowLeft") {
           handlePreviousMessage();
@@ -23734,7 +23769,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         removeHandler();
       };
     }, []);
-    (0, import_react12.useEffect)(() => {
+    (0, import_react13.useEffect)(() => {
       const records = parseLines(body);
       setState((prev) => ({
         ...prev,
@@ -23758,7 +23793,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         line: prev.line < prev.maxLine ? prev.line + 1 : prev.line
       }));
     };
-    (0, import_react12.useEffect)(() => {
+    (0, import_react13.useEffect)(() => {
       const removeHotkeys = useInput((event) => {
         if (event.key === "ArrowUp") {
           handlePrevLine();
@@ -23771,41 +23806,41 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         removeHotkeys();
       };
     }, []);
-    return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(import_jsx_runtime6.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "echo-msg-view-header-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("table", { className: "echo-msg-view-header", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tbody", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tr", { className: "", title: "", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: "Area:" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: area?.name ?? "-" }) })
+    return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(import_jsx_runtime7.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "echo-msg-view-header-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("table", { className: "echo-msg-view-header", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("tbody", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("tr", { className: "", title: "", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "", children: "Area:" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "", children: area?.name ?? "-" }) })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tr", { className: "", title: "", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: "From:" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: echo?.from ?? "-" }) })
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("tr", { className: "", title: "", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "", children: "From:" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "", children: echo?.from ?? "-" }) })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tr", { className: "", title: "", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: "To:" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: echo?.to ?? "-" }) })
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("tr", { className: "", title: "", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "", children: "To:" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "", children: echo?.to ?? "-" }) })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tr", { className: "", title: "", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: "Subject:" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: echo?.subject ?? "-" }) })
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("tr", { className: "", title: "", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "", children: "Subject:" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "", children: echo?.subject ?? "-" }) })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("tr", { className: "", title: "", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: "Date:" }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("span", { className: "", children: echo?.date ?? "-" }) })
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("tr", { className: "", title: "", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { className: "echo-msg-view-header-name", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "", children: "Date:" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "", children: echo?.date ?? "-" }) })
         ] })
       ] }) }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "echo-msg-view-body", children: state.records.map((row, index) => /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Line, { active: index === state.line, index, value: row }, index)) })
+      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "echo-msg-view-body", children: state.records.map((row, index) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Line, { active: index === state.line, index, value: row }, index)) })
     ] });
   };
 
   // src/pages/echomail/EchoMsgView.tsx
-  var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime8 = __toESM(require_jsx_runtime(), 1);
   var EchoMsgView = () => {
     const navigate = useNavigate();
     const messages = useSelector((state) => state.messages);
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
-    (0, import_react13.useEffect)(() => {
+    (0, import_react14.useEffect)(() => {
       eventBus.invoke({
         type: "ECHO_MSG_VIEW",
         echoTag,
@@ -23842,59 +23877,59 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       } else {
       }
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(import_jsx_runtime7.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Header, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "container", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("h1", { children: "EchoMailView" }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Message, {})
+    return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(import_jsx_runtime8.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Header, {}),
+      /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "container", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("h1", { children: "EchoMailView" }),
+        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Message, {})
       ] })
     ] });
   };
 
   // src/pages/echomail/EchoMsgCompose.tsx
-  var import_jsx_runtime8 = __toESM(require_jsx_runtime(), 1);
-  var EchoMsgCompose = () => {
-    return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_jsx_runtime8.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Header, {}) });
-  };
-
-  // src/pages/files/FileIndex.tsx
   var import_jsx_runtime9 = __toESM(require_jsx_runtime(), 1);
-  var FileIndex = () => {
-    const { echoTag, msgId } = useParams();
-    console.log(echoTag);
+  var EchoMsgCompose = () => {
     return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(import_jsx_runtime9.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Header, {}) });
   };
 
-  // src/pages/files/FileTicIndex.tsx
+  // src/pages/files/FileIndex.tsx
   var import_jsx_runtime10 = __toESM(require_jsx_runtime(), 1);
-  var FileTicIndex = () => {
+  var FileIndex = () => {
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
     return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_jsx_runtime10.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Header, {}) });
   };
 
-  // src/pages/files/FileTicView.tsx
+  // src/pages/files/FileTicIndex.tsx
   var import_jsx_runtime11 = __toESM(require_jsx_runtime(), 1);
-  var FileTicView = () => {
+  var FileTicIndex = () => {
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
     return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_jsx_runtime11.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(Header, {}) });
   };
 
-  // src/pages/netmail/NetmailIndex.tsx
+  // src/pages/files/FileTicView.tsx
   var import_jsx_runtime12 = __toESM(require_jsx_runtime(), 1);
+  var FileTicView = () => {
+    const { echoTag, msgId } = useParams();
+    console.log(echoTag);
+    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_jsx_runtime12.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Header, {}) });
+  };
+
+  // src/pages/netmail/NetmailIndex.tsx
+  var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
   var NetmailIndex = () => {
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
-    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_jsx_runtime12.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("h1", { children: "Not yet implemented." }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_jsx_runtime13.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("h1", { children: "Not yet implemented." }) });
   };
 
   // src/pages/netmail/NetmailView.tsx
-  var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
   var NetmailView = () => {
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
-    return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_jsx_runtime13.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Header, {}) });
+    return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_jsx_runtime14.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Header, {}) });
   };
 
   // node_modules/i18next/dist/esm/i18next.js
@@ -26121,13 +26156,17 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     en: {
       translation: {
         "Home": "Home",
-        "Netmail": "Netmail"
+        "Netmail": "Netmail",
+        "Echomail": "Echomail",
+        "Files": "Files"
       }
     },
     ru: {
       translation: {
         "Home": "\u0413\u043B\u0430\u0432\u043D\u0430\u044F",
-        "Netmail": "\u041B\u0438\u0447\u043D\u044B\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F"
+        "Netmail": "\u041B\u0438\u0447\u043D\u044B\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F",
+        "Echomail": "\u0422\u0435\u043B\u0435\u043A\u043E\u043D\u0444\u0435\u0440\u0435\u043D\u0446\u0438\u0438",
+        "Files": "\u0424\u0430\u0439\u043B\u044B"
       }
     }
   };
@@ -26141,7 +26180,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   var i18n_default = instance;
 
   // src/pages/setup/Setup.tsx
-  var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
   var Setup = () => {
     const handleRussian = () => {
       i18n_default.changeLanguage("ru-RU");
@@ -26149,59 +26188,68 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     const handleEnglish = () => {
       i18n_default.changeLanguage("en-US");
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_jsx_runtime14.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Header, {}),
+    return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Header, {}),
       "\u042F\u0437\u044B\u043A",
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { onClick: handleRussian, children: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439" }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { onClick: handleEnglish, children: "English" })
+      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { onClick: handleRussian, children: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439" }),
+      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { onClick: handleEnglish, children: "English" })
     ] });
   };
 
   // src/pages/layout/BaseLayout.tsx
-  var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime16 = __toESM(require_jsx_runtime(), 1);
   var BaseLayout = ({ content }) => {
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Header, {}),
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(import_jsx_runtime16.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Header, {}),
       content
     ] });
   };
 
   // src/pages/App.tsx
-  var import_jsx_runtime16 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime17 = __toESM(require_jsx_runtime(), 1);
+  var updateSummary = () => {
+    eventBus.invoke({
+      type: "SUMMARY"
+    });
+    setTimeout(updateSummary, 1e4);
+  };
   var App = () => {
-    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(HashRouter, { children: /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Routes, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(BaseLayout, { content: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Welcome, {}) }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Route, { path: "netmail", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(BaseLayout, { content: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(NetmailIndex, {}) }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: ":msgId", children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(NetmailView, {}) }) })
+    (0, import_react15.useEffect)(() => {
+      updateSummary();
+    }, []);
+    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(HashRouter, { children: /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(Routes, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(BaseLayout, { content: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Welcome, {}) }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(Route, { path: "netmail", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(BaseLayout, { content: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(NetmailIndex, {}) }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: ":msgId", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(NetmailView, {}) }) })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Route, { path: "echo", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(EchoIndex, {}) }),
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Route, { path: ":echoTag", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(EchoMsgIndex, {}) }),
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "create", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(EchoMsgCompose, {}) }),
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: ":msgId", children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(EchoMsgView, {}) }) })
+      /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(Route, { path: "echo", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(BaseLayout, { content: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(EchoIndex, {}) }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(Route, { path: ":echoTag", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(EchoMsgIndex, {}) }),
+          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: "create", element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(EchoMsgCompose, {}) }),
+          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: ":msgId", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(EchoMsgView, {}) }) })
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Route, { path: "files", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(FileIndex, {}) }),
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(Route, { path: ":echoTag", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "tics", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(FileTicIndex, {}) }),
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: ":fileId", children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(FileTicView, {}) }) })
+      /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(Route, { path: "files", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { index: true, element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(FileIndex, {}) }),
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(Route, { path: ":echoTag", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: "tics", element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(FileTicIndex, {}) }),
+          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: ":fileId", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: "view", element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(FileTicView, {}) }) })
         ] })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Route, { path: "setup", element: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Setup, {}) })
+      /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Route, { path: "setup", element: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Setup, {}) })
     ] }) });
   };
 
   // src/main.tsx
-  var import_jsx_runtime17 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime18 = __toESM(require_jsx_runtime(), 1);
   var rootElement = "root";
   var container = document.getElementById(rootElement);
   if (container) {
     const root = (0, import_client.createRoot)(container);
     root.render(
-      /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(Provider_default, { store, children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(App, {}) })
+      /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Provider_default, { store, children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(App, {}) })
     );
   } else {
     console.log(`\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043D\u0430\u0439\u0442\u0438 \u043A\u043E\u0440\u043D\u0435\u0432\u043E\u0439 \u044D\u043B\u0435\u043C\u0435\u043D\u0442 "${rootElement}".`);

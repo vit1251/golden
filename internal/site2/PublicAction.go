@@ -35,7 +35,7 @@ func (self *PublicAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	/* Read content */
 	resourcePath := path.Join("public", name)
 	log.Printf("Resource path %s", resourcePath)
-	content, err1 := publicContent.ReadFile(resourcePath)
+	content, err1 := publicFS.ReadFile(resourcePath)
 
 	if err1 == nil {
 

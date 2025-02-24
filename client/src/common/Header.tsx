@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import './Header.css';
+import { IconTune } from "../IconTune";
 
 export const Header = () => {
 
@@ -28,12 +29,12 @@ export const Header = () => {
             itemCount: NetMessageCount,
         },
         {
-            name: 'Телеконференции',
+            name: t('Echomail'),
             path: '/echo',
             itemCount: EchoMessageCount,
         },
         {
-            name: 'Файлы',
+            name: t('Files'),
             path: '/files',
             itemCount: FileCount,
         },
@@ -68,7 +69,7 @@ export const Header = () => {
             </div>
             <div className="HeaderGroup">
                 <div className="HeaderItem HeaderIcon">
-                    <Link to="/setup">Настройки</Link>
+                    <Link to="/setup"><IconTune /></Link>
                 </div>
             </div>
         </div>

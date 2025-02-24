@@ -35,7 +35,7 @@ func (self *StaticAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	/* Read content */
 	resourcePath := path.Join("static", name)
 	log.Printf("Resource path %s", resourcePath)
-	content, err1 := staticContent.ReadFile(resourcePath)
+	content, err1 := staticFS.ReadFile(resourcePath)
 
 	if err1 == nil {
 

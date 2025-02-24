@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { HashRouter, Routes, Route } from 'react-router';
 
 import { Welcome } from "./Welcome";
@@ -18,8 +18,26 @@ import { Setup } from './setup/Setup';
 import '../themes/custom.css';
 import '../themes/theme_black.css';
 import { BaseLayout } from "./layout/BaseLayout";
+import { eventBus } from "../EventBus";
+
+const updateSummary = () => {
+    
+    /* Step 1. Invoke update summery */
+    eventBus.invoke({
+        type: 'SUMMARY',
+    });
+
+    /* Step 2. Rewind counter */
+    setTimeout(updateSummary, 10_000);
+
+};
 
 export const App = () => {
+
+    useEffect(() => {
+        updateSummary();
+    }, [])
+
     return (
         <HashRouter>
             <Routes>
@@ -34,7 +52,7 @@ export const App = () => {
                 </Route>
 
                 <Route path="echo">
-                    <Route index element={<EchoIndex />} />
+                    <Route index element={<BaseLayout content={<EchoIndex />} />} />
                     <Route path=":echoTag">
                         <Route index element={<EchoMsgIndex />} />
                         <Route path="create" element={<EchoMsgCompose />} />

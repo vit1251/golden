@@ -10,12 +10,16 @@ const resources = {
     translation: {
        'Home': 'Home',
        'Netmail': 'Netmail',
+       'Echomail': 'Echomail',
+       'Files': 'Files',
     }
   },
   ru: {
     translation: {
       'Home': 'Главная',
       'Netmail': 'Личные сообщения',
+      'Echomail': 'Телеконференции',
+      'Files': 'Файлы',
     }
   }
 };
