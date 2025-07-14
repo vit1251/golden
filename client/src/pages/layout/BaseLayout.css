@@ -1,0 +1,16 @@
+
+.Container {
+    display: grid;
+    height: 100vh;
+    grid-template-rows: 80px 1fr;
+    overflow: hidden;
+}
+
+.Header {
+    grid-row: 1;
+}
+
+.Main {
+    grid-row: 2;
+    overflow: auto;
+}

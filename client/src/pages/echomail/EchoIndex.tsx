@@ -25,7 +25,7 @@ export const EchoIndex = () => {
     };
 
     return (
-        <div className="container">
+        <div>
             <h1>Echomail</h1>
 
             <Rows<Area>

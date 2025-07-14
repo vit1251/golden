@@ -41,27 +41,27 @@ export const App = () => {
     return (
         <HashRouter>
             <Routes>
-                
+
                 <Route index element={<BaseLayout content={<Welcome />} />} />
-                
+
                 <Route path="netmail">
                     <Route index element={<BaseLayout content={<NetmailIndex />} />} />
                     <Route path=":msgId">
-                        <Route path="view" element={<NetmailView />} />
+                        <Route path="view" element={<BaseLayout content={<NetmailView />} />} />
                     </Route>
                 </Route>
 
                 <Route path="echo">
                     <Route index element={<BaseLayout content={<EchoIndex />} />} />
                     <Route path=":echoTag">
-                        <Route index element={<EchoMsgIndex />} />
+                        <Route index element={<BaseLayout content={<EchoMsgIndex />} />} />
                         <Route path="create" element={<EchoMsgCompose />} />
                         <Route path=":msgId">
-                            <Route path="view" element={<EchoMsgView />} />
+                            <Route path="view" element={<BaseLayout content={<EchoMsgView />} />} />
                         </Route>
                     </Route>
                 </Route>
-                
+
                 <Route path="files">
                     <Route index element={<BaseLayout content={<FileIndex />} />} />
                     <Route path=":echoTag">
@@ -72,7 +72,7 @@ export const App = () => {
                     </Route>
                 </Route>
 
-                <Route path="setup" element={<Setup />} />
+                <Route path="setup" element={<BaseLayout content={<Setup />} />} />
 
             </Routes>
         </HashRouter>

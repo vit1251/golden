@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router";
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
-import { Header } from '../../common/Header';
 import { eventBus } from '../../EventBus';
 import { Rows } from './Row';
 
@@ -72,14 +71,10 @@ export const EchoMsgIndex = () => {
     };
 
     return (
-        <>
+        <div>
+            <h1>Echoarea</h1>
 
-            <Header />
-
-            <div className="container">
-                <h1>Echoarea</h1>
-
-                <Rows<Message>
+            <Rows<Message>
                     onRowLink={(row: Message): string => {
                         const { hash } = row;
                         if (hash) {
@@ -108,8 +103,6 @@ export const EchoMsgIndex = () => {
                     records={messages}
                     />
 
-            </div>
-
-        </>
+        </div>
     );
 };

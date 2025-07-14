@@ -264,7 +264,7 @@ export const Message = () => {
     }, []);
 
     return (
-        <>
+        <div>
             <div className="echo-msg-view-header-wrapper">
                 <table className="echo-msg-view-header">
                     <tbody><tr className="" title="">
@@ -304,6 +304,6 @@ export const Message = () => {
             <div className="echo-msg-view-body">
                 {state.records.map((row, index) => (<Line key={index} active={index === state.line} index={index} value={row} />))}
             </div>
-        </>
+        </div>
     );
 }

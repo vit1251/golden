@@ -14,15 +14,18 @@ export const Setup = () => {
     }
 
     return (
-        <>
-            <Header />
+        <div>
 
+            <h1>Настройка</h1>
 
-            Язык
-            
+            <h2>Параметры подключения</h2>
+
+            <h2>Выбор языка</h2>
+
             <div onClick={handleRussian}>Русский</div>
             <div onClick={handleEnglish}>English</div>
-        </>
+
+        </div>
     );
 
 };

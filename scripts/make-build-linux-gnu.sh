@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 PATH="${PATH}:/usr/local/go/bin"
 SCRIPT_DIR="$(readlink -f $(dirname "$0"))"
 SRC_DIR="$(dirname "${SCRIPT_DIR}")"

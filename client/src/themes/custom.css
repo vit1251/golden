@@ -3,7 +3,6 @@ body {
     font-family: "Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace;
     font-size: 14pt;
     margin: 0;
-    padding: 0;
     background-color: var(--color-canvas-default);
     color: var(--color-fg-default);
 }
@@ -35,19 +34,6 @@ textarea {
     white-space: pre-wrap;
 }
 
-/* basic layout */
-.container {
-    width: 980px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 16px;
-    padding-left: 16px;
-    padding-right: 16px;
-}
-
-.container.limit-width {
-    max-width: 980px;
-}
 .stretch {
     width: 100%;
 }

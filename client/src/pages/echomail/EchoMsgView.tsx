@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { eventBus } from '../../EventBus.js';
-import { Header } from '../../common/Header.js';
 import { Message } from './Message';
 
 export const EchoMsgView = () => {
@@ -62,16 +61,8 @@ export const EchoMsgView = () => {
     };
 
     return (
-        <>
-            <Header />
-
-            <div className="container">
-                <h1>EchoMailView</h1>
-
-                <Message />
-
-            </div>
-
-        </>
+        <div>
+            <Message />
+        </div>
     );
 };

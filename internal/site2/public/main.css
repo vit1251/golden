@@ -73,41 +73,6 @@
   text-overflow: ellipsis;
 }
 
-/* src/common/Header.css */
-.Header {
-  background-color: var(--color-header-bg);
-  color: var(--color-header-text);
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  height: 50px;
-}
-.HeaderGroup {
-  display: flex;
-  flex-flow: row;
-}
-.HeaderItem {
-  font-weight: 600;
-  font-family: monospace;
-  font-size: 16pt;
-  padding: 0 4px;
-}
-.HeaderIcon {
-  -border: 1px solid yellow;
-}
-.Header a {
-  color: var(--color-header-text);
-}
-.Header a:hover {
-  color: var(--color-header-text);
-  opacity: 0.75;
-}
-.Icon {
-  height: 48px;
-  width: 48px;
-}
-
 /* src/pages/echomail/EchoMsgIndex.css */
 .rowUserpic {
   width: 30px;
@@ -185,6 +150,41 @@
   color: rgb(0, 128, 128);
 }
 
+/* src/common/Header.css */
+.Header {
+  background-color: var(--color-header-bg);
+  color: var(--color-header-text);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+}
+.HeaderGroup {
+  display: flex;
+  flex-flow: row;
+}
+.HeaderItem {
+  font-weight: 600;
+  font-family: monospace;
+  font-size: 16pt;
+  padding: 0 4px;
+}
+.HeaderIcon {
+  -border: 1px solid yellow;
+}
+.Header a {
+  color: var(--color-header-text);
+}
+.Header a:hover {
+  color: var(--color-header-text);
+  opacity: 0.75;
+}
+.Icon {
+  height: 48px;
+  width: 48px;
+}
+
 /* src/themes/custom.css */
 body {
   font-family:
@@ -198,7 +198,6 @@ body {
     monospace;
   font-size: 14pt;
   margin: 0;
-  padding: 0;
   background-color: var(--color-canvas-default);
   color: var(--color-fg-default);
 }
@@ -240,17 +239,6 @@ textarea {
 }
 .pre-wrap {
   white-space: pre-wrap;
-}
-.container {
-  width: 980px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 16px;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-.container.limit-width {
-  max-width: 980px;
 }
 .stretch {
   width: 100%;
@@ -610,4 +598,19 @@ span.hidden {
   --color-btn-hover-text: #FFFFFF;
   --color-btn-hover-bg: #444c56;
   --color-btn-hover-border: #444c56;
+}
+
+/* src/pages/layout/BaseLayout.css */
+.Container {
+  display: grid;
+  height: 100vh;
+  grid-template-rows: 80px 1fr;
+  overflow: hidden;
+}
+.Header {
+  grid-row: 1;
+}
+.Main {
+  grid-row: 2;
+  overflow: auto;
 }
