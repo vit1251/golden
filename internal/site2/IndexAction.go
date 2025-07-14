@@ -2,9 +2,7 @@ package site2
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/vit1251/golden/internal/site2/api"
-	"io"
 	"net/http"
 )
 
@@ -18,31 +16,24 @@ func NewIndexAction() *IndexAction {
 
 func (self *IndexAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-    out := &bytes.Buffer{}
+    var cache bytes.Buffer
+    cache.Grow(1024)
 
-    fmt.Fprintf(out, "<!DOCTYPE html>")
-    fmt.Fprintf(out, "<html lang=\"en\">")
-    fmt.Fprintf(out, "<head>")
-    fmt.Fprintf(out, "<link rel=\"stylesheet\" href=\"/public/main.css\">")
-    fmt.Fprintf(out, "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">")
-    fmt.Fprintf(out, "<title>Golden Point</title>")
-    fmt.Fprintf(out, "</head>")
-    fmt.Fprintf(out, "<body class=\"dark\">")
-    fmt.Fprintf(out, "<div id=\"root\"></div>")
-    fmt.Fprintf(out, "<script src=\"/public/main.js\"></script>")
-    fmt.Fprintf(out, "</body>")
-    fmt.Fprintf(out, "</html>")
+    cache.WriteString("<!DOCTYPE html>\n")
+    cache.WriteString("<html>\n")
+    cache.WriteString("<head>\n")
+    cache.WriteString("    <link rel=\"stylesheet\" href=\"/public/main.css\">\n")
+    cache.WriteString("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n")
+    cache.WriteString("    <title>Golden Point</title>\n")
+    cache.WriteString("</head>\n")
+    cache.WriteString("<body class=\"dark\">\n")
+    cache.WriteString("    <div id=\"root\"></div>\n")
+    cache.WriteString("    <script src=\"/public/main.js\"></script>\n")
+    cache.WriteString("</body>\n")
+    cache.WriteString("</html>\n")
 
-    content := out.Bytes()
+    w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-    size := len(content)
-
-    w.Header().Set("Content-Length", fmt.Sprintf("%d", size))
-    w.Header().Set("Content-Type", "text/html")
-
-    w.WriteHeader(200)
-
-    image := bytes.NewReader(content)
-    io.Copy(w, image)
+    cache.WriteTo(w)
 
 }
