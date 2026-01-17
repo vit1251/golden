@@ -75,7 +75,7 @@ func (self *TableWidget) Render(w io.Writer) error {
 			if cel.Widget != nil {
 				cel.Widget.Render(w)
 			} else {
-				fmt.Fprintf(w, cel.Content)
+				fmt.Fprintf(w, "%s", cel.Content)
 			}
 			fmt.Fprintf(w, "</td>\n")
 		}
