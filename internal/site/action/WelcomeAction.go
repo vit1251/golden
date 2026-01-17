@@ -95,8 +95,8 @@ func (self *WelcomeAction) renderProductVersion() widgets2.IWidget {
 
 	/* Product name */
 	nameWidget := widgets2.NewDivWidget().
-		SetClass("welcome-header").
-		SetContent("Golden point").
+		SetClass("welcome-header gold-text").
+		SetContent("Golden Point").
 		SetStyle("padding-bottom: 8px")
 
 	productWidget.AddWidget(nameWidget)

@@ -1,7 +1,16 @@
 
 .container-fluid {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.gold-text {
+  background-image: linear-gradient(to bottom, #FFD700, #FFFFFF);
+  background-clip: text;
+  font-weight: bold;
+  color: transparent;
+  font-family: Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+  font-size: 36pt;
 }
