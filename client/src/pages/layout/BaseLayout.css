@@ -1,16 +1,35 @@
 
+/* Убираем лишние отступы у браузера */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Запрещаем общий скролл */
+}
+
 .Container {
-    display: grid;
-    height: 100vh;
-    grid-template-rows: 80px 1fr;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column; /* Элементы друг под другом */
+    height: 100vh;          /* Ровно на весь экран */
 }
 
 .Header {
-    grid-row: 1;
+    flex: 0 0 auto;        /* Не сжимается, не растет */
+    background: #4900b6;
+    color: #C0C0C0;
+    padding: 10px;
 }
 
 .Main {
-    grid-row: 2;
-    overflow: auto;
+    flex: 1 1 auto;        /* Занимает ВСЁ свободное пространство */
+    overflow-y: auto;      /* Прокрутка только здесь! */
+    background: #000;
+}
+
+.Status {
+    flex: 0 0 auto;        /* Всегда снизу, фиксированная высота */
+    background: #4900b6;
+    color: #C0C0C0;
+    padding: 5px;
+    font-size: 0.9em;
 }

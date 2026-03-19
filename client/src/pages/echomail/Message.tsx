@@ -6,6 +6,52 @@ import { useInput } from '../../Hotkey';
 
 import './Message.css';
 
+const Body = ({ rawText }: { rawText: string }) => {
+    const text: string = rawText.replace(/\r\n|\r|\n/g, '\n');
+    const lines = text.split('\n');
+    const records: Array<any> = [];
+
+    for (const line of lines) {
+        
+        // Шаг 1. Обработка цитат
+        const match = line.match(/^(\s+[A-Za-zА-Яа-я0-9]{1,3}>{1,3}|\s+[>]{1,3}>)/);
+        if (match) {
+            const prefix = match[0];
+            // Считаем количество знаков ">", чтобы понять уровень вложенности
+            const level: number = (prefix.match(/>/g) || []).length;
+            // Ограничиваем уровень (например, до 3), чтобы не плодить бесконечные стили
+            const colorClass: string[] = [
+                `msg-line`,
+                `msg-quote-${Math.min(level, 3)}`,
+            ];
+            
+            records.push( <div className={colorClass.join(' ')}>{line}</div> );
+            continue;
+        }
+
+        if (line.startsWith('---') || line.startsWith(' * Origin:')) {
+            const colorClass: string[] = [
+                'msg-line',
+                'msg-service',
+            ];
+            records.push( <div className={colorClass.join(' ')}>{line}</div> );
+            continue;
+        }
+
+        // Обычный текст автора
+        const colorClass: string[] = [
+            'msg-line',
+            'msg-plain',
+        ];
+        records.push( <div className={colorClass.join(' ')}>{line}</div> );
+    }
+
+    return (
+        <div>
+            {records}
+        </div>
+    );
+}
 
 export const Message = () => {
     const dispatch = useDispatch();
@@ -99,7 +145,7 @@ export const Message = () => {
                     </tbody></table>
             </div>
             <div className="echo-msg-view-body">
-                {content}
+                <Body rawText={content} />
             </div>
         </div>
     );

@@ -9,7 +9,8 @@ export const BaseLayout = ({ content }: { content: ReactElement }) => {
     return (
         <div className="Container">
             <Header />
-            <div className="Main">{content}</div>
+            <main className="Main">{content}</main>
+            <footer className="Status">Golden Point v1.2.19 - версия разработчика</footer>
         </div>
     );
 }

@@ -8,11 +8,16 @@ import { useTranslation } from 'react-i18next';
 import './Header.css';
 import { IconTune } from "../IconTune";
 
+interface Item {
+    name: string,
+    path?: string,
+}
+
 export const Header = () => {
 
     const { t, i18n } = useTranslation();
 
-    const items = [
+    const items: Array<Item> = [
         {
             name: t('Home'),
             path: '/',
@@ -42,19 +47,13 @@ export const Header = () => {
     ];
 
     return (
-        <div className="Header">
+        <header className="Header">
             <div className="HeaderGroup">
                 {items.map((item, index) => (
                 <div key={index} className="HeaderItem">
                     <span className="HeaderLabel">
                         <Link to={item.path ?? "#"}>{item.name}</Link>
                     </span>
-                    {item.itemCount ? (
-                        <>
-                            {' '}
-                            <span className="badge">{item.itemCount}</span>
-                        </>
-                    ) : null}
                 </div>
                 ))}
             </div>
@@ -63,6 +62,6 @@ export const Header = () => {
                     <Link to="/setup"><IconTune /></Link>
                 </div>
             </div>
-        </div>
+        </header>
     );
 };

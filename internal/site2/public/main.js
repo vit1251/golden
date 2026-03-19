@@ -27692,6 +27692,38 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   // src/pages/echomail/Message.tsx
   var import_react5 = __toESM(require_react(), 1);
   var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
+  var Body = ({ rawText }) => {
+    const text = rawText.replace(/\r\n|\r|\n/g, "\n");
+    const lines = text.split("\n");
+    const records = [];
+    for (const line of lines) {
+      const match = line.match(/^(\s+[A-Za-zА-Яа-я0-9]{1,3}>{1,3}|\s+[>]{1,3}>)/);
+      if (match) {
+        const prefix = match[0];
+        const level = (prefix.match(/>/g) || []).length;
+        const colorClass2 = [
+          `msg-line`,
+          `msg-quote-${Math.min(level, 3)}`
+        ];
+        records.push(/* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: colorClass2.join(" "), children: line }));
+        continue;
+      }
+      if (line.startsWith("---") || line.startsWith(" * Origin:")) {
+        const colorClass2 = [
+          "msg-line",
+          "msg-service"
+        ];
+        records.push(/* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: colorClass2.join(" "), children: line }));
+        continue;
+      }
+      const colorClass = [
+        "msg-line",
+        "msg-plain"
+      ];
+      records.push(/* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: colorClass.join(" "), children: line }));
+    }
+    return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { children: records });
+  };
   var Message = () => {
     const dispatch = useDispatch();
     const sendMessage = (payload) => {
@@ -27759,7 +27791,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
           /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("td", { className: "echo-msg-view-header-value", children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { className: "", children: msgDate }) })
         ] })
       ] }) }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "echo-msg-view-body", children: content })
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { className: "echo-msg-view-body", children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(Body, { rawText: content }) })
     ] });
   };
 
@@ -30894,14 +30926,8 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         name: "\u0427\u0435\u0440\u043D\u043E\u0432\u0438\u043A\u0438"
       }
     ];
-    return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "Header", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "HeaderGroup", children: items.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "HeaderItem", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { className: "HeaderLabel", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Link, { to: item.path ?? "#", children: item.name }) }),
-        item.itemCount ? /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(import_jsx_runtime8.Fragment, { children: [
-          " ",
-          /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { className: "badge", children: item.itemCount })
-        ] }) : null
-      ] }, index)) }),
+    return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("header", { className: "Header", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "HeaderGroup", children: items.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "HeaderItem", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { className: "HeaderLabel", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Link, { to: item.path ?? "#", children: item.name }) }) }, index)) }),
       /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "HeaderGroup", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "HeaderItem HeaderIcon", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(Link, { to: "/setup", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(IconTune, {}) }) }) })
     ] });
   };
@@ -31003,7 +31029,8 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   var BaseLayout = ({ content }) => {
     return /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)("div", { className: "Container", children: [
       /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Header, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("div", { className: "Main", children: content })
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("main", { className: "Main", children: content }),
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("footer", { className: "Status", children: "Golden Point v1.2.19 - \u0432\u0435\u0440\u0441\u0438\u044F \u0440\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u0447\u0438\u043A\u0430" })
     ] });
   };
 

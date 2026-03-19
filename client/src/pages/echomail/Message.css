@@ -1,17 +1,25 @@
 
-.messageLine {
-    min-height: 14pt;
+.msg-line {
+    min-height: 1.2em; /* Соответствует стандартному line-height */
+    white-space: pre-wrap;
 }
 
-.rowQuote {
-    padding-left: 16px;
+.msg-quote-1 {
+    color: #00aaaa;
 }
 
-.rowEven {
-    color: rgb(0, 128, 0);
-    
+.msg-quote-2 {
+    color: #aa00aa;
 }
 
-.rowOdd {
-    color: rgb(0, 128, 128);
+.msg-quote-3 {
+    color: #00aa00;
+}
+
+.msg-service {
+    color: #404040;
+}
+
+.msg-plain {
+    color: #C0C0C0;
 }

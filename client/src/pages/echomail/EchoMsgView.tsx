@@ -7,6 +7,7 @@ import { Message as MessageComponent } from './Message';
 import { Message } from "../../models/Message.model";
 import { Area } from "../../models/Area.model";
 
+
 export const EchoMsgView = () => {
     const dispatch = useDispatch();
 

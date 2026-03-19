@@ -137,17 +137,24 @@
 }
 
 /* src/pages/echomail/Message.css */
-.messageLine {
-  min-height: 14pt;
+.msg-line {
+  min-height: 1.2em;
+  white-space: pre-wrap;
 }
-.rowQuote {
-  padding-left: 16px;
+.msg-quote-1 {
+  color: #00aaaa;
 }
-.rowEven {
-  color: rgb(0, 128, 0);
+.msg-quote-2 {
+  color: #aa00aa;
 }
-.rowOdd {
-  color: rgb(0, 128, 128);
+.msg-quote-3 {
+  color: #00aa00;
+}
+.msg-service {
+  color: #404040;
+}
+.msg-plain {
+  color: #C0C0C0;
 }
 
 /* src/common/Header.css */
@@ -601,16 +608,33 @@ span.hidden {
 }
 
 /* src/pages/layout/BaseLayout.css */
-.Container {
-  display: grid;
-  height: 100vh;
-  grid-template-rows: 80px 1fr;
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
   overflow: hidden;
 }
+.Container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
 .Header {
-  grid-row: 1;
+  flex: 0 0 auto;
+  background: #4900b6;
+  color: #C0C0C0;
+  padding: 10px;
 }
 .Main {
-  grid-row: 2;
-  overflow: auto;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  background: #000;
+}
+.Status {
+  flex: 0 0 auto;
+  background: #4900b6;
+  color: #C0C0C0;
+  padding: 5px;
+  font-size: 0.9em;
 }
