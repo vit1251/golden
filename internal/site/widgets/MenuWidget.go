@@ -27,31 +27,26 @@ func NewMenuWidget() *MenuWidget {
 }
 
 func (self *MenuWidget) Render(w io.Writer) error {
-
-	fmt.Fprintf(w, "<div>\n")
-
-	fmt.Fprintf(w, "<div class=\"Header\">\n")
-
+	fmt.Fprintf(w, "<div>")
+	fmt.Fprintf(w, "<div class=\"Header\">")
 	for _, g := range self.groups {
-		fmt.Fprintf(w, "\t<div class=\"Header-item-group\">\n")
+		fmt.Fprintf(w, "<div class=\"Header-item-group\">")
 		for _, item := range g.actions {
-			fmt.Fprintf(w, "\t\t<a class=\"nav-link\" href=\"%s\">\n", item.Link)
-			fmt.Fprintf(w, "\t\t\t<div class=\"Header-item\">\n")
-			fmt.Fprintf(w, "\t\t\t\t<span class=\"tab-label\">%s</span>\n", item.Label)
-			if item.Metric > 0 {
-				fmt.Fprintf(w, "\t\t\t\t<span class=\"badge\" id=\"%s\">%d</span>\n", item.ID, item.Metric)
+			fmt.Fprintf(w, "<a class=\"nav-link\" href=\"%s\">", item.Link)
+			fmt.Fprintf(w, "<div class=\"Header-item\">")
+			if item.Icon != "" {
+				fmt.Fprintf(w, "<svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\">")
+				fmt.Fprintf(w, "  <use href=\"/static/sprite.svg#%s\"></use>", item.Icon)
+				fmt.Fprintf(w, "</svg>")
 			} else {
-				fmt.Fprintf(w, "\t\t\t\t<span class=\"badge hidden\" id=\"%s\"></span>\n", item.ID)
+				fmt.Fprintf(w, "<span class=\"tab-label\">%s</span>", item.Label)
 			}
-			fmt.Fprintf(w, "\t\t\t</div>\n")
-			fmt.Fprintf(w, "\t\t</a>\n")
+			fmt.Fprintf(w, "</div>")
+			fmt.Fprintf(w, "</a>")
 		}
-		fmt.Fprintf(w, "\t</div>\n")
+		fmt.Fprintf(w, "</div>")
 	}
-
-	fmt.Fprintf(w, "</div>\n")
-
-	fmt.Fprintf(w, "</div>\n")
-
+	fmt.Fprintf(w, "</div>")
+	fmt.Fprintf(w, "</div>")
 	return nil
 }

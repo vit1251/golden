@@ -4,7 +4,6 @@ go 1.24.0
 
 require (
 	github.com/gobwas/ws v1.4.0
-	github.com/gorilla/mux v1.8.1
 	github.com/huandu/go-sqlbuilder v1.38.2
 	github.com/mattn/go-sqlite3 v1.14.33
 	github.com/satori/go.uuid v1.2.0

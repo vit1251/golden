@@ -2,11 +2,11 @@ package site
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
-	action2 "github.com/vit1251/golden/internal/site/action"
-	"github.com/vit1251/golden/pkg/registry"
 	"log"
 	"net/http"
+
+	"github.com/vit1251/golden/internal/site/handler"
+	"github.com/vit1251/golden/pkg/registry"
 )
 
 type IAction interface {
@@ -40,98 +40,88 @@ func NewSiteManager(registry *registry.Container) *SiteManager {
 	return site
 }
 
-func (self *SiteManager) ContainerMiddleware(a IAction) IAction {
-	a.SetContainer(self.registry)
-	return a
-}
+func (s *SiteManager) createRouter() *http.ServeMux {
 
-func Register(router *mux.Router, pattern string, a IAction) {
-	router.HandleFunc(pattern, a.ServeHTTP)
-}
+	mux := http.NewServeMux()
 
-func (self *SiteManager) createRouter() *mux.Router {
+	// Шаг 1. Главная страница
+	mux.Handle("GET /{$}", handler.NewWelcomeHandler(s.registry))
 
-	router := mux.NewRouter()
-
-	/* Welcome */
-	Register(router, "/", self.ContainerMiddleware(action2.NewWelcomeAction()))
-
-	/* Echo section */
-	Register(router, "/echo", self.ContainerMiddleware(action2.NewEchoAreaIndexAction()))
-	Register(router, "/echo/create", self.ContainerMiddleware(action2.NewEchoAreaCreateAction()))
-	Register(router, "/echo/create/complete", self.ContainerMiddleware(action2.NewEchoAreaCreateCompleteAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}", self.ContainerMiddleware(action2.NewEchoMsgIndexAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tree", self.ContainerMiddleware(action2.NewEchoMsgTreeAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", self.ContainerMiddleware(action2.NewEchoAreaRemoveAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove/complete", self.ContainerMiddleware(action2.NewEchoRemoveCompleteAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge", self.ContainerMiddleware(action2.NewEchoAreaPurgeAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/purge/complete", self.ContainerMiddleware(action2.NewEchoAreaPurgeCompleteAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/mark", self.ContainerMiddleware(action2.NewEchoAreaMarkAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/mark/complete", self.ContainerMiddleware(action2.NewEchoAreaMarkCompleteAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", self.ContainerMiddleware(action2.NewEchoAreaUpdateAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update/complete", self.ContainerMiddleware(action2.NewEchoAreaUpdateCompleteAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/compose", self.ContainerMiddleware(action2.NewEchoMsgComposeAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/view", self.ContainerMiddleware(action2.NewEchoMsgViewAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/dump", self.ContainerMiddleware(action2.NewEchoMsgDumpAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/twit", self.ContainerMiddleware(action2.NewEchoMsgTwitAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/reply", self.ContainerMiddleware(action2.NewEchoMsgReplyAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove", self.ContainerMiddleware(action2.NewEchoMsgRemoveAction()))
-	Register(router, "/echo/{echoname:[A-Za-z0-9\\.\\-\\_]+}/message/{msgid:[A-Za-z0-9+]+}/remove/complete", self.ContainerMiddleware(action2.NewEchoMsgRemoveCompleteAction()))
+	// Шаг 2. Раздел конференций
+	mux.Handle("GET /echo", handler.NewEchoAreaIndexHandler(s.registry))
+	mux.Handle("GET /echo/create", handler.NewEchoAreaCreateHandler(s.registry))
+	mux.Handle("GET /echo/create/complete", handler.NewEchoAreaCreateCompleteHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}", handler.NewEchoMsgIndexHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/tree", handler.NewEchoMsgTreeHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/remove", handler.NewEchoAreaRemoveHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/remove/complete", handler.NewEchoRemoveCompleteHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/purge", handler.NewEchoAreaPurgeHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/purge/complete", handler.NewEchoAreaPurgeCompleteHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/mark", handler.NewEchoAreaMarkHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/mark/complete", handler.NewEchoAreaMarkCompleteHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/update", handler.NewEchoAreaUpdateHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/update/complete", handler.NewEchoAreaUpdateCompleteHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/message/compose", handler.NewEchoMsgComposeHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/message/{msgid}/view", handler.NewEchoMsgViewHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/message/{msgid}/dump", handler.NewEchoMsgDumpHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/message/{msgid}/twit", handler.NewEchoMsgTwitHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/message/{msgid}/reply", handler.NewEchoMsgReplyHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/message/{msgid}/remove", handler.NewEchoMsgRemoveHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/message/{msgid}/remove/complete", handler.NewEchoMsgRemoveCompleteHandler(s.registry))
 
 	/* File section */
-	Register(router, "/file", self.ContainerMiddleware(action2.NewFileEchoIndexAction()))
-	Register(router, "/file/create", self.ContainerMiddleware(action2.NewFileEchoCreateAction()))
-	Register(router, "/file/create/complete", self.ContainerMiddleware(action2.NewFileEchoCreateCompleteAction()))
-	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}", self.ContainerMiddleware(action2.NewFileEchoAreaIndexAction()))
-	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/update", self.ContainerMiddleware(action2.NewFileEchoUpdateAction()))
-	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove", self.ContainerMiddleware(action2.NewFileEchoRemoveAction()))
-	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/remove/complete", self.ContainerMiddleware(action2.NewFileEchoRemoveCompleteAction()))
-	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/view", self.ContainerMiddleware(action2.NewFileEchoAreaViewAction()))
-	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/download", self.ContainerMiddleware(action2.NewFileEchoAreaDownloadAction()))
-	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/tic/{file:[A-Za-z0-9\\.\\-\\_]+}/remove", self.ContainerMiddleware(action2.NewFileEchoAreaRemoveAction()))
-	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload", self.ContainerMiddleware(action2.NewFileEchoAreaUploadAction()))
-	Register(router, "/file/{echoname:[A-Za-z0-9\\.\\-\\_]+}/upload/complete", self.ContainerMiddleware(action2.NewFileEchoAreaUploadCompleteAction()))
+	mux.Handle("GET /file", handler.NewFileEchoIndexHandler(s.registry))
+	mux.Handle("GET /file/create", handler.NewFileEchoCreateHandler(s.registry))
+	mux.Handle("GET /file/create/complete", handler.NewFileEchoCreateCompleteHandler(s.registry))
+	mux.Handle("GET /file/{echoname}", handler.NewFileEchoAreaIndexHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/update", handler.NewFileEchoUpdateHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/remove", handler.NewFileEchoRemoveHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/remove/complete", handler.NewFileEchoRemoveCompleteHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/tic/{file}/view", handler.NewFileEchoAreaViewHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/tic/{file}/download", handler.NewFileEchoAreaDownloadHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/tic/{file}/remove", handler.NewFileEchoAreaRemoveHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/upload", handler.NewFileEchoAreaUploadHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/upload/complete", handler.NewFileEchoAreaUploadCompleteHandler(s.registry))
 
 	/* Netmail section */
-	Register(router, "/netmail", self.ContainerMiddleware(action2.NewNetmailIndexAction()))
-	Register(router, "/netmail/{msgid:[A-Za-z0-9+]+}/view", self.ContainerMiddleware(action2.NewNetmailViewAction()))
-	Register(router, "/netmail/{msgid:[A-Za-z0-9+]+}/dump", self.ContainerMiddleware(action2.NewNetmailDumpAction()))
-	Register(router, "/netmail/{msgid:[A-Za-z0-9+]+}/reply", self.ContainerMiddleware(action2.NewNetmailReplyAction()))
-	Register(router, "/netmail/{msgid:[A-Za-z0-9+]+}/remove", self.ContainerMiddleware(action2.NewNetmailRemoveAction()))
-	Register(router, "/netmail/{msgid:[A-Za-z0-9+]+}/attach/{attidx:[0-9]+}/view", self.ContainerMiddleware(action2.NewNetmailAttachViewAction()))
-	Register(router, "/netmail/compose", self.ContainerMiddleware(action2.NewNetmailComposeAction()))
+	mux.Handle("GET /netmail", handler.NewNetmailIndexHandler(s.registry))
+	mux.Handle("GET /netmail/{msgid}/view", handler.NewNetmailViewHandler(s.registry))
+	mux.Handle("GET /netmail/{msgid}/dump", handler.NewNetmailDumpHandler(s.registry))
+	mux.Handle("GET /netmail/{msgid}/reply", handler.NewNetmailReplyHandler(s.registry))
+	mux.Handle("GET /netmail/{msgid}/remove", handler.NewNetmailRemoveHandler(s.registry))
+	mux.Handle("GET /netmail/{msgid}/attach/{attidx}/view", handler.NewNetmailAttachViewHandler(s.registry))
+	mux.Handle("GET /netmail/compose", handler.NewNetmailComposeHandler(s.registry))
 
 	/* Setup section */
-	Register(router, "/setup", self.ContainerMiddleware(action2.NewSetupAction()))
-	Register(router, "/setup/complete", self.ContainerMiddleware(action2.NewSetupCompleteAction()))
+	mux.Handle("GET /settings", handler.NewSettingsHandler(s.registry))
+	mux.Handle("POST /settings/update", handler.NewSettingsUpdateHandler(s.registry))
 
 	/* Service section */
-	Register(router, "/service", self.ContainerMiddleware(action2.NewServiceAction()))
-	Register(router, "/service/mailer/stat", self.ContainerMiddleware(action2.NewServiceMailerAction()))
-	Register(router, "/service/mailer/event", self.ContainerMiddleware(action2.NewServiceMailerEventAction()))
-	Register(router, "/service/toss/stat", self.ContainerMiddleware(action2.NewServiceTossAction()))
-	Register(router, "/service/toss/event", self.ContainerMiddleware(action2.NewServiceTossEventAction()))
-	Register(router, "/service/tracker/stat", self.ContainerMiddleware(action2.NewServiceTrackerAction()))
-	Register(router, "/service/tracker/event", self.ContainerMiddleware(action2.NewServiceTrackerEventAction()))
+	mux.Handle("GET /service", handler.NewServiceHandler(s.registry))
+	mux.Handle("GET /service/mailer/stat", handler.NewServiceMailerHandler(s.registry))
+	mux.Handle("GET /service/mailer/event", handler.NewServiceMailerEventHandler(s.registry))
+	mux.Handle("GET /service/toss/stat", handler.NewServiceTossHandler(s.registry))
+	mux.Handle("GET /service/toss/event", handler.NewServiceTossEventHandler(s.registry))
+	mux.Handle("GET /service/tracker/stat", handler.NewServiceTrackerHandler(s.registry))
+	mux.Handle("GET /service/tracker/event", handler.NewServiceTrackerEventHandler(s.registry))
 
 	/* Twit -> AddressBook */
-	Register(router, "/twit", self.ContainerMiddleware(action2.NewTwitIndexAction()))
-	Register(router, "/twit/{twitid:[A-Za-z0-9+]+}/remove", self.ContainerMiddleware(action2.NewTwitRemoveCompleteAction()))
+	mux.Handle("GET /twit", handler.NewTwitIndexHandler(s.registry))
+	mux.Handle("GET /twit/{twitid}/remove", handler.NewTwitRemoveCompleteHandler(s.registry))
 
 	/* Draft section */
-	Register(router, "/draft", self.ContainerMiddleware(action2.NewDraftIndexAction()))
-	Register(router, "/draft/{draftid:[A-Za-z0-9\\-+]+}/edit", self.ContainerMiddleware(action2.NewDraftEditAction()))
-	Register(router, "/draft/{draftid:[A-Za-z0-9\\-+]+}/edit/complete", self.ContainerMiddleware(action2.NewDraftEditCompleteAction()))
+	mux.Handle("GET /draft", handler.NewDraftIndexHandler(s.registry))
+	mux.Handle("GET /draft/{draftid}/edit", handler.NewDraftEditHandler(s.registry))
+	mux.Handle("POST /draft/{draftid}/edit/complete", handler.NewDraftEditCompleteHandler(s.registry))
 
 	/* Static section */
-	Register(router, "/assets/css/main.css", self.ContainerMiddleware(action2.NewStyleAction()))
-	Register(router, "/static/{name:[A-Za-z0-9\\.\\_\\-]+}", self.ContainerMiddleware(NewStaticAction()))
+	mux.Handle("GET /assets/css/main.css", handler.NewStyleHandler())
+	mux.Handle("GET /static/{filename}", handler.NewStaticHandler())
 
 	/* Classic HTTP API */
-	Register(router, "/api/netmail/remove", self.ContainerMiddleware(action2.NewNetmailRemoveApiAction()))
+	//mux.Handle("GET /api/netmail/remove", handler.NewNetmailRemoveApiHandler(s.registry))
 
-	return router
-
+	return mux
 }
 
 func (self *SiteManager) Start() {
@@ -143,22 +133,12 @@ func (self *SiteManager) Start() {
 
 }
 
-func (self *SiteManager) run() {
-
-	/* Step 1. Create router */
-	router := self.createRouter()
-
-	/* Step 2. Start HTTP service */
-	serviceAddr := fmt.Sprintf("%s:%d", self.addr, self.port)
+func (self *SiteManager) run() error {
 	srv := &http.Server{
-		Handler: router,
-		Addr:    serviceAddr,
+		Handler: self.createRouter(),
+		Addr:    fmt.Sprintf("%s:%d", self.addr, self.port),
 	}
-	err1 := srv.ListenAndServe()
-	if err1 != nil {
-		panic(err1)
-	}
-
+	return srv.ListenAndServe()
 }
 
 func (self *SiteManager) Stop() error {

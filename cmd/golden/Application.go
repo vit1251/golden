@@ -4,13 +4,13 @@ import (
 	"flag"
 	"fmt"
 	cmn "github.com/vit1251/golden/internal/common"
-	site3 "github.com/vit1251/golden/internal/site"
-	site22 "github.com/vit1251/golden/internal/site2"
+	"github.com/vit1251/golden/internal/installer"
+	site1 "github.com/vit1251/golden/internal/site"
+	site2 "github.com/vit1251/golden/internal/site2"
 	"github.com/vit1251/golden/internal/um"
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/config"
 	"github.com/vit1251/golden/pkg/eventbus"
-	"github.com/vit1251/golden/internal/installer"
 	"github.com/vit1251/golden/pkg/mailer"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/queue"
@@ -111,10 +111,9 @@ func (self *Application) Run() {
 	self.registry.Register("TosserManager", tosser.NewTosserManager(self.registry))
 	self.registry.Register("MailerManager", mailer.NewMailerManager(self.registry))
 
+	self.registry.Register("SiteManager", site1.NewSiteManager(self.registry))
 	if modernMode {
-		self.registry.Register("Site2Manager", site22.NewSite2Manager(self.registry))
-	} else {
-		self.registry.Register("SiteManager", site3.NewSiteManager(self.registry))
+		self.registry.Register("Site2Manager", site2.NewSite2Manager(self.registry))
 	}
 
 	/* Debug message */
@@ -138,14 +137,14 @@ func (self *Application) Run() {
 	trackerManager.Start()
 
 	/* Start site */
+	siteManager := site1.RestoreSiteManager(self.registry)
+	siteManager.SetPort(servicePort)
+	siteManager.Start()
+
 	if modernMode {
-		site2Manager := site22.RestoreSite2Manager(self.registry)
-		site2Manager.SetPort(servicePort)
+		site2Manager := site2.RestoreSite2Manager(self.registry)
+		site2Manager.SetPort(servicePort + 1)
 		site2Manager.Start()
-	} else {
-		siteManager := site3.RestoreSiteManager(self.registry)
-		siteManager.SetPort(servicePort)
-		siteManager.Start()
 	}
 
 	/* Start mailer */
@@ -174,24 +173,31 @@ func (self *Application) Run() {
 
 func (self *Application) showWelcomeMessage(modernMode bool) {
 
-	var siteAddress string
-	if modernMode {
-		site2Manager := site22.RestoreSite2Manager(self.registry)
-		siteAddress = site2Manager.GetLocation()
-	} else {
-		siteManager := site3.RestoreSiteManager(self.registry)
-		siteAddress = siteManager.GetLocation()
-	}
-
 	var report strings.Builder
+	var siteAddress string
 
+	// Шаг 1. Приветствие приложения
 	report.WriteString("Golden Point is running at:\n")
 	report.WriteString("\n")
+
+	// Шаг 2. Информация от приложения запущенного в Legacy-режиме
+	siteManager := site1.RestoreSiteManager(self.registry)
+	siteAddress = siteManager.GetLocation()
 	report.WriteString(siteAddress)
+
+	// Шаг 3. Если активирован современный режим работы
+	if modernMode {
+		siteManager := site2.RestoreSite2Manager(self.registry)
+		siteAddress = siteManager.GetLocation()
+		report.WriteString(siteAddress)
+	}
 	report.WriteString("\n")
+
+	// Шаг 4. Выводим информацию о необходимости настройки в первую загрузку
 	report.WriteString("Note: You MUST setup your instalattion on first run.\n")
 	report.WriteString("      Please open `Setup` section initially.\n")
 
+	// Шаг 5. Выводим в стандартный вывод
 	fmt.Printf("%s", report.String())
 
 }
@@ -203,12 +209,10 @@ func (self *Application) waitInterrupt() {
 }
 
 func (self *Application) stopStorageService() {
-
 	log.Printf("Application: Sync storage.")
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 	storageManager.Close()
-
 }
 
 func (self *Application) checkDatabaseLocation() {

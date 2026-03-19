@@ -2,9 +2,9 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/vit1251/golden/internal/site/utils"
 	"github.com/vit1251/golden/pkg/mapper"
 	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/internal/site/utils"
 	"log"
 )
 
@@ -32,16 +32,16 @@ type echoMsgViewRequest struct {
 
 type echoMsgViewResponse struct {
 	CommonResponse
-	Area    struct {
-	    Name string            `json:"name"`
-        }                       `json:"area"`
-	Echo    struct {
-            From string            `json:"from"`
-            To   string            `json:"to"`
-            Subject   string       `json:"subject"`
-            Date   string          `json:"date"`
-	}                       `json:"echo"`
-	Body string             `json:"body"`
+	Area struct {
+		Name string `json:"name"`
+	} `json:"area"`
+	Echo struct {
+		From    string `json:"from"`
+		To      string `json:"to"`
+		Subject string `json:"subject"`
+		Date    string `json:"date"`
+	} `json:"echo"`
+	Body string `json:"body"`
 }
 
 func (self *EchoMsgViewAction) processRequest(body []byte) []byte {
@@ -85,11 +85,11 @@ func (self *EchoMsgViewAction) processRequest(body []byte) []byte {
 	/* Step 3. Populate API response */
 	resp := new(echoMsgViewResponse)
 	resp.CommonResponse.Type = self.Type
-        resp.Area.Name = currentArea.GetName()
-        resp.Echo.From = message.From
-        resp.Echo.To = message.To
-        resp.Echo.Subject =  message.Subject
-        resp.Echo.Date = utils.DateHelper_renderDate(message.DateWritten)
+	resp.Area.Name = currentArea.GetName()
+	resp.Echo.From = message.From
+	resp.Echo.To = message.To
+	resp.Echo.Subject = message.Subject
+	resp.Echo.Date = utils.DateHelper_renderDate(message.DateWritten)
 	resp.Body = message.Content
 
 	/* Done */

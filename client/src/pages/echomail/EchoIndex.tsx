@@ -1,21 +1,27 @@
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
 import { Header } from '../../common/Header';
-import { eventBus } from '../../EventBus';
 import { Rows } from './Row';
 
 import "./EchoIndex.css";
-import { Area } from './EchoMsgIndex';
+import { Area } from '../../models/Area.model';
 
 export const EchoIndex = () => {
+    const dispatch = useDispatch();
 
-    const areas: Area[] = useSelector((state: any) => state.areas) ?? [];
+    const sendMessage = (payload: any) => {
+        dispatch({
+            type: 'SOCKET_SEND',
+            payload: payload,
+        });
+    };
+
+    const areas: Area[] = useSelector((state: any) => state.areas.records) ?? [];
 
     useEffect(() => {
-        /* Step 1. Ask echos */
-        eventBus.invoke({
+        sendMessage({
             type: 'ECHO_INDEX',
         });
     }, []);

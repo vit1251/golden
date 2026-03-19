@@ -2,11 +2,12 @@ package api
 
 import (
 	"encoding/json"
+	"log"
+	"net/http"
+
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
 	"github.com/vit1251/golden/pkg/registry"
-	"log"
-	"net/http"
 )
 
 type commandStream struct {
@@ -14,9 +15,10 @@ type commandStream struct {
 	actions  []*Action
 }
 
-func NewCommandStream() *commandStream {
-	cs := new(commandStream)
-	return cs
+func NewCommandStream(registry *registry.Container) *commandStream {
+	return &commandStream{
+		registry: registry,
+	}
 }
 
 func (self *commandStream) SetContainer(r *registry.Container) {

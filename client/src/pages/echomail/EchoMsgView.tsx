@@ -1,22 +1,33 @@
 
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { eventBus } from '../../EventBus.js';
-import { Message } from './Message';
+import { Message as MessageComponent } from './Message';
+import { Message } from "../../models/Message.model";
+import { Area } from "../../models/Area.model";
 
 export const EchoMsgView = () => {
+    const dispatch = useDispatch();
+
+    const sendMessage = (payload: any) => {
+        dispatch({
+            type: 'SOCKET_SEND',
+            payload: payload,
+        });
+    };
 
     const navigate = useNavigate();
 
-    const messages = useSelector((state: any) => state.messages);
+    const areas: Array<Area> = useSelector((state: any) => state.areas.records);
+    const messages: Array<Message> = useSelector((state: any) => state.messages.records);
+    const content: string = useSelector((state: any) => state.view.content);
 
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
 
     useEffect(() => {
-        eventBus.invoke({
+        sendMessage({
             type: 'ECHO_MSG_VIEW',
             echoTag,
             msgId,
@@ -29,13 +40,13 @@ export const EchoMsgView = () => {
     };
 
     const handleMsgRemove = () => {
-        /* Step 1. Remove message */
-        eventBus.invoke({
+        // Шаг 1. Отправляем команду удаления сообщения
+        sendMessage({
             type: 'ECHO_MSG_REMOVE',
             echoTag,
             msgId,
         });
-        /* Step 2. Message index */
+        // Шаг 2. Возвращаемся в директорию телеконференций
         navigate(`/echo/${echoTag}`);
     };
 
@@ -62,7 +73,7 @@ export const EchoMsgView = () => {
 
     return (
         <div>
-            <Message />
+            <MessageComponent />
         </div>
     );
 };

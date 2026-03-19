@@ -28,39 +28,49 @@ type echoIndexArea struct {
 	AreaIndex       string `json:"area_index"`
 }
 
-type echoIndexResponse struct {
-	CommonResponse
-	Areas []echoIndexArea `json:"areas"`
+type echoIndex struct {
+	Type  string          `json:"type"`  // Тип сообщения
+	Areas []echoIndexArea `json:"areas"` // Список конференций
 }
 
-func (self *EchoIndexAction) processRequest(req []byte) []byte {
-
-	mapperManager := mapper.RestoreMapperManager(self.GetRegistry())
+func AreasFindAll(registry *registry.Container) ([]mapper.Area, error) {
+	mapperManager := mapper.RestoreMapperManager(registry)
 	echoAreaMapper := mapperManager.GetEchoAreaMapper()
+	return echoAreaMapper.GetAreas()
+}
 
-	/* Get message area */
-	areas, err1 := echoAreaMapper.GetAreas()
+func (a *EchoIndexAction) processRequest(req []byte) []byte {
+
+	// Шаг 0. Подготовка менеджера зависимостей
+	registry := a.GetRegistry()
+
+	// Шаг 1. Получаем список конференций
+	areas, err1 := AreasFindAll(registry)
 	if err1 != nil {
 		log.Printf("Fail on GetAreas")
 		return nil
 	}
 
-	resp := new(echoIndexResponse)
-	resp.CommonResponse.Type = self.Type
-
+	var areas2 []echoIndexArea = make([]echoIndexArea, 0)
 	for _, a := range areas {
-		na := echoIndexArea{}
+		var na echoIndexArea
 		na.Name = a.GetName()
 		na.Summary = a.GetSummary()
 		na.MessageCount = a.GetMessageCount()
 		na.NewMessageCount = a.GetNewMessageCount()
 		na.Order = a.GetOrder()
 		na.AreaIndex = a.GetAreaIndex()
-		resp.Areas = append(resp.Areas, na)
+		areas2 = append(areas2, na)
 	}
-	log.Printf("resp = %+v", resp)
 
-	/* Done */
-	out, _ := json.Marshal(resp)
+	// Шаг 3. Отправка ответа
+	out, err2 := json.Marshal(&echoIndex{
+		Type:  "ECHO_INDEX",
+		Areas: areas2,
+	})
+	if err2 != nil {
+		log.Printf("JSON encode issue")
+		return nil
+	}
 	return out
 }

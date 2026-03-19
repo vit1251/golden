@@ -1,22 +1,15 @@
 
+import React from 'react';
+import ReactDOM from "react-dom/client";
 import { Provider } from 'react-redux';
-import { createRoot } from "react-dom/client";
+import { store } from './app/store';
 
 import { App } from "./pages/App";
 
-import { store } from './Storage';
-
 import './i18n';
 
-const rootElement: string = 'root';
-const container: Element | null = document.getElementById(rootElement);
-if (container) {
-    const root = createRoot(container);
-    root.render(
-        <Provider store={store}>
-            <App />
-        </Provider>
-    );
-} else {
-    console.log(`Не удалось найти корневой элемент "${rootElement}".`);
-}
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <Provider store={store}>
+        <App />
+    </Provider>
+);

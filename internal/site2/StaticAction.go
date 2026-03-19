@@ -3,14 +3,14 @@ package site2
 import (
 	"bytes"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/vit1251/golden/internal/site2/api"
 	"io"
 	"log"
 	"mime"
 	"net/http"
 	"path"
 	"path/filepath"
+
+	"github.com/vit1251/golden/internal/site2/api"
 )
 
 type StaticAction struct {
@@ -24,8 +24,7 @@ func NewStaticAction() *StaticAction {
 func (self *StaticAction) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	/* Parse parameters */
-	vars := mux.Vars(r)
-	name := vars["name"]
+	var name string = r.PathValue("name")
 	log.Printf("Request %s", name)
 
 	/* Determine Content-Type */

@@ -12,12 +12,6 @@ export const Header = () => {
 
     const { t, i18n } = useTranslation();
 
-    const {
-        NetMessageCount = 0,
-        EchoMessageCount = 0,
-        FileCount = 0,
-    } = useSelector((state: any) => state.summary);
-
     const items = [
         {
             name: t('Home'),
@@ -26,17 +20,14 @@ export const Header = () => {
         {
             name: t('Netmail'),
             path: '/netmail',
-            itemCount: NetMessageCount,
         },
         {
             name: t('Echomail'),
             path: '/echo',
-            itemCount: EchoMessageCount,
         },
         {
             name: t('Files'),
             path: '/files',
-            itemCount: FileCount,
         },
         {
             name: 'Обслуживание',

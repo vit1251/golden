@@ -92,8 +92,9 @@ func (self *MainMenuWidget) InitSetup(menuGroup *MenuGroup) {
 
 	menuAction1 := NewMenuAction()
 	menuAction1.ID = "mainMenuSetup"
-	menuAction1.Link = "/setup"
-	menuAction1.Label = i18n.GetText(mainLanguage, "Action", "menu-setup")
+	menuAction1.Icon = "settings"
+	menuAction1.Link = "/settings"
+	menuAction1.Label = i18n.GetText(mainLanguage, "Action", "menu-settings")
 	menuGroup.Add(menuAction1)
 
 }

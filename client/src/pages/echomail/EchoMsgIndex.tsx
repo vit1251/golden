@@ -1,61 +1,48 @@
 
 import { useParams, useNavigate } from "react-router";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
-import { eventBus } from '../../EventBus';
 import { Rows } from './Row';
 
 import "./EchoMsgIndex.css";
 import { adjustBrightness, makeShort, stringToHexColor } from "../../usils";
+import { Area } from "../../models/Area.model";
+import { Message } from "../../models/Message.model";
 
-export interface Area {
-    name: string                   /* Имя конференции. Пример "RU.ANEKDOT" */
-    summary: string; 
-    message_count: number;
-    new_message_count: number;
-    order: number;
-    area_index: string;
-}
-
-export interface Message {
-    from: string;
-    to: string;
-    view_count: number;
-    subject: string;
-    date: string;
-    hash: string;
-}
 
 export const EchoMsgIndex = () => {
+    const dispatch = useDispatch();
+
+    const sendMessage = (payload: any) => {
+        dispatch({
+            type: 'SOCKET_SEND',
+            payload: payload,
+        });
+    };
 
     const navigate = useNavigate();
 
-    const areas = useSelector((state: any) => state.areas);
-    const messages = useSelector((state: any) => state.messages);
-
-    useEffect(() => {
-        eventBus.invoke({
-            type: 'ECHO_INDEX',
-        });
-    }, []);
+    const areas: Array<Area> = useSelector((state: any) => state.areas.records);
+    const messages: Array<Message> = useSelector((state: any) => state.messages.records);
 
     const { echoTag } = useParams();
     console.log(`echoTag = `, echoTag);
 
-    const area: Area = areas.find((area: Area) => area.area_index === echoTag);
-    console.log(`area = `, area);
-
     useEffect(() => {
-        /* Step 1. Ask echos */
-        eventBus.invoke({
+        sendMessage({
+            type: 'ECHO_INDEX',
+        });
+    }, []);
+    useEffect(() => {
+        sendMessage({
             type: 'ECHO_MSG_INDEX',
             echoTag,
         });
-        eventBus.invoke({
-            type: 'SUMMARY',
-        });
     }, [echoTag]);
+
+    const area: Area | undefined = areas.find((area: Area) => area.area_index === echoTag);
+    console.log(`area = `, area);
 
     const handlePrevMessage = () => {
         console.log(`handlePrevMessage...`);
