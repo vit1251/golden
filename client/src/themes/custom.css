@@ -141,9 +141,6 @@ span.badge.white.danger {
     display: table-cell;
     padding: 10px;
 }
-.table-row:hover {
-    background-color: #0000C0;
-}
 span.hidden {
     display: none;
 }
@@ -166,12 +163,6 @@ span.hidden {
 }
 .echo-index-item-new {
     font-weight: bold;
-}
-.echo-index-item:hover {
-    background-color: #0000AA;
-}
-.echo-index-item-new:hover {
-    background-color: #0000AA;
 }
 .echo-index-header-count {
     text-align: right;
@@ -273,9 +264,6 @@ span.hidden {
     color: #808080;
 }
 
-.echo-msg-index-item:hover {
-    background-color: #0000AA;
-}
 
 .echo-msg-index-item-new {
     font-weight: bold;
@@ -305,9 +293,6 @@ span.hidden {
     padding-left: 4px;
 }
 
-.echo-msg-view-body-wrapper {
-
-}
 
 .echo-msg-view-body {
     margin-top: 10px;
@@ -332,10 +317,6 @@ span.hidden {
 
 .netmail-index-item {
     color: #808080;
-}
-
-.netmail-index-item:hover {
-    background-color: #0000AA;
 }
 
 .netmail-index-item-new {
@@ -364,10 +345,6 @@ span.hidden {
 
 .netmail-msg-view-header-value {
     padding-left: 4px;
-}
-
-.netmail-msg-view-body-wrapper {
-
 }
 
 .netmail-msg-view-body {
@@ -427,9 +404,6 @@ span.hidden {
     color: #808080;
 }
 
-.service-index-item:hover {
-    background-color: #0000AA;
-}
 
 /* Statistics */
 

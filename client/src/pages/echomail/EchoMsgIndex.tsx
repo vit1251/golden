@@ -9,6 +9,7 @@ import "./EchoMsgIndex.css";
 import { adjustBrightness, makeShort, stringToHexColor } from "../../usils";
 import { Area } from "../../models/Area.model";
 import { Message } from "../../models/Message.model";
+import { useInput } from "../../Hotkey";
 
 
 export const EchoMsgIndex = () => {
@@ -48,18 +49,31 @@ export const EchoMsgIndex = () => {
         console.log(`handlePrevMessage...`);
     };
     const handleNextMessage = () => {
-        console.log(`handlePrevMessage...`);
+        console.log(`handleNextMessage...`);
     };
     const handleAreaIndex = () => {
         navigate(`/echo`);
     };
-    const handleCreateMessage = () => {
-        navigate(`/echo/${echoTag}/create`);
+    const handleOpenMessage = () => {
+        console.log(`open`);
     };
+//    const handleCreateMessage = () => {
+//        navigate(`/echo/${echoTag}/create`);
+//    };
+
+    useEffect(() => {
+        const removeHotkeys = useInput((event: KeyboardEvent) => {
+            if (event.key === 'Escape') handleAreaIndex();
+            if (event.key === 'ArrowUp') handlePrevMessage();
+            if (event.key === 'ArrowDown') handleNextMessage();
+            if (event.key === 'Enter') handleOpenMessage();
+//            if (event.key === `Ctrl+C`) handleCreateMessage();
+        });
+        return () => removeHotkeys();
+    }, []);
 
     return (
-        <div>
-            <h1>Echoarea</h1>
+        <div className="Page Page-Message-Index">
 
             <Rows<Message>
                     onRowLink={(row: Message): string => {

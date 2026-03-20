@@ -2,9 +2,7 @@
 import { useNavigate } from "react-router";
 
 import "./Row.css";
-import { Area } from "./EchoMsgIndex";
 import { ReactElement, useEffect, useState } from "react";
-import { stringToHexColor } from "../../usils";
 import { useInput } from "../../Hotkey";
 
 export interface Column<T> {
@@ -20,24 +18,6 @@ export const Row = <T extends object>({ index, record, columns, onRowLink }: { i
         activeIndex: 0,
     });
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const removeHotkeys = useInput((event: KeyboardEvent) => {
-            if (event.key === 'ArrowUp') {
-                setState((prev) => ({
-                    ...prev,
-                    activeIndex: prev.activeIndex > 0 ? prev.activeIndex - 1 : prev.activeIndex,
-                }))
-            }
-            if (event.key === 'ArrowDown') {
-                setState((prev) => ({
-                    ...prev,
-                    activeIndex: prev.activeIndex + 1,
-                }))
-            }
-        });
-        return () => removeHotkeys();
-    }, [])
 
     const handleDoubleClick = (row: T) => {
         console.log(`Открываем полноэкранный просмотр`);

@@ -8,6 +8,7 @@ import mailerReducer from '../features/mailerSlice';
 import messageReducer from '../features/messageSlice';
 import viewReducer from '../features/viewSlice';
 import composeReducer from '../features/composeSlice';
+import settingsSlice from '../features/settingsSlice';
 
 const rootReducer = {
     identity: identityReducer,
@@ -16,6 +17,7 @@ const rootReducer = {
     messages: messageReducer,
     view: viewReducer,
     compose: composeReducer,
+    settings: settingsSlice,
 };
 
 export const store = configureStore({
@@ -25,3 +27,9 @@ export const store = configureStore({
 
 // Сразу открываем соединение с сервером
 store.dispatch({ type: 'SOCKET_CONNECT' });
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>
+
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch

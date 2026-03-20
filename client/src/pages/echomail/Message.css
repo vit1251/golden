@@ -23,3 +23,14 @@
 .msg-plain {
     color: #C0C0C0;
 }
+
+.msg-link {
+    color: #ffff55;        /* Ярко-желтый (классический цвет GoldED для акцентов) */
+    text-decoration: none; /* Убираем подчеркивание */
+    border-bottom: 1px dashed #555; /* Делаем тонкую пунктирную линию снизу */
+}
+
+.msg-link:hover {
+    background-color: #333; /* Подсветка при наведении */
+    color: #fff;
+}

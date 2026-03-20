@@ -2,11 +2,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
-import { Header } from '../../common/Header';
 import { Rows } from './Row';
 
 import "./EchoIndex.css";
 import { Area } from '../../models/Area.model';
+import { useInput } from '../../Hotkey';
 
 export const EchoIndex = () => {
     const dispatch = useDispatch();
@@ -26,13 +26,27 @@ export const EchoIndex = () => {
         });
     }, []);
 
-    const handlePrevMessage = () => {
+    const handlePrevArea = () => {
         console.log(`handlePrevMessage...`);
     };
+    const handleNextArea = () => {
+        console.log(`handlePrevMessage...`);
+    };
+    const handleOpenArea = () => {
+        console.log(`openArea...`);
+    };
+
+    useEffect(() => {
+        const removeHotkeys = useInput((event: KeyboardEvent) => {
+            if (event.key === 'ArrowUp') handlePrevArea();
+            if (event.key === 'ArrowDown') handleNextArea();
+            if (event.key === 'Enter') handleOpenArea();
+        });
+        return () => removeHotkeys();
+    }, []);
 
     return (
-        <div>
-            <h1>Echomail</h1>
+        <div className="Page Page-Areas">
 
             <Rows<Area>
                 onRowLink={(row: Area) => `/echo/${row.area_index}`}

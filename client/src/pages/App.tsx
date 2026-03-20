@@ -12,7 +12,7 @@ import { FileTicIndex } from './files/FileTicIndex';
 import { FileTicView } from './files/FileTicView';
 import { NetmailIndex } from './netmail/NetmailIndex';
 import { NetmailView } from './netmail/NetmailView';
-import { Setup } from './setup/Setup';
+import { Settings } from './setup/Settings';
 
 import '../themes/custom.css';
 import '../themes/theme_black.css';
@@ -53,7 +53,7 @@ export const App = () => {
                     </Route>
                 </Route>
 
-                <Route path="setup" element={<BaseLayout content={<Setup />} />} />
+                <Route path="setup" element={<BaseLayout content={<Settings />} />} />
 
             </Routes>
         </HashRouter>

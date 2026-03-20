@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Message as MessageComponent } from './Message';
 import { Message } from "../../models/Message.model";
 import { Area } from "../../models/Area.model";
+import { useInput } from "../../Hotkey";
 
 
 export const EchoMsgView = () => {
@@ -72,8 +73,23 @@ export const EchoMsgView = () => {
         }
     };
 
+    useEffect(() => {
+        const removeHotkeys = useInput((event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                navigate(`/echo/${echoTag}`);
+            }
+            if (event.key === 'ArrowUp') {
+                console.log(`Up`);
+            }
+            if (event.key === 'ArrowDown') {
+                console.log(`Down`);
+            }
+        });
+        return () => removeHotkeys();
+    }, []);
+
     return (
-        <div>
+        <div className="Page Page-View">
             <MessageComponent />
         </div>
     );

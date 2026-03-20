@@ -26,10 +26,27 @@ body, html {
     background: #000;
 }
 
+.Page {
+    padding: 16px;
+}
+
 .Status {
     flex: 0 0 auto;        /* Всегда снизу, фиксированная высота */
     background: #4900b6;
     color: #C0C0C0;
     padding: 5px;
     font-size: 0.9em;
+}
+
+.StatusBar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.StatusBar-Start {
+    text-align: left;
+}
+
+.StatusBar-End {
+    text-align: right;
 }

@@ -13,7 +13,3 @@
 .rowActive {
     background-color: rgb(128, 0, 0);
 }
-
-.row:hover {
-    background: #000088;
-}
