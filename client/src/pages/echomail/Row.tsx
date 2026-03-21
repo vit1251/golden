@@ -1,9 +1,8 @@
 
+import { ReactElement } from "react";
 import { useNavigate } from "react-router";
 
 import "./Row.css";
-import { ReactElement, useEffect, useState } from "react";
-import { useInput } from "../../Hotkey";
 
 export interface Column<T> {
     className: string,
@@ -12,11 +11,8 @@ export interface Column<T> {
     render?: (row: T) => number | string | ReactElement,
 }
 
-export const Row = <T extends object>({ index, record, columns, onRowLink }: { index:number, record: T, columns: Column<T>[], onRowLink: any } ) => {
+export const Row = <T extends object>({ activeIndex = 0, index, record, columns, onRowLink }: { activeIndex: number, index: number, record: T, columns: Column<T>[], onRowLink: any } ) => {
 
-    const [state, setState] = useState({
-        activeIndex: 0,
-    });
     const navigate = useNavigate();
 
     const handleDoubleClick = (row: T) => {
@@ -30,7 +26,7 @@ export const Row = <T extends object>({ index, record, columns, onRowLink }: { i
     };
 
     const classes: string[] = ['row'];
-    if (index === state.activeIndex) {
+    if (index === activeIndex) {
         classes.push('rowActive');
     }
 
@@ -49,11 +45,11 @@ export const Row = <T extends object>({ index, record, columns, onRowLink }: { i
     );
 };
 
-export const Rows = <T extends object>({ records, columns, onRowLink }: { records: T[], columns: Column<T>[], onRowLink: any } ) => {
+export const Rows = <T extends object>({ activeIndex = 0, records, columns, onRowLink }: { activeIndex?: number, records: T[], columns: Column<T>[], onRowLink: any } ) => {
     const classes: string[] = ['rowContainer'];
     return (
         <div className={classes.join(' ')}>
-            {records.map((record: T, index: number) => (<Row index={index} record={record} columns={columns} onRowLink={onRowLink} />))}
+            {records.map((record: T, index: number) => (<Row activeIndex={activeIndex} index={index} record={record} columns={columns} onRowLink={onRowLink} />))}
         </div>
     );
 };

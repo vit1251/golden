@@ -7,6 +7,7 @@ import { Message as MessageComponent } from './Message';
 import { Message } from "../../models/Message.model";
 import { Area } from "../../models/Area.model";
 import { useInput } from "../../Hotkey";
+import { playError } from "../../Audio";
 
 
 export const EchoMsgView = () => {
@@ -36,54 +37,25 @@ export const EchoMsgView = () => {
         });
     }, [echoTag, msgId]);
 
-    const handleMsgIndex = () => {
-        console.log(`Back on message index..`);
-        navigate(`/echo/${echoTag}`);
-    };
-
+    const handleBack = () => navigate(`/echo/${echoTag}`);
     const handleMsgRemove = () => {
-        // Шаг 1. Отправляем команду удаления сообщения
-        sendMessage({
-            type: 'ECHO_MSG_REMOVE',
-            echoTag,
-            msgId,
-        });
-        // Шаг 2. Возвращаемся в директорию телеконференций
-        navigate(`/echo/${echoTag}`);
+        sendMessage({ type: 'ECHO_MSG_REMOVE', echoTag, msgId });
+        handleBack();
     };
 
     const handlePrevMessage = () => {
-        const msgIndex = messages.findIndex((msg: any) => msg.hash === msgId);
-        console.log(`Your index ${msgIndex}`);
-        if ((msgIndex - 1) >= 0) {
-            const { hash: prevHash } = messages[msgIndex - 1];
-            navigate(`/echo/${echoTag}/${prevHash}/view`);
-        } else {
-            // TODO - play blump...
-        }
+        playError();
     };
     const handleNextMessage = () => {
-        const msgIndex = messages.findIndex((msg: any) => msg.hash === msgId);
-        console.log(`Your index ${msgIndex}`);
-        if ((msgIndex + 1) < messages.length) {
-            const { hash: nextHash } = messages[msgIndex + 1];
-            navigate(`/echo/${echoTag}/${nextHash}/view`);
-        } else {
-            // TODO - play blump...
-        }
+        playError();
     };
 
     useEffect(() => {
         const removeHotkeys = useInput((event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                navigate(`/echo/${echoTag}`);
-            }
-            if (event.key === 'ArrowUp') {
-                console.log(`Up`);
-            }
-            if (event.key === 'ArrowDown') {
-                console.log(`Down`);
-            }
+            if (event.key === 'Escape') handleBack();
+            if (event.key === 'Delete') handleMsgRemove();
+            if (event.key === 'ArrowLeft') handlePrevMessage();
+            if (event.key === 'ArrowRight') handleNextMessage();
         });
         return () => removeHotkeys();
     }, []);

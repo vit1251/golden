@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useInput } from '../../Hotkey';
 
 import './Message.css';
+import { playModemBeep, playSequence } from '../../Audio';
 
 function checkInternet(): boolean {
     return false;
@@ -141,6 +142,47 @@ export const Message = () => {
     const { echoTag, msgId } = useParams();
     console.log(`echoTag = ${echoTag} msgId = ${msgId}`);
 
+
+
+    const handleSound = (type: 'SND_SAYBIBI' | 'SND_THEEND' | 'SND_GOTIT' | 'SND_TOOBAD' | 'SND_TOYOU' = 'SND_TOYOU') => {
+        playModemBeep();
+        if (type === 'SND_SAYBIBI') {
+            playSequence([
+                [440, 111],
+            ]);
+        }
+        if (type === 'SND_TOYOU') {
+            playSequence([
+                [100, 18],
+                [500, 18],
+                [100, 18],
+            ]);
+        }
+        if (type === 'SND_THEEND') {
+            playSequence([
+                [220, 111],
+                [110, 167],
+            ]);
+        }
+        if (type === 'SND_GOTIT') {
+            playSequence([
+                [110, 56],
+                [220, 56],
+                [110, 56],
+                [220, 111],
+            ]);
+        }
+        if (type === 'SND_TOOBAD')
+            playSequence([
+                [440, 111],
+                [220, 111],
+                [110, 167],
+            ]);
+
+
+    };
+    
+
     const handleBack = () => {
         navigate(`/echo/${echoTag}`);
     };
@@ -164,6 +206,8 @@ export const Message = () => {
             if (event.key === 'Escape') handleBack();
             if (event.key === 'ArrowLeft') handlePreviousMessage();
             if (event.key === 'ArrowRight') handleNextMessage();
+            /* Home */
+            if (event.key === 'Home') handleSound();
         });
         return () => removeHandler();
     }, []);

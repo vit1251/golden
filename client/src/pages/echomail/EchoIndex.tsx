@@ -1,14 +1,20 @@
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { Rows } from './Row';
 
 import "./EchoIndex.css";
 import { Area } from '../../models/Area.model';
 import { useInput } from '../../Hotkey';
+import { RootState } from '../../app/store';
+import { nextArea, prevArea } from '../../features/areaSlice';
+import { useNavigate } from 'react-router';
 
 export const EchoIndex = () => {
+    
+    const navigate = useNavigate();
+
     const dispatch = useDispatch();
 
     const sendMessage = (payload: any) => {
@@ -18,7 +24,10 @@ export const EchoIndex = () => {
         });
     };
 
-    const areas: Area[] = useSelector((state: any) => state.areas.records) ?? [];
+    const areas: Area[] = useSelector((state: RootState) => state.areas.records) ?? [];
+    const activeIndex: number = useSelector((state: RootState) => state.areas.activeIndex) ?? 0;
+    console.log(areas);
+    console.log(activeIndex);
 
     useEffect(() => {
         sendMessage({
@@ -28,13 +37,20 @@ export const EchoIndex = () => {
 
     const handlePrevArea = () => {
         console.log(`handlePrevMessage...`);
+        dispatch(prevArea());
     };
     const handleNextArea = () => {
-        console.log(`handlePrevMessage...`);
+        console.log(`handleNextMessage...`);
+        dispatch(nextArea());
     };
-    const handleOpenArea = () => {
-        console.log(`openArea...`);
-    };
+    const handleOpenArea = useCallback(() => {
+        const area: Area | null = areas.at(activeIndex) ?? null;
+        console.log(`openArea: areaIndex = ${activeIndex}`);
+        console.log(area);
+        if (area) {
+            navigate(`/echo/${area.area_index}`);
+        }
+    }, [ areas, activeIndex ]);
 
     useEffect(() => {
         const removeHotkeys = useInput((event: KeyboardEvent) => {
@@ -43,12 +59,13 @@ export const EchoIndex = () => {
             if (event.key === 'Enter') handleOpenArea();
         });
         return () => removeHotkeys();
-    }, []);
+    }, [ handlePrevArea, handleNextArea, handleOpenArea ]);
 
     return (
         <div className="Page Page-Areas">
 
             <Rows<Area>
+                activeIndex={activeIndex}
                 onRowLink={(row: Area) => `/echo/${row.area_index}`}
                 columns={[
                     {

@@ -1,6 +1,6 @@
 
 body {
-    font-family: "Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace;
+    font-family: "Roboto", "Ubuntu", sans-serif;   
     font-size: 14pt;
     margin: 0;
     padding: 0;
@@ -13,7 +13,6 @@ a {
 }
 
 input {
-    font-family: "Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace;
     border: 1px solid #808080;
     background-color: #000000;
     color: #C0C0C0;
@@ -22,7 +21,6 @@ input {
 }
 
 textarea {
-    font-family: "Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace;
     border: 1px solid #808080;
     background-color: #000000;
     color: #C0C0C0;
@@ -357,7 +355,6 @@ span.hidden {
     flex-shrink: 0;
     flex-grow: 0;
     white-space: pre-wrap;
-    font-family: "Courier New", monospace;
     line-height: 1.0;
 }
 
@@ -418,7 +415,6 @@ span.hidden {
     flex-shrink: 0;
     flex-grow: 0;
     white-space: pre-wrap;
-    font-family: "Courier New", monospace;
     line-height: 1.0;
 }
 
