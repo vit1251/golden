@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router';
 import './Message.css';
 
 import { type Music } from '../../middleware/soundMiddleware.ts';
+import { socketSend } from '../../middleware/socketMiddleware.ts';
 
 function checkInternet(): boolean {
     return false;
@@ -121,14 +122,8 @@ const Body = ({ rawText }: { rawText: string }) => {
 }
 
 export const Message = () => {
-    const dispatch = useDispatch();
 
-    const sendMessage = (payload: any) => {
-        dispatch({
-            type: 'SOCKET_SEND',
-            payload: payload,
-        });
-    };
+    const dispatch = useDispatch();
 
     const navigate = useNavigate();
 
@@ -141,14 +136,6 @@ export const Message = () => {
 
     const { echoTag, msgId } = useParams();
     console.log(`echoTag = ${echoTag} msgId = ${msgId}`);
-
-    useEffect(() => {
-        sendMessage({
-            type: 'ECHO_MSG_VIEW',
-            echoTag,
-            msgId,
-        });
-    }, []);
 
     return (
         <div className="Page-View">

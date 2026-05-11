@@ -1,7 +1,7 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 
-import { socketMiddleware } from '../middleware/socketMiddleware.ts';
+import { socketConnect, socketMiddleware } from '../middleware/socketMiddleware.ts';
 import { soundMiddleware } from '../middleware/soundMiddleware.ts';
 
 import identityReducer from '../features/identitySlice.ts';
@@ -32,7 +32,7 @@ export const store = configureStore({
 });
 
 // Сразу открываем соединение с сервером
-store.dispatch({ type: 'SOCKET_CONNECT' });
+store.dispatch(socketConnect());
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>

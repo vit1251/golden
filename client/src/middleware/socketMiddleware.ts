@@ -2,7 +2,7 @@
 import { type Middleware } from '@reduxjs/toolkit';
 import { createAction } from '@reduxjs/toolkit';
 
-export const socketConnect = createAction<unknown>('SOCKET_CONNECT');
+export const socketConnect = createAction<void>('SOCKET_CONNECT');
 export const socketSend = createAction<{ msg: any }>('SOCKET_SEND');
 export const socketRecv = createAction<{ msg: any }>('SOCKET_RECV');
 
