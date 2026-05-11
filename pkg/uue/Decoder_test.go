@@ -13,7 +13,7 @@ func Test_Decoder_Decode(t *testing.T) {
 
 	uueDecoder := NewDecoder(&out)
 	err1 := uueDecoder.Decode(rawData)
-	log.Printf("err = %+v", err1)
+	log.Printf("fail on uue decode. err = %+v", err1)
 
 	log.Printf("out = %s", out.String())
 

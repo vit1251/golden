@@ -203,7 +203,7 @@ func (self *TosserService) processNewDirectMessage(msgHeader *packet.PackedMessa
 
 	/* Write message */
 	err := netmailMapper.Write(newMsg)
-	log.Printf("err = %v", err)
+	log.Printf("fail netmail write. err = %v", err)
 
 	return nil
 

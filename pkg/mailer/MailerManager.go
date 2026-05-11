@@ -109,7 +109,7 @@ func (self *MailerManager) run() {
 		log.Printf(" * Mailer start (%d)", self.procIteration)
 		self.mailerActive = true
 		if err := self.processMailer(); err != nil {
-			log.Printf("err = %+v", err)
+			log.Printf("fail on processMailer. err = %+v", err)
 		}
 		self.mailerActive = false
 		log.Printf(" * Mailer complete (%d)", self.procIteration)

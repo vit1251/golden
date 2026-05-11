@@ -40,7 +40,7 @@ export const EchoMsgView = () => {
         if (yours.includes(msgTo)) {
             dispatch(soundEvent('SND_TOYOU'));
         }
-    }, []);
+    }, [ msgTo ]);
 
     const handleMsgRemove = useCallback(() => {
         // Шаг 1. Удаляем сообщение

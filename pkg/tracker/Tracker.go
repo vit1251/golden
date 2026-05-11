@@ -30,11 +30,11 @@ func (self Tracker) Track() {
 
 	err1 := self.ProcessInbound()
 	if err1 != nil {
-		log.Printf("err = %+v", err1)
+		log.Printf("fail processInbound on tracker. err = %+v", err1)
 	}
 	err2 := self.ProcessOutbound()
 	if err2 != nil {
-		log.Printf("err = %+v", err2)
+		log.Printf("fail processOutboud on tracker. err = %+v", err2)
 	}
 
 	log.Printf("Stop tracker session")

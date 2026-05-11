@@ -23,11 +23,11 @@ func (self *TosserService) Toss() {
 
 	err1 := self.ProcessInbound()
 	if err1 != nil {
-		log.Printf("err = %+v", err1)
+		log.Printf("fail processInbound. err = %+v", err1)
 	}
 	err2 := self.ProcessOutbound()
 	if err2 != nil {
-		log.Printf("err = %+v", err2)
+		log.Printf("fail processOutbound. err = %+v", err2)
 	}
 
 	log.Printf("Stop tosser session")

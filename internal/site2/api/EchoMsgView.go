@@ -50,7 +50,7 @@ func (self *EchoMsgViewAction) processRequest(body []byte) []byte {
 	req := echoMsgViewRequest{}
 	err1 := json.Unmarshal(body, &req)
 	if err1 != nil {
-		log.Printf("err = %+v", err1)
+		log.Printf("fail unmarshal echoMsgViewRequest. err = %+v", err1)
 	}
 
 	/* Step 0. Prepare mappers */
