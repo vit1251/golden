@@ -1,10 +1,13 @@
 
-import { createSlice } from '@reduxjs/toolkit';
+import { createAction, createSlice } from '@reduxjs/toolkit';
+import { type Message } from '../models/Message.model.ts';
+
+export const echoMsgIndex = createAction<{ headers: Array<Message> }>('ECHO_MSG_INDEX');
 
 export const messageSlice = createSlice({
     name: 'message',
     initialState: {
-        records: [],
+        records: [] as Array<Message>,
         activeIndex: 0,
     },
     reducers: {
@@ -22,9 +25,12 @@ export const messageSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder.addCase('ECHO_MSG_INDEX', (state, action) => {
-            const { headers = [] } = action;
+        builder.addCase(echoMsgIndex, (state, action) => {
+            const { headers } = action.payload;
+            // 1. Обновим записи
             state.records = headers ?? [];
+            // 2. Корректируем позицию курсора (ставим принудительно на последний элемент)
+            state.activeIndex = state.activeIndex >= state.records.length ? state.records.length - 1 : state.activeIndex;
         });
     },
 });

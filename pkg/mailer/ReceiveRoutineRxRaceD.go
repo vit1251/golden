@@ -7,8 +7,8 @@ import (
 
 func ReceiveRoutineRxRaceD(mailer *Mailer) ReceiveRoutineResult {
 
-	/* Get a frame from Input Buffer */
-	nextFrame := <-mailer.stream.InFrame
+	// Get a frame from Input Buffer
+	nextFrame, _ := mailer.readFrame()
 
 	/* Got Data frame */
 	if nextFrame.IsDataFrame() {

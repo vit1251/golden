@@ -41,10 +41,6 @@ func mailerStateAdditionalStepProcessFrame(mailer *Mailer, nextFrame stream.Fram
 }
 
 func mailerStateAdditionalStep(mailer *Mailer) mailerStateFn {
-
-	select {
-	case nextFrame := <-mailer.stream.InFrame:
-		return mailerStateAdditionalStepProcessFrame(mailer, nextFrame)
-	}
-
+	nextFrame, _ := mailer.readFrame()
+	return mailerStateAdditionalStepProcessFrame(mailer, nextFrame)
 }

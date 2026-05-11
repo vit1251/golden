@@ -1,65 +1,92 @@
 
 import { useNavigate, useParams } from "react-router";
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Message as MessageComponent } from './Message';
-import { Message } from "../../models/Message.model";
-import { Area } from "../../models/Area.model";
-import { useInput } from "../../Hotkey";
-import { playError } from "../../Audio";
+import { Message as MessageComponent } from './Message.tsx';
+import { type Message } from "../../models/Message.model.ts";
+import { type Area } from "../../models/Area.model.ts";
+import { useKeyboard } from "../../Hotkey.tsx";
+import { socketSend } from "../../middleware/socketMiddleware.ts";
+import { soundEvent } from "../../middleware/soundMiddleware.ts";
 
 
 export const EchoMsgView = () => {
     const dispatch = useDispatch();
-
-    const sendMessage = (payload: any) => {
-        dispatch({
-            type: 'SOCKET_SEND',
-            payload: payload,
-        });
-    };
 
     const navigate = useNavigate();
 
     const areas: Array<Area> = useSelector((state: any) => state.areas.records);
     const messages: Array<Message> = useSelector((state: any) => state.messages.records);
     const content: string = useSelector((state: any) => state.view.content);
+    const msgTo: string = useSelector((state: any) => state.view.to);
+
+    const yours: string[] = [ 'All' ]; // Варианты написания имени
 
     const { echoTag, msgId } = useParams();
     console.log(echoTag);
 
     useEffect(() => {
-        sendMessage({
-            type: 'ECHO_MSG_VIEW',
-            echoTag,
-            msgId,
-        });
+        dispatch(socketSend({
+            msg: {
+                type: 'ECHO_MSG_VIEW',
+                echoTag: echoTag,
+                msgId: msgId,
+            },
+        }));
     }, [echoTag, msgId]);
 
-    const handleBack = () => navigate(`/echo/${echoTag}`);
-    const handleMsgRemove = () => {
-        sendMessage({ type: 'ECHO_MSG_REMOVE', echoTag, msgId });
+    useEffect(() => {
+        if (yours.includes(msgTo)) {
+            dispatch(soundEvent('SND_TOYOU'));
+        }
+    }, []);
+
+    const handleMsgRemove = useCallback(() => {
+        // Шаг 1. Удаляем сообщение
+        dispatch(socketSend({
+            msg: {
+                type: 'ECHO_MSG_REMOVE',
+                echoTag: echoTag,
+                msgId: msgId,
+            },
+        }));
+        // Шаг 2. Возвращаемся на список сообещний
         handleBack();
+    
+    }, [ echoTag, msgId ]);
+
+    /* Home */
+    //if (event.key === '1') playMusic('SND_SAYBIBI');
+    //if (event.key === '2') playMusic('SND_TOYOU');
+    //if (event.key === '3') playMusic('SND_THEEND');
+    //if (event.key === '4') playMusic('SND_GOTIT');
+    //if (event.key === '5') playMusic('SND_TOOBAD');
+
+
+    const activeIndex: number = 0;
+    
+
+    const handleBack = () => {
+        navigate(`/echo/${echoTag}`);
     };
 
     const handlePrevMessage = () => {
-        playError();
+        console.log(`Переход на предыдущее сообщение.`);
+        dispatch(soundEvent('SND_THEEND'));
     };
     const handleNextMessage = () => {
-        playError();
+        console.log(`Переход на следующее сообщение.`);
+        dispatch(soundEvent('SND_THEEND'));
     };
 
-    useEffect(() => {
-        const removeHotkeys = useInput((event: KeyboardEvent) => {
-            if (event.key === 'Escape') handleBack();
-            if (event.key === 'Delete') handleMsgRemove();
-            if (event.key === 'ArrowLeft') handlePrevMessage();
-            if (event.key === 'ArrowRight') handleNextMessage();
-        });
-        return () => removeHotkeys();
-    }, []);
-
+    useKeyboard({
+        Escape: () => handleBack(),
+        Delete: () => handleMsgRemove(),
+        ArrowLeft: () => handlePrevMessage(),
+        ArrowRight: () => handleNextMessage(),
+    });
+   
     return (
         <div className="Page Page-View">
             <MessageComponent />

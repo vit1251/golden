@@ -1,15 +1,19 @@
 
+import { useNavigate } from 'react-router';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect } from 'react';
 
-import { Rows } from './Row';
+import { Rows } from './Row.tsx';
 
 import "./EchoIndex.css";
-import { Area } from '../../models/Area.model';
-import { useInput } from '../../Hotkey';
-import { RootState } from '../../app/store';
-import { nextArea, prevArea } from '../../features/areaSlice';
-import { useNavigate } from 'react-router';
+
+import { type Area } from '../../models/Area.model.ts';
+import { useKeyboard } from '../../Hotkey.tsx';
+import { type RootState } from '../../app/store.ts';
+import { echoIndex, nextArea, prevArea } from '../../features/areaSlice.ts';
+import { soundEvent } from '../../middleware/soundMiddleware.ts';
+import { socketSend } from '../../middleware/socketMiddleware.ts';
 
 export const EchoIndex = () => {
     
@@ -17,12 +21,8 @@ export const EchoIndex = () => {
 
     const dispatch = useDispatch();
 
-    const sendMessage = (payload: any) => {
-        dispatch({
-            type: 'SOCKET_SEND',
-            payload: payload,
-        });
-    };
+    const currentPage = useSelector((state: RootState) => state.areas.currentPage);
+    const pageSize = useSelector((state: RootState) => state.areas.pageSize);
 
     const areas: Area[] = useSelector((state: RootState) => state.areas.records) ?? [];
     const activeIndex: number = useSelector((state: RootState) => state.areas.activeIndex) ?? 0;
@@ -30,36 +30,50 @@ export const EchoIndex = () => {
     console.log(activeIndex);
 
     useEffect(() => {
-        sendMessage({
-            type: 'ECHO_INDEX',
-        });
+        // 1. Запросим список эхоконференций
+        dispatch(socketSend({
+            msg: {
+                type: 'ECHO_INDEX',
+            },
+        }));
     }, []);
 
     const handlePrevArea = () => {
         console.log(`handlePrevMessage...`);
+        // Шаг 1. Проверяем в начале мы списка
+        if (activeIndex === 0) {
+            dispatch(soundEvent('SND_THEEND'));
+        }
+        // Шаг 2. Образабтываем запрос
         dispatch(prevArea());
     };
     const handleNextArea = () => {
         console.log(`handleNextMessage...`);
+        // Шаг 1. Проверяем в конце ли мы списка
+        if (activeIndex + 1 === areas.length) {
+            dispatch(soundEvent('SND_THEEND'));
+        }
+        // Шаг 2. Обрабатываем запрос
         dispatch(nextArea());
     };
-    const handleOpenArea = useCallback(() => {
+    const handleOpenArea = () => {
         const area: Area | null = areas.at(activeIndex) ?? null;
         console.log(`openArea: areaIndex = ${activeIndex}`);
         console.log(area);
         if (area) {
             navigate(`/echo/${area.area_index}`);
         }
-    }, [ areas, activeIndex ]);
+    };
 
-    useEffect(() => {
-        const removeHotkeys = useInput((event: KeyboardEvent) => {
-            if (event.key === 'ArrowUp') handlePrevArea();
-            if (event.key === 'ArrowDown') handleNextArea();
-            if (event.key === 'Enter') handleOpenArea();
-        });
-        return () => removeHotkeys();
-    }, [ handlePrevArea, handleNextArea, handleOpenArea ]);
+    useKeyboard({
+        ArrowUp: () => handlePrevArea(),
+        ArrowDown: () => handleNextArea(),
+        Enter: () => handleOpenArea(),
+    });
+
+    const totalPages = Math.ceil(areas.length / pageSize);
+    const startIndex = (currentPage - 1) * pageSize;
+    const paginatedAreas = areas.slice(startIndex, startIndex + pageSize);
 
     return (
         <div className="Page Page-Areas">
@@ -91,7 +105,7 @@ export const EchoIndex = () => {
                     },
                     { className: "rowName", key: "name" },
                 ]}
-                records={areas} />
+                records={paginatedAreas} />
 
         </div>
     );

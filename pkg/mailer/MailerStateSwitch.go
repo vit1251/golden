@@ -10,7 +10,7 @@ func mailerStateSwitchProcessBoth(mailer *Mailer) mailerStateFn {
 
 	/* Data available in Input Buffer */
 	case _, ok := <-mailer.stream.InFrameReady:
-		log.Printf("Data available in Input Buffer")
+//		log.Printf("Data available in Input Buffer")
 		if ok {
 			mailer.rxRoutineResult = ReceiveRoutine(mailer)
 			return mailerStateReceive
@@ -20,7 +20,7 @@ func mailerStateSwitchProcessBoth(mailer *Mailer) mailerStateFn {
 
 	/* Free space exists in output buffer */
 	case mailer.stream.OutFrameReady <- nil:
-		log.Printf("Free space exists in output buffer")
+//		log.Printf("Free space exists in output buffer")
 		mailer.txRoutineResult = TransmitRoutine(mailer)
 		return mailerStateTransmit
 

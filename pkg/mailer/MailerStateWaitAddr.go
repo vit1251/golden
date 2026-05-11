@@ -42,8 +42,6 @@ func mailerStateWaitAddrProcessFrame(mailer *Mailer, nextFrame stream.Frame) mai
 }
 
 func mailerStateWaitAddr(mailer *Mailer) mailerStateFn {
-
-	nextFrame := <-mailer.stream.InFrame
+	nextFrame, _ := mailer.readFrame()
 	return mailerStateWaitAddrProcessFrame(mailer, nextFrame)
-
 }

@@ -7,8 +7,8 @@ import (
 
 func ReceiveRoutineRxEOB(mailer *Mailer) ReceiveRoutineResult {
 
-	/* Get a frame from Input Buffer */
-	nextFrame := <-mailer.stream.InFrame
+	// Get a frame from Input Buffer
+	nextFrame, _ := mailer.readFrame()
 
 	/* Pending Files list is empty */
 	if mailer.pendingFiles.IsEmpty() {

@@ -1,5 +1,20 @@
 
-import { createSlice } from '@reduxjs/toolkit';
+import { createAction, createSlice } from '@reduxjs/toolkit';
+
+export type EchoMsgViewPayload = {
+    area: {
+        name: string,              // Имя эхоконференции
+    },
+    body: string,                  // Тело сообщения
+    echo: {
+        from: string,
+        to: string,
+        subject: string,
+        date: string,
+    },
+};
+
+export const echoMsgView = createAction<EchoMsgViewPayload>('ECHO_MSG_VIEW');
 
 export const viewSlice = createSlice({
     name: 'view',
@@ -16,8 +31,8 @@ export const viewSlice = createSlice({
 //        removeMessage: (state) => { state.value += 1; },
     },
     extraReducers: (builder) => {
-        builder.addCase('ECHO_MSG_VIEW', (state, action) => {
-            const { area = {}, body, echo = {} } = action;
+        builder.addCase(echoMsgView, (state, action) => {
+            const { area, body, echo } = action.payload;
             state.echo = area.name ?? '';
             state.content = body;
             state.from = echo.from ?? '';

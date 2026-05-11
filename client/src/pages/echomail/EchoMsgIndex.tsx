@@ -3,26 +3,22 @@ import { useParams, useNavigate } from "react-router";
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect } from 'react';
 
-import { Rows } from './Row';
+import { Rows } from './Row.tsx';
 
 import "./EchoMsgIndex.css";
-import { adjustBrightness, makeShort, stringToHexColor } from "../../usils";
-import { Area } from "../../models/Area.model";
-import { Message } from "../../models/Message.model";
-import { useInput } from "../../Hotkey";
-import { firstMessage, lastMessage, nextMessage, prevMessage } from "../../features/messageSlice";
-import { RootState } from "../../app/store";
+
+import { adjustBrightness, makeShort, stringToHexColor } from "../../usils.ts";
+import { type Area } from "../../models/Area.model.ts";
+import { type Message } from "../../models/Message.model.ts";
+import { useKeyboard } from "../../Hotkey.tsx";
+import { firstMessage, lastMessage, nextMessage, prevMessage } from "../../features/messageSlice.ts";
+import { type RootState } from "../../app/store.ts";
+import { socketSend } from "../../middleware/socketMiddleware.ts";
+import { soundEvent } from "../../middleware/soundMiddleware.ts";
 
 
 export const EchoMsgIndex = () => {
     const dispatch = useDispatch();
-
-    const sendMessage = (payload: any) => {
-        dispatch({
-            type: 'SOCKET_SEND',
-            payload: payload,
-        });
-    };
 
     const navigate = useNavigate();
 
@@ -36,17 +32,21 @@ export const EchoMsgIndex = () => {
     const msg: Message | null = messages.at(activeIndex) ?? null;
 
     useEffect(() => {
-        sendMessage({
-            type: 'ECHO_INDEX',
-        });
+        // 1. Запросим список эхо конференций
+        dispatch(socketSend({
+            msg: {
+                type: 'ECHO_INDEX',
+            },
+        }));
     }, []);
     useEffect(() => {
-        sendMessage({
-            type: 'ECHO_MSG_INDEX',
-            echoTag,
-        });
+        dispatch(socketSend({
+            msg: {
+                type: 'ECHO_MSG_INDEX',
+                echoTag: echoTag,
+            }
+        }));
     }, [echoTag]);
-
 
     console.log(`area = `, area);
 
@@ -54,29 +54,39 @@ export const EchoMsgIndex = () => {
     //        navigate(`/echo/${echoTag}/create`);
     //    };
     const handleFirstMessage = () => dispatch(firstMessage());
-    const handlePrevMessage = () => dispatch(prevMessage());
-    const handleNextMessage = () => dispatch(nextMessage());
+    const handlePrevMessage = () => {
+        // Шаг 1. Проверяем в конце ли мы списка
+        if (activeIndex === 0) {
+            dispatch(soundEvent('SND_THEEND'));
+        }
+        //
+        dispatch(prevMessage());
+    };
+    const handleNextMessage = () => {
+        // Шаг 1. Проверяем в конце ли мы списка
+        if (activeIndex + 1 === messages.length) {
+            dispatch(soundEvent('SND_THEEND'));
+        }
+        //
+        dispatch(nextMessage());
+    };
     const handleLastMessage = () => dispatch(lastMessage());
     const handleBack = () => navigate(`/echo`);
-    const handleOpenMessage = useCallback(() => {
+    const handleOpenMessage = () => {
         console.log(`open`);
         if (msg) {
             navigate(`/echo/${echoTag}/${msg.hash}/view`);
         }
-    }, [ activeIndex ]);
+    };
 
-    useEffect(() => {
-        const removeHotkeys = useInput((event: KeyboardEvent) => {
-            if (event.key === 'Escape') handleBack();
-            if (event.key === 'Home') handleFirstMessage();
-            if (event.key === 'ArrowUp') handlePrevMessage();
-            if (event.key === 'ArrowDown') handleNextMessage();
-            if (event.key === 'End') handleLastMessage();
-            if (event.key === 'Enter') handleOpenMessage();
-            //            if (event.key === `Ctrl+C`) handleCreateMessage();
-        });
-        return () => removeHotkeys();
-    }, [ handleOpenMessage ]);
+    useKeyboard({
+        Escape: () => handleBack(),
+        Home: () => handleFirstMessage(),
+        ArrowUp: () => handlePrevMessage(),
+        ArrowDown: () => handleNextMessage(),
+        End: () => handleLastMessage(),
+        Enter: () => handleOpenMessage(),
+    });
 
     return (
         <div className="Page Page-Message-Index">

@@ -35,17 +35,9 @@ func mailerStateWaitOkProcessFrame(mailer *Mailer, nextFrame stream.Frame) maile
 }
 
 func mailerStateWaitOk(mailer *Mailer) mailerStateFn {
-
-	select {
-
-	case nextFrame := <-mailer.stream.InFrame:
+	nextFrame, err := mailer.readFrame()
+	if (err == nil) {
 		return mailerStateWaitOkProcessFrame(mailer, nextFrame)
-
-		//	case <-mailer.WaitAddrTimeout:
-		//		log.Printf("Timeout!")
-
 	}
-
 	return mailerStateWaitOk
-
 }

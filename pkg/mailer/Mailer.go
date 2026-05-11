@@ -16,7 +16,15 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"runtime/trace"
+	"context"
+	"errors"
 )
+
+var ErrConnectionTimeout = errors.New("connection timeout")
+var ErrReadTimeout = errors.New("read timeout")
+var ErrWriteTimeout = errors.New("write timeout")
+var ErrDisconnectTimeout = errors.New("disconnect timeout")
 
 type Mailer struct {
 	registry *registry.Container /* ???                         */
@@ -82,61 +90,59 @@ type Mailer struct {
 }
 
 func NewMailer(r *registry.Container) *Mailer {
-	m := new(Mailer)
-
-	m.connComplete = make(chan int)
-	m.registry = r
-	m.queue = util.NewTheQueue()
-	m.connectionCount = 0
-
-	return m
+	return &Mailer{
+		connComplete: make(chan int),
+		registry: r,
+		queue: util.NewTheQueue(),
+		connectionCount: 0,
+	}
 }
 
-func (self *Mailer) GetReport() *MailerReport {
-	return self.report
+func (m *Mailer) GetReport() *MailerReport {
+	return m.report
 }
 
-func (self *Mailer) writeTrafic(mail int, data int) {
+func (m *Mailer) writeTrafic(mail int, data int) {
 	raw := fmt.Sprintf("TRF %d %d", mail, data)
-	self.stream.WriteComment(raw)
+	m.stream.WriteComment(raw)
 }
 
-func (self *Mailer) SetTempOutbound(workOutbound string) {
-	self.workOutbound = workOutbound
+func (m *Mailer) SetTempOutbound(workOutbound string) {
+	m.workOutbound = workOutbound
 }
 
-func (self *Mailer) SetAddr(addr string) {
-	self.addr = addr
+func (m *Mailer) SetAddr(addr string) {
+	m.addr = addr
 }
 
-func (self *Mailer) SetSecret(secret string) {
-	self.secret = secret
+func (m *Mailer) SetSecret(secret string) {
+	m.secret = secret
 }
 
-func (self *Mailer) Start() (error, *MailerReport) {
+func (m *Mailer) Start() (error, *MailerReport) {
 
-	if self.connectionCount > 0 {
+	if m.connectionCount > 0 {
 		return fmt.Errorf("fido session alredy in progress"), nil
 	}
 
-	/* Initialize new report */
-	self.report = NewMailerReport()
+	// Initialize new report
+	m.report = NewMailerReport()
 
-	/* Add wait */
-	self.wait.Add(1)
+	// Add wait
+	m.wait.Add(1)
 
-	/* Play! */
-	go self.run()
+	// Play!
+	go m.run()
 
-	return nil, self.report
+	return nil, m.report
 }
 
-func (self *Mailer) IsTransmitting() bool {
-	return self.sendName != nil
+func (m *Mailer) IsTransmitting() bool {
+	return m.sendName != nil
 }
 
-func (self *Mailer) IsReceiving() bool {
-	return self.recvName != nil
+func (m *Mailer) IsReceiving() bool {
+	return m.recvName != nil
 }
 
 func makeFuncName(i interface{}) string {
@@ -146,116 +152,127 @@ func makeFuncName(i interface{}) string {
 	return ourName
 }
 
-func (self *Mailer) run() {
+func (m *Mailer) run() {
 
-	self.report.SetSessionStart(time.Now())
+        // Trace
+        f, err := os.Create("trace.out")
+        if err != nil {
+		log.Printf("mailer: No trace")
+        }
+        defer f.Close()
+        trace.Start(f)
+        defer trace.Stop()
+
+	ctx := context.Background()
+	ctx, task := trace.NewTask(ctx, "run")
+	defer task.End()
+
+	m.report.SetSessionStart(time.Now())
 
 	/* Reset active state */
-	self.activeState = mailerStateStart
+	m.activeState = mailerStateStart
 
 	/* Start processing */
-	log.Printf("Start mailer routine")
+	log.Printf("mailer: Start mailer routine")
 	for {
-		log.Printf("mailer: state = %s", makeFuncName(self.activeState))
-		newState := self.activeState(self)
-		log.Printf("mailer: change state: %s -> %s", makeFuncName(self.activeState), makeFuncName(newState))
-		self.activeState = newState
+		trace.Logf(ctx, "mailer", "state = %s", makeFuncName(m.activeState))
+		newState := m.activeState(m)
+		trace.Logf(ctx, "mailer", "change state: %s -> %s", makeFuncName(m.activeState), makeFuncName(newState))
+		m.activeState = newState
 		/* Stop processing when done */
 		if newState == nil {
 			log.Printf("mailer: Reach Exit state")
 			break
 		}
 	}
-	log.Printf("Stop mailer routine")
+	log.Printf("mailer: Stop mailer routine")
 
 	/* Update report */
-	self.report.SetSessionStop(time.Now())
+	m.report.SetSessionStop(time.Now())
 
 	/* Close connection */
-	self.wait.Done()
+	m.wait.Done()
 
 	/* Remove counter */
-	self.connectionCount = self.connectionCount - 1
+	m.connectionCount = m.connectionCount - 1
 
 }
 
-func (self *Mailer) Wait() *MailerReport {
+func (m *Mailer) Wait() *MailerReport {
 
 	/* Wait session complete */
-	self.wait.Wait()
+	m.wait.Wait()
 
 	/* Dump report */
-	self.report.Dump()
+	m.report.Dump()
 
-	return self.report
+	return m.report
 }
 
-func (self *Mailer) SetServerAddr(addr string) {
-
+func (m *Mailer) SetServerAddr(addr string) {
 	if !strings.Contains(addr, ":") {
 		defaultPort := 24554
 		addr = fmt.Sprintf("%s:%d", addr, defaultPort)
 	}
-
-	self.ServerAddr = addr
+	m.ServerAddr = addr
 }
 
-func (self *Mailer) SetInboundDirectory(inb string) {
-	self.inboundDirectory = inb
+func (m *Mailer) SetInboundDirectory(inb string) {
+	m.inboundDirectory = inb
 }
 
-func (self *Mailer) SetOutboundDirectory(outb string) {
-	self.outboundDirectory = outb
+func (m *Mailer) SetOutboundDirectory(outb string) {
+	m.outboundDirectory = outb
 }
 
-func (self *Mailer) SetTempInbound(workInbound string) {
-	self.workInbound = workInbound
+func (m *Mailer) SetTempInbound(workInbound string) {
+	m.workInbound = workInbound
 }
 
-func (self *Mailer) SetTemp(work string) {
-	self.work = work
+func (m *Mailer) SetTemp(work string) {
+	m.work = work
 }
 
-func (self *Mailer) GetWorkOutbound() string {
-	return self.workOutbound
+func (m *Mailer) GetWorkOutbound() string {
+	return m.workOutbound
 }
 
-func (self *Mailer) GetAddr() string {
-	return self.addr
+func (m *Mailer) GetAddr() string {
+	return m.addr
 }
 
-func (self *Mailer) GetSystemName() string {
-	return self.systemName
+func (m *Mailer) GetSystemName() string {
+	return m.systemName
 }
 
-func (self *Mailer) GetUserName() string {
-	return self.userName
+func (m *Mailer) GetUserName() string {
+	return m.userName
 }
 
-func (self *Mailer) GetLocation() string {
-	return self.location
+func (m *Mailer) GetLocation() string {
+	return m.location
 }
 
-func (self *Mailer) SetLocation(location string) {
-	self.location = location
+func (m *Mailer) SetLocation(location string) {
+	m.location = location
 }
 
 func (self *Mailer) SetUserName(name string) {
 	self.userName = name
 }
 
-func (self *Mailer) SetStationName(name string) {
-	self.systemName = name
+func (m *Mailer) SetStationName(name string) {
+	m.systemName = name
 }
 
-func (self *Mailer) AddOutbound(path queue.FileEntry) {
-	self.outboundQueue = append(self.outboundQueue, path)
+func (m *Mailer) AddOutbound(path queue.FileEntry) {
+	m.outboundQueue = append(m.outboundQueue, path)
 }
 
-func (self *Mailer) createAuthorization(chData []byte) string {
+func (m *Mailer) createAuthorization(chData []byte) string {
 	a := auth.NewAuthorizer()
 	a.SetChallengeData(chData)
-	a.SetSecret([]byte(self.secret))
+	a.SetSecret([]byte(m.secret))
 	responseDigest, err := a.CalculateDigest()
 	if err != nil {
 		panic(err)
@@ -264,7 +281,7 @@ func (self *Mailer) createAuthorization(chData []byte) string {
 	return password
 }
 
-func (self *Mailer) processNulOptFrame(rawOptions []byte) {
+func (m *Mailer) processNulOptFrame(rawOptions []byte) {
 
 	log.Printf("Mailer: Remote server option: %s", rawOptions)
 
@@ -277,7 +294,7 @@ func (self *Mailer) processNulOptFrame(rawOptions []byte) {
 			if bytes.Equal(authScheme, []byte("MD5")) {
 				authDigest := parts[2]
 				log.Printf("Use %s as digest", authDigest)
-				self.respAuthorization = self.createAuthorization(authDigest)
+				m.respAuthorization = m.createAuthorization(authDigest)
 			} else {
 				log.Panicf("Wrong mechanism: authScheme = %s", authScheme)
 			}
@@ -286,7 +303,7 @@ func (self *Mailer) processNulOptFrame(rawOptions []byte) {
 
 }
 
-func (self *Mailer) processNulFrame(nextFrame stream2.Frame) {
+func (m *Mailer) processNulFrame(nextFrame stream2.Frame) {
 
 	packet := nextFrame.CommandFrame.Body
 	values := bytes.SplitN(packet, []byte(" "), 2)
@@ -299,7 +316,7 @@ func (self *Mailer) processNulFrame(nextFrame stream2.Frame) {
 		log.Printf("Mailer: Remote side M_NUL packet: name = %s value = %s", key, value)
 
 		if bytes.Equal(key, []byte("OPT")) {
-			self.processNulOptFrame(value)
+			m.processNulOptFrame(value)
 		}
 
 	} else {
@@ -308,24 +325,54 @@ func (self *Mailer) processNulFrame(nextFrame stream2.Frame) {
 
 }
 
-func (self *Mailer) GetWork() string {
-	return self.work
+func (m *Mailer) GetWork() string {
+	return m.work
 }
 
-func (self *Mailer) IsReceiveName(name string) bool {
-	if self.recvName != nil {
-		if name == self.recvName.Name {
+func (m *Mailer) IsReceiveName(name string) bool {
+	if m.recvName != nil {
+		if name == m.recvName.Name {
 			return true
 		}
 	}
 	return false
 }
 
-func (self *Mailer) IsTransmitName(name string) bool {
-	if self.sendName != nil {
-		if name == self.sendName.Name {
+func (m *Mailer) IsTransmitName(name string) bool {
+	if m.sendName != nil {
+		if name == m.sendName.Name {
 			return true
 		}
 	}
 	return false
+}
+
+func (m *Mailer) readFrame() (stream2.Frame, error) {
+	var timeout time.Duration = 15 * time.Second
+	select {
+	case frame := <-m.stream.InFrame:
+		return frame, nil
+	case <-time.After(timeout):
+		return stream2.Frame{}, ErrReadTimeout
+	}
+}
+
+func (m *Mailer) writeFrame(f stream2.Frame) error {
+//	var timeout time.Duration = 15 * time.Second
+	return nil
+}
+
+func (m *Mailer) connect() error {
+	var timeout time.Duration = 15 * time.Second
+	select {
+	case <-m.stream.InFrameReady:
+		return nil
+
+	case <-time.After(timeout):
+		return ErrConnectionTimeout
+	}
+}
+
+func (m *Mailer) disconnect(timeout int16) error {
+	return nil
 }

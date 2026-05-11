@@ -1,14 +1,17 @@
 
 import { configureStore } from '@reduxjs/toolkit';
-import { socketMiddleware } from '../middleware/socketMiddleware';
 
-import identityReducer from '../features/identitySlice';
-import areaReducer from '../features/areaSlice';
-import mailerReducer from '../features/mailerSlice';
-import messageReducer from '../features/messageSlice';
-import viewReducer from '../features/viewSlice';
-import composeReducer from '../features/composeSlice';
-import settingsSlice from '../features/settingsSlice';
+import { socketMiddleware } from '../middleware/socketMiddleware.ts';
+import { soundMiddleware } from '../middleware/soundMiddleware.ts';
+
+import identityReducer from '../features/identitySlice.ts';
+import areaReducer from '../features/areaSlice.ts';
+import mailerReducer from '../features/mailerSlice.ts';
+import messageReducer from '../features/messageSlice.ts';
+import viewReducer from '../features/viewSlice.ts';
+import composeReducer from '../features/composeSlice.ts';
+import settingsSlice from '../features/settingsSlice.ts';
+import { debugMiddleware } from '../middleware/debugMiddleware.ts';
 
 const rootReducer = {
     identity: identityReducer,
@@ -21,7 +24,10 @@ const rootReducer = {
 };
 
 export const store = configureStore({
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(socketMiddleware("ws://127.0.0.1:8081/api/v1")),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware()
+        .concat(socketMiddleware("ws://127.0.0.1:8081/api/v1"))
+        .concat(soundMiddleware)
+        .concat(debugMiddleware),
     reducer: rootReducer,
 });
 

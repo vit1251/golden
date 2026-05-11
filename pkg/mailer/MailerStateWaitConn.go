@@ -1,6 +1,7 @@
 package mailer
 
 import (
+	"log"
 	"fmt"
 	"github.com/vit1251/golden/internal/common"
 	"time"
@@ -44,14 +45,11 @@ func mailerStateWaitConnProcessWelcome(mailer *Mailer) {
 }
 
 func mailerStateWaitConn(mailer *Mailer) mailerStateFn {
-
-	select {
-	case <-mailer.stream.InFrameReady: // TODO - replace on connection ready channel ...
-		mailerStateWaitConnProcessWelcome(mailer)
-		return mailerStateAdditionalStep
-
-	case <-time.After(15 * time.Second):
+	err := mailer.connect()
+	if err != nil {
+		log.Printf("mailer: connection timeout")
 		return mailerStateEnd
 	}
-
+	mailerStateWaitConnProcessWelcome(mailer)
+	return mailerStateAdditionalStep
 }

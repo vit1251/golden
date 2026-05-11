@@ -1,24 +1,15 @@
 
-import { useEffect } from 'react';
-import { useInput } from '../Hotkey';
 import { useNavigate } from 'react-router';
+import { useKeyboard } from '../Hotkey.tsx';
 
 export const Welcome = () => {
     
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const removeHotkeys = useInput((event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                event.preventDefault();
-                event.stopPropagation();
-                navigate('/echo');
-            }
-        });
-        return () => {
-            removeHotkeys();
-        }
-    }, []);
+    useKeyboard({
+        Escape: () => navigate('/echo'),
+
+    });
 
     const contributors = [
         "Sergey Anohin",

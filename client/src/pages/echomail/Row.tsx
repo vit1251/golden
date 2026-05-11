@@ -1,5 +1,5 @@
 
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 
 import "./Row.css";
@@ -11,7 +11,7 @@ export interface Column<T> {
     render?: (row: T) => number | string | ReactElement,
 }
 
-export const Row = <T extends object>({ activeIndex = 0, index, record, columns, onRowLink }: { activeIndex: number, index: number, record: T, columns: Column<T>[], onRowLink: any } ) => {
+export const Row = <T extends object>({ ref, tabIndex, activeIndex = 0, index, record, columns, onRowLink }: { ref?: React.Ref<HTMLDivElement>, tabIndex: number, activeIndex: number, index: number, record: T, columns: Column<T>[], onRowLink: any } ) => {
 
     const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ export const Row = <T extends object>({ activeIndex = 0, index, record, columns,
     }
 
     return (
-        <div className={classes.join(' ')} onClick={() => handleClick(record)} onDoubleClick={() => handleDoubleClick(record)}>
+        <div ref={ref} tabIndex={tabIndex} className={classes.join(' ')} onClick={() => handleClick(record)} onDoubleClick={() => handleDoubleClick(record)}>
             {columns.map((column: Column<T>) => {
                 const { className = '', key, styles, render } = column;
                 const { [key]: raw = '' } = record;
@@ -47,9 +47,32 @@ export const Row = <T extends object>({ activeIndex = 0, index, record, columns,
 
 export const Rows = <T extends object>({ activeIndex = 0, records, columns, onRowLink }: { activeIndex?: number, records: T[], columns: Column<T>[], onRowLink: any } ) => {
     const classes: string[] = ['rowContainer'];
+    const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+    useEffect(() => {
+        const elementToFocus = itemRefs.current[activeIndex];
+        if (elementToFocus) {
+            elementToFocus.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest', // Прокрутит только если элемента нет на экране
+            });
+        }
+    }, [activeIndex]);
+
     return (
         <div className={classes.join(' ')}>
-            {records.map((record: T, index: number) => (<Row activeIndex={activeIndex} index={index} record={record} columns={columns} onRowLink={onRowLink} />))}
+            {records.map((record: T, index: number) => (
+                <Row
+                    key={index}
+                    tabIndex={-1}
+                    ref={(el) => { itemRefs.current[index] = el; }}
+                    activeIndex={activeIndex}
+                    index={index}
+                    record={record}
+                    columns={columns}
+                    onRowLink={onRowLink}
+                    />))
+            }
         </div>
     );
 };
