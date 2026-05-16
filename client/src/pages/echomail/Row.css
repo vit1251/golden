@@ -3,6 +3,11 @@
     cursor: pointer;
 }
 
+.row:focus {
+    outline: none;
+    background-color: rgb(255, 0, 0);
+}
+
 .row {
     display: flex;
     flex-direction: row;

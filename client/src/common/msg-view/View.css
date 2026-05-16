@@ -1,0 +1,43 @@
+
+.msg {
+    display: flex;
+    flex-direction: column;
+}
+
+.msg-line {
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    
+}
+
+.msg-quote-1 {
+    color: #00aaaa;
+}
+
+.msg-quote-2 {
+    color: #aa00aa;
+}
+
+.msg-quote-3 {
+    color: #00aa00;
+}
+
+.msg-service {
+    color: #404040;
+}
+
+.msg-plain {
+    color: #C0C0C0;
+}
+
+.msg-link {
+    color: #ffff55;        /* Ярко-желтый (классический цвет GoldED для акцентов) */
+    text-decoration: none; /* Убираем подчеркивание */
+    border-bottom: 1px dashed #555; /* Делаем тонкую пунктирную линию снизу */
+}
+
+.msg-link:hover {
+    background-color: #333; /* Подсветка при наведении */
+    color: #fff;
+}

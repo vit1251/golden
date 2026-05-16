@@ -7,6 +7,7 @@ import (
 	"github.com/vit1251/golden/internal/installer"
 	site1 "github.com/vit1251/golden/internal/site"
 	site2 "github.com/vit1251/golden/internal/site2"
+	site3 "github.com/vit1251/golden/internal/site3"
 	"github.com/vit1251/golden/internal/um"
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/config"
@@ -85,7 +86,6 @@ func (self *Application) Run() {
 	var modernMode bool = false
 	flag.IntVar(&servicePort, "P", 8080, "Set HTTP service port")
 	flag.BoolVar(&debugMode, "debug", false, "Enable debugging mode")
-	flag.BoolVar(&modernMode, "modern", false, "Enable modern site mode")
 	flag.Parse()
 
 	/* Start debugging */
@@ -112,9 +112,8 @@ func (self *Application) Run() {
 	self.registry.Register("MailerManager", mailer.NewMailerManager(self.registry))
 
 	self.registry.Register("SiteManager", site1.NewSiteManager(self.registry))
-	if modernMode {
-		self.registry.Register("Site2Manager", site2.NewSite2Manager(self.registry))
-	}
+	self.registry.Register("Site2Manager", site2.NewSite2Manager(self.registry))
+	self.registry.Register("Site3Manager", site3.NewSite3Manager(self.registry))
 
 	/* Debug message */
 	cur := time.Now()
@@ -136,16 +135,18 @@ func (self *Application) Run() {
 	trackerManager := tracker.RestoreTrackerManager(self.registry)
 	trackerManager.Start()
 
-	/* Start site */
+	/* Start user interfaces */
 	siteManager := site1.RestoreSiteManager(self.registry)
-	siteManager.SetPort(servicePort)
+	siteManager.SetPort(servicePort + 0)
 	siteManager.Start()
 
-	if modernMode {
-		site2Manager := site2.RestoreSite2Manager(self.registry)
-		site2Manager.SetPort(servicePort + 1)
-		site2Manager.Start()
-	}
+	site2Manager := site2.RestoreSite2Manager(self.registry)
+	site2Manager.SetPort(servicePort + 1)
+	site2Manager.Start()
+
+	site3Manager := site3.RestoreSite3Manager(self.registry)
+	site3Manager.SetPort(servicePort + 2)
+	site3Manager.Start()
 
 	/* Start mailer */
 	mailerManager := mailer.RestoreMailerManager(self.registry)
@@ -174,7 +175,6 @@ func (self *Application) Run() {
 func (self *Application) showWelcomeMessage(modernMode bool) {
 
 	var report strings.Builder
-	var siteAddress string
 
 	// Шаг 1. Приветствие приложения
 	report.WriteString("Golden Point is running at:\n")
@@ -182,15 +182,17 @@ func (self *Application) showWelcomeMessage(modernMode bool) {
 
 	// Шаг 2. Информация от приложения запущенного в Legacy-режиме
 	siteManager := site1.RestoreSiteManager(self.registry)
-	siteAddress = siteManager.GetLocation()
+	siteAddress := siteManager.GetLocation()
 	report.WriteString(siteAddress)
 
-	// Шаг 3. Если активирован современный режим работы
-	if modernMode {
-		siteManager := site2.RestoreSite2Manager(self.registry)
-		siteAddress = siteManager.GetLocation()
-		report.WriteString(siteAddress)
-	}
+	site2Manager := site2.RestoreSite2Manager(self.registry)
+	site2Address := site2Manager.GetLocation()
+	report.WriteString(site2Address)
+
+	site3Manager := site3.RestoreSite3Manager(self.registry)
+	site3Address := site3Manager.GetLocation()
+	report.WriteString(site3Address)
+
 	report.WriteString("\n")
 
 	// Шаг 4. Выводим информацию о необходимости настройки в первую загрузку

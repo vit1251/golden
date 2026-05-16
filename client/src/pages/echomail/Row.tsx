@@ -1,5 +1,5 @@
 
-import { ReactElement, useEffect, useRef } from "react";
+import { type ReactElement, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 
 import "./Row.css";
@@ -11,19 +11,9 @@ export interface Column<T> {
     render?: (row: T) => number | string | ReactElement,
 }
 
-export const Row = <T extends object>({ ref, tabIndex, activeIndex = 0, index, record, columns, onRowLink }: { ref?: React.Ref<HTMLDivElement>, tabIndex: number, activeIndex: number, index: number, record: T, columns: Column<T>[], onRowLink: any } ) => {
+export const Row = <T extends Record<string, any>>({ ref, tabIndex, activeIndex = 0, index, record, columns, onRowLink }: { ref?: React.Ref<HTMLDivElement>, tabIndex: number, activeIndex: number, index: number, record: T, columns: Column<T>[], onRowLink: any } ) => {
 
     const navigate = useNavigate();
-
-    const handleDoubleClick = (row: T) => {
-        console.log(`Открываем полноэкранный просмотр`);
-        const linkAddr: string = onRowLink(row);
-        navigate(linkAddr);
-    };
-
-    const handleClick = (row: T) => {
-        console.log(`Открываем предварительный просмотр`);
-    };
 
     const classes: string[] = ['row'];
     if (index === activeIndex) {
@@ -31,7 +21,7 @@ export const Row = <T extends object>({ ref, tabIndex, activeIndex = 0, index, r
     }
 
     return (
-        <div ref={ref} tabIndex={tabIndex} className={classes.join(' ')} onClick={() => handleClick(record)} onDoubleClick={() => handleDoubleClick(record)}>
+        <div ref={ref} tabIndex={tabIndex} className={classes.join(' ')}>
             {columns.map((column: Column<T>) => {
                 const { className = '', key, styles, render } = column;
                 const { [key]: raw = '' } = record;
