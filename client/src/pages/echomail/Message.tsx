@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 
 import { View } from '../../common/msg-view/View.tsx';
-import { View2 } from '../../common/msg-view/View2.tsx';
 
 
 export const Message = () => {

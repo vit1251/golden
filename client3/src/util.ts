@@ -31,22 +31,22 @@ export function fillEnd(str: string, size: number): string {
 
 /* Работа с данными */
 
-export function searchArea(areas: Array<Area>, areaIndex: string): Area {
+export function searchArea(areas: Array<Area>, areaIndex: string): Area | null {
     for (const area of areas) {
         if (area.area_index === areaIndex) {
             return area;
         }
     }
-    throw new Error(`Внутренняя ошибка`);
+    return null;
 }
 
-export function searchMessage(messages: Array<Message>, messageIndex: string): Message {
+export function searchMessage(messages: Array<Message>, messageIndex: string): Message | null {
     for (const message of messages) {
         if (message.hash === messageIndex) {
             return message;
         }
     }
-    throw new Error(`Внутренняя ошибка`);
+    return null;
 }
 
 /**
@@ -69,4 +69,34 @@ export function searchMessagePosition(messages: Array<Message>, messageIndex: st
         }
     }
     return null;
+}
+
+/* Формирование табличек */
+
+export function stringAdjust(str: string, size: number, adjust: 'left' | 'right'): string {
+    if (adjust === 'left') return fillEnd(str, size);
+    if (adjust === 'right') return fillStart(str, size);
+    throw new Error(`Непонятное выравнивание "${adjust}"`);
+}
+
+/**
+ * Генерация строки таблицы
+ * 
+ */
+export function renderRow(columns: Array<{ value: string, size: number, adjust: 'left' | 'right' }>, sep: string = ' '): string {
+    const parts: string[] = [];
+    for (const { value, size, adjust } of columns) {
+        const str: string = stringAdjust(value, size, adjust);
+        parts.push(str);
+    }
+    return parts.join(sep);
+}
+
+/**
+ * Создаем область видимости для переменных
+ * 
+ * 
+ */
+export const useScope = (callback: () => void) => {
+    callback();
 }

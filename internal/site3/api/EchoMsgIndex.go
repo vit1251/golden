@@ -84,6 +84,7 @@ func (self *EchoMsgIndexAction) processRequest(body []byte) []byte {
 		msgHeader := echoMsgHeader{}
 		msgHeader.Hash = messageHeader.Hash
 		msgHeader.From = messageHeader.From
+		msgHeader.To = messageHeader.To
 		msgHeader.Subject = messageHeader.Subject
 		msgHeader.DateWritten = utils.DateHelper_renderDate(messageHeader.DateWritten)
 		msgHeader.ViewCount = messageHeader.ViewCount

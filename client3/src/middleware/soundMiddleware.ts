@@ -15,8 +15,7 @@ const music: Record<Music, Array<Note>> = {
         [100, 18],
     ],
     SND_THEEND: [
-        [220, 111],
-        [110, 167],
+        [800, 55],
     ],
     SND_GOTIT: [
         [110, 56],

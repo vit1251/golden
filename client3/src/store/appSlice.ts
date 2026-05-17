@@ -55,6 +55,18 @@ const appSlice = createSlice({
         changeScene: (state, action: PayloadAction<Scene>) => {
             state.scene = action.payload;
         },
+        areaHome: (state) => {
+            const candidate: Area | null = state.areas.at(0) ?? null;
+            if (candidate) {
+                state.areaIndex = candidate.area_index;
+            }
+        },
+        areaEnd: (state) => {
+            const candidate: Area | null = state.areas.at(-1) ?? null;
+            if (candidate) {
+                state.areaIndex = candidate.area_index;
+            }
+        },
         nextArea: (state) => {
             let candidat: Area | null = null;
             for (const [index, area] of state.areas.entries()) {
@@ -79,6 +91,18 @@ const appSlice = createSlice({
             }
             if (candidat) {
                 state.areaIndex = candidat.area_index;
+            }
+        },
+        messageHome: (state) => {
+            const candidate: Message | null = state.messages.at(0) ?? null;
+            if (candidate) {
+                state.messageIndex = candidate.hash;
+            }
+        },
+        messageEnd: (state) => {
+            const candidate: Message | null = state.messages.at(-1) ?? null;
+            if (candidate) {
+                state.messageIndex = candidate.hash;
             }
         },
         messagePrev: (state) => {
@@ -131,8 +155,12 @@ const appSlice = createSlice({
                 state.messages = action.payload.headers;
                 const messageIndexes: string[] = state.messages.map(m => m.hash);
                 if (!messageIndexes.includes(state.messageIndex) || (state.messageIndex === '')) {
-                    const message: Message = state.messages[0]!;
-                    state.messageIndex = message.hash;
+                    for (const message of state.messages) {
+                        state.messageIndex = message.hash;
+                        if (message.view_count === 0) {
+                            break;
+                        }
+                    }
                 }
             })
             .addCase(EchoMessageViewAction, (state, action) => {
@@ -146,7 +174,9 @@ const appSlice = createSlice({
 // Экспортируем автоматически созданные экшены
 export const { changeScene } = appSlice.actions;
 export const { prevArea, nextArea } = appSlice.actions;
+export const { areaHome, areaEnd } = appSlice.actions;
 export const { messageNext, messagePrev } = appSlice.actions;
+export const { messageHome, messageEnd } = appSlice.actions;
 export const { messageScrollUp, messageScrollDown } = appSlice.actions;
 
 // Экспортируем редьюсер для подключения в стор

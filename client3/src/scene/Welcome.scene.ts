@@ -1,4 +1,5 @@
 
+import { Color } from "../color.ts";
 import { useEffect } from "../index.ts";
 import { useKeyboard } from "../Keyboard.ts";
 import { socketSend } from "../middleware/socketMiddleware.ts";
@@ -29,11 +30,11 @@ export const Welcome = (screen: Screen) => {
     }, []);
     
     // Шаг 1. Рисуем рамку
-    screen.setForegroudColor('#C0C0C0');
+    screen.setForegroudColor(Color.LightBlue);
     screen.drawRect(0,0, 80 - 1, 25 - 1);
 
     // Шаг 2. Рисуем логотип
-    screen.setForegroudColor('#d69a19');
+    screen.setForegroudColor(Color.Yellow);
     screen.writeText(4, 1, '   █████████           ████      █████                         ');
     screen.writeText(4, 2, '  ███▒▒▒▒▒███         ▒▒███     ▒▒███                          ');
     screen.writeText(4, 3, ' ███     ▒▒▒   ██████  ▒███   ███████   ██████  ████████       ');
@@ -43,27 +44,27 @@ export const Welcome = (screen: Screen) => {
     screen.writeText(4, 7, ' ▒▒█████████ ▒▒██████  █████▒▒████████▒▒██████  ████ █████     ');
     screen.writeText(4, 8, '  ▒▒▒▒▒▒▒▒▒   ▒▒▒▒▒▒  ▒▒▒▒▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒▒▒  ▒▒▒▒ ▒▒▒▒▒      ');
     
-    screen.setForegroudColor('#f27d10');
-    screen.writeText(14, 10, '    ███████████            ███              █████     ');
-    screen.writeText(14, 11, '   ▒▒███▒▒▒▒▒███          ▒▒▒              ▒▒███      ');
-    screen.writeText(14, 12, '    ▒███    ▒███  ██████  ████  ████████   ███████    ');
-    screen.writeText(14, 13, '    ▒██████████  ███▒▒███▒▒███ ▒▒███▒▒███ ▒▒▒███▒     ');
-    screen.writeText(14, 14, '    ▒███▒▒▒▒▒▒  ▒███ ▒███ ▒███  ▒███ ▒███   ▒███      ');
-    screen.writeText(14, 15, '    ▒███        ▒███ ▒███ ▒███  ▒███ ▒███   ▒███ ███  ');
-    screen.writeText(14, 16, '    █████       ▒▒██████  █████ ████ █████  ▒▒█████   ');
-    screen.writeText(14, 17, '   ▒▒▒▒▒         ▒▒▒▒▒▒  ▒▒▒▒▒ ▒▒▒▒ ▒▒▒▒▒    ▒▒▒▒▒    ');
+    screen.setForegroudColor(Color.Yellow);
+    screen.writeText(24, 10, '    ███████████            ███              █████     ');
+    screen.writeText(24, 11, '   ▒▒███▒▒▒▒▒███          ▒▒▒              ▒▒███      ');
+    screen.writeText(24, 12, '    ▒███    ▒███  ██████  ████  ████████   ███████    ');
+    screen.writeText(24, 13, '    ▒██████████  ███▒▒███▒▒███ ▒▒███▒▒███ ▒▒▒███▒     ');
+    screen.writeText(24, 14, '    ▒███▒▒▒▒▒▒  ▒███ ▒███ ▒███  ▒███ ▒███   ▒███      ');
+    screen.writeText(24, 15, '    ▒███        ▒███ ▒███ ▒███  ▒███ ▒███   ▒███ ███  ');
+    screen.writeText(24, 16, '    █████       ▒▒██████  █████ ████ █████  ▒▒█████   ');
+    screen.writeText(24, 17, '   ▒▒▒▒▒         ▒▒▒▒▒▒  ▒▒▒▒▒ ▒▒▒▒ ▒▒▒▒▒    ▒▒▒▒▒    ');
                                                                                                          
     // Шаг 2. Пишем название программы и версию
     
-    screen.setForegroudColor('#c98f25');
+    screen.setForegroudColor(Color.White);
     writeCenter(screen, 19, `v1.2.19`);
 
     // Шаг 3. Нажать Escape для продолжения
-    screen.setForegroudColor('#3ebd0c');
-    writeCenter(screen, 20, 'Нажмите Escape для продолжения...');
+    screen.setForegroudColor(Color.Red);
+    writeCenter(screen, 20, '>>> Нажмите Escape для продолжения <<<');
 
     // Шаг 4. Имена разработчиков
-    screen.setForegroudColor('#ebb208');
+    screen.setForegroudColor(Color.Gray);
     const contributors: string = 'Sergey Anohin, Andrey Mundirov, Jaroslav Bespalov';
     writeCenter(screen, 22, contributors);
     const contributors2: string = 'Richard Menedetter, Tommi Koivula, Rudi Timmermans';

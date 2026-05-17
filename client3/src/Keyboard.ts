@@ -50,7 +50,7 @@ function handleKeyboard(eventName: 'keyup' | 'keydown', key: Key) {
 window.addEventListener('keydown', (event: KeyboardEvent) => handleKeyboard('keydown', event.key as Key));
 window.addEventListener('keyup', (event: KeyboardEvent) => handleKeyboard('keyup', event.key as Key));
 
-export type Key = 'Enter' | 'Escape' | 'ArrowUp' | 'ArrowDown' | 'ArrowLeft'| 'ArrowRight';
+export type Key = 'Home' | 'End' | 'Enter' | 'Escape' | 'ArrowUp' | 'ArrowDown' | 'ArrowLeft'| 'ArrowRight';
 
 export function useKeyboard(curKeyboardHanderls: Partial<Record<Key, () => void>>) {
     keyboardHandlers.setup(curKeyboardHanderls);
