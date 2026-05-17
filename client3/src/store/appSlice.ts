@@ -1,5 +1,6 @@
 
 import { createAction, createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { socketConnected, socketDisconnect } from '../middleware/socketMiddleware.ts';
 
 export type Scene = 'welcome' | 'echo/index' | 'echo/message/index' | 'echo/message/view';
 
@@ -23,6 +24,7 @@ export type Message = {
 
 // 1. Описываем тип для структуры нашего состояния
 export interface AppState {
+    ready: boolean,                // Установлено соединение с приложением
     scene: Scene,                  // Текущая сцена приложения
     areas: Array<Area>,            // Список эхоконференций
     areaIndex: string,             // Выбранная эхоконференция
@@ -34,6 +36,7 @@ export interface AppState {
 
 // 2. Задаем начальное значение
 const initialState: AppState = {
+    ready: false,
     scene: 'welcome',
     areas: [],
     areaIndex: '',
@@ -141,6 +144,14 @@ const appSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            /* Упраление соединением */
+            .addCase(socketConnected, (state) => {
+                state.ready = true;
+            })
+            .addCase(socketDisconnect, (state) => {
+                state.ready = false;
+            })
+            /* Сообщения от сервера с данными */
             .addCase(EchoIndexAction, (state, action) => {
                 console.log(`Получен список эхоконференций`);
                 state.areas = action.payload.areas;

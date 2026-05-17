@@ -3,8 +3,10 @@ import { type Middleware } from '@reduxjs/toolkit';
 import { createAction } from '@reduxjs/toolkit';
 
 export const socketConnect = createAction<void>('SOCKET_CONNECT');
+export const socketConnected = createAction<void>('SOCKET_CONNECTED');
 export const socketSend = createAction<{ msg: any }>('SOCKET_SEND');
 export const socketRecv = createAction<{ msg: any }>('SOCKET_RECV');
+export const socketDisconnect = createAction<void>('SOCKET_DISCONNECT');
 
 export const socketMiddleware: (url: string) => Middleware = (url: string) => {
     return (store) => {
@@ -21,6 +23,7 @@ export const socketMiddleware: (url: string) => Middleware = (url: string) => {
                     console.log(`Соединение с "${url}" установлено.`);
                     // Шаг 1. Устанвливаем соединение
                     socketReady = true;
+                    store.dispatch(socketConnected());
                     // Шаг 2. Отправляет отлорженные запросы
                     if (queue && socket) {
                         console.log(`Отправка очереди запросов`);
@@ -35,9 +38,13 @@ export const socketMiddleware: (url: string) => Middleware = (url: string) => {
                     
                 };
                 socket.onclose = (event: Event) => {
+                    // Шаг 1. Диагностика
                     console.log(`Соединение прервано`);
+                    // Шаг 2. Зануление переменных
                     socketReady = false;
                     socket = null;
+                    // Шаг 2. Посылаем сообщение
+                    store.dispatch(socketDisconnect());
                 };
                 socket.onmessage = (event: MessageEvent<any>) => {
                     const msg: unknown = JSON.parse(event.data);

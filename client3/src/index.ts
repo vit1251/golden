@@ -10,6 +10,7 @@ import { store } from './store/index.ts';
 import './styles.css';
 
 import { socketConnect } from './middleware/socketMiddleware.ts';
+import { NoConnect } from './NoConnect.ts';
 
 const CHAR_WIDTH = 10;
 const CHAR_HEIGHT = 18;
@@ -65,18 +66,22 @@ function render(canvas: HTMLCanvasElement, screen: Screen) {
 }
 
 function handlePaint(canvas: HTMLCanvasElement, screen: Screen) {
-    const { scene } = store.getState().app;
+    const { scene, ready } = store.getState().app;
     // Шаг 0. Диагностическая информация
     console.log(`Выполенние сцены: scene = `, scene);
     // Шаг 1. Очистка экрана
     screen.reset();
-    // Шаг 2. Выполнение сцены
-    if (scene === 'welcome') Welcome(screen);
-    else if (scene === 'echo/index') EchoIndex(screen);
-    else if (scene === 'echo/message/index') EchoMessageIndex(screen);
-    else if (scene === 'echo/message/view') EchoMessageView(screen);
-    else Oops(screen);
-    // Шаг 3. Отрисовка полученного экрана
+    // Шаг 2. Сообщение о ошибке
+    if (ready) {
+        if (scene === 'welcome') Welcome(screen);
+        else if (scene === 'echo/index') EchoIndex(screen);
+        else if (scene === 'echo/message/index') EchoMessageIndex(screen);
+        else if (scene === 'echo/message/view') EchoMessageView(screen);
+        else Oops(screen);        
+    } else {
+        NoConnect(screen);
+    }
+    // Шаг 4. Отрисовка полученного экрана
     render(canvas, screen);
 }
 
