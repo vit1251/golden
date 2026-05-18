@@ -5,14 +5,15 @@ import { useKeyboard } from "../Keyboard.ts";
 import { socketSend } from "../middleware/socketMiddleware.ts";
 import { soundEvent } from "../middleware/soundMiddleware.ts";
 import type { Screen } from "../Screen.ts";
-import { changeScene, messageEnd, messageHome, messageNext, messagePrev } from "../store/appSlice.ts";
+import { changeScene, messageEnd, messageHome, messageNext, messagePrev, type Message } from "../store/appSlice.ts";
 import { store } from "../store/index.ts";
-import { fillEnd, fillStart, renderRow, searchMessagePosition } from "../util.ts";
+import { renderRow, searchMessagePosition } from "../util.ts";
+import { TableComponent } from "./component/TableComponent.ts";
 
 
 export const EchoMessageIndex = (screen: Screen) => {
 
-    //
+    // Шаг 0. Данные из хранилища
     const { areas, areaIndex } = store.getState().app;
     const { messages, messageIndex } = store.getState().app;
 
@@ -63,37 +64,23 @@ export const EchoMessageIndex = (screen: Screen) => {
     }, []);
 
 
-    // Шаг 2. Оформление
-    screen.setForegroudColor(Color.LightBlue);
-    screen.drawRect(0, 0, 80 - 1, 25 - 1);
-    screen.setForegroudColor(Color.Yellow);
-    screen.writeText(2, 0, '№п/п');
-    screen.writeText(8, 0, 'Тема');
-    screen.writeText(42, 0, 'Отправитель');
-    screen.writeText(62, 0, 'Дата');
-
-    // Шаг 2. Отображаем список сообщений
-    for (const [index, message] of messages.entries()) {
-        
-        if (message.hash === messageIndex) {
-            screen.setForegroudColor(Color.White);
-            screen.setBackgroundColor(Color.Blue);
-        } else {
-            screen.setForegroudColor(Color.Gray);
-            screen.setBackgroundColor(Color.Black);
-        }
-        const row: string = renderRow([
-            { value: `${index + 1}`, size: 5, adjust: 'right'},
-            { value: `${message.subject}`, size: 33, adjust: 'left' },
-            { value: `${message.from}`, size: 20, adjust: 'left' },
-            { value: `${message.date}`, size: 17, adjust: 'left' },
-        ]);
-        if (message.view_count === 0) {
-            screen.setForegroudColor(Color.Yellow);
-        }
-        screen.writeText(1, index + 1, row);
-
-    }
-
+    // Шаг 2. Рисуем таблицу с данными
+    TableComponent(screen, {
+        columns: [
+            { name: '№п/п', key: 'index', size: 6, adjust: 'right', render: (value: number) => `${value + 1} ` },
+            { name: 'Тема', key: 'subject', size: 32, adjust: 'left' },
+            { name: 'Отправитель', key: 'from', size: 20, adjust: 'left' },
+            { name: 'Дата', key: 'date', size: 17, adjust: 'left' },
+        ],
+        key: 'hash',
+        recordIndex: messageIndex,
+        records: messages,
+        preRender: (screen: Screen, message: Message, index: number) => {
+            if (message.view_count === 0) {
+                screen.setForegroudColor(Color.Yellow);
+            }
+        },
+        sep: ' ', // разделитель пробел
+    });
 
 };

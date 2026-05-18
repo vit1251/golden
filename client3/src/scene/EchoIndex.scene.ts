@@ -9,6 +9,7 @@ import type { Screen } from "../Screen.ts";
 import { areaEnd, areaHome, changeScene, nextArea, prevArea, type Area } from "../store/appSlice.ts";
 import { store } from "../store/index.ts";
 import { renderRow, searchArea, searchAreaPosition, useScope } from "../util.ts";
+import { TableComponent } from "./component/TableComponent.ts";
 
 
 
@@ -61,43 +62,26 @@ export const EchoIndex = (screen: Screen) => {
 
     }, []);
 
-    // Шаг 2. Оформление
-    screen.setForegroudColor(Color.LightBlue);
-    screen.drawRect(0, 0, 80 - 1, 25 - 1);
-
-    screen.setForegroudColor(Color.Yellow);
-    screen.writeText(2, 0, `№п/п`);              //
-    screen.writeText(8, 0, `Описание`);
-    screen.writeText(40, 0, `Сообщений`);
-    screen.writeText(50, 0, `Новых`);
-    screen.writeText(60, 0, `Название эхи`);
-            
-
-    // Шаг 3. Отрисуем список эхоконференций
-    for (const [index, area] of areas.entries()) {
-        // Шаг 1. Выставить цвета на выделенном элементе
-        if (area.area_index === areaIndex) {
-            screen.setForegroudColor(Color.White);
-            screen.setBackgroundColor(Color.Blue);
-        } else {
-            screen.setForegroudColor(Color.Gray);
-            screen.setBackgroundColor(Color.Black);
+    // Шаг 2. Рендерим данные
+    TableComponent(screen, {
+        key: 'area_index',
+        recordIndex: areaIndex,
+        columns: [
+            { name: `№п/п`, key: 'index', size: 5, adjust: 'right', render: (value: number) => `${value + 1} ` },
+            { name: `Описание`, key: 'summary', size: 30, adjust: 'left', render: (value, record) => value ? value : record.name },
+            { name: `Сообщений`, key: 'message_count', size: 10, adjust: 'right', render: (value) => `${value} ` },
+            { name: `Новых`, key: 'new_message_count', size: 10, adjust: 'right', render: (value) => `${value} ` },
+            { name: `Название эхи`, key: 'name', size: 20, adjust: 'left'},
+        ],
+        records: areas,
+        sep: ' ',
+        postRender: (screen: Screen, area: Area, index: number) => {
+            if (area.new_message_count > 0) {
+                screen.setForegroudColor(Color.White);
+                screen.writeText(5, index + 1, '>');
+            }
         }
-        const areaSummary: string = area.summary ? area.summary : area.name;
-        const row: string = renderRow([
-            { value: `${index + 1} `, size: 4, adjust: 'right' },
-            { value: `${areaSummary}`, size: 30, adjust: 'left' },
-            { value: `${area.message_count}`, size: 10, adjust: 'right' },
-            { value: `${area.new_message_count}`, size: 10, adjust: 'right'},
-            { value: `${area.name}`, size: 20, adjust: 'left'},
-        ]);
-        
-        screen.writeText(1, index + 1, row);
-        // Шаг 3. РОисуем маркер
-        if (area.new_message_count > 0) {
-            screen.setForegroudColor(Color.White);
-            screen.writeText(4, index + 1, '>');
-        }
-    }
+    })
+
 
 };

@@ -207,7 +207,7 @@ export const EchoMessageView = (screen: Screen) => {
             }
 
             // Шаг 3. Собственно рендеринг текста
-            screen.writeText(0, 7 + index - contentIndex, paragraphLine);
+            screen.writeText(0, 6 + index - contentIndex, paragraphLine);
         }
     }
 

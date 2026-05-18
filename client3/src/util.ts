@@ -19,14 +19,16 @@ export function fillStart(str: string, size: number): string {
     if (str.length < size) {
         return str.padStart(size, ' ');
     }
-    return '…'.concat(str.slice(str.length - size + 1, size));
+    const suffix: string = str.slice(str.length - size + 1);
+    return `…${suffix}`;
 }
 
 export function fillEnd(str: string, size: number): string {
     if (str.length < size) {
         return str.padEnd(size, ' ');
     }
-    return str.slice(0, size - 1).concat('…');
+    const prefix: string = str.slice(0, size - 1);
+    return `${prefix}…`;
 }
 
 /* Работа с данными */
@@ -83,7 +85,7 @@ export function stringAdjust(str: string, size: number, adjust: 'left' | 'right'
  * Генерация строки таблицы
  * 
  */
-export function renderRow(columns: Array<{ value: string, size: number, adjust: 'left' | 'right' }>, sep: string = ' '): string {
+export function renderRow(columns: Array<{ value: string, size: number, adjust: 'left' | 'right' }>, sep: string = ''): string {
     const parts: string[] = [];
     for (const { value, size, adjust } of columns) {
         const str: string = stringAdjust(value, size, adjust);
