@@ -22,7 +22,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/react-redux": "^7.1.34",
     "@types/redux": "^3.6.31",
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.1",
     "esbuild-plugin-copy": "^2.1.1",
     "typescript": "^6.0.3"
   }
