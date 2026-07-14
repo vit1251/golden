@@ -12,8 +12,8 @@ echo "Arch: ${GOARCH}"
 
 # Step 1. Get Go modules
 #
-echo "==> Step 1. Get Go modules..."
-go get -v ../...
+echo "==> Step 1. Download dependencies..."
+go mod download
 
 # Step 2. Generate assets
 #
