@@ -54,8 +54,6 @@ You may download binary builds
 To compile Golden Point your system MUST have next product:
 
     * Golang >= 1.16
-    * Node >= 1.14
-    * NPM
 
 Golang and Node MAY use network to download dependencies.
 

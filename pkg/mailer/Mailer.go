@@ -349,10 +349,12 @@ func (m *Mailer) IsTransmitName(name string) bool {
 
 func (m *Mailer) readFrame() (stream2.Frame, error) {
 	var timeout time.Duration = 15 * time.Second
+	timer := time.NewTimer(timeout)
+	defer timer.Stop()
 	select {
 	case frame := <-m.stream.InFrame:
 		return frame, nil
-	case <-time.After(timeout):
+	case <-timer.C:
 		return stream2.Frame{}, ErrReadTimeout
 	}
 }
@@ -364,11 +366,13 @@ func (m *Mailer) writeFrame(f stream2.Frame) error {
 
 func (m *Mailer) connect() error {
 	var timeout time.Duration = 15 * time.Second
+	timer := time.NewTimer(timeout)
+	defer timer.Stop()
 	select {
 	case <-m.stream.InFrameReady:
 		return nil
 
-	case <-time.After(timeout):
+	case <-timer.C:
 		return ErrConnectionTimeout
 	}
 }

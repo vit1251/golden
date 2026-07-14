@@ -5,9 +5,7 @@ import (
 	"fmt"
 	cmn "github.com/vit1251/golden/internal/common"
 	"github.com/vit1251/golden/internal/installer"
-	site1 "github.com/vit1251/golden/internal/site"
-	site2 "github.com/vit1251/golden/internal/site2"
-	site3 "github.com/vit1251/golden/internal/site3"
+	site "github.com/vit1251/golden/internal/site"
 	"github.com/vit1251/golden/internal/um"
 	"github.com/vit1251/golden/pkg/charset"
 	"github.com/vit1251/golden/pkg/config"
@@ -111,9 +109,7 @@ func (self *Application) Run() {
 	self.registry.Register("TosserManager", tosser.NewTosserManager(self.registry))
 	self.registry.Register("MailerManager", mailer.NewMailerManager(self.registry))
 
-	self.registry.Register("SiteManager", site1.NewSiteManager(self.registry))
-	self.registry.Register("Site2Manager", site2.NewSite2Manager(self.registry))
-	self.registry.Register("Site3Manager", site3.NewSite3Manager(self.registry))
+	self.registry.Register("SiteManager", site.NewSiteManager(self.registry))
 
 	/* Debug message */
 	cur := time.Now()
@@ -136,17 +132,9 @@ func (self *Application) Run() {
 	trackerManager.Start()
 
 	/* Start user interfaces */
-	siteManager := site1.RestoreSiteManager(self.registry)
-	siteManager.SetPort(servicePort + 0)
+	siteManager := site.RestoreSiteManager(self.registry)
+	siteManager.SetPort(servicePort)
 	siteManager.Start()
-
-	site2Manager := site2.RestoreSite2Manager(self.registry)
-	site2Manager.SetPort(servicePort + 1)
-	site2Manager.Start()
-
-	site3Manager := site3.RestoreSite3Manager(self.registry)
-	site3Manager.SetPort(servicePort + 2)
-	site3Manager.Start()
 
 	/* Start mailer */
 	mailerManager := mailer.RestoreMailerManager(self.registry)
@@ -181,17 +169,9 @@ func (self *Application) showWelcomeMessage(modernMode bool) {
 	report.WriteString("\n")
 
 	// Шаг 2. Информация от приложения запущенного в Legacy-режиме
-	siteManager := site1.RestoreSiteManager(self.registry)
+	siteManager := site.RestoreSiteManager(self.registry)
 	siteAddress := siteManager.GetLocation()
 	report.WriteString(siteAddress)
-
-	site2Manager := site2.RestoreSite2Manager(self.registry)
-	site2Address := site2Manager.GetLocation()
-	report.WriteString(site2Address)
-
-	site3Manager := site3.RestoreSite3Manager(self.registry)
-	site3Address := site3Manager.GetLocation()
-	report.WriteString(site3Address)
 
 	report.WriteString("\n")
 
