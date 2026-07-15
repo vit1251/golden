@@ -1,26 +1,34 @@
 package mailer
 
 import (
-	"log"
-	"time"
+    "log"
+    "time"
 )
 
 type MailerReport struct {
-	sessionID    int64     /* Session number                      */
-	startSession time.Time /* Mailer start session Date and Time  */
-	stopSession  time.Time /* Mailer stop session Date and Time   */
-	status       string    /* Mailer status                       */
-	remoteIdent  string    /* Mailer remote ident                 */
+    sessionID    int64      /* Session number                      */
+    startSession time.Time  /* Mailer start session Date and Time  */
+    stopSession  time.Time  /* Mailer stop session Date and Time   */
+    inFileCount  int        /* Received file count                 */
+    outFileCount int        /* Sended file count                   */
+    inSize       int64      /* Received bytes                      */
+    outSize      int64      /* Sended bytes                        */
+    status       string     /* Mailer status                       */
+    remoteIdent  string     /* Mailer remote ident                 */
 }
 
 func NewMailerReport() *MailerReport {
-	report := new(MailerReport)
-	report.sessionID = 0
-	report.startSession = time.Now()
-	report.stopSession = time.Now()
-	report.status = "N/A"
-	report.remoteIdent = ""
-	return report
+    report := new(MailerReport)
+    report.sessionID = 0
+    report.startSession = time.Now()
+    report.stopSession = time.Now()
+    report.inFileCount = 0
+    report.outFileCount = 0
+    report.inSize = 0
+    report.outSize = 0
+    report.status = "N/A"
+    report.remoteIdent = ""
+    return report
 }
 
 func (self *MailerReport) GetSessionID() int64 {
@@ -60,22 +68,18 @@ func (self MailerReport) Dump() {
 
 }
 
-func (self *MailerReport) SetSessionStop(now time.Time) {
-	self.stopSession = now
-}
+func (r *MailerReport) SetSessionStop(now time.Time) { r.stopSession = now }
+func (r *MailerReport) GetSessionStop() time.Time { return r.stopSession }
+func (r *MailerReport) SetStatus(s string) { r.status = s }
+func (r *MailerReport) GetStatus() string { return r.status }
+func (r *MailerReport) SetRemoteIdent(remoteIdent string) { r.remoteIdent = remoteIdent }
 
-func (self *MailerReport) GetSessionStop() time.Time {
-	return self.stopSession
-}
+func (r *MailerReport) GetInFileCount() int { return r.inFileCount }
+func (r *MailerReport) SetInFileCount(v int) { r.inFileCount = v }
+func (r *MailerReport) GetOutFileCount() int { return r.outFileCount }
+func (r *MailerReport) SetOutFileCount(v int) { r.outFileCount = v }
 
-func (self *MailerReport) SetStatus(s string) {
-	self.status = s
-}
-
-func (self *MailerReport) GetStatus() string {
-	return self.status
-}
-
-func (self *MailerReport) SetRemoteIdent(remoteIdent string) {
-	self.remoteIdent = remoteIdent
-}
+func (r *MailerReport) GetInSize() int64 { return r.inSize }
+func (r *MailerReport) SetInSize(v int64) { r.inSize = v }
+func (r *MailerReport) GetOutSize() int64 { return r.outSize }
+func (r *MailerReport) SetOutSize(v int64) { r.outSize = v }

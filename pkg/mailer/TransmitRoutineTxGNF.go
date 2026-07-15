@@ -86,6 +86,9 @@ func TransmitRoutineTxGNF(mailer *Mailer) TransmitRoutineResult {
 	/* No more files */
 	if mailer.sendName == nil {
 
+                /* Send TRF - traffic report */
+                mailer.writeTrafic(mailer.OutFileCount, 0)
+
 		/* Send M_EOB */
 		mailer.stream.WriteCommandPacket(stream.M_EOB, []byte("Complete!"))
 

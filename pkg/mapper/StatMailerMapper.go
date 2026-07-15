@@ -1,11 +1,12 @@
 package mapper
 
 import (
-	"database/sql"
-	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/storage"
-	"log"
-	"time"
+    "log"
+    "time"
+    "database/sql"
+    "github.com/huandu/go-sqlbuilder"
+    "github.com/vit1251/golden/pkg/registry"
+    "github.com/vit1251/golden/pkg/storage"
 )
 
 type StatMailerMapper struct {
@@ -13,55 +14,59 @@ type StatMailerMapper struct {
 }
 
 type StatMailer struct {
-	SessionID    int64  /* Timestamp in nanoseconds      */
-	SessionStart int64  /* Session start in milliseconds */
-	SessionStop  int64  /* Session stop in milliseconds  */
-	Status       string /* Summary report                */
+    SessionID    int64    /* Timestamp in nanoseconds      */
+    SessionStart int64    /* Session start in milliseconds */
+    SessionStop  int64    /* Session stop in milliseconds  */
+    Status       string   /* Summary report                */
+    FileRXcount  int      /**/
+    FileTXcount  int      /**/
 }
 
 func (self StatMailer) GetDuration() uint64 {
-	return uint64(self.SessionStop - self.SessionStart)
+    return uint64(self.SessionStop - self.SessionStart)
 }
 
 func (self *StatMailerMapper) GetMailerSummary() ([]StatMailer, error) {
 
-	now := time.Now()
-	startOfMonth := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
+    now := time.Now()
+    startOfMonth := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
 
-	var result []StatMailer
+    var result []StatMailer
 
-	storageManager := storage.RestoreStorageManager(self.registry)
+    storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "SELECT `statMailerSessionStart`, `statMailerSessionStop`, `statMailerSummary` " +
-	    "FROM `stat_mailer` " +
-	    "WHERE `statMailerSessionStart` >= $1 " +
-	    "ORDER BY `statMailerId` DESC"
+    sb := sqlbuilder.NewSelectBuilder()
+    sb.Select("statMailerSessionStart", "statMailerSessionStop", "statMailerSummary", "statMailerFileRXcount", "statMailerFileTXcount")
+    sb.From("stat_mailer")
+    sb.Where(sb.GE("statMailerSessionStart", startOfMonth.UnixMilli()))
+    sb.OrderBy("statMailerId DESC")
+    query1, args := sb.Build()
 
-	var params []interface{}
-	params = append(params, startOfMonth.UnixMilli())
+    err1 := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 
+	var statMailerSessionStart int64
+	var statMailerSessionStop int64
+	var statMailerSummary string
+	var statMailerFileRXcount int
+	var statMailerFileTXcount int
 
-	err1 := storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err2 := rows.Scan(&statMailerSessionStart, &statMailerSessionStop, &statMailerSummary, &statMailerFileRXcount, &statMailerFileTXcount)
+	if err2 != nil {
+	    return err2
+	}
 
-		var statMailerSessionStart int64
-		var statMailerSessionStop int64
-		var statMailerSummary string
+	summary := new(StatMailer)
+	summary.SessionStart = statMailerSessionStart
+	summary.SessionStop = statMailerSessionStop
+	summary.Status = statMailerSummary
+	summary.FileRXcount = statMailerFileRXcount
+	summary.FileTXcount = statMailerFileTXcount
+	result = append(result, *summary)
 
-		err2 := rows.Scan(&statMailerSessionStart, &statMailerSessionStop, &statMailerSummary)
-		if err2 != nil {
-			return err2
-		}
+	return nil
+    })
 
-		summary := new(StatMailer)
-		summary.SessionStart = statMailerSessionStart
-		summary.SessionStop = statMailerSessionStop
-		summary.Status = statMailerSummary
-		result = append(result, *summary)
-
-		return nil
-	})
-
-	return result, err1
+    return result, err1
 }
 
 func (self *StatMailerMapper) UpdateSession(mailerReport *StatMailer) error {
@@ -84,59 +89,47 @@ func (self *StatMailerMapper) UpdateSession(mailerReport *StatMailer) error {
 }
 
 func (self *StatMailerMapper) insertMailerReport(sessionID int64, report *StatMailer) error {
-	storageManager := storage.RestoreStorageManager(self.registry)
 
-	var query string
-	query += "INSERT INTO `stat_mailer` "
-	query += "   ( "
-	query += "       `statMailerSessionStart`,  "
-	query += "       `statMailerSessionStop`,   "
-	query += "       `statMailerSummary`,  "
-	query += "       `statMailerId`  "
-	query += "   ) VALUES ("
-	query += "       $1, "
-	query += "       $2, "
-	query += "       $3, "
-	query += "       $4  "
-	query += "   )"
-	var params []interface{}
-	params = append(params, report.SessionStart) // 1
-	params = append(params, report.SessionStop)  // 2
-	params = append(params, report.Status)       // 3
-	params = append(params, sessionID)           // 4
-	err1 := storageManager.Exec(query, params, func(result sql.Result, err error) error {
-		return err
-	})
+    storageManager := storage.RestoreStorageManager(self.registry)
 
-	return err1
+    ib := sqlbuilder.NewInsertBuilder()
+    ib.InsertInto("stat_mailer")
+    ib.Cols("statMailerSessionStart", "statMailerSessionStop", "statMailerSummary", "statMailerFileRXcount", "statMailerFileTXcount", "statMailerId")
+    ib.Values(report.SessionStart, report.SessionStop, report.Status, report.FileRXcount, report.FileTXcount, sessionID)
+    query, args := ib.Build()
+
+    err1 := storageManager.Exec(query, args, func(result sql.Result, err error) error {
+	return err
+    })
+
+    return err1
 }
 
 func (self *StatMailerMapper) updateMailerReport(report *StatMailer) error {
 
-	storageManager := storage.RestoreStorageManager(self.registry)
+    storageManager := storage.RestoreStorageManager(self.registry)
 
-	var query string
-	query += "UPDATE `stat_mailer` "
-	query += "   SET "
-	query += "       `statMailerSessionStart` = $1, "
-	query += "       `statMailerSessionStop`  = $2, "
-	query += "       `statMailerSummary`      = $3  "
-	query += " WHERE "
-	query += "       `statMailerId` = $4"
-	var params []interface{}
-	params = append(params, report.SessionStart) // 1
-	params = append(params, report.SessionStop)  // 2
-	params = append(params, report.Status)       // 3
-	params = append(params, report.SessionID)    // 4
-	err1 := storageManager.Exec(query, params, func(result sql.Result, err error) error {
-		return err
-	})
+    ub := sqlbuilder.NewUpdateBuilder()
+    ub.Update("stat_mailer")
+    ub.Set(
+	ub.Assign("statMailerSessionStart", report.SessionStart),
+        ub.Assign("statMailerSessionStop", report.SessionStop),
+	ub.Assign("statMailerSummary", report.Status),
+        ub.Assign("statMailerFileRXcount", report.FileRXcount),
+	ub.Assign("statMailerFileTXcount", report.FileTXcount),
+    )
+    ub.Where(ub.Equal("statMailerId", report.SessionID))
+    query, args := ub.Build()
 
-	return err1
+    err1 := storageManager.Exec(query, args, func(result sql.Result, err error) error {
+	return err
+    })
+
+    return err1
 }
 
 func NewStatMailerMapper(r *registry.Container) *StatMailerMapper {
-	newStatMapper := new(StatMailerMapper)
-	newStatMapper.SetRegistry(r)
-	return newStatMapper
+    newStatMapper := new(StatMailerMapper)
+    newStatMapper.SetRegistry(r)
+    return newStatMapper
 }

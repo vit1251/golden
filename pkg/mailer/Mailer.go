@@ -189,6 +189,8 @@ func (m *Mailer) run() {
 
 	/* Update report */
 	m.report.SetSessionStop(time.Now())
+	m.report.SetInFileCount(m.InFileCount)
+	m.report.SetOutFileCount(m.OutFileCount)
 
 	/* Close connection */
 	m.wait.Done()

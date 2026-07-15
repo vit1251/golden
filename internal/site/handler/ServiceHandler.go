@@ -26,6 +26,8 @@ type dayAccum struct {
     sessions int
     duration time.Duration
     errors   int
+    filesRX  int
+    filesTX  int
 }
 
 func formatDuration(d time.Duration) string {
@@ -55,6 +57,8 @@ func aggregateByDay(sessions []mapper.StatMailer) []views.DayStat {
 	d := dayMap[key]
 	d.sessions++
 	d.duration += time.Duration(s.SessionStop - s.SessionStart) * time.Millisecond
+	d.filesRX += s.FileRXcount
+	d.filesTX += s.FileTXcount
 
 	// Для ошибок смотрим статус
 	if s.Status != "done" && s.Status != "" {
@@ -77,8 +81,8 @@ func aggregateByDay(sessions []mapper.StatMailer) []views.DayStat {
 	    Volume:   "-", // TODO: добавить когда появится в MailerReport
 	    MsgsRX:   0,   // TODO: добавить когда появится в MailerReport
 	    MsgsTX:   0,
-	    FilesRX:  0,
-	    FilesTX:  0,
+	    FilesRX:  acc.filesRX,
+	    FilesTX:  acc.filesTX,
 	    Errors:   acc.errors,
 	})
     }

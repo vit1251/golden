@@ -40,6 +40,9 @@ func TransmitRoutineTxReadS(mailer *Mailer) TransmitRoutineResult {
 		mailer.sendStream.Close()
 		mailer.sendStream = nil
 
+                // Инкремент счётчика переданных файлов
+                mailer.OutFileCount += 1
+
 		/* Add current file to Pending Files */
 		if mailer.sendName != nil {
 			mailer.pendingFiles.Push(*mailer.sendName)
