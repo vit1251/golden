@@ -1,6 +1,6 @@
 
 body {
-    font-family: "Roboto", "Ubuntu", sans-serif;   
+    font-family: monospace;
     font-size: 14pt;
     margin: 0;
     padding: 0;
@@ -199,35 +199,6 @@ span.hidden {
     background-color: #646464;
 }
 
-.echo-index-items td {
-    padding: 4px;
-}
-.echo-index-item {
-    color: #AAAAAA;
-}
-.echo-index-item-new {
-    font-weight: bold;
-}
-.echo-index-item:hover {
-    background-color: #0000AA;
-}
-.echo-index-item-new:hover {
-    background-color: #0000AA;
-}
-.echo-index-header-count {
-    text-align: right;
-}
-.echo-index-item-count {
-    text-align: right;
-}
-.echo-index-item-count-new {
-    text-align: right;
-}
-.echomail-text {
-    background-color: #000000;
-    color: #C0C0C0;
-}
-
 /*** --- Modern version --- ***/
 
 /* Welcome page (Home) */
@@ -284,41 +255,134 @@ span.hidden {
     text-align: center;
 }
 
-/* Echo area index */
+/* Toolbar */
 
-.echo-index-table {
-    width: 100%;
+.toolbar {
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #2a2a2a;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+.toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #444;
+    color: #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+.toolbar-btn:hover {
+    background: #555;
+    color: #fff;
 }
 
-.echo-index-header {
-    background-color: #666666;
+/* Echo area */
+
+.area-list { width: 100%; }
+
+.area-row {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    color: var(--color-fg-default);
+    text-decoration: none;
+    border-bottom: 1px solid #333;
+}
+.area-row:hover { background-color: #0000AA; }
+
+.area-row.area-row-new {
+    font-weight: bold;
 }
 
-/* Echomail message index */
-
-.echo-msg-index-table {
-    width: 100%;
+.area-row-indicator {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    text-align: center;
+    color: yellow;
 }
 
-.echo-msg-index-header {
-    background-color: #666666;
-}
-
-.echo-msg-index-date {
-    text-align: right;
-    font-size: 12pt;
+.area-row-name {
+    width: 200px;
+    flex-shrink: 0;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.echo-msg-index-item {
-    color: #808080;
+.area-row-summary {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #888;
+    padding: 0 16px;
 }
 
-.echo-msg-index-item:hover {
-    background-color: #0000AA;
+.area-row-count {
+    flex-shrink: 0;
+    min-width: 2.5em;
+    text-align: right;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
 }
 
-.echo-msg-index-item-new {
+.area-row-name,
+.area-row-summary {
+    padding: 10px 0;
+}
+
+/* Echo message */
+
+.echo-list { width: 100%; }
+
+.echo-row {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    color: var(--color-fg-default);
+    text-decoration: none;
+    border-bottom: 1px solid #333;
+}
+.echo-row:hover { background-color: #0000AA; }
+
+.echo-row-indicator {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    text-align: center;
+    color: yellow;
+}
+
+.echo-row-from {
+    width: 190px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.echo-row-subject {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.echo-row-date {
+    width: 160px;
+    flex-shrink: 0;
+    text-align: right;
+    white-space: nowrap;
+    color: #888;
+    font-size: 0.9em;
+}
+
+.echo-row-new .echo-row-from,
+.echo-row-new .echo-row-subject {
     font-weight: bold;
 }
 
@@ -456,30 +520,6 @@ span.hidden {
     color: #ffc445;
 }
 
-/* Service index */
-
-.service-index {
-    width: 100%;
-}
-
-.service-index-item {
-    color: #808080;
-}
-
-.service-index-item:hover {
-    background-color: #0000AA;
-}
-
-/* Statistics */
-
-.stat-index-table {
-    width: 100%;
-}
-
-.stat-index-header {
-    background-color: #666666;
-}
-
 /* Twit index */
 
 .twit-index-table {
@@ -507,3 +547,38 @@ span.hidden {
 .mr-2 {
     margin-right: 8px;
 }
+
+/* Section */
+
+.section { border: 1px solid #555; border-radius: 6px; margin-bottom: 16px; }
+.section-header { background: #333; padding: 8px 16px; font-weight: bold; border-bottom: 1px solid #555; }
+.section-body { padding: 16px; }
+
+/* Service */
+
+.service-table { width: 100%; border-collapse: collapse; }
+.service-table th { background: #444; padding: 6px 12px; text-align: left; }
+.service-table td { padding: 4px 12px; }
+.service-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.service-table .error { color: #f05a67; font-weight: bold; }
+.service-table td.num { white-space: nowrap; }
+
+/* Pagination */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+}
+.page-link { color: var(--color-fg-default); }
+.page-link[href=""] { opacity: 0.3; pointer-events: none; }
+.page-info { color: #888; font-size: 0.9em; }
+
+/* Form */
+
+.form-group { margin-bottom: 12px; }
+.form-label { display: block; margin-bottom: 4px; color: #aaa; font-size: 0.9em; }
+.form-input { width: 100%; padding: 8px; border: 1px solid #555; background: #1a1a1a; color: #ddd; border-radius: 4px; }
+

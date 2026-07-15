@@ -50,8 +50,21 @@ func (self *FileAreaMapper) GetAreas() ([]FileArea, error) {
 
 		return nil
 	})
+	if err1 != nil {
+            return []FileArea{}, err1
+	}
 
-	return areas, err1
+        newAreas1, err2 := self.UpdateFileAreasWithFileCount(areas)
+	if err2 != nil {
+            return []FileArea{}, err2
+	}
+
+        newAreas2, err3 := self.UpdateNewFileAreasWithFileCount(newAreas1)
+	if err3 != nil {
+            return []FileArea{}, err3
+	}
+
+	return newAreas2, nil
 }
 
 func (self *FileAreaMapper) UpdateFileAreasWithFileCount(fileAreas []FileArea) ([]FileArea, error) {

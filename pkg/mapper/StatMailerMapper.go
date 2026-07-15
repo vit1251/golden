@@ -25,12 +25,21 @@ func (self StatMailer) GetDuration() uint64 {
 
 func (self *StatMailerMapper) GetMailerSummary() ([]StatMailer, error) {
 
+	now := time.Now()
+	startOfMonth := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
+
 	var result []StatMailer
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "SELECT `statMailerSessionStart`, `statMailerSessionStop`, `statMailerSummary` FROM `stat_mailer` ORDER BY `statMailerId` DESC LIMIT 10"
+	query1 := "SELECT `statMailerSessionStart`, `statMailerSessionStop`, `statMailerSummary` " +
+	    "FROM `stat_mailer` " +
+	    "WHERE `statMailerSessionStart` >= $1 " +
+	    "ORDER BY `statMailerId` DESC"
+
 	var params []interface{}
+	params = append(params, startOfMonth.UnixMilli())
+
 
 	err1 := storageManager.Query(query1, params, func(rows *sql.Rows) error {
 

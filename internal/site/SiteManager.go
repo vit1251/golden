@@ -98,12 +98,6 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 
 	/* Service section */
 	mux.Handle("GET /service", handler.NewServiceHandler(s.registry))
-	mux.Handle("GET /service/mailer/stat", handler.NewServiceMailerHandler(s.registry))
-	mux.Handle("GET /service/mailer/event", handler.NewServiceMailerEventHandler(s.registry))
-	mux.Handle("GET /service/toss/stat", handler.NewServiceTossHandler(s.registry))
-	mux.Handle("GET /service/toss/event", handler.NewServiceTossEventHandler(s.registry))
-	mux.Handle("GET /service/tracker/stat", handler.NewServiceTrackerHandler(s.registry))
-	mux.Handle("GET /service/tracker/event", handler.NewServiceTrackerEventHandler(s.registry))
 
 	/* Twit -> AddressBook */
 	mux.Handle("GET /twit", handler.NewTwitIndexHandler(s.registry))

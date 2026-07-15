@@ -412,3 +412,75 @@ func (self *EchoMapper) MarkAllReadByAreaName(echoTag string) error {
 	return err1
 
 }
+
+//
+func (self *EchoMapper) GetMessageHeadersPage(echoTag string, limit, offset int) ([]msg.Message, error) {
+    storageManager := storage.RestoreStorageManager(self.registry)
+    var result []msg.Message
+
+    sb := sqlbuilder.NewSelectBuilder()
+    sb.Select("msgId", "msgMsgId", "msgReply", "msgArea", "msgHash", "msgSubject", "msgViewCount", "msgFrom", "msgTo", "msgDate")
+    sb.From("message")
+    sb.Where(sb.Equal("msgArea", echoTag))
+    sb.OrderBy("msgDate ASC", "msgId ASC")
+    sb.Limit(limit)
+    sb.Offset(offset)
+    query1, args := sb.Build()
+
+    storageManager.Query(query1, args, func(rows *sql.Rows) error {
+	var ID string
+	var msgId string
+	var reply string
+	var msgHash *string
+	var subject string
+	var area string
+	var from string
+	var to string
+	var msgDate int64
+	var viewCount int
+
+	err2 := rows.Scan(&ID, &msgId, &reply, &area, &msgHash, &subject, &viewCount, &from, &to, &msgDate)
+	if err2 != nil {
+	    return err2
+	}
+
+	newMsg := msg.NewMessage()
+	if msgHash != nil {
+	    newMsg.SetMsgHash(*msgHash)
+	}
+	newMsg.SetID(ID)
+	newMsg.SetMsgID(msgId)
+	newMsg.SetReply(reply)
+	newMsg.SetArea(area)
+	newMsg.SetSubject(subject)
+	newMsg.SetFrom(from)
+	newMsg.SetTo(to)
+	newMsg.SetUnixTime(msgDate)
+	newMsg.SetViewCount(viewCount)
+
+	result = append(result, *newMsg)
+	return nil
+    })
+
+    return result, nil
+}
+
+// GetMessageCount — общее количество сообщений в эхе
+func (self *EchoMapper) GetMessageCount(echoTag string) (int, error) {
+    storageManager := storage.RestoreStorageManager(self.registry)
+
+    var count int
+
+    sb := sqlbuilder.NewSelectBuilder()
+    sb.Select("COUNT(*)")
+    sb.From("message")
+    sb.Where(sb.Equal("msgArea", echoTag))
+
+    query1, args := sb.Build()
+
+    err1 := storageManager.Query(query1, args, func(rows *sql.Rows) error {
+	return rows.Scan(&count)
+    })
+
+    return count, err1
+}

@@ -1,117 +1,122 @@
 package handler
 
 import (
-	"fmt"
-	"net/http"
-	"strings"
+    "fmt"
+    "net/http"
+    "sort"
+    "time"
 
-	widgets2 "github.com/vit1251/golden/internal/site/widgets"
-	"github.com/vit1251/golden/pkg/registry"
+    commonfunc "github.com/vit1251/golden/internal/common"
+    "github.com/vit1251/golden/internal/site/views"
+    "github.com/vit1251/golden/pkg/mapper"
+    "github.com/vit1251/golden/pkg/registry"
 )
 
 type ServiceHandler struct {
-	registry *registry.Container
-}
-
-type Service struct {
-	name string /* Service name */
-	URL  string /* Service page */
+    registry *registry.Container
 }
 
 func NewServiceHandler(registry *registry.Container) *ServiceHandler {
-	return &ServiceHandler{
-		registry: registry,
-	}
+    return &ServiceHandler{
+	registry: registry,
+    }
 }
 
-func (self *ServiceHandler) makeServices() []Service {
-	var services []Service
-	/* Mailer service */
-	services = append(services, Service{
-		name: "mailer",
-		URL:  "/service/mailer/stat",
-	})
-	/* Toss service */
-	services = append(services, Service{
-		name: "tosser",
-		URL:  "/service/toss/stat",
-	})
-	/* Tracker service */
-	services = append(services, Service{
-		name: "tracker",
-		URL:  "/service/tracker/stat",
-	})
-	return services
+type dayAccum struct {
+    sessions int
+    duration time.Duration
+    errors   int
 }
 
-func (self ServiceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	services := self.makeServices()
-
-	/* Render */
-	bw := widgets2.NewBaseWidget()
-
-	vBox := widgets2.NewVBoxWidget()
-	bw.SetWidget(vBox)
-
-	mmw := widgets2.NewMainMenuWidget()
-	vBox.Add(mmw)
-
-	container := widgets2.NewDivWidget()
-	container.SetClass("container")
-
-	containerVBox := widgets2.NewVBoxWidget()
-
-	container.AddWidget(containerVBox)
-
-	vBox.Add(container)
-
-	/* Render service */
-	for _, s := range services {
-		newRow := self.renderRow(s)
-		containerVBox.Add(newRow)
-	}
-
-	/* Render */
-	if err := bw.Render(w); err != nil {
-		status := fmt.Sprintf("%+v", err)
-		http.Error(w, status, http.StatusInternalServerError)
-		return
-	}
-
+func formatDuration(d time.Duration) string {
+    h := int(d.Hours())
+    m := int(d.Minutes()) % 60
+    s := int(d.Seconds()) % 60
+    if h > 0 {
+	return fmt.Sprintf("%dh %dm", h, m)
+    }
+    if m > 0 {
+	return fmt.Sprintf("%dm %ds", m, s)
+    }
+    return fmt.Sprintf("%ds", s)
 }
 
-func (self ServiceHandler) renderRow(s Service) widgets2.IWidget {
+func aggregateByDay(sessions []mapper.StatMailer) []views.DayStat {
+    dayMap := make(map[string]*dayAccum)
 
-	/* Make message row container */
-	rowWidget := widgets2.NewDivWidget().
-		SetStyle("display: flex").
-		SetStyle("direction: column").
-		SetStyle("align-items: center")
+    for _, s := range sessions {
+	t := time.UnixMilli(s.SessionStart)
+	key := t.Format("2006-01-02")
 
-	var classNames []string
-	classNames = append(classNames, "service-index-item")
-	rowWidget.SetClass(strings.Join(classNames, " "))
+	if dayMap[key] == nil {
+	    dayMap[key] = &dayAccum{}
+	}
 
-	/* Render service name */
-	serviceName := strings.Title(s.name)
-	subjectWidget := widgets2.NewDivWidget().
-		SetStyle("min-width: 350px").
-		SetHeight("38px").
-		SetStyle("flex-grow: 1").
-		SetStyle("white-space: nowrap").
-		SetStyle("overflow: hidden").
-		SetStyle("text-overflow: ellipsis").
-		//SetStyle("border: 1px solid red").
-		SetContent(serviceName)
+	d := dayMap[key]
+	d.sessions++
+	d.duration += time.Duration(s.SessionStop - s.SessionStart) * time.Millisecond
 
-	rowWidget.AddWidget(subjectWidget)
+	// Для ошибок смотрим статус
+	if s.Status != "done" && s.Status != "" {
+	    d.errors++
+	}
+    }
 
-	/* Link container */
-	navigateItem := widgets2.NewLinkWidget().
-		SetLink(s.URL).
-		AddWidget(rowWidget)
+    var result []views.DayStat
+    for date, acc := range dayMap {
+	var errStr string
+	if acc.errors > 0 {
+	    errStr = formatDuration(acc.duration)
+	}
+	_ = errStr
 
-	return navigateItem
+	result = append(result, views.DayStat{
+	    Date:     date,
+	    Sessions: acc.sessions,
+	    Duration: formatDuration(acc.duration),
+	    Volume:   "-", // TODO: добавить когда появится в MailerReport
+	    MsgsRX:   0,   // TODO: добавить когда появится в MailerReport
+	    MsgsTX:   0,
+	    FilesRX:  0,
+	    FilesTX:  0,
+	    Errors:   acc.errors,
+	})
+    }
 
+    sort.Slice(result, func(i, j int) bool {
+	return result[i].Date > result[j].Date
+    })
+
+    return result
+}
+
+func formatUptime(d time.Duration) string {
+    days := int(d.Hours()) / 24
+    hours := int(d.Hours()) % 24
+    mins := int(d.Minutes()) % 60
+    return fmt.Sprintf("%dd %dh %dm", days, hours, mins)
+}
+
+func (h *ServiceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    mapperManager := mapper.RestoreMapperManager(h.registry)
+    statMailerMapper := mapperManager.GetStatMailerMapper()
+
+    sessions, err := statMailerMapper.GetMailerSummary()
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    daily := aggregateByDay(sessions)
+
+    data := views.ServiceViewData{
+        DailyStats: daily,
+        SysVersion: commonfunc.GetVersion(),
+        SysUptime: formatUptime(commonfunc.GetUptime()),
+    }
+
+    err = views.Page("Service", views.ServiceView(data)).Render(w)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
 }
