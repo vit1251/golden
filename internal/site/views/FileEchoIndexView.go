@@ -20,7 +20,7 @@ func FileEchoIndexView(data FileEchoIndexData) g.Node {
                 if IsUnread { classes += " area-row-new"}
                 return A(Class(classes), Href(a.IndexURL),
                     Div(Class("area-row-indicator"),
-                        g.If(IsUnread, Icon("unread", 12)),
+                        g.If(IsUnread, Icon("unread", 16)),
                     ),
                     Div(Class("area-row-name"), g.Text(a.Name)),
                     Div(Class("area-row-summary"), g.Text(a.Summary)),
