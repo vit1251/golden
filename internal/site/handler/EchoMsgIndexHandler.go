@@ -77,11 +77,11 @@ func (h *EchoMsgIndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
     data := views.EchoMsgIndexData{
         Actions: []views.ToolbarAction{
-            views.ToolbarAction{Label: "Back", URL: "/echo", Icon: "arrow-left"},
-            views.ToolbarAction{Label: "Compose", URL: "#", Icon: "edit"},
-            views.ToolbarAction{Label: "Tree", URL: "#", Icon: "tree"},
-            views.ToolbarAction{Label: "Mark read", URL: "#", Icon: "check"},
-            views.ToolbarAction{Label: "Settings", URL: "#", Icon: "settings"},
+            {Label: "Back", URL: "/echo", Icon: "arrow-left"},
+            {Label: "Compose", URL: "/echo/" + areaIndex + "/message/compose", Icon: "edit"},
+	    {Label: "Tree", URL: "/echo/" + areaIndex + "/tree", Icon: "tree"},
+	    {Label: "Mark read", URL: "/echo/" + areaIndex + "/mark", Icon: "check"},
+	    {Label: "Edit", URL: "/echo/" + areaIndex + "/update", Icon: "settings"},
         },
 	AreaName: areaName,
 	Messages: msgs,

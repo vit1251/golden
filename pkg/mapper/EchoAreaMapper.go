@@ -1,11 +1,12 @@
 package mapper
 
 import (
+	"log"
 	"database/sql"
+
 	"github.com/vit1251/golden/internal/utils"
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
-	"log"
 )
 
 type EchoAreaMapper struct {

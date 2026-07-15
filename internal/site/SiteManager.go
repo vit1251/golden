@@ -56,18 +56,16 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 	mux.Handle("GET /echo/{echoname}/remove", handler.NewEchoAreaRemoveHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/remove/complete", handler.NewEchoRemoveCompleteHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/purge", handler.NewEchoAreaPurgeHandler(s.registry))
-	mux.Handle("GET /echo/{echoname}/purge/complete", handler.NewEchoAreaPurgeCompleteHandler(s.registry))
+	mux.Handle("POST /echo/{echoname}/purge", handler.NewEchoAreaPurgeCompleteHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/mark", handler.NewEchoAreaMarkHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/mark/complete", handler.NewEchoAreaMarkCompleteHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/update", handler.NewEchoAreaUpdateHandler(s.registry))
-	mux.Handle("GET /echo/{echoname}/update/complete", handler.NewEchoAreaUpdateCompleteHandler(s.registry))
+	mux.Handle("POST /echo/{echoname}/update", handler.NewEchoAreaUpdateCompleteHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/message/compose", handler.NewEchoMsgComposeHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/message/{msgid}/view", handler.NewEchoMsgViewHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/message/{msgid}/dump", handler.NewEchoMsgDumpHandler(s.registry))
-	mux.Handle("GET /echo/{echoname}/message/{msgid}/twit", handler.NewEchoMsgTwitHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/message/{msgid}/reply", handler.NewEchoMsgReplyHandler(s.registry))
-	mux.Handle("GET /echo/{echoname}/message/{msgid}/remove", handler.NewEchoMsgRemoveHandler(s.registry))
-	mux.Handle("GET /echo/{echoname}/message/{msgid}/remove/complete", handler.NewEchoMsgRemoveCompleteHandler(s.registry))
+	mux.Handle("GET /echo/{echoname}/message/{msgid}/archive", handler.NewEchoMsgArchiveHandler(s.registry))
 
 	/* File section */
 	mux.Handle("GET /file", handler.NewFileEchoIndexHandler(s.registry))
@@ -88,20 +86,16 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 	mux.Handle("GET /netmail/{msgid}/view", handler.NewNetmailViewHandler(s.registry))
 	mux.Handle("GET /netmail/{msgid}/dump", handler.NewNetmailDumpHandler(s.registry))
 	mux.Handle("GET /netmail/{msgid}/reply", handler.NewNetmailReplyHandler(s.registry))
-	mux.Handle("GET /netmail/{msgid}/remove", handler.NewNetmailRemoveHandler(s.registry))
+	mux.Handle("GET /netmail/{msgid}/archive", handler.NewNetmailArchiveHandler(s.registry))
 	mux.Handle("GET /netmail/{msgid}/attach/{attidx}/view", handler.NewNetmailAttachViewHandler(s.registry))
 	mux.Handle("GET /netmail/compose", handler.NewNetmailComposeHandler(s.registry))
 
 	/* Setup section */
 	mux.Handle("GET /settings", handler.NewSettingsHandler(s.registry))
-	mux.Handle("POST /settings/update", handler.NewSettingsUpdateHandler(s.registry))
+	mux.Handle("POST /settings", handler.NewSettingsUpdateHandler(s.registry))
 
 	/* Service section */
 	mux.Handle("GET /service", handler.NewServiceHandler(s.registry))
-
-	/* Twit -> AddressBook */
-	mux.Handle("GET /twit", handler.NewTwitIndexHandler(s.registry))
-	mux.Handle("GET /twit/{twitid}/remove", handler.NewTwitRemoveCompleteHandler(s.registry))
 
 	/* Draft section */
 	mux.Handle("GET /draft", handler.NewDraftIndexHandler(s.registry))

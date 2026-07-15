@@ -70,13 +70,6 @@ func (self *MainMenuWidget) InitMain(menuGroup *MenuGroup) {
 	menuAction5.Label = i18n.GetText(mainLanguage, "Action", "menu-service")
 	menuGroup.Add(menuAction5)
 
-	/* Address book */
-	menuAction6 := NewMenuAction()
-	menuAction6.ID = "mainMenuTwit"
-	menuAction6.Link = "/twit"
-	menuAction6.Label = i18n.GetText(mainLanguage, "Action", "menu-people")
-	menuGroup.Add(menuAction6)
-
 	/* Draft */
 	menuAction7 := NewMenuAction()
 	menuAction7.ID = "mainMenuDraft"

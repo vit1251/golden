@@ -33,7 +33,7 @@ func (self EchoMsgReplyHandler) preprocessBody(origMsg msg.Message) string {
 
 	/* Make reply content */
 	mtp := msg.NewMessageTextProcessor()
-	doc, _ := mtp.Prepare(origMsg.Content)
+	doc := mtp.Prepare(origMsg.Content)
 	newContent := doc.Content()
 	log.Printf("reply: orig = %+v", newContent)
 

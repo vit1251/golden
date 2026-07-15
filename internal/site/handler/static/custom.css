@@ -520,16 +520,6 @@ span.hidden {
     color: #ffc445;
 }
 
-/* Twit index */
-
-.twit-index-table {
-    width: 100%;
-}
-
-.twit-index-header {
-    background-color: #666666;
-}
-
 /* Draft index */
 
 .draft-index-table {

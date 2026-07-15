@@ -34,7 +34,6 @@ func renderMenu() g.Node {
 	    menuLink("/echo", "Echomail", ""),
 	    menuLink("/file", "Files", ""),
 	    menuLink("/service", "Service", ""),
-	    menuLink("/twit", "Address book", ""),
 	    menuLink("/draft", "Draft", ""),
 	),
 	Div(Class("Header-item-group"),

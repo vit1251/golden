@@ -51,10 +51,10 @@ func (h *DraftIndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vBox.Add(container)
 
 	/* Add custom param field */
-	twitTable := widgets2.NewTableWidget().
+	draftTable := widgets2.NewTableWidget().
 		SetClass("draft-index-table")
 
-	twitTable.AddRow(widgets2.NewTableRowWidget().
+	draftTable.AddRow(widgets2.NewTableRowWidget().
 		SetClass("draft-index-header").
 		AddCell(widgets2.NewTableCellWidget().SetWidget(widgets2.NewTextWidgetWithText("Name"))).
 		AddCell(widgets2.NewTableCellWidget().SetWidget(widgets2.NewTextWidgetWithText("Action"))))
@@ -66,7 +66,7 @@ func (h *DraftIndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			msgSubject = "-EMPTY-"
 		}
 
-		twitTable.AddRow(widgets2.NewTableRowWidget().
+		draftTable.AddRow(widgets2.NewTableRowWidget().
 			AddCell(widgets2.NewTableCellWidget().SetWidget(widgets2.NewTextWidgetWithText(msgSubject))).
 			AddCell(widgets2.NewTableCellWidget().SetWidget(widgets2.NewLinkWidget().
 				SetContent("Edit").
@@ -75,7 +75,7 @@ func (h *DraftIndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	containerVBox.Add(twitTable)
+	containerVBox.Add(draftTable)
 
 	if err := bw.Render(w); err != nil {
 		status := fmt.Sprintf("%+v", err)

@@ -66,7 +66,7 @@ func (self *MessageTextProcessor) processHtmlLine(oneLine string) MessageDocumen
 
 }
 
-func (self *MessageTextProcessor) Prepare(msg string) (*MessageDocument, error) {
+func (self *MessageTextProcessor) Prepare(msg string) (*MessageDocument) {
 
 	var doc *MessageDocument = new(MessageDocument)
 
@@ -81,7 +81,7 @@ func (self *MessageTextProcessor) Prepare(msg string) (*MessageDocument, error) 
 		doc.Add(newElement)
 	}
 
-	return doc, nil
+	return doc
 }
 
 func (self *MessageDocument) HTML() template.HTML {

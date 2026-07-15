@@ -1,243 +1,75 @@
 package handler
 
 import (
-	"fmt"
-	"html/template"
-	"log"
-	"net/http"
+    "fmt"
+    "net/http"
 
-	widgets2 "github.com/vit1251/golden/internal/site/widgets"
-	"github.com/vit1251/golden/internal/um"
-	"github.com/vit1251/golden/pkg/mapper"
-	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/registry"
+    "github.com/vit1251/golden/internal/site/views"
+    "github.com/vit1251/golden/pkg/mapper"
+    "github.com/vit1251/golden/pkg/msg"
+    "github.com/vit1251/golden/pkg/registry"
 )
 
 type EchoMsgViewHandler struct {
-	registry *registry.Container
+    registry *registry.Container
 }
 
 func NewEchoMsgViewHandler(registry *registry.Container) *EchoMsgViewHandler {
-	return &EchoMsgViewHandler{
-		registry: registry,
-	}
+    return &EchoMsgViewHandler{
+	registry: registry,
+    }
 }
 
-func (self *EchoMsgViewHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *EchoMsgViewHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := mapper.RestoreMapperManager(self.registry)
-	echoAreaMapper := mapperManager.GetEchoAreaMapper()
-	echoMapper := mapperManager.GetEchoMapper()
+    mapperManager := mapper.RestoreMapperManager(h.registry)
+    echoAreaMapper := mapperManager.GetEchoAreaMapper()
+    echoMapper := mapperManager.GetEchoMapper()
 
-	/* Parse URL parameters */
-	var areaIndex string = r.PathValue("echoname")
-	log.Printf("areaIndex = %v", areaIndex)
-	area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
-	if err1 != nil {
-		response := fmt.Sprintf("Fail on GetAreaByName in echoAreaMapper: err = %+v", err1)
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
+    areaIndex := r.PathValue("echoname")
+    area, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
+    if err1 != nil {
+        http.Error(w, err1.Error(), http.StatusInternalServerError)
+        return
+    }
 
-	/* Restore message by "echoname" and "msgid" key */
-	var msgid string = r.PathValue("msgid")
-	log.Printf("msgHash = %+v", msgid)
+    msgid := r.PathValue("msgid")
+    origMsg, err2 := echoMapper.GetMessageByHash(area.GetName(), msgid)
+    if err2 != nil || origMsg == nil {
+        http.Error(w, "Message not found", http.StatusInternalServerError)
+        return
+    }
 
-	var areaName string = area.GetName()
-	origMsg, err3 := echoMapper.GetMessageByHash(areaName, msgid)
-	if err3 != nil {
-		response := fmt.Sprintf("Fail on GetMessageByHash in echoMapper: err = %+v", err3)
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
-	if origMsg == nil {
-		response := fmt.Sprintf("Fail on GetMessageByHash in echoMapper: err = %+v", fmt.Errorf("origMsg is emprty"))
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
+    content := origMsg.GetContent()
+    mtp := msg.NewMessageTextProcessor()
+    doc := mtp.Prepare(content)
 
-	/* Get message body */
-	content := origMsg.GetContent()
+    echoMapper.ViewMessageByHash(area.GetName(), msgid)
 
-	/* Prepare HTML message body */
-	mtp := msg.NewMessageTextProcessor()
-	doc, _ := mtp.Prepare(content)
-	outDoc := doc.HTML()
+    var newFrom string
+    if origMsg.FromAddr != "" {
+        newFrom = fmt.Sprintf("%s ( %s )", origMsg.From, origMsg.FromAddr)
+    } else {
+        newFrom = origMsg.From
+    }
 
-	/* Update message view counter */
-	err5 := echoMapper.ViewMessageByHash(areaName, msgid)
-	if err5 != nil {
-		response := fmt.Sprintf("Fail on ViewMessageByHash on echoMapper: err = %+v", err5)
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
+    data := views.EchoMsgViewData{
+        Actions: []views.ToolbarAction{
+            {Label: "Back",   URL: "/echo/" + areaIndex, Icon: "arrow-left"},
+            {Label: "Reply",  URL: "/echo/" + areaIndex + "/message/" + msgid + "/reply", Icon: "edit"},
+            {Label: "Archive", URL: "/echo/" + areaIndex + "/message/" + msgid + "/archive", Icon: "archive"},
+            {Label: "Dump",   URL: "/echo/" + areaIndex + "/message/" + msgid + "/dump", Icon: "file-code"},
+        },
+        AreaName: area.GetName(),
+        From:     newFrom,
+        To:       origMsg.To,
+        Subject:  origMsg.Subject,
+        Date:     origMsg.DateWritten.Format("2006-01-02 15:04"),
+        Body:     string(doc.HTML()),
+    }
 
-	/* Make HTML page content */
-	mainWidget := self.makeMainEchoMsgViewWidget(area, origMsg, outDoc)
-
-	/* Render process */
-	if err := mainWidget.Render(w); err != nil {
-		status := fmt.Sprintf("Fail on Render in Widget: err = %+v", err)
-		http.Error(w, status, http.StatusInternalServerError)
-		return
-	}
-
-}
-
-func (self EchoMsgViewHandler) makeMessageHeaderRowSection(headerTable *widgets2.TableWidget, name widgets2.IWidget, value widgets2.IWidget) {
-
-	headerFromName := widgets2.NewTableCellWidget()
-	headerFromName.SetClass("echo-msg-view-header-name")
-	headerFromName.SetWidget(name)
-
-	headerFromValue := widgets2.NewTableCellWidget()
-	headerFromValue.SetClass("echo-msg-view-header-value")
-	headerFromValue.SetWidget(value)
-
-	headerTable.AddRow(
-		widgets2.NewTableRowWidget().
-			AddCell(headerFromName).
-			AddCell(headerFromValue),
-	)
-
-}
-
-func (self EchoMsgViewHandler) makeMessageHeaderSection(origMsg msg.Message) widgets2.IWidget {
-
-	/* Make main header widget */
-	headerTable := widgets2.NewTableWidget().
-		SetClass("echo-msg-view-header")
-
-	/* Make "Area" section */
-	self.makeMessageHeaderRowSection(
-		headerTable,
-		widgets2.NewTextWidgetWithText("Area:"),
-		widgets2.NewTextWidgetWithText(origMsg.Area),
-	)
-
-	/* Make "From" section */
-	var newFrom string
-	if origMsg.FromAddr != "" {
-		newFrom = fmt.Sprintf("%s ( %s )", origMsg.From, origMsg.FromAddr)
-	} else {
-		newFrom = origMsg.From
-	}
-	self.makeMessageHeaderRowSection(
-		headerTable,
-		widgets2.NewTextWidgetWithText("From:"),
-		widgets2.NewTextWidgetWithText(newFrom),
-	)
-
-	/* Make "To" section */
-	self.makeMessageHeaderRowSection(
-		headerTable,
-		widgets2.NewTextWidgetWithText("To:"),
-		widgets2.NewTextWidgetWithText(origMsg.To),
-	)
-
-	/* Make "Subject" section */
-	self.makeMessageHeaderRowSection(
-		headerTable,
-		widgets2.NewTextWidgetWithText("Subject:"),
-		widgets2.NewTextWidgetWithText(origMsg.Subject),
-	)
-
-	/* Make "Date" section */
-	newDate := fmt.Sprintf("%s", origMsg.DateWritten)
-	self.makeMessageHeaderRowSection(
-		headerTable,
-		widgets2.NewTextWidgetWithText("Date:"),
-		widgets2.NewTextWidgetWithText(newDate),
-	)
-
-	return headerTable
-
-}
-
-func (self EchoMsgViewHandler) makeMainEchoMsgViewWidget(area *mapper.Area, origMsg *msg.Message, outDoc template.HTML) widgets2.IWidget {
-
-	mainWidget := widgets2.NewBaseWidget()
-
-	vBox := widgets2.NewVBoxWidget()
-	mainWidget.SetWidget(vBox)
-
-	mmw := widgets2.NewMainMenuWidget()
-	vBox.Add(mmw)
-
-	container := widgets2.NewDivWidget()
-	container.SetClass("container")
-	vBox.Add(container)
-
-	containerVBox := widgets2.NewVBoxWidget()
-	container.AddWidget(containerVBox)
-
-	/* Context handlers */
-	handlersBar := self.renderHandlers(area, origMsg)
-	containerVBox.Add(handlersBar)
-
-	/* Message header section */
-	msgHeader := self.makeMessageHeaderSection(*origMsg)
-	msgHeaderWrapper := widgets2.NewDivWidget().SetClass("echo-msg-view-header-wrapper").AddWidget(msgHeader)
-	containerVBox.Add(msgHeaderWrapper)
-
-	/* Message body */
-	previewWidget := widgets2.NewDivWidget().
-		SetClass("echo-msg-view-body").
-		SetContent(string(outDoc))
-	containerVBox.Add(previewWidget)
-
-	return mainWidget
-
-}
-
-func (self *EchoMsgViewHandler) renderHandlers(area *mapper.Area, origMsg *msg.Message) widgets2.IWidget {
-
-	urlManager := um.RestoreUrlManager(self.registry)
-	actionBar := widgets2.NewActionMenuWidget()
-
-	/* Reply */
-	messageReplyAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/reply").
-		SetParam("area_index", area.GetAreaIndex()).
-		SetParam("message_index", origMsg.Hash).
-		Build()
-	actionBar.Add(widgets2.NewMenuAction().
-		SetLink(messageReplyAddr).
-		SetIcon("icofont-edit").
-		SetClass("mr-2").
-		SetLabel("Reply"))
-
-	/* Handler Remove */
-	messageRemoveAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/remove").
-		SetParam("area_index", area.GetAreaIndex()).
-		SetParam("message_index", origMsg.Hash).
-		Build()
-	actionBar.Add(widgets2.NewMenuAction().
-		SetLink(messageRemoveAddr).
-		SetIcon("icofont-remove").
-		SetClass("mr-2").
-		SetLabel("Remove"))
-
-	/* Handler Dump */
-	messageDumpAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/dump").
-		SetParam("area_index", area.GetAreaIndex()).
-		SetParam("message_index", origMsg.Hash).
-		Build()
-	actionBar.Add(widgets2.NewMenuAction().
-		SetLink(messageDumpAddr).
-		SetIcon("icofont-remove").
-		SetClass("mr-2").
-		SetLabel("Dump"))
-
-	/* Handler Twit */
-	messageTwitAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/twit").
-		SetParam("area_index", area.GetAreaIndex()).
-		SetParam("message_index", origMsg.Hash).
-		Build()
-	actionBar.Add(widgets2.NewMenuAction().
-		SetLink(messageTwitAddr).
-		SetIcon("icofont-remove").
-		SetClass("mr-2").
-		SetLabel("Twit"))
-
-	return actionBar
+    err := views.Page(area.GetName(), views.EchoMsgViewView(data)).Render(w)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
 }

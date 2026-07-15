@@ -1,127 +1,76 @@
 package handler
 
 import (
-	"fmt"
-	"log"
-	"net/http"
+    "net/http"
 
-	widgets2 "github.com/vit1251/golden/internal/site/widgets"
-	"github.com/vit1251/golden/internal/um"
-	"github.com/vit1251/golden/pkg/mapper"
-	"github.com/vit1251/golden/pkg/msg"
-	"github.com/vit1251/golden/pkg/registry"
+    "github.com/vit1251/golden/internal/site/views"
+    "github.com/vit1251/golden/pkg/mapper"
+    "github.com/vit1251/golden/pkg/msg"
+    "github.com/vit1251/golden/pkg/registry"
 )
 
 type EchoMsgTreeHandler struct {
-	registry *registry.Container
+    registry *registry.Container
 }
 
 func NewEchoMsgTreeHandler(registry *registry.Container) *EchoMsgTreeHandler {
-	return &EchoMsgTreeHandler{
-		registry: registry,
-	}
+    return &EchoMsgTreeHandler{
+	registry: registry,
+    }
 }
 
-func (self EchoMsgTreeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	mapperManager := mapper.RestoreMapperManager(self.registry)
-	echoAreaMapper := mapperManager.GetEchoAreaMapper()
-	echoMapper := mapperManager.GetEchoMapper()
-
-	/* Parse URL parameters */
-	var areaIndex string = r.PathValue("echoname")
-	log.Printf("areaIndex = %v", areaIndex)
-
-	newArea, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
-	if err1 != nil {
-		response := fmt.Sprintf("Fail on GetAreaByName where areaIndex is %s: err = %+v", areaIndex, err1)
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
-	log.Printf("area = %+v", newArea)
-
-	/* Get message headers */
-	var areaName string = newArea.GetName()
-	msgHeaders, err2 := echoMapper.GetMessageHeaders(areaName)
-	if err2 != nil {
-		response := fmt.Sprintf("Fail on GetMessageHeaders where areaName is %s: err = %+v", areaName, err2)
-		http.Error(w, response, http.StatusInternalServerError)
-		return
-	}
-
-	// Views
-
-	bw := widgets2.NewBaseWidget()
-
-	vBox := widgets2.NewVBoxWidget()
-	bw.SetWidget(vBox)
-
-	mmw := widgets2.NewMainMenuWidget()
-	vBox.Add(mmw)
-
-	container := widgets2.NewDivWidget()
-	container.SetClass("container")
-	vBox.Add(container)
-
-	containerVBox := widgets2.NewVBoxWidget()
-	container.AddWidget(containerVBox)
-
-	/* Create node tree */
-	tree := msg.NewMessageTree()
-	for _, m := range msgHeaders {
-		tree.RegisterMessage(m)
-	}
-
-	/* Render tree */
-	log.Printf("Tree = %+v", tree.GetRoot())
-	nodeTree := self.renderTree(newArea, *tree.GetRoot())
-
-	containerVBox.Add(nodeTree)
-
-	if err := bw.Render(w); err != nil {
-		status := fmt.Sprintf("%+v", err)
-		http.Error(w, status, http.StatusInternalServerError)
-		return
-	}
-
+func mapTreeNodes(nodes []*msg.MessageNode, areaIndex string) []views.TreeNode {
+    var result []views.TreeNode
+    for _, node := range nodes {
+        m := node.GetValue()
+        n := views.TreeNode{
+            Subject: m.Subject,
+            URL:     "/echo/" + areaIndex + "/message/" + m.Hash + "/view",
+            Items:   mapTreeNodes(node.Items, areaIndex),
+        }
+        result = append(result, n)
+    }
+    return result
 }
 
-func (self EchoMsgTreeHandler) renderTree(area *mapper.Area, root msg.MessageNode) widgets2.IWidget {
+func (h *EchoMsgTreeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	urlManager := um.RestoreUrlManager(self.registry)
+    mapperManager := mapper.RestoreMapperManager(h.registry)
+    echoAreaMapper := mapperManager.GetEchoAreaMapper()
+    echoMapper := mapperManager.GetEchoMapper()
 
-	list := widgets2.NewListWidget()
+    /* Parse URL parameters */
+    var areaIndex string = r.PathValue("echoname")
 
-	for _, node := range root.Items {
+    newArea, err1 := echoAreaMapper.GetAreaByAreaIndex(areaIndex)
+    if err1 != nil {
+	http.Error(w, "Fail on GetAreaByAreaIndex", http.StatusInternalServerError)
+	return
+    }
 
-		newMsg := node.GetValue()
+    /* Get message headers */
+    var areaName string = newArea.GetName()
+    msgHeaders, err2 := echoMapper.GetMessageHeaders(areaName)
+    if err2 != nil {
+    	http.Error(w, "Fail on GetMessageHeaders", http.StatusInternalServerError)
+    	return
+    }
 
-		newSubject := fmt.Sprintf("%s", newMsg.Subject)
+    tree := msg.NewMessageTree()
+    for _, m := range msgHeaders {
+	tree.RegisterMessage(m)
+    }
 
-		msgAddr := urlManager.CreateUrl("/echo/{area_index}/message/{message_index}/view").
-			SetParam("area_index", area.GetAreaIndex()).
-			SetParam("message_index", newMsg.Hash).
-			Build()
-		newLink := widgets2.NewLinkWidget().
-			SetContent(newSubject).
-			SetLink(msgAddr)
+    data := views.EchoMsgTreeData{
+	Actions: []views.ToolbarAction{
+    	    {Label: "Back", URL: "/echo/" + areaIndex, Icon: "arrow-left"},
+	},
+	AreaName: areaName,
+	Tree:     mapTreeNodes(tree.GetRoot().Items, areaIndex),
+    }
+    err := views.Page(areaName, views.EchoMsgTreeView(data)).Render(w)
+    if err != nil {
+	http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
 
-		if len(node.Items) == 0 {
-
-			list.AddItem(newLink)
-
-		} else {
-
-			vbox := widgets2.NewVBoxWidget()
-
-			vbox.Add(newLink)
-			vbox.Add(self.renderTree(area, *node))
-
-			list.AddItem(vbox)
-
-		}
-
-	}
-
-	return list
 }

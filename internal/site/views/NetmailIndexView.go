@@ -15,8 +15,9 @@ type NetmailMsgHeader struct {
 }
 
 type NetmailIndexData struct {
-    Actions  []ToolbarAction
-    Messages []NetmailMsgHeader
+    Actions    []ToolbarAction
+    Messages   []NetmailMsgHeader
+    Pagination PaginationData
 }
 
 func NetmailIndexView(data NetmailIndexData) g.Node {
@@ -34,5 +35,6 @@ func NetmailIndexView(data NetmailIndexData) g.Node {
                 Div(Class("echo-row-date"), g.Text(m.Date)),
             )
         }),
+        Pagination(data.Pagination),
     )
 }
