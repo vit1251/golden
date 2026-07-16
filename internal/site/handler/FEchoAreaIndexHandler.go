@@ -9,17 +9,17 @@ import (
     "github.com/vit1251/golden/pkg/registry"
 )
 
-type FileEchoIndexHandler struct {
+type FEchoAreaIndexHandler struct {
     registry *registry.Container
 }
 
-func NewFileEchoIndexHandler(registry *registry.Container) *FileEchoIndexHandler {
-    return &FileEchoIndexHandler{
+func NewFEchoAreaIndexHandler(registry *registry.Container) *FEchoAreaIndexHandler {
+    return &FEchoAreaIndexHandler{
 	registry: registry,
     }
 }
 
-func (h *FileEchoIndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *FEchoAreaIndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     // Шаг 0. Подготовка служб
     mapperManager := mapper.RestoreMapperManager(h.registry)
@@ -55,13 +55,13 @@ func (h *FileEchoIndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
             NewMsgCount: a.GetNewCount(),  // новое имя поля для файлов
         })
     }
-    data := views.FileEchoIndexData{
+    data := views.FEchoAreaIndexData{
         Actions: []views.ToolbarAction{
             {Label: "Create", URL: "/file/create", Icon: "edit"},
         },
         Areas: areaHeaders,
     }
-    err := views.Page("File Echoes", views.FileEchoIndexView(data)).Render(w)
+    err := views.Page("File Echoes", views.FEchoAreaIndexView(data)).Render(w)
     if err != nil {
 	http.Error(w, err.Error(), http.StatusInternalServerError)
     }

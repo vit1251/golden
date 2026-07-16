@@ -22,7 +22,7 @@ func (h *EchoAreaCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
         Actions: []views.ToolbarAction{
             views.ToolbarAction{Label: "Back", URL: "/echo", Icon: "arrow-left"},
         },
-        ActionURL: "/echo/create/complete",
+        ActionURL: "/echo/create",
     }
     err := views.Page("Create Area", views.EchoAreaCreateView(data)).Render(w)
     if err != nil {

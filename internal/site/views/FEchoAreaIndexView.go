@@ -5,12 +5,12 @@ import (
     . "maragu.dev/gomponents/html"
 )
 
-type FileEchoIndexData struct {
+type FEchoAreaIndexData struct {
     Actions []ToolbarAction
     Areas   []AreaHeader
 }
 
-func FileEchoIndexView(data FileEchoIndexData) g.Node {
+func FEchoAreaIndexView(data FEchoAreaIndexData) g.Node {
     return Div(
         Toolbar(data.Actions...),
         Div(Class("area-list"),

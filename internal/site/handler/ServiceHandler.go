@@ -88,7 +88,7 @@ func aggregateByDay(sessions []mapper.StatMailer) []views.DayStat {
     }
 
     sort.Slice(result, func(i, j int) bool {
-	return result[i].Date > result[j].Date
+	return result[i].Date < result[j].Date
     })
 
     return result

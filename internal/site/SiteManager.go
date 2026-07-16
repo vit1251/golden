@@ -50,7 +50,7 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 	// Шаг 2. Раздел конференций
 	mux.Handle("GET /echo", handler.NewEchoAreaIndexHandler(s.registry))
 	mux.Handle("GET /echo/create", handler.NewEchoAreaCreateHandler(s.registry))
-	mux.Handle("GET /echo/create/complete", handler.NewEchoAreaCreateCompleteHandler(s.registry))
+	mux.Handle("POST /echo/create", handler.NewEchoAreaCreateCompleteHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}", handler.NewEchoMsgIndexHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/tree", handler.NewEchoMsgTreeHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/remove", handler.NewEchoAreaRemoveHandler(s.registry))
@@ -68,10 +68,10 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 	mux.Handle("GET /echo/{echoname}/message/{msgid}/archive", handler.NewEchoMsgArchiveHandler(s.registry))
 
 	/* File section */
-	mux.Handle("GET /file", handler.NewFileEchoIndexHandler(s.registry))
+	mux.Handle("GET /file", handler.NewFEchoAreaIndexHandler(s.registry))
 	mux.Handle("GET /file/create", handler.NewFileEchoCreateHandler(s.registry))
 	mux.Handle("GET /file/create/complete", handler.NewFileEchoCreateCompleteHandler(s.registry))
-	mux.Handle("GET /file/{echoname}", handler.NewFileEchoAreaIndexHandler(s.registry))
+	mux.Handle("GET /file/{echoname}", handler.NewFEchoFileIndexHandler(s.registry))
 	mux.Handle("GET /file/{echoname}/update", handler.NewFileEchoUpdateHandler(s.registry))
 	mux.Handle("GET /file/{echoname}/remove", handler.NewFileEchoRemoveHandler(s.registry))
 	mux.Handle("GET /file/{echoname}/remove/complete", handler.NewFileEchoRemoveCompleteHandler(s.registry))
