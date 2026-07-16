@@ -1,39 +1,39 @@
 package handler
 
 import (
-	"bufio"
-	"fmt"
-	"hash/crc32"
-	"io"
-	"log"
-	"net/http"
-	"os"
-	"path"
-	"time"
+    "bufio"
+    "fmt"
+    "hash/crc32"
+    "io"
+    "log"
+    "net/http"
+    "os"
+    "path"
+    "time"
 
-	commonfunc "github.com/vit1251/golden/internal/common"
-	"github.com/vit1251/golden/pkg/charset"
-	"github.com/vit1251/golden/pkg/config"
-	"github.com/vit1251/golden/pkg/mapper"
-	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/tracker"
+    commonfunc "github.com/vit1251/golden/internal/common"
+    "github.com/vit1251/golden/pkg/charset"
+    "github.com/vit1251/golden/pkg/config"
+    "github.com/vit1251/golden/pkg/mapper"
+    "github.com/vit1251/golden/pkg/registry"
+    "github.com/vit1251/golden/pkg/tracker"
 )
 
-type FileEchoAreaUploadCompleteHandler struct {
-	registry *registry.Container
+type FEchoFileUploadCompleteHandler struct {
+    registry *registry.Container
 }
 
-func NewFileEchoAreaUploadCompleteHandler(registry *registry.Container) *FileEchoAreaUploadCompleteHandler {
-	return &FileEchoAreaUploadCompleteHandler{
-		registry: registry,
-	}
+func NewFEchoFileUploadCompleteHandler(registry *registry.Container) *FEchoFileUploadCompleteHandler {
+    return &FEchoFileUploadCompleteHandler{
+	registry: registry,
+    }
 }
 
-func (self FileEchoAreaUploadCompleteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *FEchoFileUploadCompleteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	configManager := config.RestoreConfigManager(self.registry)
-	charsetManager := charset.RestoreCharsetManager(self.registry)
-	mapperManager := mapper.RestoreMapperManager(self.registry)
+	configManager := config.RestoreConfigManager(h.registry)
+	charsetManager := charset.RestoreCharsetManager(h.registry)
+	mapperManager := mapper.RestoreMapperManager(h.registry)
 	fileAreaMapper := mapperManager.GetFileAreaMapper()
 	//fileMapper := mapperManager.GetFileMapper()
 
@@ -49,7 +49,8 @@ func (self FileEchoAreaUploadCompleteHandler) ServeHTTP(w http.ResponseWriter, r
 	/* Get file area */
 	area, err1 := fileAreaMapper.GetAreaByName(echoTag)
 	if err1 != nil {
-		panic(err1)
+	    http.Error(w, err1.Error(), 500)
+	    return
 	}
 	log.Printf("area = %+v", area)
 	var areaCharset string = area.GetCharset()
@@ -59,13 +60,15 @@ func (self FileEchoAreaUploadCompleteHandler) ServeHTTP(w http.ResponseWriter, r
 
 	err2 := r.ParseMultipartForm(maxMemory)
 	if err2 != nil {
-		panic(err2)
+	    http.Error(w, err2.Error(), 500)
+	    return
 	}
 
 	// in your case file would be fileupload
 	stream, header, err3 := r.FormFile("file")
 	if err3 != nil {
-		panic(err3)
+	    http.Error(w, err3.Error(), 500)
+	    return
 	}
 	defer stream.Close()
 
@@ -82,7 +85,8 @@ func (self FileEchoAreaUploadCompleteHandler) ServeHTTP(w http.ResponseWriter, r
 	tmpFile := path.Join(outboundDirectory, header.Filename)
 	writeStream, err6 := os.Create(tmpFile)
 	if err6 != nil {
-		panic(err6)
+	    http.Error(w, err6.Error(), 500)
+	    return
 	}
 	cacheWriter := bufio.NewWriter(writeStream)
 	defer func() {
@@ -97,7 +101,8 @@ func (self FileEchoAreaUploadCompleteHandler) ServeHTTP(w http.ResponseWriter, r
 
 	size, err4 := io.Copy(outStreams, stream)
 	if err4 != nil {
-		panic(err4)
+	    http.Error(w, err4.Error(), 500)
+	    return
 	}
 
 	crc := crcWriter.Sum32()
@@ -134,12 +139,14 @@ func (self FileEchoAreaUploadCompleteHandler) ServeHTTP(w http.ResponseWriter, r
 	/* Change charset */
 	newContent, err4 := charsetManager.EncodeMessageBody(content, areaCharset)
 	if err4 != nil {
-		panic(err4)
+	    http.Error(w, err4.Error(), 500)
+	    return
 	}
 
 	writer, err5 := os.Create(newPath)
 	if err5 != nil {
-		panic(err5)
+	    http.Error(w, err5.Error(), 500)
+	    return
 	}
 	cacheWriter2 := bufio.NewWriter(writer)
 	defer func() {

@@ -221,3 +221,15 @@ func (self *FileAreaMapper) GetAreaByName(areaName string) (*FileArea, error) {
 func (self FileAreaMapper) GetMessageNewCount() (int, error) {
 	return 0, nil
 }
+
+func (self *FileAreaMapper) UpdateArea(a *FileArea) error {
+    storageManager := storage.RestoreStorageManager(self.registry)
+    query := "UPDATE `filearea` SET `areaSummary` = ?, `areaCharset` = ? WHERE `areaName` = ?"
+    var params []interface{}
+    params = append(params, a.GetSummary())
+    params = append(params, a.GetCharset())
+    params = append(params, a.GetName())
+    return storageManager.Exec(query, params, func(e sql.Result, err error) error {
+        return err
+    })
+}

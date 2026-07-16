@@ -53,8 +53,6 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 	mux.Handle("POST /echo/create", handler.NewEchoAreaCreateCompleteHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}", handler.NewEchoMsgIndexHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/tree", handler.NewEchoMsgTreeHandler(s.registry))
-	mux.Handle("GET /echo/{echoname}/remove", handler.NewEchoAreaRemoveHandler(s.registry))
-	mux.Handle("GET /echo/{echoname}/remove/complete", handler.NewEchoRemoveCompleteHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/purge", handler.NewEchoAreaPurgeHandler(s.registry))
 	mux.Handle("POST /echo/{echoname}/purge", handler.NewEchoAreaPurgeCompleteHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/mark", handler.NewEchoAreaMarkHandler(s.registry))
@@ -69,17 +67,16 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 
 	/* File section */
 	mux.Handle("GET /file", handler.NewFEchoAreaIndexHandler(s.registry))
-	mux.Handle("GET /file/create", handler.NewFileEchoCreateHandler(s.registry))
-	mux.Handle("GET /file/create/complete", handler.NewFileEchoCreateCompleteHandler(s.registry))
+	mux.Handle("GET /file/create", handler.NewFEchoAreaCreateHandler(s.registry))
+	mux.Handle("POST /file/create", handler.NewFEchoAreaCreateCompleteHandler(s.registry))
 	mux.Handle("GET /file/{echoname}", handler.NewFEchoFileIndexHandler(s.registry))
-	mux.Handle("GET /file/{echoname}/update", handler.NewFileEchoUpdateHandler(s.registry))
-	mux.Handle("GET /file/{echoname}/remove", handler.NewFileEchoRemoveHandler(s.registry))
-	mux.Handle("GET /file/{echoname}/remove/complete", handler.NewFileEchoRemoveCompleteHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/update", handler.NewFEchoAreaUpdateHandler(s.registry))
+	mux.Handle("POST /file/{echoname}/update", handler.NewFEchoAreaUpdateCompleteHandler(s.registry))
 	mux.Handle("GET /file/{echoname}/tic/{file}/view", handler.NewFileEchoAreaViewHandler(s.registry))
 	mux.Handle("GET /file/{echoname}/tic/{file}/download", handler.NewFileEchoAreaDownloadHandler(s.registry))
 	mux.Handle("GET /file/{echoname}/tic/{file}/remove", handler.NewFileEchoAreaRemoveHandler(s.registry))
-	mux.Handle("GET /file/{echoname}/upload", handler.NewFileEchoAreaUploadHandler(s.registry))
-	mux.Handle("GET /file/{echoname}/upload/complete", handler.NewFileEchoAreaUploadCompleteHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/upload", handler.NewFEchoFileUploadHandler(s.registry))
+	mux.Handle("POST /file/{echoname}/upload", handler.NewFEchoFileUploadCompleteHandler(s.registry))
 
 	/* Netmail section */
 	mux.Handle("GET /netmail", handler.NewNetmailIndexHandler(s.registry))
