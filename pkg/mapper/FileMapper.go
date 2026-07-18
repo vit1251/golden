@@ -1,13 +1,14 @@
 package mapper
 
 import (
-	"database/sql"
-	cmn "github.com/vit1251/golden/internal/common"
-	"log"
-	"path/filepath"
-
-	"github.com/vit1251/golden/pkg/registry"
-	"github.com/vit1251/golden/pkg/storage"
+    "database/sql"
+    cmn "github.com/vit1251/golden/internal/common"
+    "log"
+    "os"
+    "path/filepath"
+    "github.com/huandu/go-sqlbuilder"
+    "github.com/vit1251/golden/pkg/registry"
+    "github.com/vit1251/golden/pkg/storage"
 )
 
 type FileMapper struct {
@@ -20,28 +21,18 @@ func NewFileMapper(r *registry.Container) *FileMapper {
 	return newFileMapper
 }
 
-func (self *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
+func (m *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 
-	storageManager := storage.RestoreStorageManager(self.registry)
-	conn := storageManager.GetConnection() // TODO
+    storageManager := storage.RestoreStorageManager(m.registry)
+    var result []File
 
-	var result []File
+    sb := sqlbuilder.NewSelectBuilder()
+    sb.Select("fileArea", "indexName", "fileName", "fileDesc", "fileTime", "fileViewCount", "fileOrigin", "fileFrom", "fileTo", "fileSize", "fileCrc")
+    sb.From("file")
+    sb.Where(sb.Equal("fileArea", echoTag), sb.Equal("fileArchived", 0))
+    query1, args := sb.Build()
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := conn.Begin()
-	if err != nil {
-		return nil, err
-	}
-
-	sqlStmt := "SELECT `fileArea`, `indexName`, `fileName`, `fileDesc`, `fileTime`, `fileViewCount` FROM `file` WHERE `fileArea` = $1"
-	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
-	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag)
-	if err1 != nil {
-		log.Printf("error on query: err = %+v", err1)
-		return nil, err1
-	}
-	defer rows.Close()
-	for rows.Next() {
+    err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 
 		var fileArea string
 		var indexName string
@@ -49,11 +40,21 @@ func (self *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 		var fileDesc string
 		var fileTime *int64
 		var fileViewCount int
+		var fileOrigin string
+		var fileFrom string
+		var fileTo string
+		var fileSize int64
+		var fileCrc string
 
-		err2 := rows.Scan(&fileArea, &indexName, &fileName, &fileDesc, &fileTime, &fileViewCount)
+		err2 := rows.Scan(&fileArea, &indexName, &fileName, &fileDesc, &fileTime, &fileViewCount,
+		    &fileOrigin,
+		    &fileFrom,
+		    &fileTo,
+		    &fileSize,
+		    &fileCrc,
+		)
 		if err2 != nil {
-			log.Printf("error on scan: err = %+v", err2)
-			return nil, err2
+			return err2
 		}
 
 		newFile := NewFile()
@@ -67,35 +68,26 @@ func (self *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 		}
 
 		result = append(result, *newFile)
-	}
+		return nil
+	})
 
-	ConnTransaction.Commit()
-
-	return result, nil
+	return result, err
 }
 
 func (self *FileMapper) CheckFileExists(tic File) (bool, error) {
 	return true, nil
 }
 
-func (self *FileMapper) RegisterFile(tic File) error {
-
-	storageManager := storage.RestoreStorageManager(self.registry)
-
-	query1 := "INSERT INTO `file` ( `indexName`, `fileName`, `fileArea`, `fileDesc`, `fileTime` ) VALUES ( ?, ?, ?, ?, ? )"
-
-	var params []interface{}
-	params = append(params, tic.GetFile())
-	params = append(params, tic.GetOrigName())
-	params = append(params, tic.GetArea())
-	params = append(params, tic.GetDesc())
-	params = append(params, tic.GetUnixTime())
-
-	storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-		return err
-	})
-
-	return nil
+func (m *FileMapper) RegisterFile(tic File) error {
+    storageManager := storage.RestoreStorageManager(m.registry)
+    ib := sqlbuilder.NewInsertBuilder()
+    ib.InsertInto("file")
+    ib.Cols("indexName", "fileName", "fileArea", "fileDesc", "fileTime", "fileOrigin", "fileFrom", "fileTo", "fileSize", "fileCrc", "fileLDesc")
+    ib.Values(tic.GetFile(), tic.GetOrigName(), tic.GetArea(), tic.GetDesc(), tic.GetUnixTime(), tic.GetOrigin(), tic.GetFrom(), tic.GetTo(), tic.GetSize(), tic.GetCrc(), tic.GetLDesc())
+    query, args := ib.Build()
+    return storageManager.Exec(query, args, func(result sql.Result, err error) error {
+        return err
+    })
 }
 
 func (self FileMapper) GetFileAbsolutePath(areaName string, name string) string {
@@ -170,79 +162,129 @@ func (self *FileMapper) ViewFileByIndexName(fileArea string, indexName string) e
 
 }
 
-func (self *FileMapper) GetFileNewCount() (int, error) {
+func (m *FileMapper) GetFileNewCount() (int, error) {
 
-	storageManager := storage.RestoreStorageManager(self.registry)
+    storageManager := storage.RestoreStorageManager(m.registry)
 
-	var newMessageCount int
+    var newMessageCount int
 
-	query1 := "SELECT count(`fileId`) FROM `file` WHERE `fileViewCount` = 0"
-	var params []interface{}
+    query1 := "SELECT count(`fileId`) FROM `file` WHERE `fileViewCount` = 0 AND `fileArchived` = 0"
+    var params []interface{}
 
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+    err := storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err1 := rows.Scan(&newMessageCount)
+	if err1 != nil {
+	    return err1
+	}
+	return nil
+    })
 
-		err1 := rows.Scan(&newMessageCount)
-		if err1 != nil {
-			return err1
-		}
-		return nil
-	})
-
-	return newMessageCount, nil
+    return newMessageCount, err
 }
 
-func (self *FileMapper) GetFileByIndexName(echoTag string, indexName string) (*File, error) {
+func (m *FileMapper) GetFileByIndexName(echoTag string, indexName string) (*File, error) {
+    storageManager := storage.RestoreStorageManager(m.registry)
+    var result *File
 
-	storageManager := storage.RestoreStorageManager(self.registry)
-	conn := storageManager.GetConnection() // TODO
+    sb := sqlbuilder.NewSelectBuilder()
+    sb.Select("fileArea", "indexName", "fileName", "fileDesc", "fileTime", "fileViewCount", "fileOrigin", "fileFrom", "fileTo", "fileSize", "fileCrc")
+    sb.From("file")
+    sb.Where(sb.Equal("fileArea", echoTag), sb.Equal("indexName", indexName))
+    query1, args := sb.Build()
 
-	var result *File
+    err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
+        var fileArea, indexName, fileName, fileDesc, fileOrigin, fileFrom, fileTo, fileCrc string
+        var fileTime *int64
+        var fileViewCount int
+        var fileSize int64
 
-	/* Step 2. Start SQL transaction */
-	ConnTransaction, err := conn.Begin()
-	if err != nil {
-		return nil, err
-	}
+        err2 := rows.Scan(&fileArea, &indexName, &fileName, &fileDesc, &fileTime, &fileViewCount, &fileOrigin, &fileFrom, &fileTo, &fileSize, &fileCrc)
+        if err2 != nil { return err2 }
 
-	sqlStmt := "SELECT `fileArea`, `indexName`, `fileName`, `fileDesc`, `fileTime`, `fileViewCount` FROM `file` WHERE `fileArea` = $1 AND `indexName` = $2"
-	log.Printf("sql = %q echoTag = %q", sqlStmt, echoTag)
-	rows, err1 := ConnTransaction.Query(sqlStmt, echoTag, indexName)
-	if err1 != nil {
-		log.Printf("error on query: err = %+v", err1)
-		return nil, err1
-	}
-	defer rows.Close()
-	for rows.Next() {
+        newFile := NewFile()
+        newFile.SetArea(fileArea)
+        newFile.SetDesc(fileDesc)
+        newFile.SetFile(indexName)
+        newFile.SetOrigName(fileName)
+        newFile.SetViewCount(fileViewCount)
+        newFile.SetOrigin(fileOrigin)
+        newFile.SetFrom(fileFrom)
+        newFile.SetTo(fileTo)
+        newFile.SetSize(fileSize)
+        newFile.SetCrc(fileCrc)
+        if fileTime != nil {
+            newFile.SetUnixTime(*fileTime)
+        }
+        newFile.SetAbsolutePath(m.GetFileAbsolutePath(fileArea, indexName))
+        result = newFile
+        return nil
+    })
 
-		var fileArea string
-		var indexName string
-		var fileName string
-		var fileDesc string
-		var fileTime *int64
-		var fileViewCount int
+    return result, err
+}
 
-		err2 := rows.Scan(&fileArea, &indexName, &fileName, &fileDesc, &fileTime, &fileViewCount)
-		if err2 != nil {
-			log.Printf("error on scan: err = %+v", err2)
-			return nil, err2
-		}
+func (m *FileMapper) ArchiveFileByName(indexName string) error {
+    storageManager := storage.RestoreStorageManager(m.registry)
+    query1 := "UPDATE `file` SET `fileArchived` = 1 WHERE `indexName` = ?"
+    var params []interface{}
+    params = append(params, indexName)
+    return storageManager.Exec(query1, params, func(result sql.Result, err error) error {
+        return err
+    })
+}
 
-		newFile := NewFile()
-		newFile.SetArea(fileArea)
-		newFile.SetDesc(fileDesc)
-		newFile.SetFile(indexName)
-		newFile.SetOrigName(fileName)
-		newFile.SetViewCount(fileViewCount)
-		if fileTime != nil {
-			newFile.SetUnixTime(*fileTime)
-		}
-		var newIndexName string = newFile.GetFile()
-		newFile.SetAbsolutePath(self.GetFileAbsolutePath(fileArea, newIndexName))
+func (m *FileMapper) PurgeArchivedFiles(areaName string) error {
+    storageManager := storage.RestoreStorageManager(m.registry)
 
-		result = newFile
-	}
+    sb := sqlbuilder.NewSelectBuilder()
+    sb.Select("indexName")
+    sb.From("file")
+    sb.Where(sb.Equal("fileArea", areaName), sb.Equal("fileArchived", 1))
+    query1, args := sb.Build()
 
-	ConnTransaction.Commit()
+    var files []string
+    storageManager.Query(query1, args, func(rows *sql.Rows) error {
+        var name string
+        if err := rows.Scan(&name); err != nil {
+            return err
+        }
+        files = append(files, name)
+        return nil
+    })
 
-	return result, nil
+    delQuery := "DELETE FROM `file` WHERE `fileArea` = ? AND `fileArchived` = 1"
+    var delParams []interface{}
+    delParams = append(delParams, areaName)
+    if err := storageManager.Exec(delQuery, delParams, func(result sql.Result, err error) error {
+        return err
+    }); err != nil {
+        return err
+    }
+
+    for _, name := range files {
+        p := m.GetFileAbsolutePath(areaName, name)
+        if err := os.Remove(p); err != nil {
+            log.Printf("Purge: remove %s: %v", p, err)
+        }
+    }
+
+    return nil
+}
+
+func (m *FileMapper) GetArchivedFileCount(areaName string) (int, error) {
+    storageManager := storage.RestoreStorageManager(m.registry)
+
+    var count int
+
+    sb := sqlbuilder.NewSelectBuilder()
+    sb.Select("COUNT(*)")
+    sb.From("file")
+    sb.Where(sb.Equal("fileArea", areaName), sb.Equal("fileArchived", 1))
+    query1, args := sb.Build()
+
+    err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
+        return rows.Scan(&count)
+    })
+
+    return count, err
 }

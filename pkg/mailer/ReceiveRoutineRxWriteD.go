@@ -3,9 +3,9 @@ package mailer
 import (
 	"fmt"
 	"github.com/vit1251/golden/pkg/mailer/stream"
+	"github.com/vit1251/golden/internal/utils"
 	"io"
 	"log"
-	"os"
 	"path"
 )
 
@@ -66,7 +66,7 @@ func ReceiveRoutineRxWriteD(mailer *Mailer) ReceiveRoutineResult {
 		/* Move in incoming directory */
 		newPath := path.Join(mailer.inboundDirectory, mailer.recvName.Name)
 		log.Printf("Rename %s -> %s", mailer.recvName.AbsolutePath, newPath)
-		if err1 := os.Rename(mailer.recvName.AbsolutePath, newPath); err1 != nil {
+		if err1 := utils.Move(mailer.recvName.AbsolutePath, newPath); err1 != nil {
 			log.Printf("Rename error!")
 		}
 

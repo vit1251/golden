@@ -1,31 +1,31 @@
 package handler
 
 import (
-	"fmt"
-	"io"
-	"log"
-	"net/http"
-	"os"
+    "fmt"
+    "io"
+    "log"
+    "net/http"
+    "os"
 
-	"github.com/vit1251/golden/pkg/mapper"
-	"github.com/vit1251/golden/pkg/registry"
+    "github.com/vit1251/golden/pkg/mapper"
+    "github.com/vit1251/golden/pkg/registry"
 )
 
-type FileEchoAreaDownloadHandler struct {
-	registry *registry.Container
+type FEchoFileDownloadHandler struct {
+    registry *registry.Container
 }
 
-func NewFileEchoAreaDownloadHandler(registry *registry.Container) *FileEchoAreaDownloadHandler {
-	return &FileEchoAreaDownloadHandler{
-		registry: registry,
-	}
+func NewFEchoFileDownloadHandler(registry *registry.Container) *FEchoFileDownloadHandler {
+    return &FEchoFileDownloadHandler{
+	registry: registry,
+    }
 }
 
-func (self *FileEchoAreaDownloadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *FEchoFileDownloadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	mapperManager := mapper.RestoreMapperManager(self.registry)
-	fileAreaMapper := mapperManager.GetFileAreaMapper()
-	fileMapper := mapperManager.GetFileMapper()
+    mapperManager := mapper.RestoreMapperManager(h.registry)
+    fileAreaMapper := mapperManager.GetFileAreaMapper()
+    fileMapper := mapperManager.GetFileMapper()
 
 	/* Parse URL parameters */
 	var areaIndex string = r.PathValue("echoname")
@@ -60,6 +60,6 @@ func (self *FileEchoAreaDownloadHandler) ServeHTTP(w http.ResponseWriter, r *htt
 	var sourceName string = fmt.Sprintf("attachment; filename=\"%s\"", newFile)
 	w.Header().Set("Content-Disposition", sourceName)
 
-	io.Copy(w, stream)
+    io.Copy(w, stream)
 
 }

@@ -49,8 +49,7 @@ func ReceiveRoutineRxWaitF(mailer *Mailer) ReceiveRoutineResult {
 	/* Got M_ERR */
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandID == stream.M_ERR {
-			/* Report error */
-			log.Printf("RxWaitF receive M_ERR")
+			log.Printf("Error")
 			mailer.rxState = RxDone
 			return RxFailure
 		}
@@ -59,8 +58,6 @@ func ReceiveRoutineRxWaitF(mailer *Mailer) ReceiveRoutineResult {
 	/* Got M_GET / M_GOT / M_SKIP */
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandFrame.CommandID == stream.M_GET || nextFrame.CommandFrame.CommandID == stream.M_GOT || nextFrame.CommandFrame.CommandID == stream.M_SKIP {
-			/* Add frame to The Queue */
-			log.Printf("State: RxWaitF TheQueue push packet")
 			mailer.queue.Push(nextFrame)
 			mailer.queue.Dump()
 			return RxOk
@@ -69,7 +66,7 @@ func ReceiveRoutineRxWaitF(mailer *Mailer) ReceiveRoutineResult {
 
 	/* Got M_NUL */
 	if nextFrame.IsCommandFrame() {
-		if nextFrame.CommandID == stream.M_EOB {
+		if nextFrame.CommandID == stream.M_NUL {
 			return RxOk
 		}
 	}
@@ -77,6 +74,7 @@ func ReceiveRoutineRxWaitF(mailer *Mailer) ReceiveRoutineResult {
 	/* Got M_EOB */
 	if nextFrame.IsCommandFrame() {
 		if nextFrame.CommandID == stream.M_EOB {
+			log.Printf("End of Batch")
 			mailer.rxState = RxEOB
 			return RxOk
 		}
@@ -92,9 +90,9 @@ func ReceiveRoutineRxWaitF(mailer *Mailer) ReceiveRoutineResult {
 	}
 
 	/* Got other known frame */
-	if nextFrame.IsCommandFrame() { // TODO - Other known frame ...
+	if nextFrame.IsCommandFrame() {
 		/* Report unexpected frame */
-		log.Printf("Report unexpected frame")
+		log.Printf("unexpected frame")
 		mailer.rxState = RxDone
 		return RxFailure
 	}

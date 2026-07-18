@@ -80,7 +80,6 @@ func (h *EchoMsgIndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
             {Label: "Back", URL: "/echo", Icon: "arrow-left"},
             {Label: "Compose", URL: "/echo/" + areaIndex + "/message/compose", Icon: "edit"},
 	    {Label: "Tree", URL: "/echo/" + areaIndex + "/tree", Icon: "tree"},
-	    {Label: "Mark read", URL: "/echo/" + areaIndex + "/mark", Icon: "check"},
 	    {Label: "Edit", URL: "/echo/" + areaIndex + "/update", Icon: "settings"},
         },
 	AreaName: areaName,

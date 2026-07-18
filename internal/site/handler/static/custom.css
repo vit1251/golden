@@ -572,3 +572,9 @@ span.hidden {
 .form-label { display: block; margin-bottom: 4px; color: #aaa; font-size: 0.9em; }
 .form-input { width: 100%; padding: 8px; border: 1px solid #555; background: #1a1a1a; color: #ddd; border-radius: 4px; }
 
+/* FArea image preview */
+
+.preview {
+    margin-top: 10px;
+    max-width: 100%;
+}

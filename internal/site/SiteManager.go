@@ -55,8 +55,6 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 	mux.Handle("GET /echo/{echoname}/tree", handler.NewEchoMsgTreeHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/purge", handler.NewEchoAreaPurgeHandler(s.registry))
 	mux.Handle("POST /echo/{echoname}/purge", handler.NewEchoAreaPurgeCompleteHandler(s.registry))
-	mux.Handle("GET /echo/{echoname}/mark", handler.NewEchoAreaMarkHandler(s.registry))
-	mux.Handle("GET /echo/{echoname}/mark/complete", handler.NewEchoAreaMarkCompleteHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/update", handler.NewEchoAreaUpdateHandler(s.registry))
 	mux.Handle("POST /echo/{echoname}/update", handler.NewEchoAreaUpdateCompleteHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/message/compose", handler.NewEchoMsgComposeHandler(s.registry))
@@ -72,9 +70,11 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 	mux.Handle("GET /file/{echoname}", handler.NewFEchoFileIndexHandler(s.registry))
 	mux.Handle("GET /file/{echoname}/update", handler.NewFEchoAreaUpdateHandler(s.registry))
 	mux.Handle("POST /file/{echoname}/update", handler.NewFEchoAreaUpdateCompleteHandler(s.registry))
-	mux.Handle("GET /file/{echoname}/tic/{file}/view", handler.NewFileEchoAreaViewHandler(s.registry))
-	mux.Handle("GET /file/{echoname}/tic/{file}/download", handler.NewFileEchoAreaDownloadHandler(s.registry))
-	mux.Handle("GET /file/{echoname}/tic/{file}/remove", handler.NewFileEchoAreaRemoveHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/tic/{file}/view", handler.NewFEchoFileViewHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/tic/{file}/download", handler.NewFEchoFileDownloadHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/tic/{file}/archive", handler.NewFEchoFileArchiveHandler(s.registry))
+	mux.Handle("GET /file/{echoname}/purge", handler.NewFEchoFilePurgeHandler(s.registry))
+	mux.Handle("POST /file/{echoname}/purge", handler.NewFEchoFilePurgeCompleteHandler(s.registry))
 	mux.Handle("GET /file/{echoname}/upload", handler.NewFEchoFileUploadHandler(s.registry))
 	mux.Handle("POST /file/{echoname}/upload", handler.NewFEchoFileUploadCompleteHandler(s.registry))
 
@@ -102,9 +102,6 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 	/* Static section */
 	mux.Handle("GET /assets/css/main.css", handler.NewStyleHandler())
 	mux.Handle("GET /static/{filename}", handler.NewStaticHandler())
-
-	/* Classic HTTP API */
-	//mux.Handle("GET /api/netmail/remove", handler.NewNetmailRemoveApiHandler(s.registry))
 
 	return mux
 }

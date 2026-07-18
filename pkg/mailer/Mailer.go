@@ -87,6 +87,8 @@ type Mailer struct {
 	pendingFiles util.Directory
 	chunk        []byte
 	report       *MailerReport /* Mailer report             */
+
+	timerCh      <-chan time.Time
 }
 
 func NewMailer(r *registry.Container) *Mailer {
@@ -381,4 +383,16 @@ func (m *Mailer) connect() error {
 
 func (m *Mailer) disconnect(timeout int16) error {
 	return nil
+}
+
+func (m *Mailer) setRxState(rxState RxState) {
+    m.rxState = rxState
+}
+
+func (m *Mailer) setTxState(txState TxState) {
+    m.txState = txState
+}
+
+func (m *Mailer) setTimer(d time.Duration) {
+    m.timerCh = time.After(d)
 }

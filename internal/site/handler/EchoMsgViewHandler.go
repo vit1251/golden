@@ -40,9 +40,16 @@ func (h *EchoMsgViewHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    content := origMsg.GetContent()
+    // Шаг 2. Разбор сообщения
+    curMsg, err3 := msg.Unmarshal(origMsg.GetPacket())
+    if err3 != nil {
+        http.Error(w, err3.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    // Шаг 3. Форматирование сообщения
     mtp := msg.NewMessageTextProcessor()
-    doc := mtp.Prepare(content)
+    doc := mtp.Prepare(curMsg.GetContent())
 
     echoMapper.ViewMessageByHash(area.GetName(), msgid)
 

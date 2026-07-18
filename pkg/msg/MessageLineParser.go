@@ -1,63 +1,43 @@
 package msg
 
-import "unicode"
-
-type LineParserState int
-
-type MessageLineParser struct {
-	State LineParserState
-}
-
-const (
-	LineQuoteStart  LineParserState = 0
-	LineQuoteAuthor LineParserState = 1
-	LineQuoteLevel  LineParserState = 2
-	LineQuoteBody   LineParserState = 3
+import (
+    "strings"
+    "unicode"
 )
 
-func NewMessageLineParser() *MessageLineParser {
-	mlp := new(MessageLineParser)
-	return mlp
+type MessageLineParser struct {
 }
 
-func (self *MessageLineParser) Parse(oneLine string) *MessageLine {
+func NewMessageLineParser() *MessageLineParser {
+    return &MessageLineParser{}
+}
 
-	var ml MessageLine
-	var state LineParserState = LineQuoteStart
-	//var probe bool = true
+func (self *MessageLineParser) Parse(data string) *MessageLine {
+    runes := []rune(data)
+    pos := 0
 
-	for _, ch := range oneLine {
+    for pos < len(runes) && runes[pos] == ' ' {
+        pos++
+    }
 
-		ml.PureLine += string(ch)
+    var author strings.Builder
+    for pos < len(runes) && unicode.IsUpper(runes[pos]) {
+        author.WriteRune(runes[pos])
+        pos++
+    }
 
-		if state == LineQuoteStart {
-			if unicode.IsSpace(ch) {
-				ml.QuoteStart += string(ch)
-			} else if unicode.IsUpper(ch) {
-				ml.QuoteAuthor += string(ch)
-			} else if ch == '>' {
-				state = LineQuoteLevel
-				ml.QuoteMarkers += string(ch)
-				ml.QuoteLevel += 1
-			} else {
-				ml.QuoteStart = ""
-				ml.QuoteAuthor = ""
-				state = LineQuoteBody
-				ml.QuoteLine = ml.PureLine
-			}
-		} else if state == LineQuoteLevel {
-			if ch == '>' {
-				ml.QuoteMarkers += string(ch)
-				ml.QuoteLevel += 1
-			} else {
-				ml.QuoteLine += string(ch)
-				state = LineQuoteBody
-			}
-		} else if state == LineQuoteBody {
-			ml.QuoteLine += string(ch)
-		}
+    quoteLevel := 0
+    for pos < len(runes) && runes[pos] == '>' {
+        quoteLevel++
+        pos++
+    }
 
-	}
-
-	return &ml
+    if quoteLevel > 0 {
+        return &MessageLine{
+            Author:     author.String(),
+            Text:       string(runes[pos:]),
+            QuoteLevel: quoteLevel,
+        }
+    }
+    return &MessageLine{Text: data}
 }

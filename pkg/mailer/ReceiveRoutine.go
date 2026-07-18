@@ -1,36 +1,29 @@
 package mailer
 
-import "log"
-
 type ReceiveRoutineResult string
 
 const (
-	RxOk       ReceiveRoutineResult = "RxOk"
-	RxFailure  ReceiveRoutineResult = "RxFailure"
-	RxContinue ReceiveRoutineResult = "RxContinue"
+    RxOk       ReceiveRoutineResult = "RxOk"
+    RxFailure  ReceiveRoutineResult = "RxFailure"
+    RxContinue ReceiveRoutineResult = "RxContinue"
 )
 
 func ReceiveRoutine(mailer *Mailer) ReceiveRoutineResult {
 
-	log.Printf("ReceiveRoutine: rxState = %+v", mailer.rxState)
+    if mailer.rxState == RxWaitF {
+	return ReceiveRoutineRxWaitF(mailer)
+    } else if mailer.rxState == RxAccF {
+	return ReceiveRoutineRxAccF(mailer)
+    } else if mailer.rxState == RxRaceD {
+	return ReceiveRoutineRxRaceD(mailer)
+    } else if mailer.rxState == RxWriteD {
+	return ReceiveRoutineRxWriteD(mailer)
+    } else if mailer.rxState == RxEOB {
+	return ReceiveRoutineRxEOB(mailer)
+    } else if mailer.rxState == RxDone {
+        return RxOk
+    }
 
-	switch mailer.rxState {
-	case RxWaitF:
-		return ReceiveRoutineRxWaitF(mailer)
-
-	case RxAccF:
-		return ReceiveRoutineRxAccF(mailer)
-
-	case RxRaceD:
-		return ReceiveRoutineRxRaceD(mailer)
-
-	case RxWriteD:
-		return ReceiveRoutineRxWriteD(mailer)
-
-	case RxEOB:
-		return ReceiveRoutineRxEOB(mailer)
-	}
-
-	panic("wrong case or memory corruption")
+    panic("wrong case or memory corruption")
 
 }

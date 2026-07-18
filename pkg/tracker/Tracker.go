@@ -146,6 +146,12 @@ func (self *Tracker) processTICmail(item queue.FileEntry) error {
 	newFile.SetUnixTime(tic.GetUnixTime())
 	newFile.SetFile(indexName)
 	newFile.SetOrigName(orig_name)
+	newFile.SetOrigin(tic.GetOrigin())
+	newFile.SetFrom(tic.GetFrom())
+	newFile.SetTo(tic.GetTo())
+	newFile.SetSize(tic.GetSize())
+	newFile.SetCrc(tic.GetCrc())
+	newFile.SetLDesc(tic.GetLDesc())
 	fileMapper.RegisterFile(*newFile)
 
 	/* Register status */

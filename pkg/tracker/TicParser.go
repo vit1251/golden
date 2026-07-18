@@ -15,76 +15,76 @@ import (
 type TicParserHandler func(string)
 
 type TicParser struct {
-	registry *registry.Container
+    registry    *registry.Container
+    handlers    map[string]func(*TicFile, string)
 }
 
 func NewTicParser(r *registry.Container) *TicParser {
-	tp := new(TicParser)
-	tp.registry = r
-	return tp
+    parser := &TicParser{
+	registry: r,
+	handlers: map[string]func(*TicFile, string){
+	    "Area":   func(t *TicFile, v string) { t.SetArea(v) },
+            "Desc":   func(t *TicFile, v string) { t.SetDesc(v) },
+            "File":   func(t *TicFile, v string) { t.SetFile(v) },
+	    "LFile":  func(t *TicFile, v string) { t.SetLFile(v) },
+    	    "Date":   func(t *TicFile, v string) {
+        	if unixTime, err := strconv.ParseInt(v, 10, 64); err == nil {
+            	    t.SetUnixTime(unixTime)
+        	}
+    	    },
+	    "Origin": func(t *TicFile, v string) { t.SetOrigin(v) },
+	    "From":   func(t *TicFile, v string) { t.SetFrom(v) },
+	    "To":     func(t *TicFile, v string) { t.SetTo(v) },
+	    "Size":   func(t *TicFile, v string) {
+        	if size, err := strconv.ParseInt(v, 10, 64); err == nil {
+		    t.SetSize(size)
+        	}
+    	    },
+    	    "Crc":    func(t *TicFile, v string) { t.SetCrc(v) },
+    	    "LDesc":  func(t *TicFile, v string) { t.SetLDesc(v) },
+	},
+    }
+    return parser
 }
 
-func (self *TicParser) prcessLine(ticFile TicFile, newLine string) (TicFile, error) {
-
-	parts := strings.SplitN(newLine, " ", 2)
-	partCount := len(parts)
-
-	if partCount == 2 {
-
-		var name string = parts[0]
-		var value string = parts[1]
-
-		/* Trim parameters */
-		name = strings.Trim(name, " \t")
-		value = strings.Trim(value, " \t")
-
-		/* Process directive */
-		if strings.EqualFold(name, "Area") {
-			ticFile.SetArea(value)
-		} else if strings.EqualFold(name, "Desc") {
-			ticFile.SetDesc(value)
-		} else if strings.EqualFold(name, "File") {
-			ticFile.SetFile(value)
-		} else if strings.EqualFold(name, "LFile") {
-			ticFile.SetLFile(value)
-		} else if strings.EqualFold(name, "Date") {
-			if unixTime, err := strconv.ParseInt(value, 10, 64); err == nil {
-				ticFile.SetUnixTime(unixTime)
-			}
-		} else {
-			log.Printf("Unknown TIC directive: name = %+v value = %+v", name, value)
-		}
-
-	} else {
-		log.Printf("Unknown TIC line: line = %+v", newLine)
-	}
-
-	return ticFile, nil
+func (p *TicParser) prcessLine(ticFile *TicFile, newLine string) error {
+    parts := strings.SplitN(newLine, " ", 2)
+    if len(parts) != 2 {
+	return nil
+    }
+    name := parts[0]
+    value := parts[1]
+    /* Trim parameters */
+    name = strings.Trim(name, " \t")
+    value = strings.Trim(value, " \t")
+    /* Process directive */
+    if handler, ok := p.handlers[name]; ok {
+        handler(ticFile, value)
+    } else {
+	log.Printf("Unknown TIC directive: name = %+v value = %+v", name, value)
+    }
+    return nil
 }
 
-func (self *TicParser) Parse(stream io.Reader) (*TicFile, error) {
-
-	charsetManager := charset.RestoreCharsetManager(self.registry)
-
-	content, err1 := ioutil.ReadAll(stream)
-	if err1 != nil {
-		return nil, err1
+func (p *TicParser) Parse(stream io.Reader) (*TicFile, error) {
+    charsetManager := charset.RestoreCharsetManager(p.registry)
+    content, err1 := ioutil.ReadAll(stream)
+    if err1 != nil {
+	return nil, err1
+    }
+    newContent, err2 := charsetManager.DecodeMessageBody(content, "CP866")
+    if err2 != nil {
+	return nil, err2
+    }
+    rows := strings.Split(newContent, CRLF)
+    ticFile := NewTicFile()
+    for _, row := range rows {
+	err3 := p.prcessLine(ticFile, row)
+	if err3 != nil {
+	    return ticFile, err3
 	}
-
-	newContent, err2 := charsetManager.DecodeMessageBody(content, "CP866")
-	if err2 != nil {
-		return nil, err2
-	}
-
-	rows := strings.Split(newContent, CRLF)
-
-	ticFile := NewTicFile()
-
-	for _, row := range rows {
-		*ticFile, _ = self.prcessLine(*ticFile, row)
-	}
-
-	return ticFile, nil
+    }
+    return ticFile, nil
 }
 
 func (self TicParser) ParseFile(filename string) (*TicFile, error) {

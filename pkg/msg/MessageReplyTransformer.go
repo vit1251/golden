@@ -1,67 +1,37 @@
 package msg
 
 import (
-	"log"
-	"strings"
+    "strings"
 )
 
 type MessageReplyTransformer struct {
-	author string
+    author string
 }
 
 func NewMessageReplyTransformer() *MessageReplyTransformer {
-	mrt := new(MessageReplyTransformer)
-	mrt.author = "??"
-	return mrt
+    mrt := new(MessageReplyTransformer)
+    mrt.author = "??"
+    return mrt
 }
 
-func (self *MessageReplyTransformer) Transform(content string) string {
-	var newContent string
+func (t *MessageReplyTransformer) SetAuthor(author string) { t.author = author }
 
-	// Привет, Vitold!
-	//
-	// Четверг 05 Ноября 2020 13:02:06, Vitold Sedyshev писал(а) к Jaroslav Bespalov:
-	//
-	// С наилучшими пожеланиями, Jaroslav.
+func (t *MessageReplyTransformer) Transform(content string) string {
+    var out string
+    lines := StringSplitLines(content)
+    for _, line := range lines {
+        // Шаг 1. Парсим строки
+    	mlp := NewMessageLineParser()
+	nl := mlp.Parse(line)
+        if nl.QuoteLevel == 0 {
+	   nl.Author = t.author
+        }
+        nl.QuoteLevel += 1
 
-	log.Printf("reply_transform: msg = %+v", content)
+        // Шаг 2. Собираем результат
+        row := " " + nl.Author + strings.Repeat(">", nl.QuoteLevel+1) + nl.Text
+        out = out + row + "\n"
+    }
 
-	rows := strings.Split(content, "\r")
-	for _, oneLine := range rows {
-
-		log.Printf("transform: row = %+v", oneLine)
-
-		mlp := NewMessageLineParser()
-		nl := mlp.Parse(oneLine)
-
-		if nl.QuoteLevel == 0 {
-			nl.QuoteLevel = 1
-			nl.QuoteAuthor = self.author
-			nl.QuoteMarkers = ">"
-			nl.QuoteStart = " "
-			nl.QuoteLine = " " + nl.PureLine
-		} else {
-			nl.QuoteStart = " "
-			nl.QuoteMarkers += ">"
-			nl.QuoteLevel += 1
-		}
-
-		log.Printf("ql: nl = %+v", nl)
-
-		quoteLineSize := len(strings.TrimSpace(nl.QuoteLine))
-		if quoteLineSize > 0 {
-			row := nl.QuoteStart + nl.QuoteAuthor + nl.QuoteMarkers + nl.QuoteLine
-			newContent += row + "\r"
-			log.Printf("quote: row = %+v", row)
-		} else {
-			newContent += "\r"
-		}
-
-	}
-
-	return newContent
-}
-
-func (self *MessageReplyTransformer) SetAuthor(author string) {
-	self.author = author
+    return out
 }

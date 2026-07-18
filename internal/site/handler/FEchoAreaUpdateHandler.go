@@ -32,7 +32,8 @@ func (h *FEchoAreaUpdateHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 
     data := views.FEchoAreaUpdateData{
         Actions: []views.ToolbarAction{
-            {Label: "Back",   URL: "/file/" + echoName,              Icon: "arrow-left"},
+            {Label: "Back",  URL: "/file/" + echoName,            Icon: "arrow-left"},
+            {Label: "Purge", URL: "/file/" + echoName + "/purge", Icon: "trash-2"},
         },
         AreaName: area.GetName(),
         Summary:  area.GetSummary(),

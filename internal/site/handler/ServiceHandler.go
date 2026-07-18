@@ -61,7 +61,8 @@ func aggregateByDay(sessions []mapper.StatMailer) []views.DayStat {
 	d.filesTX += s.FileTXcount
 
 	// Для ошибок смотрим статус
-	if s.Status != "done" && s.Status != "" {
+	if s.Status == "Complete: RX = RxOk TX = TxOk" {
+	} else {
 	    d.errors++
 	}
     }

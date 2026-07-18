@@ -9,16 +9,17 @@ import (
     "github.com/vit1251/golden/pkg/msg"
     "github.com/vit1251/golden/pkg/packet"
     "github.com/vit1251/golden/pkg/registry"
+    "github.com/vit1251/golden/internal/utils"
 )
 
 type NetmailViewHandler struct {
-	registry *registry.Container
+    registry *registry.Container
 }
 
 func NewNetmailViewHandler(registry *registry.Container) *NetmailViewHandler {
-	return &NetmailViewHandler{
-		registry: registry,
-	}
+    return &NetmailViewHandler{
+	registry: registry,
+    }
 }
 
 func (h *NetmailViewHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -78,10 +79,12 @@ func (h *NetmailViewHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     var atts []views.NetmailAttachment
     attachments := msgBody.GetAttachments()
     for idx, att := range attachments {
+        var attachName string = att.GetName()
+        var attachSize int64 = int64(att.Len())
 	atts = append(atts, views.NetmailAttachment{
-    	    Name: att.GetName(),
+    	    Name: attachName,
     	    URL:  fmt.Sprintf("/netmail/%s/attach/%d/view", origMsg.Hash, idx),
-    	    Size: fmt.Sprintf("%d kB", att.Len()/1024),
+    	    Size: utils.FormatBytes(attachSize),
 	})
     }
 
