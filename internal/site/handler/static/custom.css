@@ -148,9 +148,18 @@ span.badge.white.danger {
 }
 
 .Header-item {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
     font-weight: 600;
-    font-size: 14pt;
+    font-size: 1.2em;
     margin-right: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    background: #222;
+    color: #888;
 }
 
 .Header a {

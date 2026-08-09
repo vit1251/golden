@@ -58,13 +58,17 @@ func (self *MessageDocumentRenderer) renderLine(str string, level int) string {
     return newLine
 }
 
+func replaceEntities(str string) string {
+    return html.EscapeString(str)
+}
+
 func (self *MessageDocumentRenderer) RenderAsHTML(doc *MessageDocument) template.HTML {
 
     var lines []string
     for _, item := range doc.items {
 
         if item.QuoteLevel == 0 {
-            newText := html.EscapeString(item.Text)
+            newText := replaceEntities(item.Text)
 	    lines = append(lines, newText)
 	}
 
@@ -72,13 +76,13 @@ func (self *MessageDocumentRenderer) RenderAsHTML(doc *MessageDocument) template
             if item.Author != "" {
                 quoteBlock := item.Author + strings.Repeat(">", item.QuoteLevel)
                 newLine := " " + quoteBlock + " " + item.Text
-                newText := html.EscapeString(newLine)
+                newText := replaceEntities(newLine)
                 newHTML := self.renderLine(newText, item.QuoteLevel)
                 lines = append(lines, newHTML)
             } else {
                 quoteBlock := strings.Repeat(">", item.QuoteLevel)
                 newLine := " " + quoteBlock + " " + item.Text
-                newText := html.EscapeString(newLine)
+                newText := replaceEntities(newLine)
                 newHTML := self.renderLine(newText, item.QuoteLevel)
                 lines = append(lines, newHTML)
             }

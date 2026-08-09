@@ -27,31 +27,53 @@ func (self *CharsetManager) registerCharset(name string, c *charmap.Charmap) {
 	self.mapping[name] = c
 }
 
+func commonDecode(in byte) (rune, bool) {
+    if in == 0x10 {
+        return '►', true
+    }
+    if in == 0x11 {
+        return '◄', true
+    }
+    return 0, false
+}
+
 func (self *CharsetManager) decode(source []byte, charmap *charmap.Charmap) ([]rune, error) {
+    var result []rune
+    for _, ch := range source {
+        if sc, ok := commonDecode(ch); ok {
+            result = append(result, sc)
+            continue
+        }
+	r := charmap.DecodeByte(ch)
+	result = append(result, r)
+    }
+    return result, nil
+}
 
-	var result []rune
-
-	for _, ch := range source {
-		r := charmap.DecodeByte(ch)
-		result = append(result, r)
-	}
-
-	return result, nil
+func commonEncode(in rune) (byte, bool) {
+    if in == '►' {
+        return 0x10, true
+    }
+    if in == '◄' {
+        return 0x11, true
+    }
+    return 0, false
 }
 
 func (self *CharsetManager) encode(source []rune, charmap *charmap.Charmap) ([]byte, error) {
-
-	var result []byte
-
-	for _, ch := range source {
-		if r, ok := charmap.EncodeRune(ch); ok {
-			result = append(result, r)
-		} else {
-			result = append(result, byte('?'))
-		}
+    var result []byte
+    for _, ch := range source {
+        if sc, ok := commonEncode(ch); ok {
+            result = append(result, sc)
+            continue
+        }
+	if r, ok := charmap.EncodeRune(ch); ok {
+	    result = append(result, r)
+	    continue
 	}
-
-	return result, nil
+	result = append(result, byte('?'))
+    }
+    return result, nil
 }
 
 func (self CharsetManager) DecodeMessageBody(msgBody []byte, charset string) (string, error) {
