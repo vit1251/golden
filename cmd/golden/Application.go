@@ -165,21 +165,31 @@ func (self *Application) showWelcomeMessage(modernMode bool) {
 	var report strings.Builder
 
 	// Шаг 1. Приветствие приложения
-	report.WriteString("Golden Point is running at:\n")
+	report.WriteString("======================================================================\n")
+	report.WriteString("  Golden Point has started successfully and is ready for connections! \n")
+	report.WriteString("======================================================================\n")
 	report.WriteString("\n")
 
-	// Шаг 2. Информация от приложения запущенного в Legacy-режиме
 	siteManager := site.RestoreSiteManager(self.registry)
 	siteAddress := siteManager.GetLocation()
-	report.WriteString(siteAddress)
+	var msg string = fmt.Sprintf("Listening on %s (press Ctrl+Click to open)\n", siteAddress)
+	report.WriteString(msg)
 
+	var setupMessage bool = true
+	if setupMessage {
+		report.WriteString("\n")
+		report.WriteString("[!] FIRST RUN ACTION REQUIRED:\n")
+		report.WriteString("    To start reading and fetching FidoNet echoes, your installation\n")
+		report.WriteString("    must be configured.\n")
+		report.WriteString("\n")
+		report.WriteString("    Please follow these steps:\n")
+		report.WriteString("    1. Open the Web Interface link in your browser.\n")
+		report.WriteString("    2. Navigate to the 'Setup' section in the top menu.\n")
+		report.WriteString("    3. Fill in your station details and uplink configuration.\n")
+	}
 	report.WriteString("\n")
+	report.WriteString("======================================================================\n")
 
-	// Шаг 4. Выводим информацию о необходимости настройки в первую загрузку
-	report.WriteString("Note: You MUST setup your instalattion on first run.\n")
-	report.WriteString("      Please open `Setup` section initially.\n")
-
-	// Шаг 5. Выводим в стандартный вывод
 	fmt.Printf("%s", report.String())
 
 }

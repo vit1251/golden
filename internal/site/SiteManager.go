@@ -134,5 +134,5 @@ func (self *SiteManager) SetPort(port int) {
 }
 
 func (self *SiteManager) GetLocation() string {
-	return fmt.Sprintf("http://%s:%d\n", self.addr, self.port)
+	return fmt.Sprintf("http://%s:%d", self.addr, self.port)
 }
