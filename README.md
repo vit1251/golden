@@ -53,15 +53,18 @@ You may download binary builds
 
 To compile Golden Point your system MUST have next product:
 
-    * Golang >= 1.16
+    * Golang >= 1.25
 
 Golang and Node MAY use network to download dependencies.
 
-### Building routine
+### Build from source
 
-On Linux system with x86_64 architecture:
+On Linux system:
 
-    # ./scripts/make-build-linux-gnu.sh
+    # ./scripts/make-build
+
+Start Golned Point:
+
     # ./golden-linux-amd64 -P 8080 --debug
 
-That's all.
+Enjoy ;)

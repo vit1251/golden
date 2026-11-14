@@ -7,6 +7,7 @@ import (
 
 	"github.com/vit1251/golden/internal/site/handler"
 	"github.com/vit1251/golden/pkg/registry"
+	goldenmcp "github.com/vit1251/golden/internal/mcp"
 )
 
 type IAction interface {
@@ -44,7 +45,7 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 
 	mux := http.NewServeMux()
 
-	// Шаг 1. Главная страница
+	// Start page
 	mux.Handle("GET /{$}", handler.NewWelcomeHandler(s.registry))
 
 	// Шаг 2. Раздел конференций
@@ -63,7 +64,7 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 	mux.Handle("GET /echo/{echoname}/message/{msgid}/reply", handler.NewEchoMsgReplyHandler(s.registry))
 	mux.Handle("GET /echo/{echoname}/message/{msgid}/archive", handler.NewEchoMsgArchiveHandler(s.registry))
 
-	/* File section */
+	// File section
 	mux.Handle("GET /file", handler.NewFEchoAreaIndexHandler(s.registry))
 	mux.Handle("GET /file/create", handler.NewFEchoAreaCreateHandler(s.registry))
 	mux.Handle("POST /file/create", handler.NewFEchoAreaCreateCompleteHandler(s.registry))
@@ -78,7 +79,7 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 	mux.Handle("GET /file/{echoname}/upload", handler.NewFEchoFileUploadHandler(s.registry))
 	mux.Handle("POST /file/{echoname}/upload", handler.NewFEchoFileUploadCompleteHandler(s.registry))
 
-	/* Netmail section */
+	// Netmail section
 	mux.Handle("GET /netmail", handler.NewNetmailIndexHandler(s.registry))
 	mux.Handle("GET /netmail/{msgid}/view", handler.NewNetmailViewHandler(s.registry))
 	mux.Handle("GET /netmail/{msgid}/dump", handler.NewNetmailDumpHandler(s.registry))
@@ -87,21 +88,24 @@ func (s *SiteManager) createRouter() *http.ServeMux {
 	mux.Handle("GET /netmail/{msgid}/attach/{attidx}/view", handler.NewNetmailAttachViewHandler(s.registry))
 	mux.Handle("GET /netmail/compose", handler.NewNetmailComposeHandler(s.registry))
 
-	/* Setup section */
+	// Setup section
 	mux.Handle("GET /settings", handler.NewSettingsHandler(s.registry))
 	mux.Handle("POST /settings", handler.NewSettingsUpdateHandler(s.registry))
 
-	/* Service section */
+	// Service section
 	mux.Handle("GET /service", handler.NewServiceHandler(s.registry))
 
-	/* Draft section */
+	// Draft section
 	mux.Handle("GET /draft", handler.NewDraftIndexHandler(s.registry))
 	mux.Handle("GET /draft/{draftid}/edit", handler.NewDraftEditHandler(s.registry))
 	mux.Handle("POST /draft/{draftid}/edit/complete", handler.NewDraftEditCompleteHandler(s.registry))
 
-	/* Static section */
+	// Static section
 	mux.Handle("GET /assets/css/main.css", handler.NewStyleHandler())
 	mux.Handle("GET /static/{filename}", handler.NewStaticHandler())
+
+        // Work with AI agent
+        mux.Handle("/mcp", goldenmcp.NewHandler(s.registry))
 
 	return mux
 }

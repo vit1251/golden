@@ -24,3 +24,6 @@ golden-darwin-amd64
 *.mo?
 *.su?
 *.sa?
+
+# Trace
+trace.out
