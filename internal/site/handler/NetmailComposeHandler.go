@@ -29,7 +29,7 @@ func (self *NetmailComposeHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 	//newDraft.SetBody(body)
 	//newDraft.SetTo(to)
 	//newDraft.SetToAddr(to_addr)
-	err2 := draftMapper.RegisterNewDraft(*newDraft)
+	err2 := draftMapper.RegisterNewDraft(newDraft)
 	if err2 != nil {
 		panic(err2)
 	}

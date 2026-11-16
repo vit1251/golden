@@ -152,7 +152,7 @@ func (self *Tracker) processTICmail(item queue.FileEntry) error {
 	newFile.SetSize(tic.GetSize())
 	newFile.SetCrc(tic.GetCrc())
 	newFile.SetLDesc(tic.GetLDesc())
-	fileMapper.RegisterFile(*newFile)
+	fileMapper.RegisterFile(newFile)
 
 	/* Register status */
 	//TODO - statMapper.RegisterInFile(tic.GetFile())

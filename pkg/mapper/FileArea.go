@@ -20,7 +20,7 @@ func (self *FileArea) SetName(name string) {
 	self.name = name
 }
 
-func (self FileArea) GetName() string {
+func (self *FileArea) GetName() string {
 	return self.name
 }
 
@@ -28,11 +28,11 @@ func (self *FileArea) SetSummary(summary string) {
 	self.summary = summary
 }
 
-func (self FileArea) GetSummary() string {
+func (self *FileArea) GetSummary() string {
 	return self.summary
 }
 
-func (self FileArea) GetCharset() string {
+func (self *FileArea) GetCharset() string {
 	if self.charset == "" {
 		self.charset = "UTF-8"
 	}
@@ -47,7 +47,7 @@ func (self *FileArea) SetMode(mode string) {
 	self.mode = mode
 }
 
-func (self FileArea) GetMode() string {
+func (self *FileArea) GetMode() string {
 	return self.mode
 }
 

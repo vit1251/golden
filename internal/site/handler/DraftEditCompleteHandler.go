@@ -42,7 +42,7 @@ func (h *DraftEditCompleteHandler) processSaveHandler(w http.ResponseWriter, r *
 	newDraft.SetSubject(newSubject)
 	newDraft.SetBody(newBody)
 
-	err2 := draftMapper.UpdateDraft(*newDraft)
+	err2 := draftMapper.UpdateDraft(newDraft)
 	if err2 != nil {
 		return err2
 	}

@@ -375,55 +375,41 @@ func (self *EchoMapper) RemoveMessagesByAreaName(echoTag string) error {
 
 }
 
-func (self *EchoMapper) UpdateAreaMessageCounters(areas []Area) ([]Area, error) {
+func (self *EchoMapper) UpdateAreaMessageCounters(areas []*Area) error {
 
-	var newAreas []Area
-
-	//log.Printf("areas = %+v", areas)
-
-	/* Get message count */
-	areas2, err1 := self.getAreaListCount()
+	// Part 1. Area counts
+	areaCounts, err1 := self.getAreaListCount()
 	if err1 != nil {
-		return nil, err1
+		return err1
 	}
-	//log.Printf("areas = %+v", areas2)
-
-	/* Get message new count */
-	areas3, err2 := self.getAreaListNewCount()
-	if err2 != nil {
-		//log.Printf("err2 = %+v", err2)
-		return nil, err2
+        counts := make(map[string]int, len(areaCounts))
+	for _, a := range areaCounts {
+	    counts[strings.ToUpper(a.GetName())] = a.GetMessageCount()
 	}
-	//log.Printf("areas = %+v", areas3)
-
-	/* Update original areas values */
 	for _, area := range areas {
-
-		/* Search area count */
-		for _, area2 := range areas2 {
-			var areaName string = area.GetName()
-			var area2Name string = area2.GetName()
-			if strings.EqualFold(areaName, area2Name) {
-				//log.Printf("area = '%+v' area2 = '%+v'", areaName, area2Name)
-				area.SetMessageCount(area2.GetMessageCount())
-			}
-		}
-
-		/* Search area new count */
-		for _, area3 := range areas3 {
-			var areaName string = area.GetName()
-			var area3Name string = area3.GetName()
-			if strings.EqualFold(areaName, area3Name) {
-				//log.Printf("area = '%+v' area3 = '%+v'", areaName, area3Name)
-				area.SetNewMessageCount(area3.GetNewMessageCount())
-			}
-		}
-
-		newAreas = append(newAreas, area)
-
+	    key := strings.ToUpper(area.GetName())
+	    if count, ok := counts[key]; ok {
+		area.SetMessageCount(count)
+	    }
 	}
 
-	return newAreas, nil
+	// Part 2. Area new counts
+	areaNewCounts, err2 := self.getAreaListNewCount()
+	if err2 != nil {
+		return err2
+	}
+	newCounts := make(map[string]int, len(areaNewCounts))
+	for _, a := range areaNewCounts {
+	    newCounts[strings.ToUpper(a.GetName())] = a.GetNewMessageCount()
+	}
+	for _, area := range areas {
+	    key := strings.ToUpper(area.GetName())
+	    if newCount, ok := newCounts[key]; ok {
+	        area.SetNewMessageCount(newCount)
+	    }
+	}
+
+	return nil
 }
 
 func (self *EchoMapper) MarkAllReadByAreaName(echoTag string) error {

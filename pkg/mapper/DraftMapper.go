@@ -20,8 +20,8 @@ func NewDraftMapper(r *registry.Container) *DraftMapper {
 	return newDraftMapper
 }
 
-func (self *DraftMapper) GetDraftMessages(state int) ([]Draft, error) {
-	var result []Draft
+func (self *DraftMapper) GetDraftMessages(state int) ([]*Draft, error) {
+	var result []*Draft
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
@@ -53,7 +53,7 @@ func (self *DraftMapper) GetDraftMessages(state int) ([]Draft, error) {
 		newDraft.SetBody(draftBody)
 		newDraft.SetState(draftDone)
 
-		result = append(result, *newDraft)
+		result = append(result, newDraft)
 
 		return nil
 	})
@@ -64,7 +64,7 @@ func (self *DraftMapper) GetDraftMessages(state int) ([]Draft, error) {
 	return result, nil
 }
 
-func (self *DraftMapper) RegisterNewDraft(draft Draft) error {
+func (self *DraftMapper) RegisterNewDraft(draft *Draft) error {
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "INSERT INTO `draft` (`draftUUID`, `draftArea`,`draftBody`,`draftDest`,`draftDestAddr`,`draftSubject`,`draftReply`) VALUES (?,?,?,?,?,?,?)"
@@ -87,7 +87,7 @@ func (self *DraftMapper) RegisterNewDraft(draft Draft) error {
 	return err1
 }
 
-func (self DraftMapper) GetDraftByUUID(uuid string) (*Draft, error) {
+func (self *DraftMapper) GetDraftByUUID(uuid string) (*Draft, error) {
 	var result *Draft
 
 	storageManager := storage.RestoreStorageManager(self.registry)
@@ -136,7 +136,7 @@ func (self DraftMapper) GetDraftByUUID(uuid string) (*Draft, error) {
 	return result, nil
 }
 
-func (self DraftMapper) UpdateDraft(newDraft Draft) error {
+func (self *DraftMapper) UpdateDraft(newDraft *Draft) error {
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "UPDATE `draft` SET `draftSubject` = ?, `draftBody` = ?, `draftDest` = ?, `draftDestAddr` = ? WHERE `draftUUID` = ?"
@@ -157,7 +157,7 @@ func (self DraftMapper) UpdateDraft(newDraft Draft) error {
 	return err1
 }
 
-func (self DraftMapper) RemoveByUUID(uuid string) error {
+func (self *DraftMapper) RemoveByUUID(uuid string) error {
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "DELETE FROM `draft` WHERE `draftUUID` = ?"

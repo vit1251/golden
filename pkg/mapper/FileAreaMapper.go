@@ -17,18 +17,16 @@ func NewFileAreaMapper(r *registry.Container) *FileAreaMapper {
 	return newFileAreaMapper
 }
 
-func (self *FileAreaMapper) GetAreas() ([]FileArea, error) {
+func (self *FileAreaMapper) GetAreas() ([]*FileArea, error) {
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	var areas []FileArea
+	var areas []*FileArea
 
-	/* Restore parameters */
-	sqlStmt := "SELECT `areaName`, `areaMode`, `areaSummary`, `areaCharset` FROM `filearea` ORDER BY `areaOrder` ASC, `areaId` ASC"
+	query1 := "SELECT `areaName`, `areaMode`, `areaSummary`, `areaCharset` FROM `filearea` ORDER BY `areaOrder` ASC, `areaId` ASC"
+	var args []interface{}
 
-	var params []interface{}
-
-	err1 := storageManager.Query(sqlStmt, params, func(rows *sql.Rows) error {
+	err1 := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 
 		var areaName string
 		var areaMode string
@@ -46,33 +44,30 @@ func (self *FileAreaMapper) GetAreas() ([]FileArea, error) {
 		area.SetSummary(areaSummary)
 		area.SetCharset(areaCharset)
 
-		areas = append(areas, *area)
+		areas = append(areas, area)
 
 		return nil
 	})
 	if err1 != nil {
-            return []FileArea{}, err1
+            return nil, err1
 	}
 
-        newAreas1, err2 := self.UpdateFileAreasWithFileCount(areas)
-	if err2 != nil {
-            return []FileArea{}, err2
+        if err2 := self.UpdateFileAreasWithFileCount(areas); err2 != nil {
+            return nil, err2
 	}
 
-        newAreas2, err3 := self.UpdateNewFileAreasWithFileCount(newAreas1)
-	if err3 != nil {
-            return []FileArea{}, err3
+        if err3 := self.UpdateNewFileAreasWithFileCount(areas); err3 != nil {
+            return nil, err3
 	}
 
-	return newAreas2, nil
+	return areas, nil
 }
 
-func (self *FileAreaMapper) UpdateFileAreasWithFileCount(fileAreas []FileArea) ([]FileArea, error) {
+func (self *FileAreaMapper) UpdateFileAreasWithFileCount(fileAreas []*FileArea) error {
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	sqlStmt := "SELECT `fileArea`, count(`fileName`) AS `fileCount` FROM `file` GROUP BY `fileArea` ORDER BY `fileArea` ASC"
-
 	var params []interface{}
 
 	metrics := make(map[string]int)
@@ -93,26 +88,23 @@ func (self *FileAreaMapper) UpdateFileAreasWithFileCount(fileAreas []FileArea) (
 	})
 
 	/* Populate metrics */
-	var result []FileArea
-	for _, a := range fileAreas {
-		var areaName string = a.GetName()
+	for _, fileArea := range fileAreas {
+		var areaName string = fileArea.GetName()
 		var areaCount int
 		if count, ok := metrics[areaName]; ok {
 			areaCount = count
 		}
-		a.SetCount(areaCount)
-		result = append(result, a)
+		fileArea.SetCount(areaCount)
 	}
 
-	return result, err1
+	return err1
 }
 
-func (self *FileAreaMapper) UpdateNewFileAreasWithFileCount(fileAreas []FileArea) ([]FileArea, error) {
+func (self *FileAreaMapper) UpdateNewFileAreasWithFileCount(fileAreas []*FileArea) error {
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	sqlStmt := "SELECT `fileArea`, count(`fileName`) AS `fileCount` FROM `file` WHERE `fileViewCount` = 0 GROUP BY `fileArea` ORDER BY `fileArea` ASC"
-
 	var params []interface{}
 
 	metrics := make(map[string]int)
@@ -132,19 +124,16 @@ func (self *FileAreaMapper) UpdateNewFileAreasWithFileCount(fileAreas []FileArea
 		return nil
 	})
 
-	/* Populate metrics */
-	var result []FileArea
-	for _, a := range fileAreas {
-		var areaName string = a.GetName()
+	for _, fileArea := range fileAreas {
+		var areaName string = fileArea.GetName()
 		var areaNewCount int
 		if count, ok := metrics[areaName]; ok {
 			areaNewCount = count
 		}
-		a.SetNewCount(areaNewCount)
-		result = append(result, a)
+		fileArea.SetNewCount(areaNewCount)
 	}
 
-	return result, err1
+	return err1
 }
 
 func (self *FileAreaMapper) CreateFileArea(a *FileArea) error {
@@ -216,10 +205,6 @@ func (self *FileAreaMapper) GetAreaByName(areaName string) (*FileArea, error) {
 	})
 
 	return result, err1
-}
-
-func (self FileAreaMapper) GetMessageNewCount() (int, error) {
-	return 0, nil
 }
 
 func (self *FileAreaMapper) UpdateArea(a *FileArea) error {

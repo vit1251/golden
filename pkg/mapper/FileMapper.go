@@ -21,10 +21,10 @@ func NewFileMapper(r *registry.Container) *FileMapper {
 	return newFileMapper
 }
 
-func (m *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
+func (m *FileMapper) GetFileHeaders(echoTag string) ([]*File, error) {
 
     storageManager := storage.RestoreStorageManager(m.registry)
-    var result []File
+    var result []*File
 
     sb := sqlbuilder.NewSelectBuilder()
     sb.Select("fileArea", "indexName", "fileName", "fileDesc", "fileTime", "fileViewCount", "fileOrigin", "fileFrom", "fileTo", "fileSize", "fileCrc")
@@ -66,19 +66,15 @@ func (m *FileMapper) GetFileHeaders(echoTag string) ([]File, error) {
 		if fileTime != nil {
 			newFile.SetUnixTime(*fileTime)
 		}
+		result = append(result, newFile)
 
-		result = append(result, *newFile)
 		return nil
 	})
 
 	return result, err
 }
 
-func (self *FileMapper) CheckFileExists(tic File) (bool, error) {
-	return true, nil
-}
-
-func (m *FileMapper) RegisterFile(tic File) error {
+func (m *FileMapper) RegisterFile(tic *File) error {
     storageManager := storage.RestoreStorageManager(m.registry)
     ib := sqlbuilder.NewInsertBuilder()
     ib.InsertInto("file")
@@ -90,7 +86,7 @@ func (m *FileMapper) RegisterFile(tic File) error {
     })
 }
 
-func (self FileMapper) GetFileAbsolutePath(areaName string, name string) string {
+func (self *FileMapper) GetFileAbsolutePath(areaName string, name string) string {
 	boxDirectory := cmn.GetFilesDirectory()
 	path := filepath.Join(boxDirectory, areaName, name)
 	return path

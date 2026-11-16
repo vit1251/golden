@@ -82,7 +82,7 @@ func (self *NetmailReplyHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	newDraft.SetBody(newBody)
 
 	/* Store draft message */
-	err4 := draftMapper.RegisterNewDraft(*newDraft)
+	err4 := draftMapper.RegisterNewDraft(newDraft)
 	if err4 != nil {
 		response := fmt.Sprintf("Fail in RegisterNewDraft on draftMapper: err = %+v", err4)
 		http.Error(w, response, http.StatusInternalServerError)

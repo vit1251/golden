@@ -56,13 +56,13 @@ func (self *EchoAreaMapper) Register(a *Area) error {
 	return err1
 }
 
-func (self *EchoAreaMapper) GetAreas() ([]Area, error) {
+func (self *EchoAreaMapper) GetAreas() ([]*Area, error) {
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 	mapperManager := RestoreMapperManager(self.registry)
 	echoMapper := mapperManager.GetEchoMapper()
 
-	var result []Area
+	var result []*Area
 
 	sb := sqlbuilder.NewSelectBuilder()
 	sb.Select("areaIndex", "areaName", "areaSummary", "areaCharset", "areaOrder")
@@ -90,7 +90,7 @@ func (self *EchoAreaMapper) GetAreas() ([]Area, error) {
 		area.SetCharset(areaCharset)
 		area.SetOrder(areaOrder)
 
-		result = append(result, *area)
+		result = append(result, area)
 
 		return nil
 	})
@@ -98,12 +98,11 @@ func (self *EchoAreaMapper) GetAreas() ([]Area, error) {
 		return nil, err
 	}
 
-	newAreas, err1 := echoMapper.UpdateAreaMessageCounters(result)
-	if err1 != nil {
+	if err1 := echoMapper.UpdateAreaMessageCounters(result); err1 != nil {
 		return nil, err1
 	}
 
-	return newAreas, nil
+	return result, nil
 }
 
 func (self *EchoAreaMapper) GetAreaByName(areaName string) (*Area, error) {

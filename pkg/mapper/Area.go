@@ -1,7 +1,6 @@
 package mapper
 
 import (
-	"log"
 	"strings"
 )
 
@@ -37,7 +36,7 @@ func NewArea() *Area {
 	return a
 }
 
-func (self Area) GetAreaIndex() string {
+func (self *Area) GetAreaIndex() string {
 	return self.areaIndex
 }
 
@@ -45,7 +44,7 @@ func (self *Area) SetAreaIndex(areaIndex string) {
 	self.areaIndex = areaIndex
 }
 
-func (self Area) GetName() string {
+func (self *Area) GetName() string {
 	return self.name
 }
 
@@ -54,17 +53,16 @@ func (self *Area) SetName(name string) {
 }
 
 func (self *Area) SetCharset(newCharset string) {
-	if newCharset == "CP866" || newCharset == "UTF-8" {
-		self.charset = newCharset
-	}
+    if newCharset == "CP866" || newCharset == "UTF-8" {
+	self.charset = newCharset
+    }
 }
 
-func (self Area) GetCharset() string {
-	if self.charset == "" {
-		log.Printf("Warning: no charset for %s. Set 'CP866' as default.", self.name)
-		self.charset = "CP866"
-	}
-	return self.charset
+func (self *Area) GetCharset() string {
+    if self.charset == "" {
+	return "CP866"
+    }
+    return self.charset
 }
 
 func (self *Area) GetOrder() int64 {

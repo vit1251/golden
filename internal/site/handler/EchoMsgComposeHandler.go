@@ -41,7 +41,7 @@ func (self *EchoMsgComposeHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 	/* Create new draft */
 	newDraft := mapper.NewDraft()
 	newDraft.SetArea(area.GetName())
-	err2 := draftMapper.RegisterNewDraft(*newDraft)
+	err2 := draftMapper.RegisterNewDraft(newDraft)
 	if err2 != nil {
 		response := fmt.Sprintf("Fail in RegisterNewDraft on draftMapper: err = %+v", err1)
 		http.Error(w, response, http.StatusInternalServerError)

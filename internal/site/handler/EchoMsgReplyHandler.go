@@ -93,7 +93,7 @@ func (self *EchoMsgReplyHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	newDraft.SetReply(origMsg.GetMsgID())
 
 	/* Store draft message */
-	err4 := draftMapper.RegisterNewDraft(*newDraft)
+	err4 := draftMapper.RegisterNewDraft(newDraft)
 	if err4 != nil {
 		response := fmt.Sprintf("Fail in RegisterNewDraft on draftMapper: err = %+v", err3)
 		http.Error(w, response, http.StatusInternalServerError)
