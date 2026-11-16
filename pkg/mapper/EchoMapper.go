@@ -26,10 +26,14 @@ func (self *EchoMapper) GetAreaList() ([]string, error) {
 
 	var result []string
 
-	query1 := "SELECT DISTINCT(`msgArea`) AS `name` FROM `message` ORDER BY `name` ASC"
-	var params []interface{}
+	sb := sqlbuilder.NewSelectBuilder()
+	sb.Distinct()
+	sb.Select("msgArea AS name")
+	sb.From("message")
+	sb.OrderBy("name ASC")
+	query1, args := sb.Build()
 
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		var name string
 		err2 := rows.Scan(&name)
 		if err2 != nil {
@@ -38,6 +42,9 @@ func (self *EchoMapper) GetAreaList() ([]string, error) {
 		result = append(result, name)
 		return nil
 	})
+	if err != nil {
+	    return nil, err
+	}
 
 	return result, nil
 }
@@ -48,10 +55,15 @@ func (self *EchoMapper) getAreaListCount() ([]*Area, error) {
 
 	var result []*Area
 
-	query1 := "SELECT `msgArea`, count(`msgId`) AS `msgCount` FROM `message` GROUP BY `msgArea` ORDER BY `msgArea` ASC"
-	var params []interface{}
+	sb := sqlbuilder.NewSelectBuilder()
+	sb.Select("msgArea", "COUNT(msgId) AS msgCount")
+	sb.From("message")
+	sb.Where(sb.Equal("msgArchived", 0))
+	sb.GroupBy("msgArea")
+	sb.OrderBy("msgArea ASC")
+	query1, args := sb.Build()
 
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		var name string
 		var count int
 		err2 := rows.Scan(&name, &count)
@@ -64,6 +76,9 @@ func (self *EchoMapper) getAreaListCount() ([]*Area, error) {
 		result = append(result, a)
 		return nil
 	})
+	if err != nil {
+	    return nil, err
+	}
 
 	return result, nil
 }
@@ -74,10 +89,15 @@ func (self *EchoMapper) getAreaListNewCount() ([]*Area, error) {
 
 	var result []*Area
 
-	query1 := "SELECT `msgArea`, count(`msgId`) AS `msgCount` FROM `message` WHERE `msgViewCount` = 0 GROUP BY `msgArea` ORDER BY `msgArea` ASC"
-	var params []interface{}
+	sb := sqlbuilder.NewSelectBuilder()
+	sb.Select("msgArea", "COUNT(msgId) AS msgCount")
+	sb.From("message")
+	sb.Where(sb.Equal("msgViewCount", 0), sb.Equal("msgArchived", 0))
+	sb.GroupBy("msgArea")
+	sb.OrderBy("msgArea ASC")
+	query1, args := sb.Build()
 
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		var name string
 		var count int
 
@@ -91,6 +111,9 @@ func (self *EchoMapper) getAreaListNewCount() ([]*Area, error) {
 		result = append(result, a)
 		return nil
 	})
+	if err != nil {
+	    return nil, err
+	}
 
 	return result, nil
 }
@@ -107,13 +130,11 @@ func (m *EchoMapper) GetMessageHeaders(echoTag string) ([]msg.Message, error) {
     sb.Where(sb.Equal("msgArea", echoTag))
     sb.Where(sb.Equal("msgArchived", 0))
     sb.OrderBy("msgDate ASC", "msgId ASC")
-
     query1, args := sb.Build()
 
     log.Printf("EchoMapper: query = %+v args = %+v", query1, args)
 
-    storageManager.Query(query1, args, func(rows *sql.Rows) error {
-
+    err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		var ID string
 		var msgId string
 		var reply string
@@ -148,6 +169,9 @@ func (m *EchoMapper) GetMessageHeaders(echoTag string) ([]msg.Message, error) {
 
 		return nil
     })
+    if err != nil {
+	return nil, err
+    }
 
     return result, nil
 }
@@ -158,12 +182,16 @@ func (self *EchoMapper) GetMessageByHash(echoTag string, msgHash string) (*msg.M
 
 	var result *msg.Message
 
-	query1 := "SELECT `msgId`, `msgReply`, `msgArea`, `msgMsgId`, `msgHash`, `msgSubject`, `msgFrom`, `msgOrigAddr`, `msgTo`, `msgContent`, `msgDate`, `msgPacket` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
-	var params []interface{}
-	params = append(params, echoTag)
-	params = append(params, msgHash)
+	sb := sqlbuilder.NewSelectBuilder()
+	sb.Select(
+	    "msgId", "msgReply", "msgArea", "msgMsgId", "msgHash",
+	    "msgSubject", "msgFrom", "msgOrigAddr", "msgTo", "msgContent", "msgDate", "msgPacket",
+	)
+	sb.From("message")
+	sb.Where(sb.Equal("msgArea", echoTag), sb.Equal("msgHash", msgHash))
+	query1, args := sb.Build()
 
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 
 		var ID string
 		var reply string
@@ -206,6 +234,9 @@ func (self *EchoMapper) GetMessageByHash(echoTag string, msgHash string) (*msg.M
 
 		return nil
 	})
+	if err != nil {
+	    return nil, err
+	}
 
 	return result, nil
 }
@@ -214,35 +245,30 @@ func (self *EchoMapper) ViewMessageByHash(echoTag string, msgHash string) error 
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "UPDATE `message` SET `msgViewCount` = `msgViewCount` + 1 WHERE `msgArea` = $1 AND `msgHash` = $2"
-	var params []interface{}
-	params = append(params, echoTag)
-	params = append(params, msgHash)
+	ub := sqlbuilder.NewUpdateBuilder()
+	ub.Update("message")
+	ub.SetMore("msgViewCount = msgViewCount + 1")
+	ub.Where(ub.Equal("msgArea", echoTag), ub.Equal("msgHash", msgHash))
+	query1, args := ub.Build()
 
-	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-		log.Printf("Insert complete with: err = %+v", err)
-		return nil
+	return storageManager.Exec(query1, args, func(result sql.Result, err error) error {
+		return err
 	})
-
-	return err1
-
 }
 
 func (self *EchoMapper) RemoveMessageByHash(echoTag string, msgHash string) error {
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "DELETE FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
-	var params []interface{}
-	params = append(params, echoTag)
-	params = append(params, msgHash)
+	db := sqlbuilder.NewDeleteBuilder()
+	db.DeleteFrom("message")
+	db.Where(db.Equal("msgArea", echoTag), db.Equal("msgHash", msgHash))
+	query1, args := db.Build()
 
-	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-		log.Printf("Insert complete with: err = %+v", err)
-		return nil
+	return storageManager.Exec(query1, args, func(result sql.Result, err error) error {
+		return err
 	})
 
-	return err1
 }
 
 func (self *EchoMapper) IsMessageExistsByHash(echoTag string, msgHash string) (bool, error) {
@@ -251,12 +277,13 @@ func (self *EchoMapper) IsMessageExistsByHash(echoTag string, msgHash string) (b
 
 	var result bool = false
 
-	query1 := "SELECT `msgId` FROM `message` WHERE `msgArea` = $1 AND `msgHash` = $2"
-	var params []interface{}
-	params = append(params, echoTag)
-	params = append(params, msgHash)
+	sb := sqlbuilder.NewSelectBuilder()
+	sb.Select("msgId")
+	sb.From("message")
+	sb.Where(sb.Equal("msgArea", echoTag), sb.Equal("msgHash", msgHash))
+	query1, args := sb.Build()
 
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		var ID string
 		err1 := rows.Scan(&ID)
 		if err1 != nil {
@@ -267,6 +294,9 @@ func (self *EchoMapper) IsMessageExistsByHash(echoTag string, msgHash string) (b
 		}
 		return nil
 	})
+	if err != nil {
+	    return false, err
+	}
 
 	return result, nil
 }
@@ -310,17 +340,22 @@ func (self *EchoMapper) GetMessageNewCount() (int, error) {
 
 	var newMessageCount int
 
-	query1 := "SELECT count(`msgId`) FROM `message` WHERE `msgViewCount` = 0"
-	var params []interface{}
+	sb := sqlbuilder.NewSelectBuilder()
+	sb.Select("COUNT(msgId)")
+	sb.From("message")
+	sb.Where(sb.Equal("msgViewCount", 0), sb.Equal("msgArchived", 0))
+	query1, args := sb.Build()
 
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
-
+	err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		err1 := rows.Scan(&newMessageCount)
 		if err1 != nil {
 			return err1
 		}
 		return nil
 	})
+	if err != nil {
+	    return 0, err
+	}
 
 	return newMessageCount, nil
 }
@@ -329,16 +364,14 @@ func (self *EchoMapper) RemoveMessagesByAreaName(echoTag string) error {
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "DELETE FROM `message` WHERE `msgArea` = $1"
-	var params []interface{}
-	params = append(params, echoTag)
+	db := sqlbuilder.NewDeleteBuilder()
+	db.DeleteFrom("message")
+	db.Where(db.Equal("msgArea", echoTag))
+	query1, args := db.Build()
 
-	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-		log.Printf("Insert complete with: err = %+v", err)
-		return nil
+	return storageManager.Exec(query1, args, func(result sql.Result, err error) error {
+		return err
 	})
-
-	return err1
 
 }
 
@@ -418,14 +451,13 @@ func (self *EchoMapper) GetMessageHeadersPage(echoTag string, limit, offset int)
     sb := sqlbuilder.NewSelectBuilder()
     sb.Select("msgId", "msgMsgId", "msgReply", "msgArea", "msgHash", "msgSubject", "msgViewCount", "msgFrom", "msgTo", "msgDate")
     sb.From("message")
-    sb.Where(sb.Equal("msgArea", echoTag))
-    sb.Where(sb.Equal("msgArchived", 0))
+    sb.Where(sb.Equal("msgArea", echoTag), sb.Equal("msgArchived", 0))
     sb.OrderBy("msgDate ASC", "msgId ASC")
     sb.Limit(limit)
     sb.Offset(offset)
     query1, args := sb.Build()
 
-    storageManager.Query(query1, args, func(rows *sql.Rows) error {
+    err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 	var ID string
 	var msgId string
 	var reply string
@@ -459,6 +491,9 @@ func (self *EchoMapper) GetMessageHeadersPage(echoTag string, limit, offset int)
 	result = append(result, *newMsg)
 	return nil
     })
+    if err != nil {
+	return nil, err
+    }
 
     return result, nil
 }
@@ -485,23 +520,30 @@ func (self *EchoMapper) GetMessageCount(echoTag string) (int, error) {
 }
 
 func (m *EchoMapper) ArchiveMessageByHash(echoTag string, msgHash string) error {
+
     storageManager := storage.RestoreStorageManager(m.registry)
-    query1 := "UPDATE `message` SET `msgArchived` = 1 WHERE `msgArea` = ? AND `msgHash` = ?"
-    var params []interface{}
-    params = append(params, echoTag)
-    params = append(params, msgHash)
-    return storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-        return nil
+
+    ub := sqlbuilder.NewUpdateBuilder()
+    ub.Update("message")
+    ub.Set(ub.Assign("msgArchived", 1))
+    ub.Where(ub.Equal("msgArea", echoTag), ub.Equal("msgHash", msgHash))
+    query1, args := ub.Build()
+
+    return storageManager.Exec(query1, args, func(result sql.Result, err error) error {
+        return err
     })
 }
 
 func (m *EchoMapper) PurgeArchivedMessages(areaName string) error {
     storageManager := storage.RestoreStorageManager(m.registry)
-    query1 := "DELETE FROM `message` WHERE `msgArea` = ? AND `msgArchived` = 1"
-    var params []interface{}
-    params = append(params, areaName)
-    return storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-        return nil
+
+    db := sqlbuilder.NewDeleteBuilder()
+    db.DeleteFrom("message")
+    db.Where(db.Equal("msgArea", areaName), db.Equal("msgArchived", 1))
+    query1, args := db.Build()
+
+    return storageManager.Exec(query1, args, func(result sql.Result, err error) error {
+        return err
     })
 }
 

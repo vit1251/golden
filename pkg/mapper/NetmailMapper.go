@@ -2,8 +2,9 @@ package mapper
 
 import (
     "database/sql"
-    "log"
+
     "github.com/huandu/go-sqlbuilder"
+
     "github.com/vit1251/golden/pkg/registry"
     "github.com/vit1251/golden/pkg/storage"
 )
@@ -31,7 +32,7 @@ func (m *NetmailMapper) GetMessageHeaders() ([]*NetmailMsg, error) {
     sb.OrderBy("nmDate ASC", "nmId ASC")
     query1, args := sb.Build()
 
-    storageManager.Query(query1, args, func(rows *sql.Rows) error {
+    err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		var nmId string
 		var nmMsgId string
 		var nmHash string
@@ -64,6 +65,9 @@ func (m *NetmailMapper) GetMessageHeaders() ([]*NetmailMsg, error) {
 
 		return nil
     })
+    if err != nil {
+	return nil, err
+    }
 
     return result, nil
 }
@@ -83,7 +87,7 @@ func (m *NetmailMapper) GetMessageHeadersPage(limit, offset int) ([]*NetmailMsg,
     sb.Offset(offset)
     query1, args := sb.Build()
 
-    storageManager.Query(query1, args, func(rows *sql.Rows) error {
+    err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		var nmId string
 		var nmMsgId string
 		var nmHash string
@@ -115,7 +119,10 @@ func (m *NetmailMapper) GetMessageHeadersPage(limit, offset int) ([]*NetmailMsg,
 		result = append(result, msg)
 
 		return nil
-	})
+    })
+    if err != nil {
+	return nil, err
+    }
 
     return result, nil
 }
@@ -131,9 +138,12 @@ func (m *NetmailMapper) GetMessageCount() (int, error) {
     sb.Where(sb.Equal("nmArchived", 0))
     query1, args := sb.Build()
 
-    storageManager.Query(query1, args, func(rows *sql.Rows) error {
+    err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
         return rows.Scan(&count)
     })
+    if err != nil {
+	return 0, err
+    }
 
     return count, nil
 }
@@ -141,27 +151,16 @@ func (m *NetmailMapper) GetMessageCount() (int, error) {
 func (self *NetmailMapper) Write(msg *NetmailMsg) error {
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "INSERT INTO `netmail` " +
-		"(nmMsgId, nmHash, nmFrom, nmTo, nmSubject, nmBody, nmDate, nmOrigAddr, nmDestAddr, nmPacket) " +
-		"VALUES " +
-		"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-	var params []interface{}
-	params = append(params, msg.MsgID)
-	params = append(params, msg.Hash)
-	params = append(params, msg.From)
-	params = append(params, msg.To)
-	params = append(params, msg.Subject)
-	params = append(params, msg.Content)
-	params = append(params, msg.UnixTime)
-	params = append(params, msg.OrigAddr)
-	params = append(params, msg.DestAddr)
-	params = append(params, msg.GetPacket())
+	ib := sqlbuilder.NewInsertBuilder()
+	ib.InsertInto("netmail")
+	ib.Cols("nmMsgId", "nmHash", "nmFrom", "nmTo", "nmSubject", "nmBody", "nmDate", "nmOrigAddr", "nmDestAddr", "nmPacket")
+	ib.Values(msg.MsgID, msg.Hash, msg.From, msg.To, msg.Subject, msg.Content, msg.UnixTime, msg.OrigAddr, msg.DestAddr, msg.GetPacket())
+	query1, args := ib.Build()
 
-	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-		return nil
+	return storageManager.Exec(query1, args, func(result sql.Result, err error) error {
+		return err
 	})
 
-	return err1
 }
 
 func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error) {
@@ -169,11 +168,13 @@ func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error)
 
 	var result *NetmailMsg
 
-	query1 := "SELECT `nmId`, `nmMsgId`, `nmSubject`, `nmViewCount`, `nmFrom`, `nmTo`, `nmDate`, `nmBody`, `nmOrigAddr`, `nmDestAddr`, `nmPacket` FROM `netmail` WHERE `nmHash` = ?"
-	var params []interface{}
-	params = append(params, msgHash)
+	sb := sqlbuilder.NewSelectBuilder()
+	sb.Select("nmId", "nmMsgId", "nmSubject", "nmViewCount", "nmFrom", "nmTo", "nmDate", "nmBody", "nmOrigAddr", "nmDestAddr", "nmPacket")
+	sb.From("netmail")
+	sb.Where(sb.Equal("nmHash", msgHash))
+	query1, args := sb.Build()
 
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		var nmId string
 		var nmMsgId string
 		var nmSubject string
@@ -209,6 +210,9 @@ func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error)
 
 		return nil
 	})
+	if err != nil {
+	    return nil, err
+	}
 
 	return result, nil
 }
@@ -216,16 +220,15 @@ func (self *NetmailMapper) GetMessageByHash(msgHash string) (*NetmailMsg, error)
 func (self *NetmailMapper) ViewMessageByHash(msgHash string) error {
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "UPDATE `netmail` SET `nmViewCount` = `nmViewCount` + 1 WHERE `nmHash` = $1"
-	var params []interface{}
-	params = append(params, msgHash)
+	ub := sqlbuilder.NewUpdateBuilder()
+	ub.Update("netmail")
+	ub.SetMore("nmViewCount = nmViewCount + 1")
+	ub.Where(ub.Equal("nmHash", msgHash))
+	query1, args := ub.Build()
 
-	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-		log.Printf("Insert complete with: err = %+v", err)
-		return nil
+	return storageManager.Exec(query1, args, func(result sql.Result, err error) error {
+		return err
 	})
-
-	return err1
 }
 
 func (self *NetmailMapper) GetMessageNewCount() (int, error) {
@@ -233,16 +236,22 @@ func (self *NetmailMapper) GetMessageNewCount() (int, error) {
 
 	var newMessageCount int
 
-	query1 := "SELECT count(`nmId`) FROM `netmail` WHERE `nmViewCount` = 0"
-	var params []interface{}
+	sb := sqlbuilder.NewSelectBuilder()
+	sb.Select("COUNT(nmId)")
+	sb.From("netmail")
+	sb.Where(sb.Equal("nmViewCount", 0), sb.Equal("nmArchived", 0))
+	query1, args := sb.Build()
 
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		err1 := rows.Scan(&newMessageCount)
 		if err1 != nil {
 			return err1
 		}
 		return nil
 	})
+	if err != nil {
+	    return 0, err
+	}
 
 	return newMessageCount, nil
 }
@@ -250,23 +259,26 @@ func (self *NetmailMapper) GetMessageNewCount() (int, error) {
 func (self *NetmailMapper) RemoveMessageByHash(msgHash string) error {
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "DELETE FROM `netmail` WHERE `nmHash` = ?"
-	var params []interface{}
-	params = append(params, msgHash)
+	db := sqlbuilder.NewDeleteBuilder()
+	db.DeleteFrom("netmail")
+	db.Where(db.Equal("nmHash", msgHash))
+	query1, args := db.Build()
 
-	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-		return nil
+	return storageManager.Exec(query1, args, func(result sql.Result, err error) error {
+		return err
 	})
-
-	return err1
 }
 
 func (m *NetmailMapper) ArchiveMessageByHash(msgHash string) error {
     storageManager := storage.RestoreStorageManager(m.registry)
-    query1 := "UPDATE `netmail` SET `nmArchived` = 1 WHERE `nmHash` = ?"
-    var params []interface{}
-    params = append(params, msgHash)
-    return storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-        return nil
+
+    ub := sqlbuilder.NewUpdateBuilder()
+    ub.Update("netmail")
+    ub.Set(ub.Assign("nmArchived", 1))
+    ub.Where(ub.Equal("nmHash", msgHash))
+    query1, args := ub.Build()
+
+    return storageManager.Exec(query1, args, func(result sql.Result, err error) error {
+        return err
     })
 }

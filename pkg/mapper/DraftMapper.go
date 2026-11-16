@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/huandu/go-sqlbuilder"
+
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
 )
@@ -18,17 +20,19 @@ func NewDraftMapper(r *registry.Container) *DraftMapper {
 	return newDraftMapper
 }
 
-func (self DraftMapper) GetDraftMessages(state int) ([]Draft, error) {
+func (self *DraftMapper) GetDraftMessages(state int) ([]Draft, error) {
 	var result []Draft
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "SELECT `draftId`, `draftUUID`, `draftSubject`, `draftArea`, `draftBody`, `draftDone` FROM `draft` WHERE `draftDone` = ? ORDER BY `draftId` DESC"
+	sb := sqlbuilder.NewSelectBuilder()
+        sb.Select("draftId", "draftUUID", "draftSubject", "draftArea", "draftBody", "draftDone")
+	sb.From("draft")
+	sb.Where(sb.Equal("draftDone", state))
+	sb.OrderBy("draftId DESC")
+	query1, args := sb.Build()
 
-	var params []interface{}
-	params = append(params, state)
-
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		var draftId string
 		var draftUUID string
 		var draftSubject string
@@ -53,11 +57,14 @@ func (self DraftMapper) GetDraftMessages(state int) ([]Draft, error) {
 
 		return nil
 	})
+	if err != nil {
+	    return nil, err
+	}
 
 	return result, nil
 }
 
-func (self DraftMapper) RegisterNewDraft(draft Draft) error {
+func (self *DraftMapper) RegisterNewDraft(draft Draft) error {
 	storageManager := storage.RestoreStorageManager(self.registry)
 
 	query1 := "INSERT INTO `draft` (`draftUUID`, `draftArea`,`draftBody`,`draftDest`,`draftDestAddr`,`draftSubject`,`draftReply`) VALUES (?,?,?,?,?,?,?)"
@@ -85,12 +92,13 @@ func (self DraftMapper) GetDraftByUUID(uuid string) (*Draft, error) {
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "SELECT `draftId`, `draftUUID`, `draftDest`, `draftDestAddr`, `draftSubject`, `draftArea`, `draftBody`, `draftDone`, `draftReply` FROM `draft` WHERE `draftUUID` = ?"
+	sb := sqlbuilder.NewSelectBuilder()
+	sb.Select("draftId", "draftUUID", "draftDest", "draftDestAddr", "draftSubject", "draftArea", "draftBody", "draftDone", "draftReply")
+	sb.From("draft")
+	sb.Where(sb.Equal("draftUUID", uuid))
+        query1, args := sb.Build()
 
-	var params []interface{}
-	params = append(params, uuid)
-
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+	err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		var draftId string
 		var draftUUID string
 		var draftDest string
@@ -121,6 +129,9 @@ func (self DraftMapper) GetDraftByUUID(uuid string) (*Draft, error) {
 
 		return nil
 	})
+	if err != nil {
+	    return nil, err
+	}
 
 	return result, nil
 }

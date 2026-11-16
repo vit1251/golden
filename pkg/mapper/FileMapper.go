@@ -148,17 +148,15 @@ func (self *FileMapper) ViewFileByIndexName(fileArea string, indexName string) e
 
 	storageManager := storage.RestoreStorageManager(self.registry)
 
-	query1 := "UPDATE `file` SET `fileViewCount` = `fileViewCount` + 1 WHERE `fileArea` = $1 AND `indexName` = $2"
-	var params []interface{}
-	params = append(params, fileArea)
-	params = append(params, indexName)
+	ub := sqlbuilder.NewUpdateBuilder()
+	ub.Update("file")
+	ub.SetMore("fileViewCount = fileViewCount + 1")
+	ub.Where(ub.Equal("fileArea", fileArea), ub.Equal("indexName", indexName))
+	query1, args := ub.Build()
 
-	err1 := storageManager.Exec(query1, params, func(result sql.Result, err error) error {
-		log.Printf("Insert complete with: err = %+v", err)
-		return nil
+	return storageManager.Exec(query1, args, func(result sql.Result, err error) error {
+		return err
 	})
-
-	return err1
 
 }
 
@@ -236,6 +234,7 @@ func (m *FileMapper) ArchiveFileByName(indexName string) error {
 func (m *FileMapper) PurgeArchivedFiles(areaName string) error {
     storageManager := storage.RestoreStorageManager(m.registry)
 
+    // Part 1. Search 
     sb := sqlbuilder.NewSelectBuilder()
     sb.Select("indexName")
     sb.From("file")
@@ -243,7 +242,7 @@ func (m *FileMapper) PurgeArchivedFiles(areaName string) error {
     query1, args := sb.Build()
 
     var files []string
-    storageManager.Query(query1, args, func(rows *sql.Rows) error {
+    errA := storageManager.Query(query1, args, func(rows *sql.Rows) error {
         var name string
         if err := rows.Scan(&name); err != nil {
             return err
@@ -251,16 +250,23 @@ func (m *FileMapper) PurgeArchivedFiles(areaName string) error {
         files = append(files, name)
         return nil
     })
+    if errA != nil {
+	return errA
+    }
 
+    // Part 2. Remove index entity
     delQuery := "DELETE FROM `file` WHERE `fileArea` = ? AND `fileArchived` = 1"
     var delParams []interface{}
     delParams = append(delParams, areaName)
-    if err := storageManager.Exec(delQuery, delParams, func(result sql.Result, err error) error {
+
+    errB := storageManager.Exec(delQuery, delParams, func(result sql.Result, err error) error {
         return err
-    }); err != nil {
-        return err
+    })
+    if errB != nil {
+        return errB
     }
 
+    // Part 3. Remove storage entity
     for _, name := range files {
         p := m.GetFileAbsolutePath(areaName, name)
         if err := os.Remove(p); err != nil {

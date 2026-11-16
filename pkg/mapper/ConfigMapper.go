@@ -2,9 +2,12 @@ package mapper
 
 import (
 	"database/sql"
+	"log"
+
+	"github.com/huandu/go-sqlbuilder"
+
 	"github.com/vit1251/golden/pkg/registry"
 	"github.com/vit1251/golden/pkg/storage"
-	"log"
 )
 
 type ConfigMapper struct {
@@ -17,12 +20,18 @@ func NewConfigMapper(r *registry.Container) *ConfigMapper {
 	return newConfigMapper
 }
 
-func (self ConfigMapper) GetConfigFromDatabase() (*Config, error) {
+func (self *ConfigMapper) GetConfigFromDatabase() (*Config, error) {
+
 	storageManager := storage.RestoreStorageManager(self.registry)
+
 	config := NewConfig()
-	query1 := "SELECT `section`, `name`, `value` FROM `settings`"
-	var params []interface{}
-	storageManager.Query(query1, params, func(rows *sql.Rows) error {
+
+	sb := sqlbuilder.NewSelectBuilder()
+	sb.Select("section", "name", "value")
+	sb.From("settings")
+	query1, args := sb.Build()
+
+	err := storageManager.Query(query1, args, func(rows *sql.Rows) error {
 		var section string
 		var name string
 		var value string
@@ -39,6 +48,10 @@ func (self ConfigMapper) GetConfigFromDatabase() (*Config, error) {
 		})
 		return nil
 	})
+	if err != nil {
+	    return nil, err
+	}
+
 	return config, nil
 }
 
