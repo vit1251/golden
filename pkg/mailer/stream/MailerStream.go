@@ -6,8 +6,8 @@ import (
 	"log"
 	"net"
 	"sync"
-	"time"
 	"sync/atomic"
+	"time"
 )
 
 type MailerStream struct {
@@ -27,8 +27,10 @@ type MailerStream struct {
 	InFrame  chan Frame
 	OutFrame chan Frame
 
-	rxDataPackets atomic.Int64          /* Received data-frame count */
-	txDataPackets atomic.Int64          /* Sent data-frame count     */
+	rxDataPackets atomic.Int64 /* Received data-frame count */
+	txDataPackets atomic.Int64 /* Sent data-frame count     */
+	rxDataBytes   atomic.Int64 /* Received data-frame bytes */
+	txDataBytes   atomic.Int64 /* Sent data-frame bytes     */
 }
 
 func NewMailerStream() *MailerStream {
@@ -38,6 +40,8 @@ func NewMailerStream() *MailerStream {
 
 func (self *MailerStream) GetRXDataPackets() int64 { return self.rxDataPackets.Load() }
 func (self *MailerStream) GetTXDataPackets() int64 { return self.txDataPackets.Load() }
+func (self *MailerStream) GetRXDataBytes() int64 { return self.rxDataBytes.Load() }
+func (self *MailerStream) GetTXDataBytes() int64 { return self.txDataBytes.Load() }
 
 func (self *MailerStream) OpenSession(remoteSystem string) error {
 

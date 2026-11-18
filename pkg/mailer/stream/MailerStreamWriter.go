@@ -51,6 +51,7 @@ func (self *MailerStream) processTXpacket(nextFrame Frame) {
 	} else {
 		/* Counters */
 		self.txDataPackets.Add(1)
+		self.txDataBytes.Add(int64(len(nextFrame.DataFrame.Body)))
 		/* Process DATA packet */
 		var frameHeader uint16
 		var frameSize int = len(nextFrame.DataFrame.Body)

@@ -75,6 +75,7 @@ func (self *MailerStream) processRX() {
 		} else {
 			/* Counters */
 			self.rxDataPackets.Add(1)
+			self.rxDataBytes.Add(int64(len(frameBody)))
 			/* Store data frame in queue */
 			nextFrame := Frame{
 				Command: false,
