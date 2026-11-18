@@ -18,25 +18,27 @@ type StatMailer struct {
     SessionStart int64    /* Session start in milliseconds */
     SessionStop  int64    /* Session stop in milliseconds  */
     Status       string   /* Summary report                */
-    FileRXcount  int      /**/
-    FileTXcount  int      /**/
+    FileRXcount  int      /* Received entity count         */
+    FileTXcount  int      /* Sended entity count           */
+    InSize       int64    /* Received bytes                */
+    OutSize      int64    /* Sended bytes                  */
 }
 
 func (self StatMailer) GetDuration() uint64 {
     return uint64(self.SessionStop - self.SessionStart)
 }
 
-func (self *StatMailerMapper) GetMailerSummary() ([]StatMailer, error) {
+func (self *StatMailerMapper) GetMailerSummary() ([]*StatMailer, error) {
 
     now := time.Now()
     startOfMonth := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
 
-    var result []StatMailer
+    var result []*StatMailer
 
     storageManager := storage.RestoreStorageManager(self.registry)
 
     sb := sqlbuilder.NewSelectBuilder()
-    sb.Select("statMailerSessionStart", "statMailerSessionStop", "statMailerSummary", "statMailerFileRXcount", "statMailerFileTXcount")
+    sb.Select("statMailerSessionStart", "statMailerSessionStop", "statMailerSummary", "statMailerFileRXcount", "statMailerFileTXcount", "statMailerByteRXcount", "statMailerByteTXcount")
     sb.From("stat_mailer")
     sb.Where(sb.GE("statMailerSessionStart", startOfMonth.UnixMilli()))
     sb.OrderBy("statMailerId DESC")
@@ -49,8 +51,10 @@ func (self *StatMailerMapper) GetMailerSummary() ([]StatMailer, error) {
 	var statMailerSummary string
 	var statMailerFileRXcount int
 	var statMailerFileTXcount int
+	var statMailerByteRXcount int64
+	var statMailerByteTXcount int64
 
-	err2 := rows.Scan(&statMailerSessionStart, &statMailerSessionStop, &statMailerSummary, &statMailerFileRXcount, &statMailerFileTXcount)
+	err2 := rows.Scan(&statMailerSessionStart, &statMailerSessionStop, &statMailerSummary, &statMailerFileRXcount, &statMailerFileTXcount, &statMailerByteRXcount, &statMailerByteTXcount)
 	if err2 != nil {
 	    return err2
 	}
@@ -61,7 +65,9 @@ func (self *StatMailerMapper) GetMailerSummary() ([]StatMailer, error) {
 	summary.Status = statMailerSummary
 	summary.FileRXcount = statMailerFileRXcount
 	summary.FileTXcount = statMailerFileTXcount
-	result = append(result, *summary)
+	summary.InSize = statMailerByteRXcount
+	summary.OutSize = statMailerByteTXcount
+	result = append(result, summary)
 
 	return nil
     })
@@ -94,8 +100,8 @@ func (self *StatMailerMapper) insertMailerReport(sessionID int64, report *StatMa
 
     ib := sqlbuilder.NewInsertBuilder()
     ib.InsertInto("stat_mailer")
-    ib.Cols("statMailerSessionStart", "statMailerSessionStop", "statMailerSummary", "statMailerFileRXcount", "statMailerFileTXcount", "statMailerId")
-    ib.Values(report.SessionStart, report.SessionStop, report.Status, report.FileRXcount, report.FileTXcount, sessionID)
+    ib.Cols("statMailerSessionStart", "statMailerSessionStop", "statMailerSummary", "statMailerFileRXcount", "statMailerFileTXcount", "statMailerId", "statMailerByteRXcount", "statMailerByteTXcount")
+    ib.Values(report.SessionStart, report.SessionStop, report.Status, report.FileRXcount, report.FileTXcount, sessionID, report.InSize, report.OutSize)
     query, args := ib.Build()
 
     err1 := storageManager.Exec(query, args, func(result sql.Result, err error) error {
@@ -117,6 +123,8 @@ func (self *StatMailerMapper) updateMailerReport(report *StatMailer) error {
 	ub.Assign("statMailerSummary", report.Status),
         ub.Assign("statMailerFileRXcount", report.FileRXcount),
 	ub.Assign("statMailerFileTXcount", report.FileTXcount),
+	ub.Assign("statMailerByteRXcount", report.InSize),
+	ub.Assign("statMailerByteTXcount", report.OutSize),
     )
     ub.Where(ub.Equal("statMailerId", report.SessionID))
     query, args := ub.Build()

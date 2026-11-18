@@ -211,15 +211,19 @@ func (self *MailerManager) processMailer() error {
 
 func convertMailerReportToStatMailer(result *mapper.StatMailer, report *MailerReport) error {
 
-    // Статистика по времени
+    // Session duration
     result.SessionStart = report.GetSessionStart().UnixMilli()
     result.SessionStop = report.GetSessionStop().UnixMilli()
 
-    // Статистика по файлам
+    // RX/TX entity count
     result.FileRXcount = report.GetInFileCount()
     result.FileTXcount = report.GetOutFileCount()
 
-    // Резолюция по сеансу
+    // RX/TX bytes
+    result.InSize  = report.GetInSize()
+    result.OutSize = report.GetOutSize()
+
+    // Summary overview
     result.Status = report.GetStatus()
 
     return nil

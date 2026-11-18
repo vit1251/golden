@@ -10,6 +10,7 @@ import (
     "github.com/vit1251/golden/internal/site/views"
     "github.com/vit1251/golden/pkg/mapper"
     "github.com/vit1251/golden/pkg/registry"
+    "github.com/vit1251/golden/internal/utils"
 )
 
 type ServiceHandler struct {
@@ -28,6 +29,8 @@ type dayAccum struct {
     errors   int
     filesRX  int
     filesTX  int
+    bytesRX  int64
+    bytesTX  int64
 }
 
 func formatDuration(d time.Duration) string {
@@ -43,7 +46,7 @@ func formatDuration(d time.Duration) string {
     return fmt.Sprintf("%ds", s)
 }
 
-func aggregateByDay(sessions []mapper.StatMailer) []views.DayStat {
+func aggregateByDay(sessions []*mapper.StatMailer) []views.DayStat {
     dayMap := make(map[string]*dayAccum)
 
     for _, s := range sessions {
@@ -59,6 +62,8 @@ func aggregateByDay(sessions []mapper.StatMailer) []views.DayStat {
 	d.duration += time.Duration(s.SessionStop - s.SessionStart) * time.Millisecond
 	d.filesRX += s.FileRXcount
 	d.filesTX += s.FileTXcount
+        d.bytesRX += s.InSize
+        d.bytesTX += s.OutSize
 
 	// Для ошибок смотрим статус
 	if s.Status == "Complete: RX = RxOk TX = TxOk" {
@@ -75,11 +80,13 @@ func aggregateByDay(sessions []mapper.StatMailer) []views.DayStat {
 	}
 	_ = errStr
 
+        var volume string = utils.FormatBytes(acc.bytesRX) + " / " + utils.FormatBytes(acc.bytesTX)
+
 	result = append(result, views.DayStat{
 	    Date:     date,
 	    Sessions: acc.sessions,
 	    Duration: formatDuration(acc.duration),
-	    Volume:   "-", // TODO: добавить когда появится в MailerReport
+	    Volume:   volume,
 	    MsgsRX:   0,   // TODO: добавить когда появится в MailerReport
 	    MsgsTX:   0,
 	    FilesRX:  acc.filesRX,

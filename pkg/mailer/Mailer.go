@@ -196,9 +196,13 @@ func (m *Mailer) run() {
 
 	/* Packet counters */
 	if m.stream != nil {
+	    /* Debug message */
 	    log.Printf("mailer: data packets RX = %d (%d bytes) TX = %d (%d bytes)",
                 m.stream.GetRXDataPackets(), m.stream.GetRXDataBytes(),
                 m.stream.GetTXDataPackets(), m.stream.GetTXDataBytes())
+            /* Update counter */
+	    m.report.SetInSize(m.stream.GetRXDataBytes())
+            m.report.SetOutSize(m.stream.GetTXDataBytes())
         }
 
 	/* Close connection */
