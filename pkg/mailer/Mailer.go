@@ -194,6 +194,9 @@ func (m *Mailer) run() {
 	m.report.SetInFileCount(m.InFileCount)
 	m.report.SetOutFileCount(m.OutFileCount)
 
+	/* Packet counters */
+	log.Printf("mailer: data packets RX = %d TX = %d", m.stream.GetRXDataPackets(), m.stream.GetTXDataPackets())
+
 	/* Close connection */
 	m.wait.Done()
 

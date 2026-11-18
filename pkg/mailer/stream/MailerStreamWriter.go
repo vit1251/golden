@@ -49,6 +49,9 @@ func (self *MailerStream) processTXpacket(nextFrame Frame) {
 		binary.Write(self.writer, binary.BigEndian, nextFrame.CommandFrame.Body)
 		self.writer.Flush()
 	} else {
+		/* Counters */
+		self.txDataPackets.Add(1)
+		/* Process DATA packet */
 		var frameHeader uint16
 		var frameSize int = len(nextFrame.DataFrame.Body)
 		log.Printf("TX frame: type = data: size = %d", frameSize)
