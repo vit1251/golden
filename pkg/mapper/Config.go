@@ -8,7 +8,7 @@ func NewConfig() *Config {
 	return new(Config)
 }
 
-func (self Config) Get(section string, name string) (string, bool) {
+func (self *Config) Get(section string, name string) (string, bool) {
 	for _, param := range self.params {
 		if param.section == section && param.name == name {
 			return param.value, true
@@ -17,7 +17,7 @@ func (self Config) Get(section string, name string) (string, bool) {
 	return "", false
 }
 
-func (self Config) GetParams() []ConfigValue {
+func (self *Config) GetParams() []ConfigValue {
 	return self.params
 }
 

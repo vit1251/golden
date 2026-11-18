@@ -175,7 +175,8 @@ func (self *Application) showWelcomeMessage(modernMode bool) {
 	var msg string = fmt.Sprintf("Listening on %s (press Ctrl+Click to open)\n", siteAddress)
 	report.WriteString(msg)
 
-	var setupMessage bool = true
+        configManager := config.RestoreConfigManager(self.registry)
+        setupMessage := !configManager.IsConfigured()
 	if setupMessage {
 		report.WriteString("\n")
 		report.WriteString("[!] FIRST RUN ACTION REQUIRED:\n")
